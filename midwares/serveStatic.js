@@ -3,11 +3,11 @@ import fs from 'fs';
 import path from 'path';
 
 /** @type {import('./@types')['createStaticMiddleware']} */
-const serveStatic = (pathname) => {
+export default function serveStatic(pathname) {
 	const fullPath = path.resolve(pathname);
 
 	if (!fs.existsSync(fullPath)) {
-		throw new Error('Path does not exist: ' + fullPath);
+		throw new Error('> [Server.serveStatic] Path does not exist: ' + fullPath);
 	}
 
 	const stat = fs.statSync(fullPath);
@@ -16,8 +16,8 @@ const serveStatic = (pathname) => {
 		return express.static(fullPath);
 	}
 
+	// Return middleware to serve the file manually
 	if (stat.isFile()) {
-		// Trả về middleware xử lý thủ công
 		return (req, res, next) => {
 			if (req.path === '/' || req.path === '/' + path.basename(fullPath)) {
 				res.sendFile(fullPath);
@@ -27,7 +27,5 @@ const serveStatic = (pathname) => {
 		};
 	}
 
-	throw new Error('Path is neither file nor directory: ' + fullPath);
-};
-
-export default serveStatic;
+	throw new Error('> [Server.serveStatic] Path is neither file nor directory: ' + fullPath);
+}

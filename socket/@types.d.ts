@@ -2,8 +2,8 @@ import http from 'http';
 import { Server as SocketServer } from 'socket.io';
 
 /**
- * Khởi tạo socket.io và gắn vào một HTTP server
+ * Initialize socket.io and attach to an HTTP server
  * @param server HTTP server (http.createServer(...))
- * @returns instance của Socket.IO server
+ * @returns instance of Socket.IO server
  */
-export function initSocket(server: http.Server): SocketServer;
+export function initSocketServer(server: http.Server): SocketServer;

@@ -1,7 +1,7 @@
 import { Server } from 'socket.io';
 
-/** @type {import('./@types')['initSocket']} */
-export default function initSocket(server) {
+/** @type {import('./@types')['initSocketServer']} */
+export default function initSocketServer(server) {
 	const io = new Server(server, {
 		cors: {
 			origin: '*',
@@ -9,10 +9,10 @@ export default function initSocket(server) {
 	});
 
 	io.on('connection', (socket) => {
-		console.log('Client connected:', socket.id);
+		console.log('> [Socket Server] Client connected:', socket.id);
 
 		socket.on('disconnect', (reason) => {
-			console.log('Client disconnected:', socket.id, reason);
+			console.log('> [Socket Server] Client disconnected:', socket.id, '\n\t-> Reason:', reason);
 		});
 	});
 

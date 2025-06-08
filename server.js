@@ -2,8 +2,8 @@ import express from 'express';
 import http from 'http';
 import dotenv from 'dotenv';
 import getServerIP from './network/getServerIP.js';
-import serveStatic from './midwares/staticHandler.js';
-import initSocket from './socket/initSocket.js';
+import serveStatic from './midwares/serveStatic.js';
+import initSocketServer from './socket/initSocket.js';
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
@@ -19,11 +19,11 @@ app.use(`/${ASSETS_PATH}/`, serveStatic(ASSETS_PATH));
 app.use('/libs/socket.io.js', serveStatic('./node_modules/socket.io-client/dist/socket.io.esm.min.js'));
 
 // Init socket.io
-const io = initSocket(server);
+const io = initSocketServer(server);
 
 server
 	.listen(PORT, () => {
-		console.log(`> Server is up and running on: http://${getServerIP()}:${PORT}`);
+		console.log(`> [Server] Server is up and running on: http://${getServerIP()}:${PORT}`);
 	})
 	.on('close', () => {
 		io.disconnectSockets(true);
