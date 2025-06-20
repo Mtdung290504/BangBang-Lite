@@ -1,8 +1,13 @@
-import { Server } from 'socket.io';
+import { Server as SocketServer } from 'socket.io';
 
-/** @type {import('./@types')['initSocketServer']} */
+/**
+ * Initialize socket.io and attach to an HTTP server
+ *
+ * @param {import('http').Server} server HTTP server (http.createServer(...))
+ * @returns {SocketServer} instance of Socket.IO server
+ */
 export default function initSocketServer(server) {
-	const io = new Server(server, {
+	const io = new SocketServer(server, {
 		cors: {
 			origin: '*',
 		},

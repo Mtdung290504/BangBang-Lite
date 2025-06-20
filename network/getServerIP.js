@@ -1,6 +1,10 @@
 import os from 'os';
 
-/**@type {import('./@types')['getServerIP']} */
+/**
+ * Utility function that returns the server's own Wifi IP
+ *
+ * @returns {string | undefined}
+ */
 export default function getServerIP() {
 	const interfaces = os.networkInterfaces();
 	const wifiInterface = interfaces['Wi-Fi'];

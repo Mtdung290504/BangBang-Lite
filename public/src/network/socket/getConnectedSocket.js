@@ -1,6 +1,10 @@
-import { io } from '../../libs/socket.io.js';
+import { io } from '../../../libs/socket.io.js';
 
-/**@type {import('./@types.js')['initSocket']} */
+/**
+ * Initializes a socket.io client connection with error handling and timeout.
+ *
+ * @returns {Promise<import('socket.io-client').Socket>}
+ */
 function getSocketConnection() {
 	return new Promise((resolve, reject) => {
 		/**@type {import('socket.io-client').Socket} */
@@ -28,9 +32,15 @@ function getSocketConnection() {
 	});
 }
 
+/**@type {Awaited<ReturnType<typeof getSocketConnection>> | null} */
 let socket = null;
 
-/**@type {import('./@types')['getConnectedSocket']} */
+/**
+ * - Initializes and returns a connected socket. If the connection fails, returns null.
+ * - Note: This function maintains a single socket instance and only creates a new one if none exists.
+ *
+ * @returns {Promise<import('socket.io-client').Socket | null>}
+ */
 export default async function getConnectedSocket() {
 	if (!socket) {
 		try {

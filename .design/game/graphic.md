@@ -1,0 +1,3 @@
+- Camera
+  - Phụ thuộc: map size (không đổi), canvas size (có thể đổi)
+  - Tọa độ: tọa độ viewport, tọa độ mục tiêu
