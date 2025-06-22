@@ -1,7 +1,7 @@
-export default class Camera {
+export default class CameraSystem {
 	/**
-	 * @param {HTMLCanvasElement} canvas
-	 * @param {{ width: number, height: number }} mapSize
+	 * @param {HTMLCanvasElement} canvas - Canvas draw game
+	 * @param {{ width: number, height: number }} mapSize - Object với width, height lần lượt là chiều rộng, dài của map
 	 */
 	constructor(canvas, mapSize) {
 		this.viewportX = 0;
@@ -21,6 +21,7 @@ export default class Camera {
 	/**
 	 * Set the target position for the camera to follow.
 	 * (Camera sẽ dịch chuyển để có thể theo dõi "target" được truyền vào)
+	 *
 	 * @param {{ x: number, y: number }} target
 	 */
 	observe(target) {
@@ -42,7 +43,8 @@ export default class Camera {
 
 	/**
 	 * Applies the calculated translation to the graphic context.
-	 * (Nói đơn giản là dịch chuyển camera)
+	 * (Dịch chuyển camera theo mục tiêu mà nó theo dõi)
+	 *
 	 * @private
 	 */
 	_applyTranslate() {
@@ -52,6 +54,7 @@ export default class Camera {
 	/**
 	 * Clamps the camera position to stay within map boundaries.
 	 * (Giới hạn camera trong phạm vi map và căn giữa tầm nhìn)
+	 *
 	 * @private
 	 */
 	_clamp() {

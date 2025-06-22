@@ -1,0 +1,3 @@
+- Đồng bộ input
+  - Tạo InputManager lưu trạng thái input
+  - System để sync/System để quay đầu tank sẽ đọc từ/cập nhật vào nó

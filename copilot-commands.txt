@@ -1,0 +1,1 @@
+Open chat panel: Ctrl + Alt + I

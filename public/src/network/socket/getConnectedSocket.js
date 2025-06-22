@@ -2,6 +2,7 @@ import { io } from '../../../libs/socket.io.js';
 
 /**
  * Initializes a socket.io client connection with error handling and timeout.
+ * Khởi tạo socket.io client và đợi nó connect thành công. Throw lỗi khi fail hoặc timeout.
  *
  * @returns {Promise<import('socket.io-client').Socket>}
  */
