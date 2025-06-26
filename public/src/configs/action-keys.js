@@ -23,11 +23,11 @@ const DEFAULT_CONTROL_KEY = {
 	Q: 'SKILL_SP',
 	R: 'SKILL_1',
 	E: 'SKILL_2',
-	' ': 'ULTIMATE',
+	' ': 'SKILL_ULTIMATE',
 	B: 'TOGGLE_AUTO_ATK',
 };
 
-const USER_CONFIG_CONTROL_KEY = JSON.parse(localStorage.getItem('CONTROL-KEY'));
+const USER_CONFIG_CONTROL_KEY = JSON.parse(localStorage.getItem('CONTROL-KEY') ?? '{}');
 
 export const CONTROL_KEY = new Proxy(USER_CONFIG_CONTROL_KEY, {
 	get(self, prop) {
