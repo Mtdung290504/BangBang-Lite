@@ -49,6 +49,7 @@ export default async function getConnectedSocket() {
 			console.log('> [Socket] Socket connection successful:', socket);
 		} catch (err) {
 			console.error('> [Socket] Failed to connect socket:', err);
+			throw err;
 		}
 	}
 

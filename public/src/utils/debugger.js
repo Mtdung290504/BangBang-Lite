@@ -1,3 +1,41 @@
+/**@type {{ destroy: () => void, hide: () => void, show: () => void }[]} */
+const registry = [];
+
+export default {
+	observe: debugVariable,
+
+	showAll() {
+		console.log('> [Debugger] Show all debuggers');
+		for (const { show } of registry) show();
+	},
+
+	hideAll() {
+		console.log('> [Debugger] Hide all debuggers');
+		for (const { hide } of registry) hide();
+	},
+
+	destroyAll() {
+		console.log('> [Debugger] Destroy all debuggers');
+		for (const { destroy } of registry) destroy();
+	},
+
+	start() {
+		if (this.listening) return;
+		console.log('> [Debugger] Started and running...');
+		if (!this.listening) this.listening = true;
+
+		window.addEventListener('keydown', (e) => {
+			const evKey = e.key.toLowerCase();
+			if (e.ctrlKey && ['d', 'h', 'x'].includes(evKey)) {
+				e.preventDefault();
+				if (evKey === 'd') this.showAll();
+				if (evKey === 'h') this.hideAll();
+				if (evKey === 'x') this.destroyAll();
+			}
+		});
+	},
+};
+
 /**
  * Debug a variable by logging it to the console and displaying it in a draggable debug view.
  *
@@ -7,8 +45,8 @@
  * @param {Object} [options.style={}] - Additional CSS styles.
  * @returns {{ destroy: () => void, hide: () => void, show: () => void, export: (name: string) => void }}
  */
-export default function debugVariable(variable = {}, { fps = 30, style = {} } = {}) {
-	console.log('Debugging variable:', variable);
+function debugVariable(variable = {}, { fps = 30, style = {} } = {}) {
+	console.log('> [Debugger] Debugging variable:', variable);
 
 	const el = document.createElement('pre');
 
@@ -16,7 +54,7 @@ export default function debugVariable(variable = {}, { fps = 30, style = {} } = 
 		position: 'fixed',
 		top: '10px',
 		left: '10px',
-		background: '#333',
+		background: 'rgba(0, 0, 0, .6)',
 		color: 'deepskyblue',
 		padding: '8px',
 		zIndex: 9999,
@@ -97,6 +135,8 @@ export default function debugVariable(variable = {}, { fps = 30, style = {} } = 
 		isVisible = true;
 		el.style.display = '';
 	};
+
+	registry.push({ destroy, hide, show });
 
 	return {
 		destroy,

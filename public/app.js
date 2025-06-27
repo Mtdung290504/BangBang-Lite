@@ -1,18 +1,21 @@
 import BattleInputManager from './src/core/managers/BattleInputManager.js';
 import getConnectedSocket from './src/network/socket/getConnectedSocket.js';
-import debugVariable from './src/utils/debugVariable.js';
+import __debugger from './src/utils/debugger.js';
+__debugger.start();
 
-const socket = await getConnectedSocket();
-if (!socket) throw new Error('');
-debugVariable(socket, {
+const socket = await getConnectedSocket().catch((error) => {
+	alert('Lỗi khi kết nối đến server, tải lại hoặc thử lại sau');
+	throw error;
+});
+__debugger.observe(socket, {
 	fps: 10,
 	style: {
 		left: null,
 		right: '10px',
 		color: 'lime',
 	},
-}).export('socket-debugger');
+});
 
 const inputMgr = new BattleInputManager();
-debugVariable(inputMgr).export('input-manager-debugger');
 inputMgr.listen();
+__debugger.observe(inputMgr);
