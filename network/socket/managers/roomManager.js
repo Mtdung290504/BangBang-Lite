@@ -3,6 +3,10 @@ const rooms = new Map();
 
 export default { joinRoom, leaveRoom, markReady };
 
+/**
+ * @param {`${number}`} roomID
+ * @param {import('socket.io').Socket} socket
+ */
 function joinRoom(roomID, socket) {
 	let room = rooms.get(roomID);
 	if (!room) {
@@ -18,6 +22,9 @@ function joinRoom(roomID, socket) {
 	return true;
 }
 
+/**
+ * @param {import('socket.io').Socket} socket
+ */
 function leaveRoom(socket) {
 	const roomID = socket.data.roomID;
 	if (!roomID) return;

@@ -1,0 +1,3 @@
+- Đường dẫn đến assets theo cấu trúc: root-path/skin-id/image-name
+- Nhớ phần skin ID
+- Default có body, head, normal-attack, có thể bỏ bớt để giảm lặp

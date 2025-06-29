@@ -1,5 +1,5 @@
 import { Server as SocketServer } from 'socket.io';
-import initRoomHandlers from './handlers/initRoomHandler.js';
+import * as socketHandlers from './handlers/socketHanders.js';
 
 /**
  * Initialize socket.io and attach to an HTTP server
@@ -17,7 +17,7 @@ export default function initSocketServer(server) {
 	io.on('connection', (socket) => {
 		console.log('> [Socket Server] Client connected:', socket.id);
 
-		initRoomHandlers(io, socket);
+		socketHandlers.initRoomHandlers(socket);
 
 		socket.on('disconnect', (reason) => {
 			console.log('> [Socket Server] Client disconnected:', socket.id, '\n\t-> Reason:', reason);

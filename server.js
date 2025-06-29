@@ -3,7 +3,7 @@ import http from 'http';
 import dotenv from 'dotenv';
 import getServerIP from './network/getServerIP.js';
 import serveStatic from './midwares/serveStatic.js';
-import initSocketServer from './socket/initSocket.js';
+import initSocketServer from './network/socket/initSocket.js';
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;

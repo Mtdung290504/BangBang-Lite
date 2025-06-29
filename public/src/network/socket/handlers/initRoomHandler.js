@@ -1,6 +1,6 @@
 /**
  * @param {import('socket.io-client').Socket} socket
- * @param {number} roomID
+ * @param {`${number}`} roomID
  */
 export default async function initRoomHandlers(socket, roomID) {
 	socket.emit('join-room', roomID);

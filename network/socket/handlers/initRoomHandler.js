@@ -1,10 +1,11 @@
-import roomManager from '../managers/roomManager.js';
+import * as socketManagers from '../managers/socketManagers.js';
 
 /**
- * @param {import('socket.io').Server} io
  * @param {import('socket.io').Socket} socket
  */
-export default function initRoomHandlers(io, socket) {
+export default function initRoomHandlers(socket) {
+	const { roomManager } = socketManagers;
+
 	socket.on('join-room', (roomID) => {
 		console.log('> [Socket Server.room-handler] Player join room:', roomID);
 		const success = roomManager.joinRoom(roomID, socket);

@@ -1,0 +1,8 @@
+{
+    "root-path": "/assets/images/tanks/000/",
+    "0": {
+        "body": "body.png",
+        "head": "head.png",
+        "normal-attack": "normal-attack.png"
+    }
+}
