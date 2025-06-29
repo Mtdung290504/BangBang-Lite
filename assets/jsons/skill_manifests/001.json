@@ -14,10 +14,6 @@
                         "name": "shape",
                         "init-value": {
                             "type": "rectangle",
-                            "o-size": {
-                                "width": 55.65,
-                                "height": 40.25
-                            },
                             "size": {
                                 "width": 41.53,
                                 "height": 30.04

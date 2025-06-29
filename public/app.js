@@ -2,7 +2,7 @@ import BattleInputManager from './src/core/managers/BattleInputManager.js';
 import getConnectedSocket from './src/network/socket/getConnectedSocket.js';
 import * as socketHandlers from './src/network/socket/handlers/socketHandlers.js';
 import __debugger from './src/utils/debugger.js';
-__debugger.start();
+__debugger.listen();
 
 const DEBUG_MODE = true;
 

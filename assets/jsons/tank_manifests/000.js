@@ -1,0 +1,25 @@
+/**@type {import('.types/tank-manifest.js').TankManifest} */
+export default {
+	name: 'Admin',
+	'assets-manifest': '/assets/jsons/assets_manifests/000.json',
+	'skill-manifest': '/assets/jsons/skill_manifests/000.json',
+	'stat-components': {
+		shooting: {
+			fireRate: 120,
+			range: 480,
+			flightSpeed: 15,
+		},
+		survival: {
+			limitHP: 4840,
+			armor: 138,
+			shield: 108,
+		},
+		'attack-power': {
+			dmgType: 'physics',
+			value: 306,
+			penetration: 26,
+			critDmg: 200,
+		},
+		'movement-speed': 180,
+	},
+};

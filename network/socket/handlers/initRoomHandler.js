@@ -12,7 +12,7 @@ export default function initRoomHandlers(socket) {
 		if (success) {
 			socket.emit('join-success', { roomID: '10' });
 		} else {
-			socket.emit('join-failed', 'Room is full or invalid');
+			socket.emit('join-failed', 'Room đã đủ người, hãy tham gia room khác');
 		}
 	});
 

@@ -19,7 +19,7 @@ export default {
 		for (const { destroy } of registry) destroy();
 	},
 
-	start() {
+	listen() {
 		if (this.listening) return;
 		console.log('> [Debugger] Started and running...');
 		if (!this.listening) this.listening = true;
@@ -49,6 +49,7 @@ function debugVariable(variable = {}, { fps = 30, style = {} } = {}) {
 	console.log('> [Debugger] Debugging variable:', variable);
 
 	const el = document.createElement('pre');
+	let cache = '';
 
 	Object.assign(el.style, {
 		position: 'fixed',
@@ -77,10 +78,14 @@ function debugVariable(variable = {}, { fps = 30, style = {} } = {}) {
 	let lastUpdate = 0;
 	const interval = 1000 / fps;
 
-	const update = (time) => {
+	const update = (time = 0) => {
 		if (!isDestroyed) {
 			if (isVisible && time - lastUpdate >= interval) {
-				el.textContent = safeStringify(variable);
+				const newVal = safeStringify(variable);
+				if (cache !== newVal) {
+					cache = newVal;
+					el.textContent = newVal;
+				}
 				lastUpdate = time;
 			}
 			requestAnimationFrame(update);
@@ -100,6 +105,7 @@ function debugVariable(variable = {}, { fps = 30, style = {} } = {}) {
 		el.style.cursor = 'grabbing';
 	});
 
+	/**@param {MouseEvent} e */
 	const onMove = (e) => {
 		if (isDragging) {
 			el.style.left = `${e.clientX - offsetX}px`;
@@ -156,6 +162,10 @@ function debugVariable(variable = {}, { fps = 30, style = {} } = {}) {
 	};
 }
 
+/**
+ * @param {any} obj
+ * @param {number} space
+ */
 function safeStringify(obj, space = 3) {
 	const cache = new Set();
 	return JSON.stringify(
