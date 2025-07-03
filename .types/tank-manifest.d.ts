@@ -4,23 +4,23 @@ export interface TankManifest {
 	'skill-manifest': `/assets/jsons/skill_manifests/${string}.json`;
 	'stat-components': {
 		shooting: {
-			fireRate: 60 | 90 | 120;
+			'fire-rate': 60 | 90 | 120;
 			range: 336 | 408 | 480 | 552;
-			flightSpeed: 12 | 15;
+			'flight-speed': 12 | 15;
 		};
 		survival: {
-			limitHP: number;
-			armor: number;
-			shield: number;
+			'limit-HP': number;
+			'physical-armor': number;
+			'enegy-shield': number;
 		};
 		'attack-power': {
-			dmgType: 'physics' | 'energy';
+			'damage-type': 'physical' | 'energy';
 			value: number;
 			penetration: number;
-			critDmg: 150 | 200;
+			'crit-damage': 150 | 200;
 		};
 		additional?: {
-			energyPoint: 100 | 150 | 200;
+			'energy-point': 100 | 150 | 200;
 		};
 		'movement-speed': 160 | 165 | 170 | 175 | 180;
 	};

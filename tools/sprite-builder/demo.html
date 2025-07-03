@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Demo 2 - Sprite Ball Flying</title>
+    <style>
+        body {
+            color: white;
+        }
+
+        canvas {
+            border: 1px solid #ccc;
+            display: block;
+            margin: 20px 0;
+            background-color: #333;
+        }
+    </style>
+</head>
+
+<body bgcolor="#222">
+    <label>
+        Góc bay (độ):
+        <input type="number" id="angleInput" value="45">
+    </label>
+    <button id="startBtn">Bắt đầu</button>
+
+    <canvas id="canvas" width="800" height="600"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const angleInput = document.getElementById('angleInput');
+        const startBtn = document.getElementById('startBtn');
+
+        const spritePath = 's1.sprite.png';
+        const manifestPath = 's1.sprite.manifest.json';
+
+        const FRAME_COUNT = 60;
+        const DRAW_SIZE = 230; // 40x40 vẽ trên canvas
+
+        let spriteImage = new Image();
+        let manifest = {};
+        let frameIndex = 0;
+
+        let pos = { x: 100, y: 100 };
+        let velocity = { x: 0, y: 0 };
+
+        let isRunning = false;
+
+        function degToRad(deg) {
+            return deg * Math.PI / 180;
+        }
+
+        function loadManifestAndSprite(callback) {
+            fetch(manifestPath)
+                .then(res => res.json())
+                .then(json => {
+                    manifest = json;
+                    spriteImage.onload = callback;
+                    spriteImage.src = spritePath;
+                });
+        }
+
+        function updatePosition() {
+            pos.x += velocity.x;
+            pos.y += velocity.y;
+
+            // Wrap nếu ra khỏi màn hình
+            if (pos.x > canvas.width) pos.x = 0;
+            if (pos.y > canvas.height) pos.y = 0;
+            if (pos.x < 0) pos.x = canvas.width;
+            if (pos.y < 0) pos.y = canvas.height;
+        }
+
+        function drawFrame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const frameName = `frame_${frameIndex}`;
+            const frame = manifest[frameName];
+
+            if (!frame) return;
+
+            const paddingRatio = 0.15;
+
+            // Tính kích thước phần nội dung thực (bỏ padding)
+            const contentWidth = frame.width * (1 - 2 * paddingRatio);
+            const contentHeight = frame.height * (1 - 2 * paddingRatio);
+
+            // Tính tỉ lệ scale sao cho phần content gốc = DRAW_SIZE
+            const scaleX = DRAW_SIZE / contentWidth;
+            const scaleY = DRAW_SIZE / contentHeight;
+
+            // Dùng min để tránh méo nếu padding không đều
+            const scale = Math.min(scaleX, scaleY);
+
+            // Kích thước toàn frame sau khi scale
+            const targetW = frame.width * scale;
+            const targetH = frame.height * scale;
+
+            ctx.drawImage(
+                spriteImage,
+                frame.x, frame.y, frame.width, frame.height,   // Source: toàn frame (gồm padding)
+                pos.x - targetW / 2, pos.y - targetH / 2,      // Draw: căn giữa vị trí
+                targetW, targetH                               // Scale toàn frame
+            );
+
+            // Vẽ chấm đỏ tại tâm (vị trí `pos`)
+            ctx.fillStyle = 'red';
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            frameIndex = (frameIndex + 1) % FRAME_COUNT; // Frame kế
+        }
+
+        function loop() {
+            if (!isRunning) return;
+
+            updatePosition();
+            drawFrame();
+
+            requestAnimationFrame(loop);
+            setTimeout(() => isRunning = false, 3000)
+        }
+
+        startBtn.addEventListener('click', () => {
+            const angleDeg = parseFloat(angleInput.value) || 0;
+            const angleRad = degToRad(angleDeg);
+
+            velocity.x = Math.cos(angleRad) * 1.5; // tốc độ bay
+            velocity.y = Math.sin(angleRad) * 1.5;
+
+            frameIndex = 0;
+            pos = { x: 100, y: 100 };
+            isRunning = true;
+            loop();
+        });
+
+        loadManifestAndSprite(() => {
+            console.log("Sprite & manifest loaded.");
+        });
+    </script>
+
+</body>
+
+</html>

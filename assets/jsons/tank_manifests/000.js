@@ -5,20 +5,20 @@ export default {
 	'skill-manifest': '/assets/jsons/skill_manifests/000.json',
 	'stat-components': {
 		shooting: {
-			fireRate: 120,
+			'fire-rate': 120,
 			range: 480,
-			flightSpeed: 15,
+			'flight-speed': 15,
 		},
 		survival: {
-			limitHP: 4840,
-			armor: 138,
-			shield: 108,
+			'limit-HP': 4840,
+			'physical-armor': 138,
+			'enegy-shield': 108,
 		},
 		'attack-power': {
-			dmgType: 'physics',
+			'damage-type': 'physical',
 			value: 306,
 			penetration: 26,
-			critDmg: 200,
+			'crit-damage': 200,
 		},
 		'movement-speed': 180,
 	},
