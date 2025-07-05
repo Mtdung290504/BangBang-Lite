@@ -1,3 +1,5 @@
+// @ts-check
+
 export default class CameraSystem {
 	/**
 	 * @param {HTMLCanvasElement} canvas - Canvas draw game
@@ -16,6 +18,10 @@ export default class CameraSystem {
 		this.mapHeight = mapSize.height;
 
 		this.target = { x: 0, y: 0 };
+
+		// Vùng chết là vùng không làm camera dịch chuyển (centered around camera center)
+		this.deadZoneWidth = 200;
+		this.deadZoneHeight = 200;
 	}
 
 	/**
@@ -34,8 +40,24 @@ export default class CameraSystem {
 	update() {
 		const { x: targetX, y: targetY } = this.target;
 
+		const cameraCenterX = this.viewportX + this.width / 2;
+		const cameraCenterY = this.viewportY + this.height / 2;
+
+		const dx = targetX - cameraCenterX;
+		const dy = targetY - cameraCenterY;
+
 		this.viewportX = targetX - this.width / 2;
 		this.viewportY = targetY - this.height / 2;
+
+		// Dịch camera nếu vượt khỏi dead zone theo trục X
+		if (Math.abs(dx) > this.deadZoneWidth / 2) {
+			this.viewportX += dx - (Math.sign(dx) * this.deadZoneWidth) / 2;
+		}
+
+		// Dịch camera nếu vượt khỏi dead zone theo trục Y
+		if (Math.abs(dy) > this.deadZoneHeight / 2) {
+			this.viewportY += dy - (Math.sign(dy) * this.deadZoneHeight) / 2;
+		}
 
 		this._clamp();
 		this._applyTranslate();
