@@ -1,7 +1,7 @@
-import { ShapeComponent } from './components/physical.d.ts';
+import type { ShapeComponent } from './components/physical.d.ts';
 import { RotateDrawableComponent } from './components/render.d.ts';
 import { AcceptanceTargetComponent } from './components/combat/state.d.ts';
-import { SingleSkill, MultiPhaseSkill } from './skills/skill-block.d.ts';
+import type { SingleSkill, MultiPhaseSkill } from './skills/skill-block.d.ts';
 
 export type VarReference = `@get-var:${string}`;
 export type AssetReference = `@get-asset:${string}`;
