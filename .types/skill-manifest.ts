@@ -1,7 +1,7 @@
-import type { ShapeComponent } from './components/physical.d.ts';
-import { RotateDrawableComponent } from './components/render.d.ts';
-import { AcceptanceTargetComponent } from './components/combat/state.d.ts';
-import type { SingleSkill, MultiPhaseSkill } from './skills/skill-block.d.ts';
+import type { ShapeComponent } from './components/physical.js';
+import { RotateDrawableComponent } from './components/render.js';
+import { AcceptanceTargetComponent } from './components/combat/state.js';
+import type { SingleSkill, MultiPhaseSkill } from './skills/skill-block.js';
 
 export type VarReference = `@get-var:${string}`;
 export type AssetReference = `@get-asset:${string}`;
@@ -32,4 +32,4 @@ export interface SkillManifest<Phases extends string[] = []> {
 }
 
 /** Chuyển kiểu theo có phase hay skill */
-type SkillEntry<Phases> = Phases extends [] ? SingleSkill : SingleSkill | MultiPhaseSkill<Phases>;
+type SkillEntry<Phases extends string[]> = Phases extends [] ? SingleSkill : SingleSkill | MultiPhaseSkill<Phases>;

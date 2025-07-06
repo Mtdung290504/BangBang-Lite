@@ -1,4 +1,4 @@
-import type { EffectReference, SkillComponent, VarReference } from '../skill-manifest.d.ts';
+import type { EffectReference, SkillComponent, VarReference } from '../skill-manifest.js';
 
 interface DashAction {
 	name: '@do-action:dash';

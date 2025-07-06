@@ -1,5 +1,5 @@
-import type { CreateActions } from './create-actions.d.ts';
-import type { DoActions } from './do-actions.d.ts';
+import type { CreateActions } from './create-actions.js';
+import type { DoActions } from './do-actions.js';
 
 type SkillAction = CreateActions | DoActions;
 

@@ -1,4 +1,4 @@
-import { AssetReference } from '../skill-manifest.d.ts';
+import { AssetReference } from '../skill-manifest.js';
 
 export interface RotateDrawableComponent {
 	name: 'rotate-drawable';

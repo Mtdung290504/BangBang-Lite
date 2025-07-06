@@ -1,4 +1,4 @@
-import type { OrientationMethod, SkillComponent, VarReference } from '../skill-manifest.d.ts';
+import { OrientationMethod, SkillComponent, VarReference } from '../skill-manifest.js';
 
 interface CreateProjectileAction {
 	name: '@create:projectile';
