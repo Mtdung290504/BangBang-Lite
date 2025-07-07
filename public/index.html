@@ -4,11 +4,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Game Room</title>
+    <link rel="stylesheet" href="./styles/style.css">
+    <script type="module" src="index.js"></script>
 </head>
 
-<body bgcolor="#222">
-    <script type="module" src="index.js"></script>
+<body>
+    <div class="ui-wrapper">
+        <div class="room-wrapper">
+            <div class="room-left">
+                <div class="room-info">
+                    <p class="room-id" room-id="100"></p>
+                </div>
+                <div class="team team-1">
+                    <div class="player-slot-wrapper">
+                        <div class="player-slot">
+                            <div class="player-info-wrapper">
+                                <div class="avatar"></div>
+                                <div class="name">๖FAღEndڞ</div>
+                            </div>
+                            <div class="status ready"></div>
+                        </div>
+                    </div>
+                    <div class="player-slot-wrapper">
+                        <div class="player-slot">
+                            <div class="player-info-wrapper">
+                                <div class="avatar"></div>
+                                <div class="name">Dungx</div>
+                            </div>
+                            <div class="status"></div>
+                        </div>
+                    </div>
+                    <div class="player-slot-wrapper">
+                        <div class="player-slot"></div>
+                    </div>
+                    <div class="player-slot-wrapper">
+                        <div class="player-slot"></div>
+                    </div>
+                    <div class="player-slot-wrapper">
+                        <div class="player-slot"></div>
+                    </div>
+                </div>
+                <div class="team team-2">
+                    <div class="player-slot-wrapper">
+                        <div class="player-slot"></div>
+                    </div>
+                    <div class="player-slot-wrapper">
+                        <div class="player-slot"></div>
+                    </div>
+                    <div class="player-slot-wrapper">
+                        <div class="player-slot"></div>
+                    </div>
+                    <div class="player-slot-wrapper">
+                        <div class="player-slot"></div>
+                    </div>
+                    <div class="player-slot-wrapper">
+                        <div class="player-slot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="room-right">
+                <div class="ready-wrapper">
+                    <div class="map-display" id="current-map">
+                        <img src="/assets/images/maps/001/background-layer.webp" alt="Selected Map">
+                    </div>
+                    <button id="ready-btn">Vào Game</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Modal -->
+        <div class="modal" id="map-modal">
+            <div class="modal-content">
+                <div class="map-grid">
+                    <!-- <img src="./image-resource/map1.jpg" class="map-thumb" alt="Map 1">
+                    <img src="./image-resource/map2.jpg" class="map-thumb" alt="Map 2">
+                    <img src="./image-resource/map3.jpg" class="map-thumb" alt="Map 3">
+                    <img src="./image-resource/map4.jpg" class="map-thumb" alt="Map 4">
+                    <img src="./image-resource/map5.jpg" class="map-thumb" alt="Map 5">
+                    <img src="./image-resource/map6.jpg" class="map-thumb" alt="Map 6"> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </body>
 
 </html>

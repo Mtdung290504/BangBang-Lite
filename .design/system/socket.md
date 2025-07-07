@@ -1,3 +1,4 @@
-- Đổi chiến thuật, không sync input mà tính toán rồi quy đổi thành action để gửi đi
-  - Tạo IntentBuilderSystem, nhận socket, đảm nhiệm vai trò xác định và gửi hành vi
-  - Giải quyết đoạn di chuyển, có thể quy đổi A, S, D, W thành tọa độ hoặc gửi thẳng key qua
+Đổi chiến thuật, không sync input mà tính toán rồi quy đổi thành action để gửi đi
+
+- Tạo IntentBuilderSystem, nhận socket, đảm nhiệm vai trò xác định và gửi hành vi
+- Giải quyết đoạn di chuyển, có thể quy đổi A, S, D, W thành tọa độ hoặc gửi thẳng key qua

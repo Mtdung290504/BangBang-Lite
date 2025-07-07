@@ -1,7 +1,7 @@
-import BattleInputManager from './src/core/managers/BattleInputManager.js';
-import getConnectedSocket from './src/network/socket/getConnectedSocket.js';
-import * as socketHandlers from './src/network/socket/handlers/socketHandlers.js';
-import __debugger from './src/utils/debugger.js';
+import BattleInputManager from '../core/managers/BattleInputManager.js';
+import getConnectedSocket from '../network/socket/getConnectedSocket.js';
+import * as socketHandlers from '../network/socket/handlers/socketHandlers.js';
+import __debugger from '../utils/debugger.js';
 __debugger.listen();
 
 const DEBUG_MODE = true;
