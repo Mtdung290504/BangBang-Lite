@@ -12,16 +12,19 @@
 <body>
     <div class="ui-wrapper">
         <div class="room-wrapper">
+
+            <!-- Room left layout -->
             <div class="room-left">
                 <div class="room-info">
                     <p class="room-id" room-id="100"></p>
                 </div>
+
                 <div class="team team-1">
                     <div class="player-slot-wrapper">
                         <div class="player-slot">
                             <div class="player-info-wrapper">
                                 <div class="avatar"></div>
-                                <div class="name">๖FAღEndڞ</div>
+                                <div class="name">Dungx</div>
                             </div>
                             <div class="status ready"></div>
                         </div>
@@ -29,8 +32,8 @@
                     <div class="player-slot-wrapper">
                         <div class="player-slot">
                             <div class="player-info-wrapper">
-                                <div class="avatar"></div>
-                                <div class="name">Dungx</div>
+                                <div class="avatar" data-id="2"></div>
+                                <div class="name">Mai Tiến Dũng</div>
                             </div>
                             <div class="status"></div>
                         </div>
@@ -45,6 +48,7 @@
                         <div class="player-slot"></div>
                     </div>
                 </div>
+
                 <div class="team team-2">
                     <div class="player-slot-wrapper">
                         <div class="player-slot"></div>
@@ -64,13 +68,18 @@
                 </div>
             </div>
 
+            <!-- Room right layout -->
             <div class="room-right">
-                <div class="ready-wrapper">
+                <div class="choose-wrapper">
                     <div class="map-display" id="current-map">
                         <img src="/assets/images/maps/001/background-layer.webp" alt="Selected Map">
                     </div>
-                    <button id="ready-btn">Vào Game</button>
+                    <div class="tank-display" id="current-tank">
+                        <img src="/assets/images/tanks/000/0/body.png" alt="Selected Tank">
+                    </div>
                 </div>
+                <!-- Toggle class: cancel -->
+                <button id="ready-btn" class="-cancel"></button>
             </div>
 
         </div>

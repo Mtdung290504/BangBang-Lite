@@ -16,9 +16,9 @@ body {
 	height: 100dvh;
 	width: 100dvw;
 	overflow: hidden;
-	/* font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
-		'Open Sans', 'Helvetica Neue', sans-serif; */
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+		'Open Sans', 'Helvetica Neue', sans-serif;
+	/* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
 }
 
 canvas {
@@ -42,30 +42,19 @@ canvas {
 	place-items: center;
 }
 
-/* .room-wrapper {
-	background-color: white;
-	border-radius: 1.5em;
-	width: 75%;
-	height: 85%;
-	display: flex;
-	gap: 1em;
-} */
-
 .room-wrapper {
 	background-color: var(--card-bg);
 	border-radius: 14px;
 	width: 1300px;
-	height: 730px;
+	height: 700px;
 	display: flex;
 	gap: 13px;
 	box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-	clip-path: polygon(0% 0%, 20% 0%, 22% 1%, 78% 1%, 80% 0%, 100% 0%, 100% 100%, 0 100%);
+	clip-path: polygon(0% 0%, 10% 0%, 12% 1%, 88% 1%, 90% 0%, 100% 0%, 100% 100%, 0 100%);
 	padding-top: 40px;
 	padding-inline: 10px;
 	padding-bottom: 10px;
 }
-
-/* GPT */
 
 :root {
 	--primary: #1a6ebd;
@@ -124,12 +113,12 @@ canvas {
 	gap: 7px;
 }
 
+/* Player slot shadow */
 .player-slot-wrapper {
 	position: relative;
 }
-
-/* Đổ bóng dưới player slot */
 .player-slot-wrapper::before {
+	/* Đổ bóng dưới player slot */
 	content: '';
 	clip-path: polygon(
 		0% 0%,
@@ -154,9 +143,8 @@ canvas {
 	border-radius: 0px 5px 5px 5px;
 	opacity: 0.8;
 }
-
-/* Đổ bóng phải player slot */
 .player-slot-wrapper::after {
+	/* Đổ bóng phải player slot */
 	width: 3px;
 	height: calc(100% - 1.1px);
 	content: '';
@@ -169,6 +157,7 @@ canvas {
 	opacity: 0.8;
 }
 
+/* Player slot */
 .player-slot {
 	background: linear-gradient(to bottom, #2dacec, #0e73b8);
 	color: white;
@@ -186,14 +175,13 @@ canvas {
 		24% 100%,
 		0% 100%
 	);
-	height: 270px;
+	height: 275px;
 	padding: 10px;
 	padding-top: 20px;
 	position: relative;
 	z-index: 1;
 	border-radius: 5px;
 }
-
 .player-slot::before {
 	content: '';
 	position: absolute;
@@ -206,7 +194,6 @@ canvas {
 	z-index: -1;
 	border-radius: 5px;
 }
-
 .player-slot:empty::after {
 	content: '';
 	position: absolute;
@@ -229,7 +216,10 @@ canvas {
 	background-size: cover;
 	background-position: center;
 	margin-bottom: 5px;
-	background-image: url('./image-resource/default-avatar-optimized.png');
+	background-image: url('./image-resource/default-avatar.png');
+}
+.player-slot .avatar[data-id='2'] {
+	background-image: url('./image-resource/default-avatar-2.png');
 }
 
 .player-slot .name {
@@ -249,8 +239,8 @@ canvas {
 }
 
 .player-slot .status {
-	font-size: 13px;
-	padding: 2px 6px;
+	font-size: 12px;
+	padding: 5px 10px;
 	border-radius: 10px;
 	background-color: var(--not-ready);
 	color: white;
@@ -261,7 +251,7 @@ canvas {
 	left: 50%;
 	transform: translateX(-50%);
 	text-transform: uppercase;
-	font-weight: bold;
+	font-weight: 600;
 }
 .player-slot .status::after {
 	content: 'Đợi...';
@@ -273,6 +263,7 @@ canvas {
 	content: 'Sẵn Sàng';
 }
 
+/* Room right layout */
 .room-right {
 	flex: 2.5;
 	display: block;
@@ -280,15 +271,18 @@ canvas {
 	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6), 1px 1px 5px rgba(0, 0, 0, 0.6);
 	border-radius: 15px;
 	align-self: flex-end;
+	text-align: center;
 }
 
-.ready-wrapper {
+.choose-wrapper {
 	display: flex;
 	gap: 10px;
 	align-items: center;
+	margin-bottom: 15px;
 }
 
 .map-display {
+	flex: calc(16 / 9);
 	cursor: pointer;
 	height: 100%;
 	aspect-ratio: 16 / 9;
@@ -297,27 +291,52 @@ canvas {
 	border-radius: 10px;
 	overflow: hidden;
 }
-
 .map-display img {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
 }
 
-#ready-btn {
-	height: 120px;
+.tank-display {
+	flex: 1;
+	cursor: pointer;
+	height: 100%;
 	aspect-ratio: 1;
+	background-color: var(--not-ready);
+	border-radius: 10px;
+	overflow: hidden;
+	display: grid;
+	place-items: center;
+}
+.tank-display img {
+	width: 90%;
+	height: 90%;
+	object-fit: cover;
+}
+
+#ready-btn {
+	height: fit-content;
+	width: 60%;
 	padding: 10px;
 	border: none;
-	border-radius: 20px;
+	border-radius: 5px;
 	font-weight: bolder;
-	font-size: 20px;
+	font-size: 15px;
 	cursor: pointer;
-	background-color: var(--ready);
+	background-color: var(--primary);
 	color: rgb(214, 255, 212);
-	box-shadow: 0 0 7px #333;
+	box-shadow: 0 0 7px var(--darkest-blue);
+	border: 2px solid var(--darkest-blue);
 	text-transform: uppercase;
-	line-height: 1.5;
+}
+#ready-btn.cancel {
+	background-color: var(--not-ready);
+}
+#ready-btn::before {
+	content: 'Sẵn sàng';
+}
+#ready-btn.cancel::before {
+	content: 'Hủy';
 }
 
 /* Modal */
