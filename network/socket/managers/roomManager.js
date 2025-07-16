@@ -4,7 +4,7 @@ const rooms = new Map();
 export default { joinRoom, leaveRoom, markReady };
 
 /**
- * @param {`${number}`} roomID
+ * @param {string} roomID
  * @param {import('socket.io').Socket} socket
  */
 function joinRoom(roomID, socket) {

@@ -15,12 +15,12 @@ export default function initSocketServer(server) {
 	});
 
 	io.on('connection', (socket) => {
-		console.log('> [Socket Server] Client connected:', socket.id);
+		console.log('> [SocketServer] Client connected:', socket.id);
 
 		socketHandlers.initRoomHandlers(socket);
 
 		socket.on('disconnect', (reason) => {
-			console.log('> [Socket Server] Client disconnected:', socket.id, '\n\t-> Reason:', reason);
+			console.log('> [SocketServer] Client disconnected:', socket.id, '\n\t-> Reason:', reason);
 		});
 	});
 

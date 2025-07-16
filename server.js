@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 3000;
 const PUBLIC_PATH = process.env.PUBLIC_PATH;
 const ASSETS_PATH = process.env.ASSETS_PATH;
 const TOOLS_PATH = process.env.TOOLS_PATH;
+const MODELS_PATH = process.env.MODELS_PATH;
 
 const app = express();
 const server = http.createServer(app);
@@ -18,9 +19,10 @@ const server = http.createServer(app);
 app.use(`/`, serveStatic(PUBLIC_PATH));
 app.use(`/${ASSETS_PATH}/`, serveStatic(ASSETS_PATH));
 app.use(`/${TOOLS_PATH}/`, serveStatic(TOOLS_PATH));
+app.use(`/${MODELS_PATH}/`, serveStatic(MODELS_PATH));
 app.use('/libs/socket.io.js', serveStatic('./node_modules/socket.io-client/dist/socket.io.esm.min.js'));
 
-// Init socket.io
+// Init socket.io server
 const io = initSocketServer(server);
 
 server
