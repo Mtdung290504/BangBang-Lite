@@ -1,12 +1,11 @@
 import BattleInputManager from '../core/managers/BattleInputManager.js';
 import getConnectedSocket from '../network/socket/getConnectedSocket.js';
-import * as socketHandlers from '../network/socket/handlers/gateway.js';
+import { roomHandlers } from '../network/socket/handlers/gateway.js';
 import { renderRoomIDView } from '../UIs/roomUI.js';
 import __debugger from '../utils/debugger.js';
 __debugger.listen();
 
 const DEBUG_MODE = true;
-const { roomHandlers } = socketHandlers;
 
 export async function init() {
 	const socket = await setupSocket(DEBUG_MODE);
@@ -46,9 +45,9 @@ async function setupSocket(debug = false) {
 function requestJoinRoom(socket) {
 	const roomID = new URLSearchParams(location.search).get('room').trim();
 	let playerName = '';
-	while (!playerName.trim()) playerName = prompt('Enter do nêm:');
 
-	if (!roomID) location.href = '/';
+	while (!playerName.trim()) playerName = prompt('Enter do nêm:');
+	if (!roomID || !playerName) location.href = '/';
 
 	socket.emit('request:join-room', roomID, playerName);
 	return roomID;
