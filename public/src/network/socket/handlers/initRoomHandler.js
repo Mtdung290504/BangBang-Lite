@@ -1,19 +1,29 @@
+import { renderRoomID } from '../../../UIs/roomUI.js';
+
 /**
- * @param {import('socket.io-client').Socket} socket
- * @param {string} roomID
+ * @typedef {import('socket.io-client').Socket} Socket
  */
-export default async function initRoomHandlers(socket, roomID) {
-	socket.emit('join-room', roomID);
 
-	return new Promise((resolve, reject) => {
-		socket.once('join-success', ({ roomID }) => {
-			console.log('> [Socket.room-handler] Join room success, room ID:', roomID);
-			resolve();
-		});
+/**
+ * @param {Socket} socket
+ */
+export function initRoomHandlers(socket) {
+	socket.on('response:join-success', (roomID, callback) => {
+		console.log('> [Socket.RoomHandler.onEvent:join-success] Join room success, room ID:', roomID);
 
-		socket.once('join-failed', (msg) => {
-			alert(`Không thể vào phòng: ${msg}`);
-			reject(msg);
-		});
+		// TODO: Send ack
+		callback({ success: true });
+
+		// TODO: Render roomID UI
+		renderRoomID(roomID);
+	});
+
+	socket.on('response:join-failed', (msg) => {
+		alert(`Không thể vào phòng, nguyên nhân: ${msg}`);
+		location.href = '/';
+	});
+
+	socket.on('dispatch:update-players', (data) => {
+		console.log('> [Socket.RoomHandler.onEvent:update-players] Receive players data in room:', data);
 	});
 }
