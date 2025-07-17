@@ -1,5 +1,5 @@
 import { Server as SocketServer } from 'socket.io';
-import * as socketHandlers from './handlers/gateway.js';
+import { setupRoomHandlers } from './handlers/gateway.js';
 
 /**
  * Initialize socket.io and attach to an HTTP server
@@ -17,11 +17,11 @@ export default function initSocketServer(server) {
 	io.on('connection', (socket) => {
 		console.log('> [SocketServer] Client connected:', socket.id, '\n');
 
-		socketHandlers.initRoomHandlers(io, socket);
+		setupRoomHandlers(io, socket);
 
-		socket.on('disconnect', (reason) => {
-			console.log('> [SocketServer] Client disconnected:', socket.id, '\n\t-> Reason:', reason, '\n');
-		});
+		socket.on('disconnect', (reason) =>
+			console.log('> [SocketServer] Client disconnected:', socket.id, '\n\t-> Reason:', reason, '\n')
+		);
 	});
 
 	return io;

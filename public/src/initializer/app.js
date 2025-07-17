@@ -1,6 +1,7 @@
 import BattleInputManager from '../core/managers/BattleInputManager.js';
 import getConnectedSocket from '../network/socket/getConnectedSocket.js';
 import * as socketHandlers from '../network/socket/handlers/gateway.js';
+import { renderRoomIDView } from '../UIs/roomUI.js';
 import __debugger from '../utils/debugger.js';
 __debugger.listen();
 
@@ -13,7 +14,8 @@ export async function init() {
 	inputMgr.listen();
 
 	// Request join room
-	socketjoinRoom(socket);
+	const roomID = requestJoinRoom(socket);
+	renderRoomIDView(roomID);
 
 	__debugger.hideAll();
 }
@@ -23,7 +25,7 @@ async function setupSocket(debug = false) {
 		alert('Lỗi khi kết nối đến server, tải lại hoặc thử lại sau');
 		throw error;
 	});
-	roomHandlers.initRoomHandlers(socket);
+	roomHandlers.setup(socket);
 
 	if (debug)
 		__debugger.observe(socket, {
@@ -41,7 +43,7 @@ async function setupSocket(debug = false) {
 /**
  * @param {Awaited<ReturnType<typeof setupSocket>>} socket
  */
-async function socketjoinRoom(socket) {
+function requestJoinRoom(socket) {
 	const roomID = new URLSearchParams(location.search).get('room').trim();
 	let playerName = '';
 	while (!playerName.trim()) playerName = prompt('Enter do nêm:');
@@ -49,6 +51,7 @@ async function socketjoinRoom(socket) {
 	if (!roomID) location.href = '/';
 
 	socket.emit('request:join-room', roomID, playerName);
+	return roomID;
 }
 
 function setupInputManager(debug = false) {

@@ -1,2 +1,2 @@
-import * as roomHandlers from './initRoomHandler.js';
+import * as roomHandlers from './roomHandler.js';
 export { roomHandlers };

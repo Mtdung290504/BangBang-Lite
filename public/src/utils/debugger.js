@@ -55,7 +55,7 @@ function debugVariable(variable = {}, { fps = 30, style = {} } = {}) {
 		position: 'fixed',
 		top: '10px',
 		left: '10px',
-		background: 'rgba(0, 0, 0, .6)',
+		background: 'rgba(0, 0, 0, .75)',
 		color: 'deepskyblue',
 		padding: '8px',
 		zIndex: 9999,

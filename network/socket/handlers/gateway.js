@@ -1,1 +1,1 @@
-export { default as initRoomHandlers } from './initRoomHandler.js';
+export { default as setupRoomHandlers } from './setupRoomHandler.js';
