@@ -12,7 +12,6 @@
 <body>
     <div class="ui-wrapper">
         <div class="room-wrapper">
-
             <!-- Room left layout -->
             <div class="room-left">
                 <div class="room-info">
@@ -24,7 +23,7 @@
                         <div class="player-slot">
                             <div class="player-info-wrapper">
                                 <div class="avatar" data-id="2"></div>
-                                <div class="name">Make by</div>
+                                <div class="name">Created by</div>
                             </div>
                             <div class="status ready"></div>
                         </div>
@@ -71,26 +70,59 @@
             <!-- Room right layout -->
             <div class="room-right">
                 <div class="choose-wrapper">
-                    <div class="map-display">
+                    <!-- Display current map -->
+                    <label for="modal-map-toggle" class="map-display" title="Đổi map">
                         <img id="current-map-image" src="/assets/images/maps/001/background-layer.icon.webp"
                             alt="Selected Map">
-                        <div class="number-input-overlay">
-                            <input type="number" class="number-input" placeholder="0" min="0" max="999" value="0">
-                        </div>
-                    </div>
-                    <div class="tank-display" id="current-tank">
+                    </label>
+
+                    <!-- Display current tank -->
+                    <label for="modal-tank-toggle" class="tank-display" id="current-tank" title="Đổi tank">
                         <img id="current-tank-body" src="/assets/images/tanks/000/0/body.png">
                         <img id="current-tank-head" src="/assets/images/tanks/000/0/head.png">
-                        <div class="number-input-overlay">
-                            <input type="number" class="number-input" placeholder="0" min="0" max="999" value="0">
-                        </div>
-                    </div>
+                    </label>
                 </div>
 
                 <!-- Toggle class: cancel -->
                 <button id="ready-btn" class="cancel"></button>
             </div>
+        </div>
 
+        <!-- Checkboxes ẩn -->
+        <input type="checkbox" id="modal-map-toggle" hidden>
+        <input type="checkbox" id="modal-tank-toggle" hidden>
+
+        <!-- Modal overlay & modal MAP -->
+        <label for="modal-map-toggle" class="modal-overlay"></label>
+        <div class="modal modal-map">
+            <div class="modal-content">
+                <!-- Grid 3 items/row, aspect 4/3 -->
+                <div class="grid grid-3">
+                    <!-- Map items -->
+                    <label class="grid-item" for="modal-map-toggle">
+                        <img src="/assets/images/maps/001/background-layer.icon.webp" alt="">
+                    </label>
+
+                    <!-- Next items... -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal overlay & modal TANK -->
+        <label for="modal-tank-toggle" class="modal-overlay"></label>
+        <div class="modal modal-tank">
+            <div class="modal-content">
+                <!-- Grid 5 items/row, aspect 1 -->
+                <div class="grid grid-5">
+                    <!-- Tank items -->
+                    <label class="grid-item" for="modal-tank-toggle">
+                        <img src="/assets/images/tanks/000/0/body.png" alt="">
+                        <img src="/assets/images/tanks/000/0/head.png" alt="">
+                    </label>
+
+                    <!-- Next items... -->
+                </div>
+            </div>
         </div>
     </div>
 

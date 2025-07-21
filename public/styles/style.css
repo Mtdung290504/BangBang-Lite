@@ -66,7 +66,7 @@ canvas {
 	--modal-bg: rgba(0, 0, 0, 0.6);
 	--card-bg: rgb(228, 228, 228);
 
-	--darkest-blue: #05529a;
+	--darkest-blue: #075aa9;
 }
 
 .room-left {
@@ -194,6 +194,9 @@ canvas {
 	z-index: -1;
 	border-radius: 5px;
 }
+.player-slot:empty {
+	cursor: pointer;
+}
 .player-slot:empty::after {
 	content: '';
 	position: absolute;
@@ -223,8 +226,7 @@ canvas {
 }
 
 .player-slot .name {
-	font-weight: bold;
-	font-size: 13px;
+	font-size: 13.5px;
 	width: 100%;
 	background-color: var(--darkest-blue);
 	padding: 4px 10px;
@@ -236,11 +238,14 @@ canvas {
 	-webkit-line-clamp: 1;
 	line-clamp: 1;
 	overflow: hidden;
+
+	font-family: 'Times New Roman', Times, serif;
+	font-weight: bold;
 }
 
 .player-slot .status {
 	font-size: 12px;
-	padding: 5px 10px;
+	padding: 5px;
 	border-radius: 20px;
 	background-color: var(--not-ready);
 	color: white;
@@ -251,7 +256,7 @@ canvas {
 	left: 50%;
 	transform: translateX(-50%);
 	text-transform: uppercase;
-	font-weight: 600;
+	font-weight: 900;
 }
 .player-slot .status::after {
 	content: 'Đợi...';
@@ -290,6 +295,7 @@ canvas {
 	border-radius: 10px;
 	overflow: hidden;
 	position: relative;
+	cursor: pointer;
 }
 .map-display img {
 	width: 100%;
@@ -307,10 +313,11 @@ canvas {
 	display: grid;
 	place-items: center;
 	position: relative;
+	cursor: pointer;
 }
 .tank-display img {
-	width: 80%;
-	height: 80%;
+	width: 85%;
+	height: 85%;
 	object-fit: cover;
 	transform: rotate(90deg);
 	position: absolute;
@@ -343,25 +350,101 @@ canvas {
 	content: 'Hủy';
 }
 
-/* CSS mới bổ sung */
-.number-input-overlay {
+/* Modal styles */
+.modal-overlay {
+	position: fixed;
+	inset: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 999;
+	cursor: pointer;
+
+	/* display: none; */
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.3s;
+}
+
+.modal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: #1f1b2e;
+	border: 2px solid #5f4bb6;
+	border-radius: 10px;
+	padding: 20px;
+	z-index: 1000;
+	box-shadow: 0 0 20px rgba(95, 75, 182, 0.6);
+	width: 60%;
+	height: 90%;
+	overflow-y: auto;
+
+	/* display: none; */
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.3s;
+}
+
+/* Nội dung lưới */
+.modal-content .grid {
+	display: grid;
+	gap: 12px;
+}
+
+/* Modal map: 3 item/row */
+.modal-map .grid-3 {
+	grid-template-columns: repeat(3, 1fr);
+}
+
+/* Modal tank: 5 item/row */
+.modal-tank .grid-5 {
+	grid-template-columns: repeat(5, 1fr);
+}
+
+/* Item chung */
+.grid-item {
+	background-color: #2c2640;
+	aspect-ratio: 4 / 3; /* default là 4/3 */
+	overflow: hidden;
+	border-radius: 8px;
+	cursor: pointer;
+	border: 2px solid transparent;
+	transition: border-color 0.2s ease;
+	display: block;
+}
+
+.modal-tank .grid-item {
+	aspect-ratio: 1 / 1; /* override cho modal tank */
+	transform: rotate(90deg);
+	display: grid;
+	position: relative;
+	place-items: center;
+}
+
+.grid-item:hover {
+	border-color: #8c7ae6;
+}
+
+/* Ảnh phủ kín item */
+.grid-item img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.modal-tank .grid-item img {
+	width: 90%;
+	height: 90%;
 	position: absolute;
-	bottom: 2px;
-	right: 2px;
-	z-index: 10;
 }
-.number-input {
-	width: 50px;
-	height: 32px;
-	background: rgba(0, 0, 0, 0.7);
-	border-radius: 5px;
-	color: #ffffff;
-	font-size: 12px;
-	font-weight: 500;
-	text-align: center;
-	padding: 0 5px;
-	outline: none;
-}
-.number-input::placeholder {
-	color: rgba(255, 255, 255, 0.5);
+
+/* Checkbox mở modal (toggle) */
+#modal-map-toggle:checked ~ .modal-overlay:nth-of-type(1),
+#modal-map-toggle:checked ~ .modal-map,
+#modal-tank-toggle:checked ~ .modal-overlay:nth-of-type(2),
+#modal-tank-toggle:checked ~ .modal-tank {
+	/* display: block; */
+	opacity: 1;
+	pointer-events: all;
 }
