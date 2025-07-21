@@ -28,20 +28,9 @@ export default function setupRoomHandlers(io, socket) {
 		if (roomData) dispatchUpdatePlayers(roomID, roomData);
 	});
 
-	socket.on('request:mark-ready', () => {
+	socket.on('request:toggle-ready-state', () => {
 		const roomID = roomManager.getSocketRoomID(socket);
-		roomManager.socketMarkReady(socket);
-
-		// Dispatch event render UI
-		const roomData = roomManager.getRoomData(roomID);
-		if (roomData?.readyPlayers) {
-			dispatchUpdatePlayers(roomID, { readyPlayers: roomData.readyPlayers });
-		}
-	});
-
-	socket.on('request:unmark-ready', () => {
-		const roomID = roomManager.getSocketRoomID(socket);
-		roomManager.socketUnmarkReady(socket);
+		roomManager.socketToggleReadyState(socket);
 
 		// Dispatch event render UI
 		const roomData = roomManager.getRoomData(roomID);
@@ -71,12 +60,15 @@ export default function setupRoomHandlers(io, socket) {
 	 */
 	function rejectJoinRoom(log = null) {
 		if (log) console.log(log);
-		socket.emit('response:join-failed', 'Room đầy, hoặc tên room/tên nhân vật không hợp lệ');
+		socket.emit('response:join-failed', 'Room đầy, đã vào trận hoặc tên room/tên nhân vật không hợp lệ');
 	}
 
 	/**
 	 * @param {string} roomID
-	 * @param {ReturnType<typeof roomManager.getRoomData>} roomData
+	 * @param {{
+	 *      players?: { [socketID: string]: import('../../../models/Player.js').default }
+	 *      readyPlayers: string[]
+	 * }} roomData
 	 */
 	function dispatchUpdatePlayers(roomID, roomData) {
 		io.to(roomID).emit('dispatch:update-players', roomData);

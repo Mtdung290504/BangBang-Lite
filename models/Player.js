@@ -1,5 +1,3 @@
-// @ts-check
-
 export default class Player {
 	/**
 	 * @param {string} socketID

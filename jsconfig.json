@@ -7,7 +7,7 @@
 {
     "compilerOptions": {
         "baseUrl": ".", // Đường dẫn gốc của dự án (thường là nơi đặt jsconfig.json)
-        // "checkJs": true, // (tuỳ chọn) bật kiểm tra lỗi cho JS
+        "checkJs": true, // (tuỳ chọn) bật kiểm tra lỗi cho JS
         "allowJs": true, // Cho phép VS Code xử lý file JS
         "moduleResolution": "nodenext",
         "module": "nodenext",

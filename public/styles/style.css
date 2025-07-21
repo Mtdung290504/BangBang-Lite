@@ -282,10 +282,9 @@ canvas {
 }
 
 .map-display {
-	flex: calc(16 / 9);
-	cursor: pointer;
+	flex: calc(4 / 3);
 	height: 100%;
-	aspect-ratio: 16 / 9;
+	aspect-ratio: 4 / 3;
 	background-color: #eee;
 	box-shadow: 0 0 7px #333, 0 1px 7px #333;
 	border-radius: 10px;
@@ -300,7 +299,6 @@ canvas {
 
 .tank-display {
 	flex: 1;
-	cursor: pointer;
 	height: 100%;
 	aspect-ratio: 1;
 	background-color: var(--not-ready);
@@ -311,8 +309,8 @@ canvas {
 	position: relative;
 }
 .tank-display img {
-	width: 90%;
-	height: 90%;
+	width: 80%;
+	height: 80%;
 	object-fit: cover;
 	transform: rotate(90deg);
 	position: absolute;
@@ -329,12 +327,14 @@ canvas {
 	cursor: pointer;
 	background-color: var(--primary);
 	color: rgb(214, 255, 212);
+	text-transform: uppercase;
 	box-shadow: 0 0 7px var(--darkest-blue);
 	border: 2px solid var(--darkest-blue);
-	text-transform: uppercase;
 }
 #ready-btn.cancel {
 	background-color: var(--not-ready);
+	box-shadow: 0 0 7px #222;
+	border: 2px solid #555;
 }
 #ready-btn::before {
 	content: 'Sẵn sàng';
@@ -350,7 +350,6 @@ canvas {
 	right: 2px;
 	z-index: 10;
 }
-
 .number-input {
 	width: 50px;
 	height: 32px;
@@ -363,7 +362,6 @@ canvas {
 	padding: 0 5px;
 	outline: none;
 }
-
 .number-input::placeholder {
 	color: rgba(255, 255, 255, 0.5);
 }

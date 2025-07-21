@@ -20,7 +20,20 @@ import Player from '../../../models/Player.js';
  */
 const rooms = new Map();
 
+/**
+ * Locked room ID
+ * @type {Set<string>}
+ */
+const lockedRooms = new Set();
+
 // Public functions
+
+/**
+ * @param {string} roomID
+ */
+export function lockRoom(roomID) {
+	if (rooms.has(roomID)) lockedRooms.add(roomID);
+}
 
 /**
  * @param {string} roomID
@@ -54,8 +67,8 @@ export function getPlayerName(socket) {
  * @returns {Promise<boolean>}
  */
 export async function socketJoinRoom(socket, roomID, playerName) {
-	// Block blank roomID
-	if (!roomID.trim() || !playerName.trim()) return false;
+	// Block blank roomID, invalid name or join to locked room
+	if (!roomID.trim() || lockedRooms.has(roomID) || !playerName.trim()) return false;
 
 	const room = rooms.get(roomID) ?? createNewRoom(roomID);
 
@@ -63,7 +76,7 @@ export async function socketJoinRoom(socket, roomID, playerName) {
 	if (Object.keys(room.players).length >= 10) return false;
 
 	// If number of player in team #1 < team #0, join to team #1 else to team #0
-	const team = room.teams[1].size > room.teams[0].size ? 0 : 1;
+	const team = room.teams[1].size < room.teams[0].size ? 1 : 0;
 
 	room.players[socket.id] = new Player(socket.id, playerName, team);
 	room.teams[team].add(socket.id);
@@ -76,24 +89,19 @@ export async function socketJoinRoom(socket, roomID, playerName) {
 
 /**
  * @param {Socket} socket
- * @returns {number} The number of players ready for trigger event
+ * @returns {boolean} If all players are ready, return true
  */
-export function socketMarkReady(socket) {
+export function socketToggleReadyState(socket) {
 	const room = rooms.get(getSocketRoomID(socket));
-	if (!room) return;
+	if (!room) return false;
+
+	if (room.readyPlayers.has(socket.id)) {
+		room.readyPlayers.delete(socket.id);
+		return false; // Nếu có player hủy, không đời nào `All player ready` diễn ra`
+	}
 
 	room.readyPlayers.add(socket.id);
-	return room.readyPlayers.size;
-}
-
-/**
- * @param {Socket} socket
- * @returns {void}
- */
-export function socketUnmarkReady(socket) {
-	const room = rooms.get(getSocketRoomID(socket));
-	if (!room) return;
-	room.readyPlayers.delete(socket.id);
+	return room.readyPlayers.size === Object.keys(room.players).length; // All player ready
 }
 
 /**
@@ -127,7 +135,10 @@ export function socketLeaveRoom(socket) {
 	socket.leave(roomID);
 	delete socket.data['roomID'];
 
-	if (Object.keys(room.players).length === 0) rooms.delete(roomID);
+	if (Object.keys(room.players).length === 0) {
+		rooms.delete(roomID);
+		console.log(`> [SocketServer.RoomManager] Room::${roomID} empty, clear room`);
+	}
 }
 
 /**
@@ -153,6 +164,7 @@ function createNewRoom(roomID) {
 	};
 
 	rooms.set(roomID, room);
+	console.log(`> [SocketServer.RoomManager] Created Room::${roomID}\n`);
 	return room;
 }
 

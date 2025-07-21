@@ -46,7 +46,7 @@ function requestJoinRoom(socket) {
 	const roomID = new URLSearchParams(location.search).get('room').trim();
 	let playerName = '';
 
-	while (!playerName.trim()) playerName = prompt('Enter do nêm:');
+	while (!playerName || !playerName.trim()) playerName = prompt('Enter do nêm:');
 	if (!roomID || !playerName) location.href = '/';
 
 	socket.emit('request:join-room', roomID, playerName);
