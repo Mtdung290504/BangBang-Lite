@@ -30,6 +30,7 @@ export function setup(socket) {
 	});
 
 	socket.on('dispatch:update-players', (roomData) => {
+		// players có thể null với response của event `toggle-ready-state`
 		players = roomData.players ?? players;
 		readyPlayers = roomData.readyPlayers ?? readyPlayers;
 
@@ -40,12 +41,25 @@ export function setup(socket) {
 		}
 
 		console.log('> [Socket.RoomHandler.onEvent:update-players] Receive players data in room:', roomData);
-		renderPlayersView(players, readyPlayers);
-		setReadyState(readyPlayers.includes(socket.id));
+		renderPlayersView(players, readyPlayers); // Render danh sách player
+		setReadyState(readyPlayers.includes(socket.id)); // Đặt trạng thái cho nút sẵn sàng
 	});
 
 	roomView.readyBtn.addEventListener('click', () => {
 		console.log('> [Socket.RoomHandler.request:toggle-ready-state] Requested toggle ready state');
 		socket.emit('request:toggle-ready-state');
+	});
+
+	// ***Note:*** Optimize emit call condition in future
+	roomView._root.addEventListener('click', (e) => {
+		const target = e.target;
+		if (
+			roomView._isBoundTo(target, 'playerSlots') &&
+			target.innerHTML === '' &&
+			target.closest('.team').dataset.team !== players[socket.id].team.toString()
+		) {
+			console.log(`> [Socket.RoomHandler.request:change-team]`);
+			socket.emit('request:change-team');
+		}
 	});
 }

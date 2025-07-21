@@ -1,4 +1,3 @@
-// @ts-check
 import Player from '../../../models/Player.js';
 
 /**
@@ -29,6 +28,7 @@ const lockedRooms = new Set();
 // Public functions
 
 /**
+ * Khóa room khi tất cả player sẵn sàng và trận đấu bắt đầu
  * @param {string} roomID
  */
 export function lockRoom(roomID) {
@@ -36,6 +36,8 @@ export function lockRoom(roomID) {
 }
 
 /**
+ * Lấy dữ liệu room để client render
+ *
  * @param {string} roomID
  * @returns {{
  *      players: { [socketID: string]: Player }
@@ -51,6 +53,8 @@ export function getRoomData(roomID) {
 }
 
 /**
+ * Hiện là lấy tên, trong tương lai có thể cần thêm ID hay infor gì đó
+ *
  * @param {Socket} socket
  * @returns {string | null}
  */
@@ -61,8 +65,12 @@ export function getPlayerName(socket) {
 }
 
 /**
+ * ***Note:***
+ * - Hiện chưa xử lý sâu lỗi đến mức ném message
+ * - Trả về kết quả join thành công hay không ở dạng boolean
+ *
  * @param {Socket} socket
- * @param {string} roomID - Thực tế là tên của room luôn
+ * @param {string} roomID - Thực tế là tên của room
  * @param {string} playerName - Trong tương lai khi phát triển thực tế, thay bằng playerID, query thuộc tính khác từ db hay đâu đó
  * @returns {Promise<boolean>}
  */
@@ -83,6 +91,37 @@ export async function socketJoinRoom(socket, roomID, playerName) {
 
 	await socket.join(roomID);
 	setSocketRoomID(socket, roomID);
+
+	return true;
+}
+
+/**
+ * ***Note:***
+ * - Hiện chưa xử lý sâu lỗi đến mức ném message
+ * - Khi người chơi đã ready hoặc người đó là thành viên duy nhất trong team hoặc team kia đầy, change team sẽ thất bại, return `false`
+ *
+ * @param {Socket} socket
+ * @returns {boolean}
+ */
+export function socketChangeTeam(socket) {
+	const roomID = getSocketRoomID(socket);
+	const room = rooms.get(roomID);
+	// console.log('> [SocketServer.RoomManager.socketChangeTeam] Debug data before change:', room, room.teams);
+
+	if (!room) return false;
+	if (lockedRooms.has(roomID)) return false; // Fails when room is locked
+
+	const player = room.players[socket.id]; // Nếu `roomID` ở đầu hàm tồn tại, chắc chắn player là tồn tại
+
+	if (room.readyPlayers.has(socket.id)) return false; // Fails if player is ready
+	if (room.teams[player.team].size - 1 <= 0) return false; // Fails if The player is the last player in the room
+
+	const newTeam = player.team === 0 ? 1 : 0;
+	if (room.teams[newTeam].size === 5) return false; // Fails if number of new team members are 5
+
+	room.teams[player.team].delete(socket.id); // Delete old team data
+	player.team = newTeam; // Change team of player
+	room.teams[newTeam].add(socket.id); // Update new team data
 
 	return true;
 }
@@ -137,7 +176,8 @@ export function socketLeaveRoom(socket) {
 
 	if (Object.keys(room.players).length === 0) {
 		rooms.delete(roomID);
-		console.log(`> [SocketServer.RoomManager] Room::${roomID} empty, clear room`);
+		lockedRooms.delete(roomID);
+		console.log(`> [SocketServer.RoomManager] Room::${roomID} empty, remove`);
 	}
 }
 

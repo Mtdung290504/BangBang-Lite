@@ -3,6 +3,7 @@ import { createViewBinding } from '../../libs/view_binding/index.js';
 const { viewBinding } = createViewBinding({
 	roomIDLabel: '#room-id = p',
 	readyBtn: '#ready-btn = button',
+	playerSlots: '.player-slot = []',
 });
 
 export const roomView = viewBinding.bind();

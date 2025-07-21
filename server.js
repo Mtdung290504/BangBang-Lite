@@ -22,13 +22,9 @@ app.use(`/${TOOLS_PATH}/`, serveStatic(TOOLS_PATH));
 app.use(`/${MODELS_PATH}/`, serveStatic(MODELS_PATH));
 app.use('/libs/socket.io.js', serveStatic('./node_modules/socket.io-client/dist/socket.io.esm.min.js'));
 
-// Init socket.io server
-const io = initSocketServer(server);
-
-server
-	.listen(PORT, () => {
-		console.log(`> [Server] Server is up and running on: http://${getServerIP()}:${PORT}`);
-	})
-	.on('close', () => {
-		io.disconnectSockets(true);
-	});
+// Setup socket.io & start server
+const io = initSocketServer(
+	server
+		.listen(PORT, () => console.log(`> [Server] Server is up and running on: http://${getServerIP()}:${PORT}`))
+		.on('close', () => io.disconnectSockets(true))
+);

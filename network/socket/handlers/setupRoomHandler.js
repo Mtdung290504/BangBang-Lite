@@ -7,6 +7,7 @@ import * as socketManagers from '../managers/gateway.js';
 export default function setupRoomHandlers(io, socket) {
 	const { roomManager } = socketManagers;
 
+	// Handle player join room event
 	socket.on('request:join-room', async (roomID, playerName) => {
 		// Check type of roomID & playerName
 		if (typeof roomID !== 'string' || typeof playerName !== 'string') {
@@ -28,6 +29,7 @@ export default function setupRoomHandlers(io, socket) {
 		if (roomData) dispatchUpdatePlayers(roomID, roomData);
 	});
 
+	// Handle player ready/unready event
 	socket.on('request:toggle-ready-state', () => {
 		const roomID = roomManager.getSocketRoomID(socket);
 		roomManager.socketToggleReadyState(socket);
@@ -39,6 +41,29 @@ export default function setupRoomHandlers(io, socket) {
 		}
 	});
 
+	// Handle player change team event
+	socket.on('request:change-team', () => {
+		const roomID = roomManager.getSocketRoomID(socket);
+		const playerName = roomManager.getPlayerName(socket);
+		const changeSuccess = roomManager.socketChangeTeam(socket);
+		if (!changeSuccess) {
+			console.log(
+				`> [SocketServer.RoomHandler.onEvent:change-team] Reject change team: Room::${roomID}, Player::${playerName}`
+			);
+			return;
+		}
+
+		// Dispatch event render UI
+		const roomData = roomManager.getRoomData(roomID);
+		if (roomData?.players) {
+			dispatchUpdatePlayers(roomID, { players: roomData.players });
+		}
+		console.log(
+			`> [SocketServer.RoomHandler.onEvent:change-team] Change team success: Room::${roomID}, Player::${playerName}`
+		);
+	});
+
+	// Handle player disconnect/out room
 	socket.on('disconnect', () => {
 		const roomID = roomManager.getSocketRoomID(socket);
 		console.log(
@@ -67,7 +92,7 @@ export default function setupRoomHandlers(io, socket) {
 	 * @param {string} roomID
 	 * @param {{
 	 *      players?: { [socketID: string]: import('../../../models/Player.js').default }
-	 *      readyPlayers: string[]
+	 *      readyPlayers?: string[]
 	 * }} roomData
 	 */
 	function dispatchUpdatePlayers(roomID, roomData) {
