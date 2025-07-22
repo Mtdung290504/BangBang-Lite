@@ -7,52 +7,45 @@ __debugger.listen();
 
 const DEBUG_MODE = true;
 
-export async function init() {
+/**
+ * @param {string} roomID
+ * @param {string} playerName
+ * @returns {Promise<void>}
+ */
+export async function init(roomID, playerName) {
+	// Setup socket & join room
 	const socket = await setupSocket(DEBUG_MODE);
+	socket.emit('request:join-room', roomID, playerName);
+
 	const inputMgr = setupInputManager(DEBUG_MODE);
 	inputMgr.listen();
 
-	// Request join room
-	const roomID = requestJoinRoom(socket);
 	setRoomIDView(roomID);
-
 	__debugger.hideAll();
 
 	await renderRoomModal(socket);
 }
 
 async function setupSocket(debug = false) {
-	const socket = await getConnectedSocket().catch((error) => {
+	try {
+		const socket = await getConnectedSocket();
+		roomHandlers.setup(socket);
+
+		if (debug)
+			__debugger.observe(socket, {
+				fps: 10,
+				style: {
+					left: null,
+					right: '10px',
+					color: 'lime',
+				},
+			});
+
+		return socket;
+	} catch (error) {
 		alert('Lỗi khi kết nối đến server, tải lại hoặc thử lại sau');
 		throw error;
-	});
-	roomHandlers.setup(socket);
-
-	if (debug)
-		__debugger.observe(socket, {
-			fps: 10,
-			style: {
-				left: null,
-				right: '10px',
-				color: 'lime',
-			},
-		});
-
-	return socket;
-}
-
-/**
- * @param {Awaited<ReturnType<typeof setupSocket>>} socket
- */
-function requestJoinRoom(socket) {
-	const roomID = new URLSearchParams(location.search).get('room').trim();
-	let playerName = '';
-
-	while (!playerName || !playerName.trim()) playerName = prompt('Enter do nêm:');
-	if (!roomID || !playerName) location.href = '/';
-
-	socket.emit('request:join-room', roomID, playerName);
-	return roomID;
+	}
 }
 
 /**
@@ -60,9 +53,10 @@ function requestJoinRoom(socket) {
  * @param {Awaited<ReturnType<typeof setupSocket>>} socket
  */
 async function renderRoomModal(socket) {
-	const mapIDsRequest = import('/assets/jsons/mapIDs.js');
-	const tankIDsRequest = import('/assets/jsons/tankIDs.js');
-	const [mapIDs, tankIDs] = (await Promise.all([mapIDsRequest, tankIDsRequest])).map((module) => module.default);
+	// Request IDs
+	const [mapIDs, tankIDs] = await Promise.all(
+		['map', 'tank'].map((endpoint) => fetch(`/ids/${endpoint}`).then((res) => res.json()))
+	);
 
 	renderMapModal(mapIDs, (mapID) => socket.emit('request:change-map', mapID));
 	renderTankModal(tankIDs, (tankID) => socket.emit('request:change-tank', tankID));

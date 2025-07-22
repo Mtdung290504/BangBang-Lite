@@ -52,7 +52,7 @@ export function renderPlayersView(players, readyPlayers) {
 	teamViews.forEach((views) => views.forEach((view) => (view.innerHTML = '')));
 
 	// View index for render (0 is index of slot in `team1View`, 1 of `team2View`)
-	let slotIndexes = { 0: 0, 1: 0 };
+	let slotIndexes = [0, 0];
 
 	for (const playerID in players) {
 		if (Object.prototype.hasOwnProperty.call(players, playerID)) {
@@ -93,10 +93,10 @@ export function renderMapModal(mapIDs, itemClickListener) {
 	mapIDs.forEach((mapID) => {
 		const itemRoot = Object.assign(document.createElement('label'), {
 			className: 'grid-item',
-			for: 'modal-map-toggle',
-			innerHTML: /*html*/ `<img src="/assets/images/maps/${mapID}/background-layer.icon.webp" alt="">`,
+			innerHTML: /*html*/ `<img src="/assets/images/maps/${mapID}/background-layer.webp">`,
 		});
 
+		itemRoot.setAttribute('for', 'modal-map-toggle');
 		itemRoot.addEventListener('click', () => itemClickListener(mapID));
 		modalMapGrid.appendChild(itemRoot);
 	});
@@ -113,13 +113,13 @@ export function renderTankModal(tankIDs, itemClickListener) {
 	tankIDs.forEach((tankID) => {
 		const itemRoot = Object.assign(document.createElement('label'), {
 			className: 'grid-item',
-			for: 'modal-tank-toggle',
 			innerHTML: /*html*/ `
-				<img src="/assets/images/tanks/${tankID}/0/body.png" alt="">
-				<img src="/assets/images/tanks/${tankID}/0/head.png" alt="">
+				<img src="/assets/images/tanks/${tankID}/0/body.webp">
+				<img src="/assets/images/tanks/${tankID}/0/head.webp">
 			`,
 		});
 
+		itemRoot.setAttribute('for', 'modal-tank-toggle');
 		itemRoot.addEventListener('click', () => itemClickListener(tankID));
 		modalTankGrid.appendChild(itemRoot);
 	});

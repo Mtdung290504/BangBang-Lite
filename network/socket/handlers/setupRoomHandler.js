@@ -117,7 +117,7 @@ export default function setupRoomHandlers(io, playerSocket) {
 	/**
 	 * @param {string} log
 	 */
-	function rejectJoinRoom(log = null) {
+	function rejectJoinRoom(log = '') {
 		if (log) console.log(log);
 		playerSocket.emit('response:join-failed', 'Room đầy, đã vào trận hoặc tên room/tên nhân vật không hợp lệ');
 	}

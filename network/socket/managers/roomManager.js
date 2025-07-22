@@ -1,6 +1,8 @@
-import mapIDs from '../../../assets/jsons/mapIDs.js';
-import tankIDs from '../../../assets/jsons/tankIDs.js';
 import Player from '../../../models/Player.js';
+import { getMapIDs, getTankIDs } from '../../../utils/getIndexes.js';
+
+const mapIDs = await getMapIDs();
+const tankIDs = await getTankIDs();
 
 /**
  * Room registry
@@ -178,7 +180,7 @@ export function socketToggleReadyState(socket) {
  */
 export function socketMarkLoaded(socket) {
 	const room = rooms.get(getSocketRoomID(socket));
-	if (!room) return;
+	if (!room) return -1;
 
 	room.loadedPlayers.add(socket.id);
 	return room.loadedPlayers.size;
@@ -249,9 +251,6 @@ function setSocketRoomID(socket, roomID) {
 
 /**
  * @typedef {import('socket.io').Socket} Socket
- */
-
-/**
  * @typedef {{
  *      players: { [socketID: string]: Player }
  *      teams: Set<string>[]

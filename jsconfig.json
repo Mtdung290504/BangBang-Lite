@@ -4,13 +4,31 @@
     -> thêm dòng:
         "javascript.preferences.importModuleSpecifierEnding": "js",
 */
+// {
+//     "compilerOptions": {
+//         "baseUrl": ".", // Đường dẫn gốc của dự án (thường là nơi đặt jsconfig.json)
+//         "checkJs": true, // (tuỳ chọn) bật kiểm tra lỗi cho JS
+//         "allowJs": true, // Cho phép VS Code xử lý file JS
+//         "moduleResolution": "nodenext",
+//         "module": "nodenext",
+//         "target": "esnext",
+//     },
+// }
 {
     "compilerOptions": {
-        "baseUrl": ".", // Đường dẫn gốc của dự án (thường là nơi đặt jsconfig.json)
-        "checkJs": true, // (tuỳ chọn) bật kiểm tra lỗi cho JS
-        "allowJs": true, // Cho phép VS Code xử lý file JS
-        "moduleResolution": "nodenext",
-        "module": "nodenext",
-        "target": "esnext",
+        "baseUrl": ".",
+        "checkJs": true,
+        "allowJs": true,
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "target": "ES2022",
+        "strict": true, // ⬅️ Gợi ý thêm
+        "noEmit": true // ⬅️ Không xuất file, chỉ dùng để kiểm tra
     },
+    "include": [
+        "./**/*.js"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
 }

@@ -38,11 +38,18 @@ export function setup(socket) {
 
 		console.log('> [Socket.RoomHandler.onEvent:update-players] Receive players data in room:', roomData);
 		renderPlayersView(players, readyPlayers); // Render danh sách player
-		setReadyState(readyPlayers.includes(socket.id)); // Đặt trạng thái cho nút sẵn sàng
+		setReadyState(readyPlayers.includes(socket.id ?? '_')); // Đặt trạng thái cho nút sẵn sàng
 	});
 
-	socket.on('dispatch:change-map', (mapID) => setMapImageView(mapID));
-	socket.on('dispatch:change-tank', (tankID) => setTankImageView(tankID));
+	socket.on('dispatch:change-map', (mapID) => {
+		console.log('> [Socket.RoomHandler.onEvent:change-map] Receive mapID, update current mapID to:', mapID);
+		setMapImageView(mapID);
+	});
+
+	socket.on('dispatch:change-tank', (tankID) => {
+		console.log('> [Socket.RoomHandler.onEvent:change-tank] Receive tankID, update current tankID to:', tankID);
+		setTankImageView(tankID);
+	});
 
 	// ***Note:*** Debounce in future (Cẩn thận xử lý đoạn vào game rồi mà hàm debounce vẫn kích hoạt)
 	roomView.readyBtn.addEventListener('click', () => {
@@ -57,7 +64,7 @@ export function setup(socket) {
 			if (!roomView._isBoundTo(target, 'playerSlots')) return;
 
 			const teamContainer = asInstanceOf(target.closest('.team'), HTMLElement);
-			if (target.innerHTML === '' && teamContainer.dataset.team !== players[socket.id].team.toString()) {
+			if (target.innerHTML === '' && teamContainer.dataset.team !== players[socket.id ?? '_'].team.toString()) {
 				console.log(`> [Socket.RoomHandler.request:change-team]`);
 				socket.emit('request:change-team');
 			}

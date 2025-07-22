@@ -40,7 +40,7 @@ let socket = null;
  * - Initializes and returns a connected socket. If the connection fails, returns null.
  * - Note: This function maintains a single socket instance and only creates a new one if none exists.
  *
- * @returns {Promise<import('socket.io-client').Socket | null>}
+ * @returns {Promise<import('socket.io-client').Socket>}
  */
 export default async function getConnectedSocket() {
 	if (!socket) {

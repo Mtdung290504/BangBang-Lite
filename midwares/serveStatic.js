@@ -6,10 +6,13 @@ import path from 'path';
  * - Create an express.static middleware corresponding to a relative path to the directory
  * - Create a sendFile middleware in case the path is a path to a file
  *
- * @param {string} pathname Relative path to the static folder/file to be public
+ * @param {string} [pathname] Relative path to the static folder/file to be public
  * @returns {express.RequestHandler} Express Middleware serves static files
+ *
+ * @throws {Error} When the provided pathname is invalid
  */
 export default function serveStatic(pathname) {
+	if (!pathname) throw new Error('> [Server.serveStatic] Invalid pathname');
 	const fullPath = path.resolve(pathname);
 
 	if (!fs.existsSync(fullPath)) {
