@@ -2,13 +2,13 @@ import * as socketManagers from '../managers/gateway.js';
 
 /**
  * @param {import('socket.io').Server} io
- * @param {import('socket.io').Socket} socket
+ * @param {import('socket.io').Socket} playerSocket
  */
-export default function setupRoomHandlers(io, socket) {
+export default function setupRoomHandlers(io, playerSocket) {
 	const { roomManager } = socketManagers;
 
 	// Handle player join room event
-	socket.on('request:join-room', async (roomID, playerName) => {
+	playerSocket.on('request:join-room', async (roomID, playerName) => {
 		// Check type of roomID & playerName
 		if (typeof roomID !== 'string' || typeof playerName !== 'string') {
 			return rejectJoinRoom(
@@ -20,7 +20,7 @@ export default function setupRoomHandlers(io, socket) {
 		console.log(
 			`> [SocketServer.RoomHandler.onEvent:join-room] Receive event join room: room::${roomID} - player::${playerName}`
 		);
-		const success = await roomManager.socketJoinRoom(socket, roomID, playerName);
+		const success = await roomManager.socketJoinRoom(playerSocket, roomID, playerName);
 		if (!success)
 			return rejectJoinRoom(`> [SocketServer.RoomHandler.onEvent:join-room] roomManager.socketJoinRoom failed`);
 
@@ -30,9 +30,9 @@ export default function setupRoomHandlers(io, socket) {
 	});
 
 	// Handle player ready/unready event
-	socket.on('request:toggle-ready-state', () => {
-		const roomID = roomManager.getSocketRoomID(socket);
-		roomManager.socketToggleReadyState(socket);
+	playerSocket.on('request:toggle-ready-state', () => {
+		const roomID = roomManager.getSocketRoomID(playerSocket);
+		roomManager.socketToggleReadyState(playerSocket);
 
 		// Dispatch event render UI
 		const roomData = roomManager.getRoomData(roomID);
@@ -42,10 +42,10 @@ export default function setupRoomHandlers(io, socket) {
 	});
 
 	// Handle player change team event
-	socket.on('request:change-team', () => {
-		const roomID = roomManager.getSocketRoomID(socket);
-		const playerName = roomManager.getPlayerName(socket);
-		const changeSuccess = roomManager.socketChangeTeam(socket);
+	playerSocket.on('request:change-team', () => {
+		const roomID = roomManager.getSocketRoomID(playerSocket);
+		const playerName = roomManager.getPlayerName(playerSocket);
+		const changeSuccess = roomManager.socketChangeTeam(playerSocket);
 		if (!changeSuccess) {
 			console.log(
 				`> [SocketServer.RoomHandler.onEvent:change-team] Reject change team: Room::${roomID}, Player::${playerName}`
@@ -64,20 +64,54 @@ export default function setupRoomHandlers(io, socket) {
 	});
 
 	// Handle player disconnect/out room
-	socket.on('disconnect', () => {
-		const roomID = roomManager.getSocketRoomID(socket);
+	playerSocket.on('disconnect', () => {
+		const roomID = roomManager.getSocketRoomID(playerSocket);
 		console.log(
 			`> [SocketServer.RoomHandler.onEvent:disconnect] Receive event disconnect: room::${roomID} - player::${roomManager.getPlayerName(
-				socket
+				playerSocket
 			)}`
 		);
 
 		// Leave room
-		roomManager.socketLeaveRoom(socket);
+		roomManager.socketLeaveRoom(playerSocket);
 
 		// Dispatch event rerender UI for another player
 		const roomData = roomManager.getRoomData(roomID);
 		if (roomData) dispatchUpdatePlayers(roomID, roomData);
+	});
+
+	// Handle player change map request
+	playerSocket.on('request:change-map', (mapID) => {
+		if (typeof mapID !== 'number') return;
+
+		const roomID = roomManager.getSocketRoomID(playerSocket);
+		const changeSuccess = roomManager.socketChangeMap(roomID, mapID);
+
+		if (!changeSuccess) {
+			console.log(
+				`> [SocketServer.RoomHandler.onEvent:change-map] Reject change map of Room::${roomID} to Map::${mapID}`
+			);
+			return;
+		}
+
+		io.to(roomID).emit('dispatch:change-map', mapID);
+	});
+
+	// Handle player change tank request
+	playerSocket.on('request:change-tank', (tankID) => {
+		if (typeof tankID !== 'number') return;
+
+		const changeSuccess = roomManager.socketChangeTank(playerSocket, tankID);
+		if (!changeSuccess) {
+			console.log(
+				`> [SocketServer.RoomHandler.onEvent:change-tank] Reject change tank to Tank::${tankID} for Player::${roomManager.getPlayerName(
+					playerSocket
+				)}`
+			);
+			return;
+		}
+
+		playerSocket.emit('dispatch:change-tank', tankID);
 	});
 
 	/**
@@ -85,7 +119,7 @@ export default function setupRoomHandlers(io, socket) {
 	 */
 	function rejectJoinRoom(log = null) {
 		if (log) console.log(log);
-		socket.emit('response:join-failed', 'Room đầy, đã vào trận hoặc tên room/tên nhân vật không hợp lệ');
+		playerSocket.emit('response:join-failed', 'Room đầy, đã vào trận hoặc tên room/tên nhân vật không hợp lệ');
 	}
 
 	/**

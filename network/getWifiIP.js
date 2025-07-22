@@ -5,7 +5,7 @@ import os from 'os';
  *
  * @returns {string | undefined}
  */
-export default function getServerIP() {
+export default function getWifiIP() {
 	const interfaces = os.networkInterfaces();
 	const wifiInterface = interfaces['Wi-Fi'];
 

@@ -1,7 +1,7 @@
 import BattleInputManager from '../core/managers/BattleInputManager.js';
 import getConnectedSocket from '../network/socket/getConnectedSocket.js';
 import { roomHandlers } from '../network/socket/handlers/gateway.js';
-import { renderRoomIDView } from '../UIs/roomUI.js';
+import { renderMapModal, setRoomIDView, renderTankModal } from '../UIs/roomUI.js';
 import __debugger from '../utils/debugger.js';
 __debugger.listen();
 
@@ -14,9 +14,11 @@ export async function init() {
 
 	// Request join room
 	const roomID = requestJoinRoom(socket);
-	renderRoomIDView(roomID);
+	setRoomIDView(roomID);
 
 	__debugger.hideAll();
+
+	await renderRoomModal(socket);
 }
 
 async function setupSocket(debug = false) {
@@ -51,6 +53,19 @@ function requestJoinRoom(socket) {
 
 	socket.emit('request:join-room', roomID, playerName);
 	return roomID;
+}
+
+/**
+ * ***Note:*** Nhận vào socket để request event đổi map/tank
+ * @param {Awaited<ReturnType<typeof setupSocket>>} socket
+ */
+async function renderRoomModal(socket) {
+	const mapIDsRequest = import('/assets/jsons/mapIDs.js');
+	const tankIDsRequest = import('/assets/jsons/tankIDs.js');
+	const [mapIDs, tankIDs] = (await Promise.all([mapIDsRequest, tankIDsRequest])).map((module) => module.default);
+
+	renderMapModal(mapIDs, (mapID) => socket.emit('request:change-map', mapID));
+	renderTankModal(tankIDs, (tankID) => socket.emit('request:change-tank', tankID));
 }
 
 function setupInputManager(debug = false) {

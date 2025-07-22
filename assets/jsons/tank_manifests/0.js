@@ -1,6 +1,6 @@
 /**@type {import('.types/tank-manifest.js').TankManifest} */
 export default {
-	name: 'Admin',
+	name: '???',
 	'assets-manifest': '/assets/jsons/assets_manifests/000.json',
 	'skill-manifest': '/assets/jsons/skill_manifests/000.json',
 	'stat-components': {

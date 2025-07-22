@@ -1,16 +1,12 @@
-/**
- * @typedef {import('socket.io-client').Socket} Socket
- */
-
 import Player from '../../../../../models/Player.js';
-import { renderPlayersView, roomView, setReadyState } from '../../../UIs/roomUI.js';
+import { renderPlayersView, roomView, setMapImageView, setReadyState, setTankImageView } from '../../../UIs/roomUI.js';
+import { safeArea, asInstanceOf } from '../../../utils/safe.js';
 
 let firstInit = true;
 
 /**
- * @type {{
- * 		[playerID: string]: Player
- * }}
+ * ***Note:*** Hiện tại mới là raw object nhận từ socket, chưa chuyển thành Player
+ * @type {{ [playerID: string]: Player }}
  */
 let players = {};
 
@@ -31,7 +27,7 @@ export function setup(socket) {
 
 	socket.on('dispatch:update-players', (roomData) => {
 		// players có thể null với response của event `toggle-ready-state`
-		players = roomData.players ?? players;
+		players = roomData.players ?? players; // Mới là raw object, chưa chuyển thành `Player`
 		readyPlayers = roomData.readyPlayers ?? readyPlayers;
 
 		// First time connect event, log or do sth in future
@@ -45,21 +41,30 @@ export function setup(socket) {
 		setReadyState(readyPlayers.includes(socket.id)); // Đặt trạng thái cho nút sẵn sàng
 	});
 
+	socket.on('dispatch:change-map', (mapID) => setMapImageView(mapID));
+	socket.on('dispatch:change-tank', (tankID) => setTankImageView(tankID));
+
+	// ***Note:*** Debounce in future (Cẩn thận xử lý đoạn vào game rồi mà hàm debounce vẫn kích hoạt)
 	roomView.readyBtn.addEventListener('click', () => {
 		console.log('> [Socket.RoomHandler.request:toggle-ready-state] Requested toggle ready state');
 		socket.emit('request:toggle-ready-state');
 	});
 
-	// ***Note:*** Optimize emit call condition in future
-	roomView._root.addEventListener('click', (e) => {
-		const target = e.target;
-		if (
-			roomView._isBoundTo(target, 'playerSlots') &&
-			target.innerHTML === '' &&
-			target.closest('.team').dataset.team !== players[socket.id].team.toString()
-		) {
-			console.log(`> [Socket.RoomHandler.request:change-team]`);
-			socket.emit('request:change-team');
-		}
-	});
+	// ***Note:*** Optimize emit call condition in future, debounce (Cẩn thận xử lý đoạn vào game rồi mà hàm debounce vẫn kích hoạt)
+	roomView._root.addEventListener('click', (e) =>
+		safeArea(() => {
+			const target = asInstanceOf(e.target, HTMLElement);
+			if (!roomView._isBoundTo(target, 'playerSlots')) return;
+
+			const teamContainer = asInstanceOf(target.closest('.team'), HTMLElement);
+			if (target.innerHTML === '' && teamContainer.dataset.team !== players[socket.id].team.toString()) {
+				console.log(`> [Socket.RoomHandler.request:change-team]`);
+				socket.emit('request:change-team');
+			}
+		})
+	);
 }
+
+/**
+ * @typedef {import('socket.io-client').Socket} Socket
+ */

@@ -1,17 +1,6 @@
+import mapIDs from '../../../assets/jsons/mapIDs.js';
+import tankIDs from '../../../assets/jsons/tankIDs.js';
 import Player from '../../../models/Player.js';
-
-/**
- * @typedef {import('socket.io').Socket} Socket
- */
-
-/**
- * @typedef {{
- *      players: { [socketID: string]: Player }
- *      teams: Set<string>[]
- *      readyPlayers: Set<string>
- *      loadedPlayers: Set<string>
- * }} Room
- */
 
 /**
  * Room registry
@@ -106,7 +95,7 @@ export async function socketJoinRoom(socket, roomID, playerName) {
 export function socketChangeTeam(socket) {
 	const roomID = getSocketRoomID(socket);
 	const room = rooms.get(roomID);
-	// console.log('> [SocketServer.RoomManager.socketChangeTeam] Debug data before change:', room, room.teams);
+	// console.log('> [SocketServer.RoomManager.socketChangeTeam] Debug data before change team:', room, room.teams);
 
 	if (!room) return false;
 	if (lockedRooms.has(roomID)) return false; // Fails when room is locked
@@ -123,6 +112,46 @@ export function socketChangeTeam(socket) {
 	player.team = newTeam; // Change team of player
 	room.teams[newTeam].add(socket.id); // Update new team data
 
+	return true;
+}
+
+/**
+ * Nếu mapID hợp lệ, room tồn tại và đang mở, return `true`
+ *
+ * @param {string} roomID
+ * @param {number} mapID
+ * @returns {boolean}
+ */
+export function socketChangeMap(roomID, mapID) {
+	if (!mapIDs.includes(mapID)) return false;
+
+	const room = rooms.get(roomID);
+	if (!room) return false;
+	if (lockedRooms.has(roomID)) return false; // Fails when room is locked
+
+	room.playingMap = mapID;
+	return true;
+}
+
+/**
+ * Nếu tankID hợp lệ, player thuộc về room, room tồn tại và đang mở, return `true`
+ *
+ * @param {Socket} socket
+ * @param {number} tankID
+ * @returns {boolean}
+ */
+export function socketChangeTank(socket, tankID) {
+	if (!tankIDs.includes(tankID)) return false;
+
+	const roomID = getSocketRoomID(socket);
+	const room = rooms.get(roomID);
+	if (!room) return false;
+	if (lockedRooms.has(roomID)) return false; // Fails when room is locked
+
+	const player = room.players[socket.id];
+	if (!player) return false;
+
+	player.using.tankID = tankID;
 	return true;
 }
 
@@ -201,6 +230,7 @@ function createNewRoom(roomID) {
 		teams: [new Set(), new Set()],
 		readyPlayers: new Set(),
 		loadedPlayers: new Set(),
+		playingMap: 0,
 	};
 
 	rooms.set(roomID, room);
@@ -216,3 +246,17 @@ function createNewRoom(roomID) {
 function setSocketRoomID(socket, roomID) {
 	socket.data['roomID'] = roomID;
 }
+
+/**
+ * @typedef {import('socket.io').Socket} Socket
+ */
+
+/**
+ * @typedef {{
+ *      players: { [socketID: string]: Player }
+ *      teams: Set<string>[]
+ *      readyPlayers: Set<string>
+ *      loadedPlayers: Set<string>
+ * 		playingMap: number
+ * }} Room
+ */
