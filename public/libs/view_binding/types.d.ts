@@ -90,7 +90,7 @@ type ResolveSelector<S> = ParseSelector<S> extends [any, infer Tag, infer IsList
 		: IsNullable extends true
 		? HTMLElement | null
 		: HTMLElement
-	: never;
+	: HTMLElement;
 
 interface ViewBinding<ViewMap extends ViewMapDefinition> {
 	/**

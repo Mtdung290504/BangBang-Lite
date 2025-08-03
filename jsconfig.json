@@ -19,11 +19,11 @@
         "baseUrl": ".",
         "checkJs": true,
         "allowJs": true,
-        "module": "NodeNext",
-        "moduleResolution": "NodeNext",
-        "target": "ES2022",
-        "strict": true, // ⬅️ Gợi ý thêm
-        "noEmit": true // ⬅️ Không xuất file, chỉ dùng để kiểm tra
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
+        "target": "es2022",
+        // "strict": true, // ⬅️ Gợi ý thêm
+        // "noEmit": true // ⬅️ Không xuất file, chỉ dùng để kiểm tra
     },
     "include": [
         "./**/*.js"
