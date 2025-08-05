@@ -1,7 +1,13 @@
 export interface TankManifest {
 	name: string;
-	'assets-manifest': `/assets/jsons/assets_manifests/${string}.json`;
-	'skill-manifest': `/assets/jsons/skill_manifests/${string}.json`;
+
+	/**Default: 55 */
+	size?: number;
+
+	// Tự get từ ID, bỏ
+	// 'assets-manifest': `/assets/jsons/assets_manifests/${string}.json`;
+	// 'skill-manifest': `/assets/jsons/skill_manifests/${string}.json`;
+
 	'stat-components': {
 		shooting: {
 			'fire-rate': 60 | 90 | 120;

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sprite Sheet Rotator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Sprite Sheet Rotator</h1>
+
+        <div class="controls-grid">
+            <div class="control-group">
+                <h3>Source Image</h3>
+                <div class="input-row">
+                    <label>Image File:</label>
+                    <input type="file" id="upload" accept="image/*">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Generation Settings</h3>
+                <div class="input-row">
+                    <label>Frame Count:</label>
+                    <input type="number" id="frameCount" value="60" min="1" max="360">
+                    <span class="value-display" id="frameCountDisplay">60</span>
+                </div>
+                <div class="input-row">
+                    <label>Padding Ratio:</label>
+                    <input type="range" id="paddingRatio" min="0" max="0.5" step="0.05" value="0.15">
+                    <span class="value-display" id="paddingDisplay">0.15</span>
+                </div>
+                <div class="input-row">
+                    <label>Scale Factor:</label>
+                    <input type="range" id="scaleFactor" min="0.1" max="2.0" step="0.1" value="1.0">
+                    <span class="value-display" id="scaleDisplay">1.0x</span>
+                </div>
+                <div class="input-row">
+                    <label>Max Sheet Width:</label>
+                    <input type="number" id="maxWidth" value="2400" min="512" max="8192" step="128">
+                </div>
+                <div class="input-row">
+                    <label>Animation Speed (fps):</label>
+                    <input type="range" id="animationSpeed" min="5" max="60" value="30">
+                    <span class="value-display" id="speedDisplay">30</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <h3>Preview</h3>
+            <div class="input-row" style="margin-bottom: 15px;">
+                <label>Flight Angle (degrees):</label>
+                <input type="range" id="flightAngle" min="0" max="360" value="0">
+                <span class="value-display" id="angleDisplay">0°</span>
+            </div>
+            <div class="preview-container">
+                <canvas id="preview" width="300" height="300"></canvas>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button class="btn-primary" id="generate">Generate Sprite Sheet</button>
+            <button class="btn-secondary" id="animate" disabled>Start Animation</button>
+            <button class="btn-export" id="export" disabled>Export Files</button>
+        </div>
+
+        <div class="status" id="status"></div>
+
+        <div class="output-section">
+            <h3>Generated Sprite Sheet</h3>
+            <canvas id="sheet"></canvas>
+            <div class="manifest-preview" id="manifest"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

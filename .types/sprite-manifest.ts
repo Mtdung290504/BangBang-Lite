@@ -1,10 +1,5 @@
 export type SpriteManifest = {
-	loop: boolean;
 	'padding-ratio': number;
-	frames: {
-		width: number;
-		height: number;
-		x: number;
-		y: number;
-	}[];
+	'frame-size': { width: number; height: number };
+	'frames-position': { x: number; y: number }[];
 };
