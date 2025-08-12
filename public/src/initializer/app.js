@@ -1,4 +1,4 @@
-import BattleInputManager from '../core/managers/BattleInputManager.js';
+import BattleInputManager from '../core/managers/battle/mgr.BattleInput.js';
 import getConnectedSocket from '../network/socket/getConnectedSocket.js';
 import { roomHandlers } from '../network/socket/handlers/gateway.js';
 import { renderMapModal, setRoomIDView, renderTankModal } from '../UIs/roomUI.js';

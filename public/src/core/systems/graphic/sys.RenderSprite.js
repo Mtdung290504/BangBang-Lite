@@ -1,4 +1,4 @@
-import SpriteComponent from '../../../components/graphic/Sprite.com.js';
+import SpriteComponent from '../../components/graphic/com.Sprite.js';
 
 export default class DrawSpriteSystem {
 	static PrimaryComponent = SpriteComponent;

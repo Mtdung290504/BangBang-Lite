@@ -1,6 +1,10 @@
 import Player from '../../../../../models/Player.js';
 import { renderPlayersView, roomView, setMapImageView, setReadyState, setTankImageView } from '../../../UIs/roomUI.js';
-import { safeArea, asInstanceOf } from '../../../utils/safe.js';
+import { safeArea, asInstanceOf } from '../../../utils/safe-handlers.js';
+
+/**
+ * @typedef {import('socket.io-client').Socket} Socket
+ */
 
 let firstInit = true;
 
@@ -26,7 +30,7 @@ export function setup(socket) {
 	});
 
 	socket.on('dispatch:update-players', (roomData) => {
-		// players có thể null với response của event `toggle-ready-state`
+		// `players` có thể null với response của event `toggle-ready-state`
 		players = roomData.players ?? players; // Mới là raw object, chưa chuyển thành `Player`
 		readyPlayers = roomData.readyPlayers ?? readyPlayers;
 
@@ -71,7 +75,3 @@ export function setup(socket) {
 		})
 	);
 }
-
-/**
- * @typedef {import('socket.io-client').Socket} Socket
- */

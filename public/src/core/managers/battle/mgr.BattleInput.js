@@ -1,4 +1,4 @@
-import { ACTIONS_KEYS, CONTROL_KEY } from '../../configs/action-keys.js';
+import { ACTIONS_KEYS, CONTROL_KEY } from '../../../configs/action-keys.js';
 
 export default class BattleInputManager {
 	constructor() {
@@ -84,6 +84,7 @@ export default class BattleInputManager {
 	listen() {
 		this.abortController = new AbortController();
 		const signal = this.abortController.signal;
+
 		window.addEventListener('contextmenu', (event) => event.preventDefault(), { signal });
 		document.addEventListener('mousemove', this._onMouseMove.bind(this), { signal });
 		document.addEventListener('mousedown', this._onMouseDown.bind(this), { signal });

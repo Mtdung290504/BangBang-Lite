@@ -18,16 +18,13 @@ export function asInstanceOf(value, Type) {
  * @param {() => void} runable
  * @param {(error: Error) => void} errorHandler
  */
-export function safeArea(
-	runable,
-	errorHandler = (error) => {
-		console.error(`Catched error in safeArea:`, error);
-	}
-) {
+export function safeArea(runable, errorHandler = (error) => console.error(`Error in safeArea:`, error)) {
 	try {
-		typeof runable === 'function'
-			? runable()
-			: console.error(`Error in safeArea, runable is not a function:`, runable);
+		if (typeof runable !== 'function') {
+			console.warn(`Error in safeArea, runable is not a function, ignore run:`, runable);
+			return;
+		}
+		runable();
 	} catch (error) {
 		errorHandler(error);
 	}
