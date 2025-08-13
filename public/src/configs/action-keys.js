@@ -1,3 +1,5 @@
+import { LOCAL_CONTROL_KEY } from './constants.js';
+
 export const ACTIONS_KEYS = {
 	// Moving
 	LEFT: 'LEFT',
@@ -27,7 +29,7 @@ const DEFAULT_CONTROL_KEY = {
 	B: 'TOGGLE_AUTO_ATK',
 };
 
-const USER_CONFIG_CONTROL_KEY = JSON.parse(localStorage.getItem('CONTROL-KEY') ?? '{}');
+const USER_CONFIG_CONTROL_KEY = JSON.parse(localStorage.getItem(LOCAL_CONTROL_KEY) ?? '{}');
 
 export const CONTROL_KEY = new Proxy(USER_CONFIG_CONTROL_KEY, {
 	get(self, prop) {

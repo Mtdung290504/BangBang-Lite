@@ -1,4 +1,4 @@
-import { ACTIONS_KEYS, CONTROL_KEY } from '../../../configs/action-keys.js';
+import { ACTIONS_KEYS, CONTROL_KEY } from '../../configs/action-keys.js';
 
 export default class BattleInputManager {
 	constructor() {

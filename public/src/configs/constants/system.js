@@ -1,0 +1,3 @@
+const LOCAL_CONTROL_KEY = 'CONTROL-KEY';
+
+export { LOCAL_CONTROL_KEY };

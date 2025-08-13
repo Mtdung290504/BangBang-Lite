@@ -243,7 +243,6 @@ function createNewRoom(roomID) {
 /**
  * @param {Socket} socket
  * @param {string} roomID
- * @returns {void}
  */
 function setSocketRoomID(socket, roomID) {
 	socket.data['roomID'] = roomID;
