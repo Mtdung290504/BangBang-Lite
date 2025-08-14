@@ -1,13 +1,16 @@
-const SPRITE_BASE_PATH = '/assets/images/tanks';
+export const SPRITE_BASE_PATH = '/assets/images/tanks';
 const SPRITE_MANIFEST_FILE_NAME = 'manifest.json';
 const SPRITE_FILE_NAME = 'sprite.webp';
 
-const MAP_BASE_PATH = '/assets/images/maps';
+export const MAP_BASE_PATH = '/assets/images/maps';
 const MAP_BACKGROUND_LAYER_FILE_NAME = 'background-layer.webp';
 const MAP_SCENES_LAYER_FILE_NAME = 'scenes-layer.webp';
 const MAP_ICON_FILE_NAME = 'icon.webp';
 
-export const PATHS = {
+/**
+ * Chứa các hàm builder lấy về các path cần thiết
+ */
+export const ASSETS_PATH = {
 	/**
 	 * Lấy đường dẫn sprite cho 1 tank + skin + sprite key kèm tên file, path nếu cần trong tương lai
 	 *

@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import getWifiIP from './network/getWifiIP.js';
 import serveStatic from './midwares/serveStatic.js';
 import initSocketServer from './network/socket/initSocket.js';
-import { getMapIDs, getTankIDs } from './utils/getIDs.js';
+import { getMapIDs, getTankIDs } from './db/getIDs.js';
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
@@ -19,6 +19,7 @@ const server = http.createServer(app);
 // Serve map/tank ID
 app.get('/ids/:type', async (req, res) => {
 	const getter = { tank: getTankIDs, map: getMapIDs }[req.params.type];
+
 	if (!getter) res.status(404);
 	else res.status(200).json(await getter());
 });

@@ -1,4 +1,4 @@
-import { PATHS } from '../configs/constants/paths.js';
+import { ASSETS_PATH } from '../configs/constants/paths.js';
 
 const LOAD_SPRITE_LOG_PREFIX = '> [net.assets-loader.loadSprite]';
 const LOAD_MAP_LOG_PREFIX = '> [net.assets-loader.loadMapAssets]';
@@ -33,7 +33,7 @@ async function loadSprite(tankID, skinID, spriteKey, logger = {}) {
 	const spriteDisplay = `[${tankID}][${skinID}][${spriteKey}]`;
 	const msg = (text) => `${LOAD_SPRITE_LOG_PREFIX} Sprite:${spriteDisplay} - ${text}`;
 
-	const { manifestPath, spritePath } = PATHS.sprite(tankID, spriteKey, skinID);
+	const { manifestPath, spritePath } = ASSETS_PATH.sprite(tankID, spriteKey, skinID);
 	log(msg('Start loading'));
 	const startTime = performance.now();
 
@@ -91,7 +91,7 @@ async function loadMapAssets(mapID, logger = {}) {
 	const { log = console.log, warn = console.warn, error = console.error } = logger;
 	const msg = (text) => `${LOAD_MAP_LOG_PREFIX} Map:${mapID} - ${text}`;
 
-	const { backgroundPath, scenesPath } = PATHS.map(mapID);
+	const { backgroundPath, scenesPath } = ASSETS_PATH.map(mapID);
 	log(msg('Start loading'));
 	const startTime = performance.now();
 

@@ -1,5 +1,5 @@
 import Player from '../../../models/Player.js';
-import { getMapIDs, getTankIDs } from '../../../utils/getIDs.js';
+import { getMapIDs, getTankIDs } from '../../../db/getIDs.js';
 
 const mapIDs = await getMapIDs();
 const tankIDs = await getTankIDs();
