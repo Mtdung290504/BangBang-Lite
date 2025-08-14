@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import getWifiIP from './network/getWifiIP.js';
 import serveStatic from './midwares/serveStatic.js';
 import initSocketServer from './network/socket/initSocket.js';
-import { getMapIDs, getTankIDs } from './utils/getIndexes.js';
+import { getMapIDs, getTankIDs } from './utils/getIDs.js';
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;

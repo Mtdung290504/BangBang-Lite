@@ -1,8 +1,8 @@
 /**@type {import('.types/tank-manifest.js').TankManifest} */
 export default {
 	name: '???',
-	'assets-manifest': '/assets/jsons/assets_manifests/000.json',
-	'skill-manifest': '/assets/jsons/skill_manifests/000.json',
+	// 'assets-manifest': '/assets/jsons/assets_manifests/000.json',
+	// 'skill-manifest': '/assets/jsons/skill_manifests/000.json',
 	'stat-components': {
 		shooting: {
 			'fire-rate': 120,

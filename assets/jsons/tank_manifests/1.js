@@ -1,8 +1,8 @@
 /**@type {import('.types/tank-manifest.js').TankManifest} */
 export default {
 	name: 'Tsubasa',
-	'assets-manifest': '/assets/jsons/assets_manifests/001.json',
-	'skill-manifest': '/assets/jsons/skill_manifests/001.json',
+	// 'assets-manifest': '/assets/jsons/assets_manifests/001.json',
+	// 'skill-manifest': '/assets/jsons/skill_manifests/001.json',
 	'stat-components': {
 		shooting: {
 			'fire-rate': 90,

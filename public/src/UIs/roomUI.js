@@ -1,4 +1,5 @@
 import { createViewBinding } from '../../libs/view_binding/index.js';
+import { PATHS } from '../configs/constants/paths.js';
 
 const { viewBinding } = createViewBinding({
 	roomIDLabel: '#room-id = p',
@@ -15,6 +16,10 @@ const { viewBinding } = createViewBinding({
 
 export const roomView = viewBinding.bind();
 
+// Initialize UI:
+setMapImageView(1);
+setTankImageView(1);
+
 /**
  * @param {string} roomID
  * @returns {void}
@@ -28,7 +33,7 @@ export function setRoomIDView(roomID) {
  * @returns {void}
  */
 export function setMapImageView(mapID) {
-	roomView.mapImage.src = `/assets/images/maps/${mapID}/background-layer.webp`;
+	roomView.mapImage.src = PATHS.map(mapID).iconPath;
 }
 
 /**
@@ -36,8 +41,8 @@ export function setMapImageView(mapID) {
  * @returns {void}
  */
 export function setTankImageView(tankID) {
-	roomView.tankBodyImage.src = `/assets/images/tanks/${tankID}/0/body.webp`;
-	roomView.tankHeadImage.src = `/assets/images/tanks/${tankID}/0/head.webp`;
+	roomView.tankBodyImage.src = PATHS.sprite(tankID, 'body').spritePath;
+	roomView.tankHeadImage.src = PATHS.sprite(tankID, 'head').spritePath;
 }
 
 /**
@@ -93,7 +98,7 @@ export function renderMapModal(mapIDs, itemClickListener) {
 	mapIDs.forEach((mapID) => {
 		const itemRoot = Object.assign(document.createElement('label'), {
 			className: 'grid-item',
-			innerHTML: /*html*/ `<img src="/assets/images/maps/${mapID}/background-layer.webp">`,
+			innerHTML: /*html*/ `<img src="${PATHS.map(mapID).iconPath}">`,
 		});
 
 		itemRoot.setAttribute('for', 'modal-map-toggle');
@@ -114,8 +119,8 @@ export function renderTankModal(tankIDs, itemClickListener) {
 		const itemRoot = Object.assign(document.createElement('label'), {
 			className: 'grid-item',
 			innerHTML: /*html*/ `
-				<img src="/assets/images/tanks/${tankID}/0/body.webp">
-				<img src="/assets/images/tanks/${tankID}/0/head.webp">
+				<img src="${PATHS.sprite(tankID, 'body').spritePath}">
+				<img src="${PATHS.sprite(tankID, 'head').spritePath}">
 			`,
 		});
 

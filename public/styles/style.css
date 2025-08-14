@@ -99,7 +99,7 @@ canvas {
 	font-weight: bold;
 	content: attr(room-id);
 	display: inline-block;
-	padding: 5px;
+	padding: 5px 10px;
 	background-color: var(--primary);
 	border-radius: 5px;
 	margin-left: 3px;

@@ -1,5 +1,5 @@
 import Player from '../../../models/Player.js';
-import { getMapIDs, getTankIDs } from '../../../utils/getIndexes.js';
+import { getMapIDs, getTankIDs } from '../../../utils/getIDs.js';
 
 const mapIDs = await getMapIDs();
 const tankIDs = await getTankIDs();
@@ -102,7 +102,7 @@ export function socketChangeTeam(socket) {
 	if (!room) return false;
 	if (lockedRooms.has(roomID)) return false; // Fails when room is locked
 
-	const player = room.players[socket.id]; // Nếu `roomID` ở đầu hàm tồn tại, chắc chắn player là tồn tại
+	const player = room.players[socket.id]; // Nếu `roomID` ở trên tồn tại, chắc chắn player là tồn tại
 
 	if (room.readyPlayers.has(socket.id)) return false; // Fails if player is ready
 	if (room.teams[player.team].size - 1 <= 0) return false; // Fails if The player is the last player in the room
