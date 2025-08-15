@@ -1,0 +1,3 @@
+const MAX_PARALLEL_REQUESTS = 20;
+
+export { MAX_PARALLEL_REQUESTS };

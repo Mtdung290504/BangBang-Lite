@@ -6,8 +6,6 @@ import { safeArea, asInstanceOf } from '../../../utils/safe-handlers.js';
  * @typedef {import('socket.io-client').Socket} Socket
  */
 
-let firstInit = true;
-
 /**
  * ***Note:*** Hiện tại mới là raw object nhận từ socket, chưa chuyển thành Player
  * @type {{ [playerID: string]: Player }}
@@ -20,10 +18,14 @@ let readyPlayers = [];
 /**@type {string[]} */
 let loadedPlayers = [];
 
+let firstInit = true;
+
+export { players, readyPlayers, loadedPlayers, setup };
+
 /**
  * @param {Socket} socket
  */
-export function setup(socket) {
+function setup(socket) {
 	socket.on('response:join-failed', (msg) => {
 		alert(`Không thể vào room, nguyên nhân: ${msg}`);
 		location.href = '/';
@@ -32,6 +34,10 @@ export function setup(socket) {
 	socket.on('dispatch:update-players', (roomData) => {
 		// `players` có thể null với response của event `toggle-ready-state`
 		players = roomData.players ?? players; // Mới là raw object, chưa chuyển thành `Player`
+		for (const playerID in players) {
+			const rawPlayer = players[playerID];
+			players[playerID] = Player.fromJSON(rawPlayer);
+		}
 		readyPlayers = roomData.readyPlayers ?? readyPlayers;
 
 		// First time connect event, log or do sth in future

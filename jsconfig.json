@@ -25,9 +25,9 @@
         // "strict": true, // ⬅️ Gợi ý thêm
         // "noEmit": true // ⬅️ Không xuất file, chỉ dùng để kiểm tra
     },
-    "include": [
-        "./**/*.js"
-    ],
+    // "include": [
+    //     "./**/*.js"
+    // ],
     "exclude": [
         "node_modules"
     ]

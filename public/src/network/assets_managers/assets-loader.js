@@ -1,13 +1,10 @@
-import { ASSETS_PATH } from '../configs/constants/paths.js';
+import { ASSETS_PATH } from '../../configs/constants/paths.js';
 
-const LOAD_SPRITE_LOG_PREFIX = '> [net.assets-loader.loadSprite]';
-const LOAD_MAP_LOG_PREFIX = '> [net.assets-loader.loadMapAssets]';
+const LOAD_SPRITE_LOG_PREFIX = '> [Net.assets-loader.loadSprite]';
+const LOAD_MAP_LOG_PREFIX = '> [Net.assets-loader.loadMapAssets]';
+const LOAD_MAP_ICON_LOG_PREFIX = '> [Net.assets-loader.loadMapIcon]';
 
-// Used to limit/manage the number of parallel requests in the future
-loadSprite['req-consumtion'] = 2;
-loadMapAssets['req-consumtion'] = 2;
-
-export { loadSprite, loadMapAssets };
+export { loadSprite, loadMapAssets, loadMapIcon };
 
 /**
  * Load sprite của tank, nhận về manifest và HTMLImageElement
@@ -30,7 +27,7 @@ export { loadSprite, loadMapAssets };
  */
 async function loadSprite(tankID, skinID, spriteKey, logger = {}) {
 	const { log = console.log, warn = console.warn, error = console.error } = logger;
-	const spriteDisplay = `[${tankID}][${skinID}][${spriteKey}]`;
+	const spriteDisplay = `[${tankID}_${skinID}_${spriteKey}]`;
 	const msg = (text) => `${LOAD_SPRITE_LOG_PREFIX} Sprite:${spriteDisplay} - ${text}`;
 
 	const { manifestPath, spritePath } = ASSETS_PATH.sprite(tankID, spriteKey, skinID);
@@ -46,7 +43,7 @@ async function loadSprite(tankID, skinID, spriteKey, logger = {}) {
 	});
 	const manifestPromise = fetch(manifestPath).then(async (res) => {
 		if (res.status === 404) {
-			warn(msg('Manifest does not exist, using default value'));
+			log(msg('Manifest does not exist, using default value'));
 			return null;
 		}
 		if (!res.ok) {
@@ -89,7 +86,7 @@ async function loadSprite(tankID, skinID, spriteKey, logger = {}) {
  */
 async function loadMapAssets(mapID, logger = {}) {
 	const { log = console.log, warn = console.warn, error = console.error } = logger;
-	const msg = (text) => `${LOAD_MAP_LOG_PREFIX} Map:${mapID} - ${text}`;
+	const msg = (text) => `${LOAD_MAP_LOG_PREFIX} Map:[${mapID}] - ${text}`;
 
 	const { backgroundPath, scenesPath } = ASSETS_PATH.map(mapID);
 	log(msg('Start loading'));
@@ -124,6 +121,44 @@ async function loadMapAssets(mapID, logger = {}) {
 
 		log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
 		return { background, scenes };
+	} catch (e) {
+		error(e);
+		throw e;
+	}
+}
+
+/**
+ * Load icon của map
+ *
+ * @param {number} mapID
+ * @param {{
+ * 		log?: (msg: string) => void,
+ * 		warn?: (msg: string) => void,
+ * 		error?: (msg: string | Error) => void
+ * }} [logger] - Logger (option - default dùng console)
+ *
+ * @returns {Promise<HTMLImageElement>}
+ *
+ * @throws {Error} Khi tải icon lỗi
+ */
+async function loadMapIcon(mapID, logger = {}) {
+	const { log = console.log, error = console.error } = logger;
+	const msg = (text) => `${LOAD_MAP_ICON_LOG_PREFIX} MapIcon:[${mapID}] - ${text}`;
+
+	const { iconPath } = ASSETS_PATH.map(mapID);
+	log(msg('Start loading'));
+	const startTime = performance.now();
+
+	try {
+		const img = await new Promise((resolve, reject) => {
+			const image = new Image();
+			image.src = iconPath;
+			image.onload = () => resolve(image);
+			image.onerror = (err) => reject(new Error(msg(`Error loading map icon: ${err}`)));
+		});
+
+		log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
+		return img;
 	} catch (e) {
 		error(e);
 		throw e;

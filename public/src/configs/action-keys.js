@@ -1,4 +1,4 @@
-import { LOCAL_CONTROL_KEY } from './constants/system.js';
+import { LOCAL_CONTROL_KEY } from './constants/player-local-configs.js';
 
 export const ACTIONS_KEYS = {
 	// Moving

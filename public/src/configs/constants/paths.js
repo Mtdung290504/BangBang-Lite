@@ -46,6 +46,7 @@ export const ASSETS_PATH = {
 	 * Lấy đường dẫn các layer của 1 map kèm tên file, path
 	 *
 	 * @param {number} mapID - ID của map
+	 *
 	 * @returns {{
 	 * 		path: string
 	 * 		background: string
