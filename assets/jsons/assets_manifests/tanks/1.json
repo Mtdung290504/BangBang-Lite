@@ -1,8 +1,0 @@
-{
-    "root-path": "/assets/images/tanks/001/",
-    "0": {
-        "body": "body.webp",
-        "head": "head.webp",
-        "normal-attack": "normal-attack.webp"
-    }
-}
