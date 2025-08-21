@@ -1,16 +1,12 @@
-interface Shape {
-	type: string;
-	size: any;
-}
-
-interface Rectangle extends Shape {
+interface Rectangle {
 	type: 'rectangle';
-	size: { width: number; height: number };
+	width: number;
+	height: number;
 }
 
-interface Circle extends Shape {
+interface Circle {
 	type: 'circle';
-	size: { radius: number };
+	radius: number;
 
 	/**
 	 * - Góc của hình quạt, đơn vị: độ
@@ -24,6 +20,12 @@ export type Collider = Rectangle | Circle;
 interface Appearance {
 	/** Sprite key của thực thể để render */
 	'sprite-key': string;
+
+	/** Nếu không khai báo, mặc định lấy `frame-size` từ `sprite-manifest` */
+	'render-size'?: {
+		width: number;
+		height: number;
+	};
 }
 
 export type { Appearance };

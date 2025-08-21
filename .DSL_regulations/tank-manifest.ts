@@ -12,7 +12,7 @@ interface SurvivalStats {
 
 interface AttackPowerStats {
 	'damage-type': 'physical' | 'energy';
-	value: number;
+	damage: number;
 	penetration: number;
 	'crit-damage': 150 | 200;
 }
@@ -30,6 +30,9 @@ interface FullStats {
 }
 
 interface TankManifest {
+	/** Thực tế hiện tại không cần, đưa vào đọc manifest cho dễ */
+	name: string;
+
 	/** Default: 52.5 */
 	'hitbox-size'?: number;
 

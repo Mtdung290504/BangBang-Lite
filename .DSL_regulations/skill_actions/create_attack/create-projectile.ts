@@ -1,4 +1,4 @@
-import type { Appearance } from '../../common-types';
+import type { Appearance, Collider } from '../../common-types';
 import type { SkillEventHandler } from '../../events/event-manifest';
 import type { ValueWithUnit } from '../../utils-types';
 
@@ -41,6 +41,8 @@ interface CreateProjectileOptions extends Appearance, SkillEventHandler {
 
 	/** Sprite xuất hiện khi đánh trúng */
 	'hit-effect-sprite'?: string;
+
+	collider: Collider;
 }
 
 /** Default shooting action with sprite key = `normal-attack` */
@@ -48,6 +50,9 @@ interface CreateDefaultProjectile
 	extends Omit<CreateProjectileOptions, 'flight-range' | 'flight-speed' | 'sprite-key' | 'on-hit'> {
 	name: 'create-default-projectile';
 	enhancements?: ProjectileEnhancement[];
+
+	/** Tùy chọn vì mặc định đã là gây damage */
+	'on-hit'?: SkillEventHandler['on-hit'];
 
 	// Note:
 	// flight-range: inherit
@@ -67,6 +72,11 @@ export type CreateProjectileAction = CreateDefaultProjectile | CreateCustomProje
 
 const defaultShoot: CreateDefaultProjectile = {
 	name: 'create-default-projectile',
+	collider: {
+		type: 'rectangle',
+		width: 0,
+		height: 0,
+	},
 };
 const customShoot: CreateCustomProjectile = {
 	name: 'create-custom-projectile',
@@ -86,4 +96,10 @@ const customShoot: CreateCustomProjectile = {
 			'damage-reduction': { amount: 25 },
 		},
 	],
+
+	collider: {
+		type: 'rectangle',
+		width: 0,
+		height: 0,
+	},
 };

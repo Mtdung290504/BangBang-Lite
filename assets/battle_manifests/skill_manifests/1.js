@@ -1,27 +1,5 @@
-import type { SkillEntry } from './active-skill-manifest';
-import type { PassiveSkillEntry } from './passive-skill-manifest';
-
-/**
- * Định nghĩa tổng cho manifest, có thể có phase hoặc skill
- * @todo Cần bổ sung thêm `passive` skill
- */
-interface SkillManifest<Phases extends number[] = []> {
-	/** Nếu có phase, khai báo các phase */
-	phases?: Phases extends [] ? never : Phases;
-
-	// Passive skills
-	passive: PassiveSkillEntry<Phases>[];
-
-	// Active skills
-	'normal-attack': SkillEntry<Phases>;
-	s1: SkillEntry<Phases>;
-	s2: SkillEntry<Phases>;
-	ultimate: SkillEntry<Phases>;
-}
-
-export type { SkillManifest };
-
-const test: SkillManifest = {
+/**@type {import('.DSL_regulations/skills/skill-manifest').SkillManifest} */
+export default {
 	passive: [
 		{
 			type: 'permanent-buff',
@@ -42,6 +20,7 @@ const test: SkillManifest = {
 	'normal-attack': {
 		type: 'normal',
 		property: 'normal-attack',
+		'casting-method': { type: 'in-direction' },
 		actions: [
 			{
 				name: 'create-default-projectile',
@@ -60,16 +39,58 @@ const test: SkillManifest = {
 		type: 'normal',
 		property: 'skill',
 		cooldown: 8,
+
+		// Cách dùng chiêu: chọn hướng
+		'casting-method': { type: 'in-direction' },
+
+		// Tiêu hao 25đ năng lượng
 		'resource-consumption': { energy: { amount: 25, unit: 'point' } },
-		actions: ['implement-later: Gây damage, tăng tốc, bóng quay về'],
+
+		actions: [
+			{
+				// Bắn đạn
+				name: 'create-custom-projectile',
+
+				// Event của đạn
+				'on-hit': {
+					enemy: [
+						// Gây 135% tấn công
+						{ name: 'dealt-damage', source: { attribute: 'damage', of: 'self' }, value: { amount: 135 } },
+						'implement-later: Bóng quay về, nhặt được hồi năng lượng, tạo giáp',
+					],
+				},
+				'on-dealt-damage': {
+					self: ['implement-later: Tăng tốc 75%'],
+				},
+
+				// Thông số đạn
+				'flight-speed': 10,
+
+				// Hitbox
+				collider: {
+					type: 'circle',
+					radius: 30,
+				},
+
+				// Sprite đạn
+				'sprite-key': 's1',
+				'render-size': {
+					width: 60,
+					height: 60,
+				},
+			},
+		],
 	},
 
 	s2: {
+		// Skill cộng dồn
 		type: 'stacked',
 		property: 'skill',
 		'max-stack': 2,
 		'stack-time': 8,
 		cooldown: 1.5,
+
+		'casting-method': { type: 'in-direction' },
 		'resource-consumption': { energy: { amount: 50, unit: 'point' } },
 		actions: ['implement-later: Lướt'],
 	},
@@ -78,7 +99,8 @@ const test: SkillManifest = {
 		type: 'normal',
 		property: 'skill',
 		cooldown: 8,
-		'resource-consumption': { energy: { amount: 0, unit: 'point' } },
+
+		'casting-method': { type: 'in-direction' },
 		actions: ['implement-later: Tung bóng bay xuyên, đẩy lui'],
 	},
 };

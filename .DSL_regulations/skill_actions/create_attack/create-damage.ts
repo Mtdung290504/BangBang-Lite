@@ -2,6 +2,7 @@ import type { SurvivalStats, AttackPowerStats, AdditionalStats } from '../../tan
 import type { ValueWithUnit } from '../../utils-types';
 
 interface CreateDamage {
+	name: 'dealt-damage';
 	source: {
 		attribute:
 			| keyof SurvivalStats
