@@ -1,3 +1,5 @@
+import { SkillAction } from '../skill_actions/index';
+
 type TankEventActors = {
 	[K in [
 		// Khi dùng skill thì kích hoạt thêm gì đó
@@ -43,32 +45,15 @@ interface TankEventActorsMap extends TankEventActors {
 	'on-destroyed': ['source', 'self'];
 }
 
-interface SkillTargets {
-	/** Áp dụng lên toàn bộ đồng minh, kể cả bản thân */
-	allies;
-
-	/** Chỉ áp dụng lên kẻ địch */
-	enemy;
-
-	/** Chỉ áp dụng lên bản thân */
-	self;
-}
-
-interface SkillEvents {
+interface SkillEventHandler {
 	/** Khi skill trúng 1 target nào đó, khai báo những gì áp dụng lên target */
-	'on-hit';
+	'on-hit': { [K in ['ally', 'enemy', 'self'][number]]?: SkillAction[] };
 
 	/** Khi gây sát thương thành công, bản thân kích hoạt gì đó, áp dụng lên kẻ địch gì đó */
-	'on-dealt-damage';
+	'on-dealt-damage'?: { [K in ['enemy', 'self'][number]]?: SkillAction[] };
 }
 
-interface SkillEventActors extends SkillEvents {
-	'on-hit': SkillTargets;
+// Usage in future:
+// type T = { [K in SkillEventActorsMap['on-hit'][number]]: any };
 
-	'on-dealt-damage': {
-		self;
-		enemy;
-	};
-}
-
-export type { TankEventActorsMap, SkillEventActors };
+export type { TankEventActorsMap, SkillEventHandler };

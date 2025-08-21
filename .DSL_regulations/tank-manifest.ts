@@ -21,9 +21,6 @@ interface AdditionalStats {
 	'energy-point': 100 | 150 | 200;
 }
 
-/**
- * ***Note:*** Nếu để phase này có năng lượng mà phase khác không sẽ chưa có case xử lý
- */
 interface FullStats {
 	shooting: ShootingStats;
 	survival: SurvivalStats;
@@ -32,10 +29,7 @@ interface FullStats {
 	'movement-speed': 160 | 165 | 170 | 175 | 180;
 }
 
-/** Phase 2+ là Partial */
-type PhasePatch = Partial<{ [K in keyof FullStats]: Partial<FullStats[K]> }>;
-
-export interface TankManifest {
+interface TankManifest {
 	/** Default: 52.5 */
 	'hitbox-size'?: number;
 
@@ -43,5 +37,7 @@ export interface TankManifest {
 	'render-size'?: number;
 
 	/** Phase 1 full, Phase 2+ optional */
-	'stat-components': [FullStats, ...PhasePatch[]];
+	'stat-components': FullStats;
 }
+
+export type { TankManifest, ShootingStats, SurvivalStats, AttackPowerStats, AdditionalStats };

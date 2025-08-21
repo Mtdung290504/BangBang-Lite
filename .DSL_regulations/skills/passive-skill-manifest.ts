@@ -1,4 +1,6 @@
 import type { TankEventActorsMap } from '../events/event-manifest';
+import { AttackPowerStats, ShootingStats, SurvivalStats } from '../tank-manifest';
+import { ValueWithUnit } from '../utils-types';
 import type { SkillAction, SkillTiming } from './base-skill';
 
 /**
@@ -42,7 +44,10 @@ interface PermanentBuffPassive {
 	type: 'permanent-buff';
 
 	/** Các stat được buff (Triển khai sau) */
-	'stat-modifiers': [];
+	'stat-modifiers': {
+		attribute: keyof ShootingStats | keyof SurvivalStats | keyof AttackPowerStats;
+		value: ValueWithUnit;
+	}[];
 
 	/**
 	 * Điều kiện để buff có hiệu lực (optional)

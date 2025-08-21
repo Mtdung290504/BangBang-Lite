@@ -7,7 +7,7 @@ import type { PassiveSkillEntry } from './passive-skill-manifest';
  */
 interface SkillManifest<Phases extends number[] = []> {
 	/** Nếu có phase, khai báo các phase */
-	phases: Phases extends [] ? never : Phases;
+	phases?: Phases extends [] ? never : Phases;
 
 	// Passive skills
 	passive: PassiveSkillEntry<Phases>[];
@@ -20,3 +20,56 @@ interface SkillManifest<Phases extends number[] = []> {
 }
 
 export type { SkillManifest };
+
+const test: SkillManifest = {
+	passive: [
+		{
+			type: 'permanent-buff',
+			'stat-modifiers': [
+				{
+					attribute: 'flight-speed',
+					value: { amount: 50 },
+				},
+			],
+		},
+		{
+			type: 'event-triggered',
+			'trigger-event': 'on-activate-skill',
+			actions: 'implement-later: Tạo khiên phản đòn',
+		},
+	],
+
+	'normal-attack': {
+		type: 'normal',
+		actions: [
+			{
+				name: 'create-default-projectile',
+				enhancements: [{ name: 'bouncing', 'hit-limit': 3, 'damage-reduction': { amount: 50 } }],
+				'on-dealt-damage': { self: ['implement-later: Hồi 5 năng lượng'] },
+			},
+		],
+	},
+
+	s1: {
+		type: 'normal',
+		cooldown: 8,
+		'resource-consumption': { energy: { amount: 25, unit: 'point' } },
+		actions: ['implement-later: Gây damage, tăng tốc, bóng quay về'],
+	},
+
+	s2: {
+		type: 'stacked',
+		'max-stack': 2,
+		'stack-time': 8,
+		cooldown: 1.5,
+		'resource-consumption': { energy: { amount: 50, unit: 'point' } },
+		actions: ['implement-later: Lướt'],
+	},
+
+	ultimate: {
+		type: 'normal',
+		cooldown: 8,
+		'resource-consumption': { energy: { amount: 0, unit: 'point' } },
+		actions: ['implement-later: Tung bóng bay xuyên, đẩy lui'],
+	},
+};

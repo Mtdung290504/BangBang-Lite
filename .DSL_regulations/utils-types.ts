@@ -7,7 +7,9 @@ type ValueUnit = 'point' | 'percent';
  */
 interface ValueWithUnit {
 	amount: number;
-	unit: ValueUnit;
+
+	/** Default using % */
+	unit?: ValueUnit;
 }
 
 export type { ValueWithUnit };

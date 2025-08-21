@@ -1,9 +1,5 @@
 import type { SkillConsumption } from './skill-consumption';
-
-type SkillAction = {
-	/** Triển khai sau */
-	actions: [];
-};
+import type { SkillAction } from '../skill_actions/index';
 
 /** Thời gian hồi chiêu dùng chung cho mọi skill */
 interface SkillTiming {
@@ -17,7 +13,10 @@ interface SkillTiming {
  * - Nó tiêu hao gì
  */
 interface ActionBased {
-	/** Định nghĩa loại và lượng tài nguyên tiêu hao */
+	/**
+	 * Định nghĩa loại và lượng tài nguyên tiêu hao
+	 * Note: Một số skill có thể sử dụng current-energy-point để tăng damage nên tung ra, lưu snapshot vào skill hay gì đó rồi hẵn trừ
+	 */
 	'resource-consumption'?: SkillConsumption;
 
 	/** Danh sách hành động */
