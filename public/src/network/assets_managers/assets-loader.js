@@ -3,8 +3,10 @@ import { ASSETS_PATH } from '../../configs/constants/paths.js';
 const LOAD_SPRITE_LOG_PREFIX = '> [Net.assets-loader.loadSprite]';
 const LOAD_MAP_LOG_PREFIX = '> [Net.assets-loader.loadMapAssets]';
 const LOAD_MAP_ICON_LOG_PREFIX = '> [Net.assets-loader.loadMapIcon]';
+const LOAD_TANK_MANIFESTS_LOG_PREFIX = '> [Net.assets-loader.loadTankManifests]';
+const LOAD_SKILL_DESCRIPTION_LOG_PREFIX = '> [Net.assets-loader.loadSkillDescription]';
 
-export { loadSprite, loadMapAssets, loadMapIcon };
+export { loadSprite, loadTankManifests, loadSkillDescription, loadMapAssets, loadMapIcon };
 
 /**
  * Load sprite của tank, nhận về manifest và HTMLImageElement
@@ -13,14 +15,17 @@ export { loadSprite, loadMapAssets, loadMapIcon };
  * @param {number} skinID
  * @param {string} spriteKey
  * @param {{
- * 		log?: (msg: string) => void,
- * 		warn?: (msg: string) => void,
+ * 		log?: (msg: string) => void
+ * 		warn?: (msg: string) => void
  * 		error?: (msg: string | Error) => void
  * }} [logger] - Logger (option - default dùng console)
  *
  * @returns {Promise<{
  * 		sprite: HTMLImageElement,
- * 		manifest: import('.types/sprite-manifest.js').SpriteManifest | null
+ * 		manifest: import('.types/sprite-manifest').SpriteManifest | {
+ * 			'frame-size': { width: number, height: number },
+ * 			'frames-position': [{ x: 0, y: 0 }],
+ * 		}
  * }>}
  *
  * @throws {Error} Khi tải ảnh hoặc manifest lỗi (trừ 404)
@@ -68,12 +73,88 @@ async function loadSprite(tankID, skinID, spriteKey, logger = {}) {
 }
 
 /**
+ * Load tank manifests (stats và skills)
+ *
+ * @param {number} tankID
+ * @param {{
+ * 		log?: (msg: string) => void
+ * 		warn?: (msg: string) => void
+ * 		error?: (msg: string | Error) => void
+ * }} [logger] - Logger (option - default dùng console)
+ *
+ * @returns {Promise<{
+ * 		stats: import('.DSL_regulations/tank-manifest').TankManifest
+ * 		skills: import('.DSL_regulations/skills/skill-manifest').SkillManifest
+ * }>}
+ *
+ * @throws {Error} Khi tải tank manifest lỗi
+ */
+async function loadTankManifests(tankID, logger = {}) {
+	const { log = console.log, error = console.error } = logger;
+	const msg = (text) => `${LOAD_TANK_MANIFESTS_LOG_PREFIX} Tank:${tankID} - ${text}`;
+
+	const { manifestPath } = ASSETS_PATH.tankManifest(tankID);
+	log(msg('Start loading'));
+	const startTime = performance.now();
+
+	try {
+		const module = await import(manifestPath);
+
+		log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
+		return {
+			stats: module.stats,
+			skills: module.skills,
+		};
+	} catch (e) {
+		error(e);
+		throw e;
+	}
+}
+
+/**
+ * Load skill description của tank
+ *
+ * @param {number} tankID
+ * @param {{
+ * 		log?: (msg: string) => void
+ * 		warn?: (msg: string) => void
+ * 		error?: (msg: string | Error) => void
+ * }} [logger] - Logger (option - default dùng console)
+ *
+ * @returns {Promise<any>}
+ *
+ * @throws {Error} Khi tải skill description lỗi
+ */
+async function loadSkillDescription(tankID, logger = {}) {
+	const { log = console.log, error = console.error } = logger;
+	const msg = (text) => `${LOAD_SKILL_DESCRIPTION_LOG_PREFIX} Tank:${tankID} - ${text}`;
+
+	const { skillDescriptionPath } = ASSETS_PATH.tankManifest(tankID);
+	log(msg('Start loading'));
+	const startTime = performance.now();
+
+	try {
+		const res = await fetch(skillDescriptionPath);
+		if (!res.ok) {
+			throw new Error(msg(`Error loading skill description (HTTP:${res.status})`));
+		}
+
+		const skillDescription = await res.json();
+		log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
+		return skillDescription;
+	} catch (e) {
+		error(e);
+		throw e;
+	}
+}
+
+/**
  * Load toàn bộ asset của map gồm background layer và scene
  *
  * @param {number} mapID
  * @param {{
- * 		log?: (msg: string) => void,
- * 		warn?: (msg: string) => void,
+ * 		log?: (msg: string) => void
+ * 		warn?: (msg: string) => void
  * 		error?: (msg: string | Error) => void
  * }} [logger] - Logger (option - default dùng console)
  *
@@ -132,8 +213,8 @@ async function loadMapAssets(mapID, logger = {}) {
  *
  * @param {number} mapID
  * @param {{
- * 		log?: (msg: string) => void,
- * 		warn?: (msg: string) => void,
+ * 		log?: (msg: string) => void
+ * 		warn?: (msg: string) => void
  * 		error?: (msg: string | Error) => void
  * }} [logger] - Logger (option - default dùng console)
  *

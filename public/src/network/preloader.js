@@ -1,5 +1,4 @@
 import { MAX_PARALLEL_REQUESTS } from '../configs/constants/game-system-configs.js';
-import { ASSETS_PATH } from '../configs/constants/paths.js';
 import { loader, storage } from './assets_managers/index.js';
 
 const LOG_PREFIX = '> [Net.preloader]';
@@ -91,8 +90,11 @@ async function preloadPhase1() {
  * - *Note for future:* Tải icon skill cho tank sử dụng skin !== 0
  * - *Note for future:* Tải các object trên map !== 0
  * - *Note for future:* Có thể cần parse DSL để import động builder (Cái này khi nào hệ thống rất lớn rồi tính)
+ *
+ * @param {number} mapID
+ * @param {import('models/Player.js').default[]} players
  */
-function preloadPhase2() {
+function preloadPhase2(mapID, players) {
 	// TODO: Preload parallel but < MAX_PARALLEL_REQUESTS parallel requests
 	return true;
 }

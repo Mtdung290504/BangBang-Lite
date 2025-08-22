@@ -12,7 +12,7 @@ interface SurvivalStats {
 
 interface AttackPowerStats {
 	'damage-type': 'physical' | 'energy';
-	damage: number;
+	'attack-power': number;
 	penetration: number;
 	'crit-damage': 150 | 200;
 }
@@ -39,7 +39,6 @@ interface TankManifest {
 	/** Default: 52.5 */
 	'render-size'?: number;
 
-	/** Phase 1 full, Phase 2+ optional */
 	'stat-components': FullStats;
 }
 

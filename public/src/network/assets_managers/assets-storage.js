@@ -8,22 +8,38 @@
  */
 
 /**
+ * @typedef {import('.types/sprite-manifest.js').SpriteManifest} SpriteManifest
+ * @typedef {import('.DSL_regulations/tank-manifest').TankManifest} TankManifest
+ * @typedef {import('.DSL_regulations/skills/skill-manifest').SkillManifest} SkillManifest
+ */
+
+/**
  * Lưu sprite, key dạng `${tankID}_${skinID}_${spriteKey}`
  * @type {Record<string, { sprite: HTMLImageElement, manifest: import('.types/sprite-manifest.js').SpriteManifest }>}
  */
-const sprites = {};
+export const sprites = {};
 
 /**
  * Lưu icon của map, key là mapID
- * @type {Map<number | string, HTMLImageElement>}
+ * @type {Map<number, HTMLImageElement>}
  */
-const mapIcons = new Map();
+export const mapIcons = new Map();
 
 /**
  * Lưu background và scenes của map, key là mapID
- * @type {Map<number | string, { background: HTMLImageElement, scenes: HTMLImageElement | null }>}
+ * @type {Map<number, { background: HTMLImageElement, scenes: HTMLImageElement | null }>}
  */
-const mapAssets = new Map();
+export const mapAssets = new Map();
+
+/**
+ * Lưu tank manifest như chỉ số, skills, key là tankID
+ * @type {Map<number, {
+ * 		stats?: TankManifest
+ * 		skills?: SkillManifest
+ * 		skillDescription?: any
+ * }>}
+ */
+export const tankManifests = new Map();
 
 /**
  * Thêm sprite vào storage
@@ -73,7 +89,7 @@ export function hasSprite(tankID, skinID, spriteKey) {
  * @param {number | string} tankID
  * @param {number | string} skinID
  *
- * @returns {(spriteKey: string) => { sprite: HTMLImageElement, manifest: import('.types/sprite-manifest.js').SpriteManifest } | undefined}
+ * @returns {(spriteKey: string) => { sprite: HTMLImageElement, manifest: SpriteManifest } | undefined}
  */
 export function getSpriteKeyBuilder(tankID, skinID) {
 	return function (spriteKey) {
@@ -84,7 +100,7 @@ export function getSpriteKeyBuilder(tankID, skinID) {
 /**
  * Thêm icon map
  *
- * @param {number | string} mapID
+ * @param {number} mapID
  * @param {HTMLImageElement} img
  */
 export function setMapIcon(mapID, img) {
@@ -94,7 +110,7 @@ export function setMapIcon(mapID, img) {
 /**
  * Lấy icon map
  *
- * @param {number | string} mapID
+ * @param {number} mapID
  * @returns {HTMLImageElement|undefined}
  */
 export function getMapIcon(mapID) {
@@ -104,7 +120,7 @@ export function getMapIcon(mapID) {
 /**
  * Thêm asset map (background, scenes)
  *
- * @param {number | string} mapID
+ * @param {number} mapID
  * @param {{ background: HTMLImageElement, scenes: HTMLImageElement | null }} assets
  */
 export function setMapAssets(mapID, assets) {
@@ -114,9 +130,73 @@ export function setMapAssets(mapID, assets) {
 /**
  * Lấy asset map
  *
- * @param {number | string} mapID
+ * @param {number} mapID
  * @returns {{ background: HTMLImageElement, scenes: HTMLImageElement | null }|undefined}
  */
 export function getMapAssets(mapID) {
 	return mapAssets.get(mapID);
+}
+
+/**
+ * Thêm tank manifest (stats, skills)
+ *
+ * @param {number} tankID
+ * @param {{ stats: TankManifest, skills: SkillManifest }} manifests
+ */
+export function setTankManifests(tankID, manifests) {
+	const existing = tankManifests.get(tankID);
+	if (existing) {
+		existing.stats = manifests.stats;
+		existing.skills = manifests.skills;
+	} else {
+		tankManifests.set(tankID, {
+			stats: manifests.stats,
+			skills: manifests.skills,
+		});
+	}
+}
+
+/**
+ * Thêm skill description cho tank
+ *
+ * @param {number} tankID
+ * @param {any} skillDescription
+ */
+export function setSkillDescription(tankID, skillDescription) {
+	const existing = tankManifests.get(tankID);
+	if (existing) {
+		existing.skillDescription = skillDescription;
+	} else {
+		tankManifests.set(tankID, {
+			skillDescription,
+		});
+	}
+}
+
+/**
+ * Lấy tank manifest
+ *
+ * @param {number} tankID
+ * @returns {{ stats: TankManifest, skills: SkillManifest, skillDescription: any }}
+ */
+export function getTankManifests(tankID) {
+	const result = tankManifests.get(tankID);
+
+	if (!result) throw new Error('Manifest does not exist');
+	if (!result.stats || !result.skills || !result.skillDescription) {
+		console.error('Manifest missing element', result);
+		throw new Error('Manifest missing element');
+	}
+
+	return /** @type {{ stats: TankManifest, skills: SkillManifest, skillDescription: any }} */ (result);
+}
+
+/**
+ * Kiểm tra tank manifest đã tồn tại chưa
+ *
+ * @param {number} tankID
+ * @returns {boolean}
+ */
+export function hasTankManifests(tankID) {
+	return tankManifests.has(tankID);
 }

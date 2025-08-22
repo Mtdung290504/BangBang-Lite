@@ -1,5 +1,42 @@
-/**@type {import('.DSL_regulations/skills/skill-manifest').SkillManifest} */
-export default {
+/**
+ * @typedef {import('.DSL_regulations/tank-manifest').TankManifest} TankManifest
+ * @typedef {import('.DSL_regulations/skills/skill-manifest').SkillManifest} SkillManifest
+ */
+
+/**@type {TankManifest} */
+export const stats = {
+	name: 'Tsubasa',
+
+	'stat-components': {
+		shooting: {
+			'fire-rate': 90,
+			'fire-range': 552,
+			'flight-speed': 10,
+		},
+
+		survival: {
+			'limit-HP': 2840,
+			'physical-armor': 88,
+			'energy-shield': 68,
+		},
+
+		'attack-power': {
+			'damage-type': 'physical',
+			'attack-power': 324,
+			penetration: 36,
+			'crit-damage': 200,
+		},
+
+		additional: {
+			'energy-point': 150,
+		},
+
+		'movement-speed': 160,
+	},
+};
+
+/**@type {SkillManifest} */
+export const skills = {
 	passive: [
 		{
 			type: 'permanent-buff',
@@ -55,7 +92,11 @@ export default {
 				'on-hit': {
 					enemy: [
 						// Gây 135% tấn công
-						{ name: 'dealt-damage', source: { attribute: 'damage', of: 'self' }, value: { amount: 135 } },
+						{
+							name: 'dealt-damage',
+							source: { attribute: 'attack-power', of: 'self' },
+							value: { amount: 135 },
+						},
 						'implement-later: Bóng quay về, nhặt được hồi năng lượng, tạo giáp',
 					],
 				},
