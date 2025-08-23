@@ -16,18 +16,22 @@ const { viewBinding } = createViewBinding({
 	tankHeadImage: '#current-tank-head = img',
 });
 
-export const roomView = viewBinding.bind();
+export const views = viewBinding.bind();
 
 // Initialize UI:
-setMapImageView(1);
-setTankImageView(1);
+// setMapImageView(1);
+// setTankImageView(1);
+
+export function destroy() {
+	views.container.remove();
+}
 
 /**
  * @param {string} roomID
  * @returns {void}
  */
 export function setRoomIDView(roomID) {
-	roomView.roomIDLabel.setAttribute('room-id', roomID);
+	views.roomIDLabel.setAttribute('room-id', roomID);
 }
 
 /**
@@ -35,7 +39,7 @@ export function setRoomIDView(roomID) {
  * @returns {void}
  */
 export function setMapImageView(mapID) {
-	roomView.mapImage.src = ASSETS_PATH.map(mapID).iconPath;
+	views.mapImage.src = ASSETS_PATH.map(mapID).iconPath;
 }
 
 /**
@@ -43,8 +47,8 @@ export function setMapImageView(mapID) {
  * @returns {void}
  */
 export function setTankImageView(tankID) {
-	roomView.tankBodyImage.src = ASSETS_PATH.sprite(tankID, 'body').spritePath;
-	roomView.tankHeadImage.src = ASSETS_PATH.sprite(tankID, 'head').spritePath;
+	views.tankBodyImage.src = ASSETS_PATH.sprite(tankID, 'body').spritePath;
+	views.tankHeadImage.src = ASSETS_PATH.sprite(tankID, 'head').spritePath;
 }
 
 /**
@@ -86,7 +90,7 @@ export function renderPlayersView(players, readyPlayers) {
  */
 export function setReadyState(readyState) {
 	console.log(`> [RoomUI.setReadyState]: Value::${readyState}`);
-	roomView.readyBtn.classList[readyState ? 'add' : 'remove']('cancel');
+	views.readyBtn.classList[readyState ? 'add' : 'remove']('cancel');
 }
 
 /**
@@ -94,7 +98,7 @@ export function setReadyState(readyState) {
  * @param {(mapID: number) => void} itemClickListener
  */
 export function renderMapModal(mapIDs, itemClickListener) {
-	const { modalMapGrid } = roomView;
+	const { modalMapGrid } = views;
 	modalMapGrid.innerHTML = '';
 
 	mapIDs.forEach((mapID) => {
@@ -114,7 +118,7 @@ export function renderMapModal(mapIDs, itemClickListener) {
  * @param {(tankID: number) => void} itemClickListener
  */
 export function renderTankModal(tankIDs, itemClickListener) {
-	const { modalTankGrid } = roomView;
+	const { modalTankGrid } = views;
 	modalTankGrid.innerHTML = '';
 
 	tankIDs.forEach((tankID) => {

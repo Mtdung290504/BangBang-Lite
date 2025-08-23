@@ -8,14 +8,15 @@
  */
 
 /**
- * @typedef {import('.types/sprite-manifest.js').SpriteManifest} SpriteManifest
- * @typedef {import('.DSL_regulations/tank-manifest').TankManifest} TankManifest
- * @typedef {import('.DSL_regulations/skills/skill-manifest').SkillManifest} SkillManifest
+ * @typedef {import('.types/sprite-manifest').SpriteManifest} SpriteManifest
+ * @typedef {import('DSL/tank-manifest').TankManifest} TankManifest
+ * @typedef {import('DSL/skills/skill-manifest').SkillManifest} SkillManifest
+ * @typedef {import('DSL/map-manifest').MapManifest} MapManifest
  */
 
 /**
  * Lưu sprite, key dạng `${tankID}_${skinID}_${spriteKey}`
- * @type {Record<string, { sprite: HTMLImageElement, manifest: import('.types/sprite-manifest.js').SpriteManifest }>}
+ * @type {Record<string, { sprite: HTMLImageElement, manifest: SpriteManifest }>}
  */
 export const sprites = {};
 
@@ -42,12 +43,18 @@ export const mapAssets = new Map();
 export const tankManifests = new Map();
 
 /**
+ * Lưu map manifest
+ * @type {Map<number, MapManifest>}
+ */
+export const mapManifests = new Map();
+
+/**
  * Thêm sprite vào storage
  *
- * @param {number | string} tankID  ID của tank
- * @param {number | string} skinID  ID của skin
+ * @param {number} tankID  ID của tank
+ * @param {number} skinID  ID của skin
  * @param {string} spriteKey  Tên sprite
- * @param {{ sprite: HTMLImageElement, manifest: import('.types/sprite-manifest.js').SpriteManifest }} spriteData  Dữ liệu sprite và manifest
+ * @param {{ sprite: HTMLImageElement, manifest: SpriteManifest }} spriteData  Dữ liệu sprite và manifest
  */
 export function setSprite(tankID, skinID, spriteKey, spriteData) {
 	const key = `${tankID}_${skinID}_${spriteKey}`;
@@ -57,11 +64,9 @@ export function setSprite(tankID, skinID, spriteKey, spriteData) {
 /**
  * Lấy sprite từ storage
  *
- * @param {number | string} tankID
- * @param {number | string} skinID
+ * @param {number} tankID
+ * @param {number} skinID
  * @param {string} spriteKey
- *
- * @returns {{ sprite: HTMLImageElement, manifest: import('.types/sprite-manifest.js').SpriteManifest } | undefined}
  */
 export function getSprite(tankID, skinID, spriteKey) {
 	const key = `${tankID}_${skinID}_${spriteKey}`;
@@ -71,11 +76,9 @@ export function getSprite(tankID, skinID, spriteKey) {
 /**
  * Kiểm tra sprite đã tồn tại chưa
  *
- * @param {number | string} tankID
- * @param {number | string} skinID
+ * @param {number} tankID
+ * @param {number} skinID
  * @param {string} spriteKey
- *
- * @returns {boolean}  true nếu đã tồn tại
  */
 export function hasSprite(tankID, skinID, spriteKey) {
 	const key = `${tankID}_${skinID}_${spriteKey}`;
@@ -86,13 +89,11 @@ export function hasSprite(tankID, skinID, spriteKey) {
  * Lấy một hàm builder cho phép gọi sprite theo spriteKey
  * (Prepared function for quick sprite access)
  *
- * @param {number | string} tankID
- * @param {number | string} skinID
- *
- * @returns {(spriteKey: string) => { sprite: HTMLImageElement, manifest: SpriteManifest } | undefined}
+ * @param {number} tankID
+ * @param {number} skinID
  */
 export function getSpriteKeyBuilder(tankID, skinID) {
-	return function (spriteKey) {
+	return /** @param {string} spriteKey */ function (spriteKey) {
 		return getSprite(tankID, skinID, spriteKey);
 	};
 }
@@ -109,9 +110,7 @@ export function setMapIcon(mapID, img) {
 
 /**
  * Lấy icon map
- *
  * @param {number} mapID
- * @returns {HTMLImageElement|undefined}
  */
 export function getMapIcon(mapID) {
 	return mapIcons.get(mapID);
@@ -129,12 +128,32 @@ export function setMapAssets(mapID, assets) {
 
 /**
  * Lấy asset map
- *
  * @param {number} mapID
- * @returns {{ background: HTMLImageElement, scenes: HTMLImageElement | null }|undefined}
  */
 export function getMapAssets(mapID) {
 	return mapAssets.get(mapID);
+}
+
+/**
+ * @param {number} mapID
+ * @param {MapManifest} manifest
+ */
+export function setMapManifest(mapID, manifest) {
+	mapManifests.set(mapID, manifest);
+}
+
+/**
+ * @param {number} mapID
+ */
+export function getMapManifest(mapID) {
+	return mapManifests.get(mapID);
+}
+
+/**
+ * @param {number} mapID
+ */
+export function hasMapManifest(mapID) {
+	return mapManifests.has(mapID);
 }
 
 /**

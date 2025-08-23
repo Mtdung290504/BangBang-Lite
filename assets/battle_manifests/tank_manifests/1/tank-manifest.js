@@ -1,6 +1,6 @@
 /**
- * @typedef {import('.DSL_regulations/tank-manifest').TankManifest} TankManifest
- * @typedef {import('.DSL_regulations/skills/skill-manifest').SkillManifest} SkillManifest
+ * @typedef {import('DSL/tank-manifest').TankManifest} TankManifest
+ * @typedef {import('DSL/skills/skill-manifest').SkillManifest} SkillManifest
  */
 
 /**@type {TankManifest} */

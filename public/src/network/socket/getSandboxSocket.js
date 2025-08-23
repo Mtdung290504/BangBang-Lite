@@ -227,6 +227,8 @@ export default function getSandboxSocket(config = {}) {
 
 	// Return fake socket object với interface giống socket.io
 	return {
+		inSandboxMode: true,
+
 		// Core methods
 		emit,
 		on,

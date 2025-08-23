@@ -1,12 +1,14 @@
+import { SPRITE_MANIFEST_404_KEY } from '../../configs/constants/game-system-configs.js';
 import { ASSETS_PATH } from '../../configs/constants/paths.js';
 
 const LOAD_SPRITE_LOG_PREFIX = '> [Net.assets-loader.loadSprite]';
 const LOAD_MAP_LOG_PREFIX = '> [Net.assets-loader.loadMapAssets]';
 const LOAD_MAP_ICON_LOG_PREFIX = '> [Net.assets-loader.loadMapIcon]';
 const LOAD_TANK_MANIFESTS_LOG_PREFIX = '> [Net.assets-loader.loadTankManifests]';
+const LOAD_MAP_MANIFESTS_LOG_PREFIX = '> [Net.assets-loader.loadMapManifests]';
 const LOAD_SKILL_DESCRIPTION_LOG_PREFIX = '> [Net.assets-loader.loadSkillDescription]';
 
-export { loadSprite, loadTankManifests, loadSkillDescription, loadMapAssets, loadMapIcon };
+export { loadSprite, loadTankManifests, loadSkillDescription, loadMapAssets, loadMapManifests, loadMapIcon };
 
 /**
  * Load sprite của tank, nhận về manifest và HTMLImageElement
@@ -32,8 +34,8 @@ export { loadSprite, loadTankManifests, loadSkillDescription, loadMapAssets, loa
  */
 async function loadSprite(tankID, skinID, spriteKey, logger = {}) {
 	const { log = console.log, warn = console.warn, error = console.error } = logger;
-	const spriteDisplay = `[${tankID}_${skinID}_${spriteKey}]`;
-	const msg = (text) => `${LOAD_SPRITE_LOG_PREFIX} Sprite:${spriteDisplay} - ${text}`;
+	const spriteFullKey = `${tankID}_${skinID}_${spriteKey}`;
+	const msg = (text) => `${LOAD_SPRITE_LOG_PREFIX} Sprite:[${spriteFullKey}] - ${text}`;
 
 	const { manifestPath, spritePath } = ASSETS_PATH.sprite(tankID, spriteKey, skinID);
 	log(msg('Start loading'));
@@ -46,16 +48,22 @@ async function loadSprite(tankID, skinID, spriteKey, logger = {}) {
 		img.onload = () => resolve(img);
 		img.onerror = (err) => reject(new Error(msg(`Error loading sprite image: ${err}`)));
 	});
-	const manifestPromise = fetch(manifestPath).then(async (res) => {
-		if (res.status === 404) {
-			log(msg('Manifest does not exist, using default value'));
-			return null;
-		}
-		if (!res.ok) {
-			throw new Error(msg(`Error loading manifest (HTTP:${res.status})`));
-		}
-		return res.json();
-	});
+	const manifestPromise = checkManifest404(spriteFullKey)
+		? Promise.resolve().then(() => {
+				log(msg('Detect known manifest 404, using default value'));
+				return null;
+		  })
+		: fetch(manifestPath).then(async (res) => {
+				if (res.status === 404) {
+					log(msg('Manifest does not exist, using default value'));
+					cacheManifest404(spriteFullKey);
+					return null;
+				}
+				if (!res.ok) {
+					throw new Error(msg(`Error loading manifest (HTTP:${res.status})`));
+				}
+				return res.json();
+		  });
 
 	try {
 		const [rawManifest, sprite] = await Promise.all([manifestPromise, spritePromise]);
@@ -73,6 +81,28 @@ async function loadSprite(tankID, skinID, spriteKey, logger = {}) {
 }
 
 /**
+ * Helper hỗ trợ `loadSprite` tránh gửi request thừa khi sprite 404
+ * @param {string} spriteFullKey
+ */
+function cacheManifest404(spriteFullKey) {
+	/**@type {string[]} */
+	const cachedKeys = JSON.parse(localStorage.getItem(SPRITE_MANIFEST_404_KEY)) ?? [];
+	cachedKeys.push(spriteFullKey);
+	localStorage.setItem(SPRITE_MANIFEST_404_KEY, JSON.stringify(cachedKeys));
+}
+
+/**
+ * Helper hỗ trợ `loadSprite` tránh gửi request thừa khi sprite 404
+ * @param {string} spriteFullKey
+ */
+function checkManifest404(spriteFullKey) {
+	/**@type {string[]} */
+	const cachedKeys = JSON.parse(localStorage.getItem(SPRITE_MANIFEST_404_KEY)) ?? [];
+	console.log('aloalo');
+	return cachedKeys.includes(spriteFullKey);
+}
+
+/**
  * Load tank manifests (stats và skills)
  *
  * @param {number} tankID
@@ -83,8 +113,8 @@ async function loadSprite(tankID, skinID, spriteKey, logger = {}) {
  * }} [logger] - Logger (option - default dùng console)
  *
  * @returns {Promise<{
- * 		stats: import('.DSL_regulations/tank-manifest').TankManifest
- * 		skills: import('.DSL_regulations/skills/skill-manifest').SkillManifest
+ * 		stats: import('DSL/tank-manifest').TankManifest
+ * 		skills: import('DSL/skills/skill-manifest').SkillManifest
  * }>}
  *
  * @throws {Error} Khi tải tank manifest lỗi
@@ -202,6 +232,39 @@ async function loadMapAssets(mapID, logger = {}) {
 
 		log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
 		return { background, scenes };
+	} catch (e) {
+		error(msg('Error:'), e);
+		throw e;
+	}
+}
+
+/**
+ * Load map manifests (size và một số thứ khác trong tương lai)
+ *
+ * @param {number} mapID
+ * @param {{
+ * 		log?: (msg: string) => void
+ * 		warn?: (msg: string) => void
+ * 		error?: (msg: string | Error) => void
+ * }} [logger] - Logger (option - default dùng console)
+ *
+ * @returns {Promise<import('DSL/map-manifest').MapManifest>}
+ *
+ * @throws {Error} Khi tải tank manifest lỗi
+ */
+async function loadMapManifests(mapID, logger = {}) {
+	const { log = console.log, error = console.error } = logger;
+	const msg = (text) => `${LOAD_MAP_MANIFESTS_LOG_PREFIX} Map:${mapID} - ${text}`;
+
+	const { manifestPath } = ASSETS_PATH.map(mapID);
+	log(msg('Start loading'));
+	const startTime = performance.now();
+
+	try {
+		const module = await import(manifestPath);
+
+		log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
+		return module['default'];
 	} catch (e) {
 		error(msg('Error:'), e);
 		throw e;

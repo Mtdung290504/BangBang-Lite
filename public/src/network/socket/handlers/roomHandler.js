@@ -1,5 +1,5 @@
 import Player from '../../../../../models/Player.js';
-import { renderPlayersView, roomView, setMapImageView, setReadyState, setTankImageView } from '../../../UIs/roomUI.js';
+import { renderPlayersView, views, setMapImageView, setReadyState, setTankImageView } from '../../../UIs/roomUI.js';
 import { safeArea, asInstanceOf } from '../../../utils/safe-handlers.js';
 
 /**
@@ -86,16 +86,16 @@ function setup(socket) {
 	});
 
 	// ***Note:*** Debounce in future (Cẩn thận xử lý đoạn vào game rồi mà hàm debounce vẫn kích hoạt)
-	roomView.readyBtn.addEventListener('click', () => {
+	views.readyBtn.addEventListener('click', () => {
 		console.log('> [Socket.RoomHandler.request:toggle-ready-state] Requested toggle ready state');
 		socket.emit('request:toggle-ready-state');
 	});
 
 	// ***Note:*** Optimize emit call condition in future, debounce (Cẩn thận xử lý đoạn vào game rồi mà hàm debounce vẫn kích hoạt)
-	roomView._root.addEventListener('click', (e) =>
+	views._root.addEventListener('click', (e) =>
 		safeArea(() => {
 			const target = asInstanceOf(e.target, HTMLElement);
-			if (!roomView._isBoundTo(target, 'playerSlots')) return;
+			if (!views._isBoundTo(target, 'playerSlots')) return;
 
 			const teamContainer = asInstanceOf(target.closest('.team'), HTMLElement);
 			if (target.innerHTML === '' && teamContainer.dataset.team !== players[socket.id ?? '_'].team.toString()) {

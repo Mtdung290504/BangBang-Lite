@@ -63,7 +63,7 @@ export const ASSETS_PATH = {
 				return path + MAP_ICON_FILE_NAME;
 			},
 			get manifestPath() {
-				return MAP_MANIFEST_BASE_PATH + `${mapID}.json`;
+				return MAP_MANIFEST_BASE_PATH + `/${mapID}.js`;
 			},
 		};
 	},

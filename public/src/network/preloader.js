@@ -99,11 +99,17 @@ async function preloadPhase2(mapID, players) {
 	try {
 		const tasks = [];
 
-		// 1. Load map assets (background & scenes)
+		// 1. Load map assets (background & scenes) & map manifest
 		if (!storage.getMapAssets(mapID)) {
 			tasks.push(async () => {
 				const mapAssets = await loader.loadMapAssets(mapID);
 				storage.setMapAssets(mapID, mapAssets);
+			});
+		}
+		if (!storage.getMapManifest(mapID)) {
+			tasks.push(async () => {
+				const mapManifest = await loader.loadMapManifests(mapID);
+				storage.setMapManifest(mapID, mapManifest);
 			});
 		}
 

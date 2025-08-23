@@ -3,13 +3,15 @@ import BattleInputManager from '../managers/battle/mgr.BattleInput.js';
 import { preloadPhase1, preloadPhase2 } from '../network/preloader.js';
 import { storage } from '../network/assets_managers/index.js';
 
+import { SANDBOX_PLAYER_NAME } from '../configs/constants/game-system-configs.js';
 import { getSandboxPlayers } from '../network/socket/handlers/roomHandler.js';
 import getSandboxSocket from '../network/socket/getSandboxSocket.js';
 
 import __debugger from '../utils/debugger.js';
-import { roomView } from '../UIs/roomUI.js';
-import { CANVAS_ID, SANDBOX_PLAYER_NAME } from '../configs/constants/game-system-configs.js';
 __debugger.listen();
+
+import * as roomView from '../UIs/roomUI.js';
+import * as battleView from '../UIs/battleUI.js';
 
 const DEBUG_MODE = true;
 
@@ -26,31 +28,35 @@ export async function init(usingTankID = 1, playingMapID = 0) {
 	const players = getSandboxPlayers(SANDBOX_PLAYER_NAME, sandBoxSocket.id);
 
 	const preloadPhase1Result = await preloadPhase1();
-	const { sprites, mapAssets, tankManifests } = storage;
+	const { sprites, mapAssets, tankManifests, mapManifests } = storage;
 	if (!preloadPhase1Result) {
 		alert('Lỗi khi tải tài nguyên, cần tải lại trang hoặc thử vào lại sau!');
 		return;
 	}
 
+	// Trong room thật, chỉ preload phase 2 khi vào trận
 	const preloadPhase2Result = await preloadPhase2(playingMapID, players);
 	if (!preloadPhase2Result) {
 		alert('Lỗi khi tải tài nguyên, cần tải lại trang hoặc thử vào lại sau!');
 		return;
 	}
-	clearRoomView();
+
+	// Setup input manager
+	const inputMgr = setupInputManager(DEBUG_MODE);
+	inputMgr.listen();
 
 	if (DEBUG_MODE) {
 		__debugger.observe(players, { name: 'Players' });
 		__debugger.observe(sprites, { name: 'Sprite storage' });
 		__debugger.observe(mapAssets, { name: 'Map assets' });
 		__debugger.observe(tankManifests, { name: 'Tank manifests' });
+		__debugger.observe(mapManifests, { name: 'Map manifests' });
+		__debugger.hideAll();
 	}
 
-	const inputMgr = setupInputManager(DEBUG_MODE);
-	inputMgr.listen();
+	setupViews();
 
-	setupBattle();
-	// __debugger.hideAll();
+	// TODO: setup battle
 }
 
 function setupInputManager(debug = false) {
@@ -59,12 +65,11 @@ function setupInputManager(debug = false) {
 	return inputMgr;
 }
 
-function setupBattle() {
-	// TODO: Setup battle
-}
+function setupViews() {
+	roomView.setMapImageView(1);
+	roomView.setTankImageView(1);
+	roomView.setRoomIDView('Demo room');
 
-function clearRoomView() {
-	// Clear room view, display canvas
-	roomView.container.remove();
-	document.getElementById(CANVAS_ID).style = undefined;
+	// roomView.destroy();
+	// battleView.display();
 }
