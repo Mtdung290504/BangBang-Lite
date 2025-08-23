@@ -67,7 +67,7 @@ async function loadSprite(tankID, skinID, spriteKey, logger = {}) {
 		log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
 		return { sprite, manifest };
 	} catch (e) {
-		error(e);
+		error(msg('Error:'), e);
 		throw e;
 	}
 }
@@ -106,7 +106,7 @@ async function loadTankManifests(tankID, logger = {}) {
 			skills: module.skills,
 		};
 	} catch (e) {
-		error(e);
+		error(msg('Error:'), e);
 		throw e;
 	}
 }
@@ -143,7 +143,7 @@ async function loadSkillDescription(tankID, logger = {}) {
 		log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
 		return skillDescription;
 	} catch (e) {
-		error(e);
+		error(msg('Error:'), e);
 		throw e;
 	}
 }
@@ -203,7 +203,7 @@ async function loadMapAssets(mapID, logger = {}) {
 		log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
 		return { background, scenes };
 	} catch (e) {
-		error(e);
+		error(msg('Error:'), e);
 		throw e;
 	}
 }
@@ -241,7 +241,7 @@ async function loadMapIcon(mapID, logger = {}) {
 		log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
 		return img;
 	} catch (e) {
-		error(e);
+		error(msg('Error:'), e);
 		throw e;
 	}
 }

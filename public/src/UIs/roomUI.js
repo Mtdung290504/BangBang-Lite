@@ -2,6 +2,8 @@ import { createViewBinding } from '../../libs/view_binding/index.js';
 import { ASSETS_PATH } from '../configs/constants/paths.js';
 
 const { viewBinding } = createViewBinding({
+	container: '.ui-wrapper = div',
+
 	roomIDLabel: '#room-id = p',
 	readyBtn: '#ready-btn = button',
 	playerSlots: '.player-slot = div[]',

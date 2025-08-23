@@ -20,7 +20,31 @@ let loadedPlayers = [];
 
 let firstInit = true;
 
-export { players, readyPlayers, loadedPlayers, setup };
+export { players, readyPlayers, loadedPlayers, setup, getSandboxPlayers };
+
+/**
+ * Lấy room player giả định cho sandbox
+ * @param {string} playerName
+ * @param {string} sandboxSocketID
+ */
+function getSandboxPlayers(playerName, sandboxSocketID) {
+	return [
+		Player.fromJSON({
+			socketID: sandboxSocketID,
+			name: playerName,
+			team: 0,
+			using: { tankID: 1 },
+		}),
+		...[0, 1, 2].map((fakeID) => {
+			return Player.fromJSON({
+				socketID: (fakeID + 1).toString(),
+				name: playerName,
+				team: fakeID ? 1 : fakeID,
+				using: { tankID: fakeID === 2 ? 1 : 0 },
+			});
+		}),
+	];
+}
 
 /**
  * @param {Socket} socket
@@ -36,7 +60,7 @@ function setup(socket) {
 		players = roomData.players ?? players; // Mới là raw object, chưa chuyển thành `Player`
 		for (const playerID in players) {
 			const rawPlayer = players[playerID];
-			players[playerID] = Player.fromJSON(rawPlayer);
+			players[playerID] = Player.fromJSON(rawPlayer); // Convert thành Player
 		}
 		readyPlayers = roomData.readyPlayers ?? readyPlayers;
 

@@ -5,14 +5,17 @@ const CONFIG = {
 	maxStringLength: 100, // Ngưỡng để JSON xuống dòng
 
 	// Visual settings
-	colors: ['deepskyblue', 'white'],
+	colors: [
+		// 'deepskyblue',
+		'white',
+	],
 
 	// Layout settings
 	margin: 10,
 	minWidth: 200,
-	maxWidth: 600,
+	maxWidth: 750,
 	spacing: 15, // Khoảng cách giữa các debugger
-	headerHeight: 24, // Chiều cao header
+	headerHeight: 40, // Chiều cao header
 };
 
 /**@type {{ destroy: () => void, hide: () => void, show: () => void, element: HTMLElement }[]} */
@@ -94,11 +97,11 @@ function debugVariable(variable = {}, { fps = CONFIG.fps, name = '_' } = {}) {
 		maxWidth: `${CONFIG.maxWidth}px`,
 		maxHeight: `${maxHeight}px`,
 		borderRadius: '6px',
-		border: '1px solid rgba(255, 255, 255, 0.1)',
+		border: '1px solid rgba(255, 255, 255, 0.5)',
 		overflow: 'hidden',
 		resize: 'both',
 		fontFamily: 'Monaco, Consolas, "Courier New", monospace',
-		fontSize: '13px',
+		fontSize: '15px',
 		lineHeight: '1.4',
 		display: 'flex',
 		flexDirection: 'column',
@@ -107,9 +110,9 @@ function debugVariable(variable = {}, { fps = CONFIG.fps, name = '_' } = {}) {
 	// Header styles
 	Object.assign(header.style, {
 		background: 'rgba(255, 255, 255, 0.25)',
-		color: debuggerColor,
+		color: 'deepskyblue',
 		padding: '5px 10px',
-		fontSize: '15px',
+		fontSize: '20px',
 		fontWeight: 'bold',
 		cursor: 'grab',
 		userSelect: 'none',
@@ -342,7 +345,7 @@ function calculatePosition(index) {
 	// Higher z-index for newer layers
 	const zIndex = 9999 + layer;
 
-	console.log(`> [Debugger] Position #${index}: Layer ${layer}, Position (${left}, ${top}), zIndex ${zIndex}`);
+	// console.log(`> [Debugger] Position #${index}: Layer ${layer}, Position (${left}, ${top}), zIndex ${zIndex}`);
 
 	return { left, top, zIndex };
 }
