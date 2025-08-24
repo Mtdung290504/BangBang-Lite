@@ -52,9 +52,8 @@ export default class EntityManager {
 	/**
 	 * Gắn một component instance vào entity.
 	 *
-	 * @template T
 	 * @param {number} entity ID entity
-	 * @param {T} component Instance của component
+	 * @param {object} component Instance của component
 	 */
 	addComponent(entity, component) {
 		const compClass = component.constructor;
@@ -64,13 +63,27 @@ export default class EntityManager {
 			compMap = new Map();
 			this._components.set(compClass, compMap);
 		}
+
 		compMap.set(entity, component);
+	}
+
+	/**
+	 * Gắn nhiều component vào entity cùng lúc.
+	 *
+	 * @param {number} entity ID entity
+	 * @param {...object} components Danh sách component instances
+	 */
+	addComponents(entity, ...components) {
+		for (const component of components) {
+			this.addComponent(entity, component);
+		}
 	}
 
 	/**
 	 * Xóa một component khỏi entity.
 	 *
 	 * @template T
+	 *
 	 * @param {number} entity ID entity
 	 * @param {new (...args: any[]) => T} componentType Class của component
 	 */
@@ -79,11 +92,25 @@ export default class EntityManager {
 	}
 
 	/**
+	 * Xóa nhiều component khỏi entity cùng lúc.
+	 *
+	 * @param {number} entity ID entity
+	 * @param {...(new (...args: any[]) => any)} componentTypes Danh sách class component
+	 */
+	removeComponents(entity, ...componentTypes) {
+		for (const componentType of componentTypes) {
+			this.removeComponent(entity, componentType);
+		}
+	}
+
+	/**
 	 * Kiểm tra entity có component chỉ định không.
 	 *
 	 * @template T
+	 *
 	 * @param {number} entity ID entity
 	 * @param {new (...args: any[]) => T} componentType Class của component
+	 *
 	 * @returns {boolean} true nếu có
 	 */
 	hasComponent(entity, componentType) {
@@ -94,12 +121,22 @@ export default class EntityManager {
 	 * Lấy component instance từ entity.
 	 *
 	 * @template T
+	 *
 	 * @param {number} entity ID entity
 	 * @param {new (...args: any[]) => T} componentType Class của component
-	 * @returns {T | null} Instance nếu có, null nếu không
+	 * @param {boolean} [strict=true] Có throw lỗi khi không tìm thấy không
+	 *
+	 * @returns {T} Instance của component
+	 * @throws {Error} Khi không tìm thấy component và strict=true
 	 */
-	getComponent(entity, componentType) {
-		return this._components.get(componentType)?.get(entity) || null;
+	getComponent(entity, componentType, strict = true) {
+		const component = this._components.get(componentType)?.get(entity);
+
+		if (component == null && strict) {
+			throw new Error(`Component ${componentType.name} not found on entity ${entity}`);
+		}
+
+		return component || null;
 	}
 
 	/**
@@ -116,35 +153,31 @@ export default class EntityManager {
 	/**
 	 * Lấy danh sách entity có tất cả các component truyền vào.
 	 *
-	 * @param {Array<Function>} componentTypes Danh sách class component
-	 * @returns {number[]} Mảng entity ID
+	 * @template {readonly [...(new (...args: any[]) => any)[]]} const T
+	 * @param {T} componentTypes Danh sách class component
+	 * @returns {Map<number, { [K in keyof T]: T[K] extends new (...args: any[]) => infer R ? R : never }>} Map<entityId, [component1, component2, ...]> theo đúng thứ tự input
 	 */
 	getEntitiesWithComponents(componentTypes) {
-		if (componentTypes.length === 0) return [];
+		if (componentTypes.length === 0) return new Map();
 
 		// Lấy danh sách Map<entity, component> của từng component
 		const maps = componentTypes.map((t) => this._components.get(t) || new Map());
 
-		// Sắp xếp để duyệt map nhỏ nhất trước
-		maps.sort((a, b) => a.size - b.size);
+		// Sắp xếp để duyệt map nhỏ nhất trước, nhưng giữ lại index gốc
+		const indexedMaps = maps.map((map, index) => ({ map, index }));
+		indexedMaps.sort((a, b) => a.map.size - b.map.size);
 
-		const result = [];
+		const result = new Map();
 
-		for (const [entity] of maps[0]) {
+		for (const [entity] of indexedMaps[0].map) {
 			// Nếu entity có trong tất cả maps => thêm vào kết quả
-			if (maps.every((map) => map.has(entity))) {
-				result.push(entity);
+			if (indexedMaps.every(({ map }) => map.has(entity))) {
+				// Tạo array components theo đúng thứ tự input (không phải sorted order)
+				const components = componentTypes.map((_, i) => maps[i].get(entity));
+				result.set(entity, components);
 			}
 		}
 
 		return result;
-	}
-
-	/**
-	 * Lấy toàn bộ entity hiện tại.
-	 * @returns {number[]} Danh sách ID entity
-	 */
-	getAllEntities() {
-		return Array.from(this._entities);
 	}
 }
