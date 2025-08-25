@@ -73,7 +73,7 @@ export function renderPlayersView(players, readyPlayers) {
 			teamViews[team][slotIndex].innerHTML = /*html*/ `
 				<div class="player-info-wrapper">
 					<div class="avatar" data-id="2"></div>
-					<div class="name">${name}</div>
+					<div class="name" title="${name}">${name}</div>
 				</div>
 				<div class="status ${readyPlayers.includes(playerID) ? 'ready' : ''}"></div>
 			`;

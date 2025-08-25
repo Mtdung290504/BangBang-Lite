@@ -1,4 +1,4 @@
-import * as socketManagers from '../managers/gateway.js';
+import * as socketManagers from '../managers/index.js';
 
 /**
  * @param {import('socket.io').Server} io
@@ -32,11 +32,12 @@ export default function setupRoomHandlers(io, playerSocket) {
 	// Handle player ready/unready event
 	playerSocket.on('request:toggle-ready-state', () => {
 		const roomID = roomManager.getSocketRoomID(playerSocket);
-		roomManager.socketToggleReadyState(playerSocket);
+		const allPlayerReady = roomManager.socketToggleReadyState(playerSocket);
 
 		// Dispatch event render UI
 		const roomData = roomManager.getRoomData(roomID);
 		if (roomData?.readyPlayers) {
+			if (allPlayerReady) return io.to(roomID).emit('dispatch:all-player-ready', roomData);
 			dispatchUpdatePlayers(roomID, { readyPlayers: roomData.readyPlayers });
 		}
 	});

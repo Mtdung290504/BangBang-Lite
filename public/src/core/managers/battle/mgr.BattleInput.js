@@ -1,7 +1,16 @@
-import { ACTIONS_KEYS, CONTROL_KEY } from '../../configs/action-keys.js';
+import { ACTIONS_KEYS, CONTROL_KEY } from '../../../configs/action-keys.js';
+
+/**
+ * @typedef {'LEFT' | 'DOWN' | 'RIGHT' | 'UP' | 'SKILL_SP' | 'SKILL_1' | 'SKILL_2' | 'SKILL_ULTIMATE' | 'TOGGLE_AUTO_ATK'} ActionKey
+ * @typedef {Exclude<ActionKey, 'TOGGLE_AUTO_ATK'>} BattleActionKey
+ */
 
 export default class BattleInputManager {
-	constructor() {
+	/**
+	 * @param {{ emit: (event: 'mouse-event' | 'key-event', ...data: any) => void }} [emitter]
+	 */
+	constructor(emitter) {
+		/** @type {{ mouseX: number, mouseY: number, leftMouseDown: boolean, rightMouseDown: boolean }} */
 		this.mouseState = {
 			mouseX: 0,
 			mouseY: 0,
@@ -9,6 +18,7 @@ export default class BattleInputManager {
 			rightMouseDown: false,
 		};
 
+		/** @type {Record<BattleActionKey, boolean>} */
 		this.actionState = {
 			[ACTIONS_KEYS['LEFT']]: false,
 			[ACTIONS_KEYS['DOWN']]: false,
@@ -19,6 +29,20 @@ export default class BattleInputManager {
 			[ACTIONS_KEYS['SKILL_2']]: false,
 			[ACTIONS_KEYS['SKILL_ULTIMATE']]: false,
 		};
+
+		/** @type {AbortController | null} */
+		this.abortController = null;
+		this.emitter = emitter;
+	}
+
+	/**@private */
+	_emitMouseState() {
+		this.emitter?.emit('mouse-event', this.mouseState);
+	}
+
+	/**@private */
+	_emitActionState() {
+		this.emitter?.emit('key-event', this.actionState);
 	}
 
 	/**
@@ -28,6 +52,7 @@ export default class BattleInputManager {
 	_onMouseMove(event) {
 		this.mouseState.mouseX = event.clientX;
 		this.mouseState.mouseY = event.clientY;
+		this._emitMouseState();
 	}
 
 	/**
@@ -42,8 +67,10 @@ export default class BattleInputManager {
 	_onMouseDown(event) {
 		if (event.button === 0) {
 			this.mouseState.leftMouseDown = true;
+			this._emitMouseState();
 		} else if (event.button === 2) {
 			this.mouseState.rightMouseDown = true;
+			this._emitMouseState();
 		}
 	}
 
@@ -54,8 +81,10 @@ export default class BattleInputManager {
 	_onMouseUp(event) {
 		if (event.button === 0) {
 			this.mouseState.leftMouseDown = false;
+			this._emitMouseState();
 		} else if (event.button === 2) {
 			this.mouseState.rightMouseDown = false;
+			this._emitMouseState();
 		}
 	}
 
@@ -64,9 +93,11 @@ export default class BattleInputManager {
 	 * @param {KeyboardEvent} event
 	 */
 	_onKeyDown(event) {
-		const actionKey = ACTIONS_KEYS[CONTROL_KEY[event.key.toUpperCase()]];
-		if (actionKey) {
-			this.actionState[actionKey] = true;
+		const controlAction = CONTROL_KEY[event.key.toUpperCase()];
+		if (controlAction && controlAction in this.actionState) {
+			// controlAction is guaranteed to be a BattleActionKey since it exists in actionState
+			this.actionState[/** @type {BattleActionKey} */ (controlAction)] = true;
+			this._emitActionState();
 		}
 	}
 
@@ -75,9 +106,11 @@ export default class BattleInputManager {
 	 * @param {KeyboardEvent} event
 	 */
 	_onKeyUp(event) {
-		const actionKey = ACTIONS_KEYS[CONTROL_KEY[event.key.toUpperCase()]];
-		if (actionKey) {
-			this.actionState[actionKey] = false;
+		const controlAction = CONTROL_KEY[event.key.toUpperCase()];
+		if (controlAction && controlAction in this.actionState) {
+			// controlAction is guaranteed to be a BattleActionKey since it exists in actionState
+			this.actionState[/** @type {BattleActionKey} */ (controlAction)] = false;
+			this._emitActionState();
 		}
 	}
 

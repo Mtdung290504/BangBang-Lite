@@ -1,5 +1,5 @@
 import { Server as SocketServer } from 'socket.io';
-import { setupRoomHandlers } from './handlers/gateway.js';
+import { setupRoomHandlers } from './handlers/index.js';
 
 /**
  * Initialize socket.io and attach to an HTTP server

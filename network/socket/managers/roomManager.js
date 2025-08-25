@@ -33,14 +33,15 @@ export function lockRoom(roomID) {
  * @returns {{
  *      players: { [socketID: string]: Player }
  *      readyPlayers: string[]
+ * 		playingMap: number
  * } | null} Return null trong trường hợp room đã bị giải tán do không còn ai
  */
 export function getRoomData(roomID) {
 	const room = rooms.get(roomID);
 	if (!room) return null; // Trường hợp room bị xóa khỏi rooms do không còn player nào ở trong
 
-	const { players, readyPlayers } = room;
-	return { players, readyPlayers: [...readyPlayers] };
+	const { players, readyPlayers, playingMap } = room;
+	return { players, readyPlayers: [...readyPlayers], playingMap };
 }
 
 /**

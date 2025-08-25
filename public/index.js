@@ -4,8 +4,8 @@ import {
 	SANDBOX_TANK_PARAM_KEY,
 } from './src/configs/constants/game-system-configs.js';
 
-const URLsearchParams = new URLSearchParams(location.href);
-const getSearchParam = (key) => URLsearchParams.get(key)?.trim();
+const URLsearchParams = new URLSearchParams(location.search);
+const getSearchParam = (key = '') => URLsearchParams.get(key)?.trim();
 
 document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
 
@@ -14,7 +14,7 @@ async function init() {
 
 	if (ROOM_ID) {
 		const playerName = prompt('Nhập tên:') || 'Không nhập tên bị gay';
-		console.log('> [AppGateway] Init play mode');
+		console.log('> [AppGateway] Init play mode, room ID:', ROOM_ID);
 		if (ROOM_ID && playerName.trim()) (await import('./src/initializer/app.js')).init(ROOM_ID, playerName);
 		else location.href = '/';
 	} else {

@@ -8,7 +8,7 @@ let renderFPS = 60;
 let lastRenderTime = 0;
 let renderInterval = 1000 / renderFPS;
 
-export { getFPSInfo, setRenderFPS, startLogicLoop, startRenderLoop, startGame, stopGame, setProgressLog };
+export { LOGIC_FPS, getFPSInfo, setRenderFPS, startLogicLoop, startRenderLoop, startGame, stopGame, setProgressLog };
 
 /**
  * @param {() => void} runner

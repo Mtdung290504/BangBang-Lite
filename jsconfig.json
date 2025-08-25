@@ -31,7 +31,6 @@
     },
     "include": [
         "./**/*.js",
-        "public/src/factory/.old.js"
     ],
     "exclude": [
         "node_modules"

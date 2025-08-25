@@ -1,4 +1,7 @@
 export type SpriteManifest = {
+	/** Sprite sẽ được render trên hay dưới model tank. Mặc định: top */
+	position?: 'top' | 'bottom';
+
 	/**Các frame có thể có padding */
 	'padding-ratio'?: number;
 
