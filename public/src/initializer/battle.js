@@ -5,6 +5,6 @@
  */
 
 /**
- *
+ * @param {Socket} socket
  */
 export function initBattle(socket) {}

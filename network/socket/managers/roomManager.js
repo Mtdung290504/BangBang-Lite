@@ -177,14 +177,14 @@ export function socketToggleReadyState(socket) {
 
 /**
  * @param {Socket} socket
- * @returns {number} The number of players loaded for trigger event
+ * @returns {boolean} If all players are loaded, return true
  */
 export function socketMarkLoaded(socket) {
 	const room = rooms.get(getSocketRoomID(socket));
-	if (!room) return -1;
+	if (!room) return false;
 
 	room.loadedPlayers.add(socket.id);
-	return room.loadedPlayers.size;
+	return room.loadedPlayers.size === Object.keys(room.players).length;
 }
 
 /**

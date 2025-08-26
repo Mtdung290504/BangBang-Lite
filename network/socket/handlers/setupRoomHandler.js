@@ -115,6 +115,12 @@ export default function setupRoomHandlers(io, playerSocket) {
 		playerSocket.emit('dispatch:change-tank', tankID);
 	});
 
+	playerSocket.on('loaded', () => {
+		const roomID = roomManager.getSocketRoomID(playerSocket);
+		const allPlayerLoaded = roomManager.socketMarkLoaded(playerSocket);
+		if (allPlayerLoaded) io.to(roomID).emit('dispatch:all-player-loaded');
+	});
+
 	/**
 	 * @param {string} log
 	 */

@@ -1,4 +1,4 @@
-import BattleInputManager from '../managers/battle/mgr.BattleInput.js';
+// import BattleInputManager from '../managers/battle/mgr.BattleInput.js';
 
 import { preloadPhase1, preloadPhase2 } from '../network/preloader.js';
 import { storage } from '../network/assets_managers/index.js';
@@ -42,8 +42,8 @@ export async function init(usingTankID = 1, playingMapID = 0) {
 	}
 
 	// Setup input manager
-	const inputMgr = setupInputManager(DEBUG_MODE);
-	inputMgr.listen();
+	// const inputMgr = setupInputManager(DEBUG_MODE);
+	// inputMgr.listen();
 
 	if (DEBUG_MODE) {
 		__debugger.observe(players, { name: 'Players' });
@@ -54,22 +54,22 @@ export async function init(usingTankID = 1, playingMapID = 0) {
 		__debugger.hideAll();
 	}
 
-	setupViews();
+	// setupViews();
 
 	// TODO: setup battle
 }
 
-function setupInputManager(debug = false) {
-	const inputMgr = new BattleInputManager();
-	if (debug) __debugger.observe(inputMgr, { name: 'Input manager' });
-	return inputMgr;
-}
+// function setupInputManager(debug = false) {
+// 	const inputMgr = new BattleInputManager();
+// 	if (debug) __debugger.observe(inputMgr, { name: 'Input manager' });
+// 	return inputMgr;
+// }
 
-function setupViews() {
-	roomView.setMapImageView(1);
-	roomView.setTankImageView(1);
-	roomView.setRoomIDView('Demo room');
+// function setupViews() {
+// 	roomView.setMapImageView(1);
+// 	roomView.setTankImageView(1);
+// 	roomView.setRoomIDView('Demo room');
 
-	// roomView.destroy();
-	// battleView.display();
-}
+// 	// roomView.destroy();
+// 	// battleView.display();
+// }

@@ -2,10 +2,8 @@ import { MAX_PARALLEL_REQUESTS } from '../configs/constants/game-system-configs.
 import { loader, storage } from './assets_managers/index.js';
 
 const LOG_PREFIX = '> [Net.preloader]';
-const msg = (text) => `${LOG_PREFIX} ${text}`;
-const { mapIDs, tankIDs } = await loadAllIDs();
 
-export { mapIDs, tankIDs, preloadPhase1, preloadPhase2 };
+export { preloadPhase1, preloadPhase2 };
 
 /**
  * @returns {Promise<{ mapIDs: number[], tankIDs: number[] }>}
@@ -26,7 +24,7 @@ async function loadAllIDs() {
 
 		return { mapIDs, tankIDs };
 	} catch (error) {
-		console.error(msg(error));
+		console.error(msg('Error:'), error);
 		alert('Lỗi khi tải metadata của tài nguyên, cần tải lại trang hoặc thử vào lại sau!');
 		return { mapIDs: [], tankIDs: [] };
 	}
@@ -44,6 +42,9 @@ async function loadAllIDs() {
  * @returns {Promise<boolean>}
  */
 async function preloadPhase1() {
+	const { mapIDs, tankIDs } = await loadAllIDs();
+	storage.setAssetIDs(mapIDs, tankIDs);
+
 	try {
 		const tasks = [];
 
@@ -187,7 +188,12 @@ async function preloadPhase2(mapID, players) {
 		for (const [tankID, skinIDs] of tankConfigs) {
 			const { skills } = storage.getTankManifests(tankID);
 
-			// Deep traverse skills object to find all sprite keys
+			/**
+			 * Deep traverse skills object to find all sprite keys
+			 *
+			 * @param {any} obj
+			 * @param {Set<string>} collected
+			 */
 			const collectSpriteKeys = (obj, collected = new Set()) => {
 				if (typeof obj !== 'object' || obj === null) return collected;
 
@@ -243,6 +249,7 @@ async function preloadPhase2(mapID, players) {
  * @returns {Promise<T[]>}
  */
 async function runWithConcurrencyLimit(tasks, limit) {
+	/**@type {any[]} */
 	const results = [];
 	let index = 0;
 
@@ -271,4 +278,11 @@ async function runWithConcurrencyLimit(tasks, limit) {
 
 		runNext();
 	});
+}
+
+/**
+ * @param {string} text
+ */
+function msg(text) {
+	return `${LOG_PREFIX} ${text}`;
 }

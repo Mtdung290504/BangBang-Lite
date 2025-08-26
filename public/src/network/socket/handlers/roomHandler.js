@@ -76,18 +76,18 @@ function setup(socket) {
 
 	// Server gửi lại list player và map để chắc rằng dữ liệu client đồng bộ
 	socket.on('dispatch:all-player-ready', (roomData) => {
+		console.log(
+			'> [Socket.RoomHandler.onEvent:all-player-ready] Receive players and map data in room for preload:',
+			roomData
+		);
+
 		players = roomData.players ?? players; // Mới là raw object, chưa chuyển thành `Player`
 		for (const playerID in players) {
 			const rawPlayer = players[playerID];
 			players[playerID] = Player.fromJSON(rawPlayer); // Convert thành Player
 		}
 
-		playingMapID = roomData.playingMapID;
-
-		console.log(
-			'> [Socket.RoomHandler.onEvent:all-player-ready] Receive players and map data in room for preload:',
-			roomData
-		);
+		playingMapID = roomData.playingMap;
 
 		// Cập nhật view tương tự event `dispatch:update-players`
 		renderPlayersView(players, readyPlayers);

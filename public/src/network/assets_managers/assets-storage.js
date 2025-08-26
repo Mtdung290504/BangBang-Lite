@@ -49,6 +49,21 @@ export const tankManifests = new Map();
 export const mapManifests = new Map();
 
 /**
+ * Lưu assetIDs sau preload phase 1
+ * @type {{ mapIDs: number[], tankIDs: number[] }}
+ */
+export let assetIDs = { mapIDs: [], tankIDs: [] };
+
+/**
+ * @param {number[]} mapIDs
+ * @param {number[]} tankIDs
+ */
+export function setAssetIDs(mapIDs, tankIDs) {
+	assetIDs.mapIDs = mapIDs;
+	assetIDs.tankIDs = tankIDs;
+}
+
+/**
  * Thêm sprite vào storage
  *
  * @param {number} tankID  ID của tank
@@ -110,10 +125,14 @@ export function setMapIcon(mapID, img) {
 
 /**
  * Lấy icon map
+ *
  * @param {number} mapID
+ * @throws {Error} Khi không tồn tại mapIcon nào tương ứng với ID truyền vào
  */
 export function getMapIcon(mapID) {
-	return mapIcons.get(mapID);
+	const mapIcon = mapIcons.get(mapID);
+	if (!mapIcon) throw new Error(`Map:[${mapID}] icon does not exist`);
+	return mapIcon;
 }
 
 /**

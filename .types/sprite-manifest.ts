@@ -1,6 +1,6 @@
 export type SpriteManifest = {
-	/** Sprite sẽ được render trên hay dưới model tank. Mặc định: top */
-	position?: 'top' | 'bottom';
+	/** Sprite sẽ được render trên hay dưới model tank bao nhiêu layer, mặc định 0 - tức cùng layer */
+	'delta-layer'?: number;
 
 	/**Các frame có thể có padding */
 	'padding-ratio'?: number;

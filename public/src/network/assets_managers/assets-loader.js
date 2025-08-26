@@ -35,7 +35,7 @@ export { loadSprite, loadTankManifests, loadSkillDescription, loadMapAssets, loa
 async function loadSprite(tankID, skinID, spriteKey, logger = {}) {
 	const { log = console.log, warn = console.warn, error = console.error } = logger;
 	const spriteFullKey = `${tankID}_${skinID}_${spriteKey}`;
-	const msg = (text) => `${LOAD_SPRITE_LOG_PREFIX} Sprite:[${spriteFullKey}] - ${text}`;
+	const msg = (/** @type {string}*/ text) => `${LOAD_SPRITE_LOG_PREFIX} Sprite:[${spriteFullKey}] - ${text}`;
 
 	const { manifestPath, spritePath } = ASSETS_PATH.sprite(tankID, spriteKey, skinID);
 	log(msg('Start loading'));
@@ -86,7 +86,7 @@ async function loadSprite(tankID, skinID, spriteKey, logger = {}) {
  */
 function cacheManifest404(spriteFullKey) {
 	/**@type {string[]} */
-	const cachedKeys = JSON.parse(localStorage.getItem(SPRITE_MANIFEST_404_KEY)) ?? [];
+	const cachedKeys = JSON.parse(localStorage.getItem(SPRITE_MANIFEST_404_KEY) || '[]');
 	cachedKeys.push(spriteFullKey);
 	localStorage.setItem(SPRITE_MANIFEST_404_KEY, JSON.stringify(cachedKeys));
 }
@@ -97,8 +97,7 @@ function cacheManifest404(spriteFullKey) {
  */
 function checkManifest404(spriteFullKey) {
 	/**@type {string[]} */
-	const cachedKeys = JSON.parse(localStorage.getItem(SPRITE_MANIFEST_404_KEY)) ?? [];
-	console.log('aloalo');
+	const cachedKeys = JSON.parse(localStorage.getItem(SPRITE_MANIFEST_404_KEY) || '[]');
 	return cachedKeys.includes(spriteFullKey);
 }
 
@@ -121,7 +120,7 @@ function checkManifest404(spriteFullKey) {
  */
 async function loadTankManifests(tankID, logger = {}) {
 	const { log = console.log, error = console.error } = logger;
-	const msg = (text) => `${LOAD_TANK_MANIFESTS_LOG_PREFIX} Tank:${tankID} - ${text}`;
+	const msg = (/** @type {string}*/ text) => `${LOAD_TANK_MANIFESTS_LOG_PREFIX} Tank:${tankID} - ${text}`;
 
 	const { manifestPath } = ASSETS_PATH.tankManifest(tankID);
 	log(msg('Start loading'));
@@ -157,7 +156,7 @@ async function loadTankManifests(tankID, logger = {}) {
  */
 async function loadSkillDescription(tankID, logger = {}) {
 	const { log = console.log, error = console.error } = logger;
-	const msg = (text) => `${LOAD_SKILL_DESCRIPTION_LOG_PREFIX} Tank:${tankID} - ${text}`;
+	const msg = (/** @type {string}*/ text) => `${LOAD_SKILL_DESCRIPTION_LOG_PREFIX} Tank:${tankID} - ${text}`;
 
 	const { skillDescriptionPath } = ASSETS_PATH.tankManifest(tankID);
 	log(msg('Start loading'));
@@ -197,14 +196,34 @@ async function loadSkillDescription(tankID, logger = {}) {
  */
 async function loadMapAssets(mapID, logger = {}) {
 	const { log = console.log, warn = console.warn, error = console.error } = logger;
-	const msg = (text) => `${LOAD_MAP_LOG_PREFIX} Map:[${mapID}] - ${text}`;
+	const msg = (/** @type {string}*/ text) => `${LOAD_MAP_LOG_PREFIX} Map:[${mapID}] - ${text}`;
 
 	const { backgroundPath, scenesPath } = ASSETS_PATH.map(mapID);
 	log(msg('Start loading'));
 	const startTime = performance.now();
 
-	// Hàm load ảnh kèm kiểm tra HTTP
-	const loadImageWithHttpCheck = async (url, { allow404 = false, label }) => {
+	try {
+		const [scenes, background] = await Promise.all([
+			loadImageWithHttpCheck(scenesPath, { allow404: true, label: 'scene' }),
+			loadImageWithHttpCheck(backgroundPath, { allow404: false, label: 'background' }),
+		]);
+
+		log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
+		return { background, scenes };
+	} catch (e) {
+		error(msg('Error:'), e);
+		throw e;
+	}
+
+	/**
+	 * Load image and check HTTP status for allow 404 response or not
+	 *
+	 * @param {string} url
+	 * @param {Object} configs
+	 * @param {boolean} configs.allow404
+	 * @param {string} configs.label
+	 */
+	async function loadImageWithHttpCheck(url, { allow404 = false, label }) {
 		// Check HTTP status first
 		const res = await fetch(url, { method: 'HEAD' });
 		if (res.status === 404 && allow404) {
@@ -222,19 +241,6 @@ async function loadMapAssets(mapID, logger = {}) {
 			img.onload = () => resolve(img);
 			img.onerror = (err) => reject(new Error(msg(`Error loading ${label} image: ${err}`)));
 		});
-	};
-
-	try {
-		const [scenes, background] = await Promise.all([
-			loadImageWithHttpCheck(scenesPath, { allow404: true, label: 'scene' }),
-			loadImageWithHttpCheck(backgroundPath, { allow404: false, label: 'background' }),
-		]);
-
-		log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
-		return { background, scenes };
-	} catch (e) {
-		error(msg('Error:'), e);
-		throw e;
 	}
 }
 
@@ -254,7 +260,7 @@ async function loadMapAssets(mapID, logger = {}) {
  */
 async function loadMapManifests(mapID, logger = {}) {
 	const { log = console.log, error = console.error } = logger;
-	const msg = (text) => `${LOAD_MAP_MANIFESTS_LOG_PREFIX} Map:${mapID} - ${text}`;
+	const msg = (/** @type {string}*/ text) => `${LOAD_MAP_MANIFESTS_LOG_PREFIX} Map:${mapID} - ${text}`;
 
 	const { manifestPath } = ASSETS_PATH.map(mapID);
 	log(msg('Start loading'));
@@ -287,7 +293,7 @@ async function loadMapManifests(mapID, logger = {}) {
  */
 async function loadMapIcon(mapID, logger = {}) {
 	const { log = console.log, error = console.error } = logger;
-	const msg = (text) => `${LOAD_MAP_ICON_LOG_PREFIX} MapIcon:[${mapID}] - ${text}`;
+	const msg = (/** @type {string}*/ text) => `${LOAD_MAP_ICON_LOG_PREFIX} MapIcon:[${mapID}] - ${text}`;
 
 	const { iconPath } = ASSETS_PATH.map(mapID);
 	log(msg('Start loading'));

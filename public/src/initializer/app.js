@@ -6,7 +6,7 @@ import { BufferedEmitter } from '../network/helpers/net.BufferedEmitter.js';
 import getConnectedSocket from '../network/socket/getConnectedSocket.js';
 
 // Assets
-import { mapIDs, tankIDs, preloadPhase1 } from '../network/preloader.js';
+import { preloadPhase1, preloadPhase2 } from '../network/preloader.js';
 import { storage } from '../network/assets_managers/index.js';
 
 // Room
@@ -25,14 +25,12 @@ const DEBUG_MODE = true;
  * - Preload phase 1
  * - Khi tất cả trong room sẵn sàng:
  * 	- Preload phase 2
- * 	- Giải phóng room UI (Trong tương lai sẽ giữ lại nhưng trước mắt cho cook)
+ * 	- Giải phóng room UI (Trong tương lai sẽ giữ lại nhưng trước mắt làm vậy cho nhanh)
  * 	- Tải xong phase 2 emit lên server
  * 	- Khi nhận event all loaded thì khởi tạo game
  *
  * @param {string} roomID
  * @param {string} playerName
- *
- * @returns {Promise<void>}
  */
 export async function init(roomID, playerName) {
 	// Setup socket & join room
@@ -47,19 +45,29 @@ export async function init(roomID, playerName) {
 		return;
 	}
 
+	// Listen for all-player-ready event to preload
+	// Đăng ký sự kiện sau nên đọc dữ liệu từ roomHandler thay vì socket data
+	socket.on('dispatch:all-player-ready', () => {
+		const { playingMapID: mapID, players } = roomHandlers;
+		preloadPhase2(mapID, Object.values(players));
+		roomView.destroy();
+
+		// TODO: Setup and start game
+		console.log('> [App] Start battle');
+	});
+
 	if (DEBUG_MODE) {
 		__debugger.observe(sprites, { name: 'Sprite storage' });
 		__debugger.observe(mapAssets, { name: 'Map assets' });
 		__debugger.observe(mapManifests, { name: 'Map Manifests' });
 		__debugger.observe(tankManifests, { name: 'Tank Manifests' });
+		__debugger.hideAll();
 	}
 
-	const inputMgr = setupInputManager(new BufferedEmitter(socket, () => LOGIC_FPS), DEBUG_MODE);
-	inputMgr.listen();
+	roomView.setup(roomID, socket);
 
-	__debugger.hideAll();
-
-	setupRoomView(roomID, socket);
+	// const inputMgr = setupInputManager(new BufferedEmitter(socket, () => LOGIC_FPS), DEBUG_MODE);
+	// inputMgr.listen();
 }
 
 async function setupSocket(debug = false) {
@@ -74,20 +82,6 @@ async function setupSocket(debug = false) {
 		alert('Lỗi khi kết nối đến server, cần tải lại trang hoặc thử vào lại sau!');
 		throw error;
 	}
-}
-
-/**
- * Note: Nhận vào socket để request event đổi map/tank
- *
- * @param {string} roomID
- * @param {Awaited<ReturnType<typeof setupSocket>>} socket
- */
-function setupRoomView(roomID, socket) {
-	roomView.setRoomIDView(roomID);
-	roomView.setMapImageView(0);
-	roomView.setTankImageView(0);
-	roomView.renderMapModal(mapIDs, (mapID) => socket.emit('request:change-map', mapID));
-	roomView.renderTankModal(tankIDs, (tankID) => socket.emit('request:change-tank', tankID));
 }
 
 /**

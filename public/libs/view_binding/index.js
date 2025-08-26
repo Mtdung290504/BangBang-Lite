@@ -1,4 +1,4 @@
-/**@type {import('./types.js')['createViewBinding']} */
+/**@type {import('./types')['createViewBinding']} */
 export function createViewBinding(viewMap) {
 	if (typeof viewMap !== 'object' || viewMap === null) {
 		throw new Error("--> [createViewBinding]: Error, 'viewMap' must be a valid object.");
