@@ -6,19 +6,21 @@ let progressLog = false;
 const LOGIC_FPS = 60;
 let renderFPS = 60;
 let lastRenderTime = 0;
+
+// Lưu trữ để không phải thực hiện phép chia nhiều lần trong render loop
 let renderInterval = 1000 / renderFPS;
 
-export { LOGIC_FPS, getFPSInfo, setRenderFPS, startLogicLoop, startRenderLoop, startGame, stopGame, setProgressLog };
+export { LOGIC_FPS, getFPSInfo, setRenderFPS, startLogicLoop, startRenderLoop, start, stop, setProgressLog };
 
 /**
  * @param {() => void} runner
  */
-function startGame(runner) {
+function start(runner) {
 	paused = false;
 	runner();
 }
 
-function stopGame() {
+function stop() {
 	paused = true;
 }
 
@@ -54,6 +56,7 @@ function startRenderLoop(renderer) {
 		if (paused) return;
 
 		// Kiểm tra đủ thời gian theo render FPS mới gọi hàm render frame tiếp theo
+		// 1000 / fps = delta time (đơn vị: ms)
 		if (currentTime - lastRenderTime >= renderInterval) {
 			progressLog && console.log('> [Managers.game-loop]: Drawing...');
 
@@ -61,6 +64,8 @@ function startRenderLoop(renderer) {
 			const frameStart = performance.now();
 			renderer();
 			const frameTime = performance.now() - frameStart;
+
+			// Note (đơn vị: s)
 			if (frameTime > 1 / renderFPS)
 				console.warn(`> [Managers.game-loop] Heavy frame: ${frameTime.toFixed(2)}ms`);
 

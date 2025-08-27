@@ -69,8 +69,7 @@ export const skills = {
 				name: 'create-default-projectile',
 				collider: {
 					type: 'rectangle',
-					width: 0,
-					height: 0,
+					size: { width: 0, height: 0 },
 				},
 				enhancements: [{ name: 'bouncing', 'hit-limit': 3, 'damage-reduction': { amount: 50 } }],
 				'on-dealt-damage': { self: ['implement-later: Hồi 5 năng lượng'] },
@@ -116,7 +115,7 @@ export const skills = {
 				// Hitbox
 				collider: {
 					type: 'circle',
-					radius: 30,
+					size: { radius: 30 },
 				},
 
 				// Sprite đạn

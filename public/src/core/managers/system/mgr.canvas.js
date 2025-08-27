@@ -1,8 +1,6 @@
-const canvasManager = {
-	create: createCanvasManager,
-};
+const DEFAULT_RESOLUTION = 1080;
 
-export default canvasManager;
+export default createCanvasManager;
 
 /**
  * Quản lý độ phân giải và resize cho canvas
@@ -14,11 +12,9 @@ export default canvasManager;
  * @param {boolean} [options.useDevicePixelRatio] - Sử dụng device pixel ratio (default: true)
  */
 export function createCanvasManager(canvas, options = {}) {
-	const DEFAULT_RESOLUTION = 1080;
-
 	// Validate canvas
 	if (!canvas || !(canvas instanceof HTMLCanvasElement)) {
-		throw new Error('Canvas element is required and must be a valid HTMLCanvasElement');
+		throw new Error('> [CanvasManager] Canvas element is required and must be a valid HTMLCanvasElement');
 	}
 
 	const config = {
@@ -72,7 +68,7 @@ export function createCanvasManager(canvas, options = {}) {
 	 */
 	function setResolution(newResolution) {
 		if (typeof newResolution !== 'number' || newResolution <= 0) {
-			throw new Error('Resolution must be a positive number');
+			throw new Error('> [CanvasManager] Resolution must be a positive number');
 		}
 		config.resolution = newResolution;
 		resize();
@@ -113,13 +109,8 @@ export function createCanvasManager(canvas, options = {}) {
 		};
 	}
 
-	// Khởi tạo
-	if (config.autoResize) {
-		enableAutoResize();
-	}
-
-	// Resize lần đầu
-	resize();
+	if (config.autoResize) enableAutoResize(); // Khởi tạo
+	resize(); // Resize lần đầu
 
 	// Return API object
 	return {

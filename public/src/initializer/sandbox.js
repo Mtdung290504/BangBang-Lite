@@ -1,5 +1,3 @@
-// import BattleInputManager from '../managers/battle/mgr.BattleInput.js';
-
 import { preloadPhase1, preloadPhase2 } from '../network/preloader.js';
 import { storage } from '../network/assets_managers/index.js';
 
@@ -41,10 +39,6 @@ export async function init(usingTankID = 1, playingMapID = 0) {
 		return;
 	}
 
-	// Setup input manager
-	// const inputMgr = setupInputManager(DEBUG_MODE);
-	// inputMgr.listen();
-
 	if (DEBUG_MODE) {
 		__debugger.observe(players, { name: 'Players' });
 		__debugger.observe(sprites, { name: 'Sprite storage' });
@@ -58,12 +52,6 @@ export async function init(usingTankID = 1, playingMapID = 0) {
 
 	// TODO: setup battle
 }
-
-// function setupInputManager(debug = false) {
-// 	const inputMgr = new BattleInputManager();
-// 	if (debug) __debugger.observe(inputMgr, { name: 'Input manager' });
-// 	return inputMgr;
-// }
 
 // function setupViews() {
 // 	roomView.setMapImageView(1);

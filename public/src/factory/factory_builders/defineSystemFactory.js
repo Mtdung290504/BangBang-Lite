@@ -1,3 +1,5 @@
+import EntityManager from '../../core/managers/battle/mgr.Entity.js';
+
 /**
  * @template {[...(new (...args: any[]) => any)[]]} const PrimaryComponents
  * @template {(new (...args: any[]) => any) | undefined} [ContextClass=undefined]
@@ -26,8 +28,8 @@ class SystemFactoryBuilder {
 	/**
 	 * Processor cho system
 	 * @param {ContextClass extends undefined
-	 * 		? (eID: number, components: {[K in keyof PrimaryComponents]: PrimaryComponents[K] extends new (...args: any[]) => infer R ? R : never}) => void
-	 * 		: (eID: number, components: {[K in keyof PrimaryComponents]: PrimaryComponents[K] extends new (...args: any[]) => infer R ? R : never}, context: InstanceType<NonNullable<ContextClass>>) => void
+	 * 		? (context: EntityManager, eID: number, components: {[K in keyof PrimaryComponents]: PrimaryComponents[K] extends new (...args: any[]) => infer R ? R : never}) => void
+	 * 		: (context: EntityManager, eID: number, components: {[K in keyof PrimaryComponents]: PrimaryComponents[K] extends new (...args: any[]) => infer R ? R : never}, sysContext: InstanceType<NonNullable<ContextClass>>) => void
 	 * } fn
 	 */
 	withProcessor(fn) {
@@ -39,7 +41,7 @@ class SystemFactoryBuilder {
 	 * Hàm init (tùy chọn)
 	 * @param {ContextClass extends undefined
 	 * 		? () => void
-	 * 		: (context: InstanceType<NonNullable<ContextClass>>) => void
+	 * 		: (sysContext: InstanceType<NonNullable<ContextClass>>) => void
 	 * } fn
 	 */
 	withInit(fn) {
@@ -51,7 +53,7 @@ class SystemFactoryBuilder {
 	 * Hàm teardown (tùy chọn)
 	 * @param {ContextClass extends undefined
 	 * 		? () => void
-	 * 		: (context: InstanceType<NonNullable<ContextClass>>) => void
+	 * 		: (sysContext: InstanceType<NonNullable<ContextClass>>) => void
 	 * } fn
 	 */
 	withTeardown(fn) {
@@ -70,7 +72,7 @@ class SystemFactoryBuilder {
 		const teardown = this._teardown;
 
 		/**
-		 * @param {ContextClass extends undefined ? [] : ConstructorParameters<NonNullable<ContextClass>>} args
+		 * @param {ContextClass extends undefined ? [context: EntityManager] : [context: EntityManager, ...ConstructorParameters<NonNullable<ContextClass>>]} args
 		 */
 		function create(...args) {
 			/** @type {any} */
@@ -144,15 +146,17 @@ function usage() {
 		dy = 0;
 	}
 
+	const context = new EntityManager();
+
 	// System với context
 	const movementSystemFactory = defineSystemFactory([Position, Velocity], NetworkContext)
 		.withInit((ctx) => {
 			console.log('Init system with socket', ctx.socket.id);
 		})
-		.withProcessor((eID, [pos, vel], context) => {
+		.withProcessor((_context, eID, [pos, vel], sysContext) => {
 			pos.x += vel.dx;
 			pos.y += vel.dy;
-			context.socket.emit('entityMove', { eID, pos });
+			sysContext.socket.emit('entityMove', { eID, pos });
 		})
 		.withTeardown((ctx) => {
 			console.log('Teardown system', ctx.socket.id);
@@ -160,7 +164,7 @@ function usage() {
 		.build();
 
 	// Khi chạy thực tế
-	const moveSystem = movementSystemFactory.create({ id: 'dkkdsdafsasf', emit: () => {} });
+	const moveSystem = movementSystemFactory.create(context, { id: 'dkkdsdafsasf', emit: () => {} });
 	moveSystem.init();
 	moveSystem.process(1, [new Position(), new Velocity()]);
 
@@ -169,7 +173,7 @@ function usage() {
 		.withInit(() => {
 			console.log('Init simple movement system');
 		})
-		.withProcessor((eID, [pos, vel]) => {
+		.withProcessor((_context, eID, [pos, vel]) => {
 			pos.x += vel.dx;
 			pos.y += vel.dy;
 			console.log(`Entity ${eID} moved to (${pos.x}, ${pos.y})`);
@@ -179,7 +183,7 @@ function usage() {
 		})
 		.build();
 
-	const simpleMoveSystem = simpleMovementSystemFactory.create();
+	const simpleMoveSystem = simpleMovementSystemFactory.create(context);
 	simpleMoveSystem.init();
 	simpleMoveSystem.process(1, [new Position(), new Velocity()]);
 }

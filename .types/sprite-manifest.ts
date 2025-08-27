@@ -1,7 +1,4 @@
 export type SpriteManifest = {
-	/** Sprite sẽ được render trên hay dưới model tank bao nhiêu layer, mặc định 0 - tức cùng layer */
-	'delta-layer'?: number;
-
 	/**Các frame có thể có padding */
 	'padding-ratio'?: number;
 
@@ -10,4 +7,7 @@ export type SpriteManifest = {
 
 	/**Danh sách các vị trí của các frame trong sprite */
 	'frames-position': { x: number; y: number }[];
+
+	/**Thời gian hiển thị, mặc định là vô hạn */
+	duration?: number;
 };

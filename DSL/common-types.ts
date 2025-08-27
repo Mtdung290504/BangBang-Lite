@@ -1,18 +1,22 @@
 interface Rectangle {
 	type: 'rectangle';
-	width: number;
-	height: number;
+	size: {
+		width: number;
+		height: number;
+	};
 }
 
 interface Circle {
 	type: 'circle';
-	radius: number;
+	size: {
+		radius: number;
 
-	/**
-	 * - Góc của hình quạt, đơn vị: độ
-	 * - Mặc định là hình tròn nên giá trị mặc định là 360
-	 */
-	'sector-angle'?: number;
+		/**
+		 * - Góc của hình quạt, đơn vị: độ
+		 * - Mặc định là hình tròn nên giá trị mặc định là 360
+		 */
+		'sector-angle'?: number;
+	};
 }
 
 export type Collider = Rectangle | Circle;
