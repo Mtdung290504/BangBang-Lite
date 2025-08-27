@@ -17,7 +17,7 @@ interface Circle {
 
 export type Collider = Rectangle | Circle;
 
-interface Appearance {
+interface Sprite {
 	/** Sprite key của thực thể để render */
 	'sprite-key': string;
 
@@ -28,4 +28,4 @@ interface Appearance {
 	};
 }
 
-export type { Appearance };
+export type { Sprite };

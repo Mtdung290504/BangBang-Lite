@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Damage Font</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #222;
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        canvas {
+            border: 2px solid #555;
+            background: #333;
+        }
+
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .controls input,
+        select {
+            padding: 5px;
+            margin: 0 5px;
+            background: #444;
+            border: 1px solid #666;
+            color: #fff;
+            border-radius: 3px;
+        }
+
+        .colors {
+            margin: 15px 0;
+        }
+
+        .color-preset {
+            display: inline-block;
+            width: 40px;
+            height: 25px;
+            margin: 3px;
+            border: 2px solid #666;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>🎮 Simple Damage Font System</h2>
+
+    <canvas id="canvas" width="600" height="300"></canvas>
+
+    <div class="controls">
+        <label>Text 1: <input type="text" id="text1" value="157"></label>
+        <label>Text 2: <input type="text" id="text2" value="89"></label>
+        <label>Font Size: <input type="range" id="fontSize" min="20" max="80" value="48"></label>
+        <label>Stroke: <input type="range" id="stroke" min="0" max="8" value="3"></label>
+    </div>
+
+    <div class="colors">
+        <h3>Bảng màu:</h3>
+        <!-- Damage colors -->
+        <div class="color-preset" style="background: rgb(240,0,0)" data-color="240,0,0" title="Red Damage"></div>
+        <div class="color-preset" style="background: rgb(255,100,0)" data-color="255,100,0" title="Fire Damage"></div>
+        <div class="color-preset" style="background: rgb(255,255,0)" data-color="255,255,0" title="Critical"></div>
+
+        <!-- Heal colors -->
+        <div class="color-preset" style="background: rgb(0,180,0)" data-color="0,180,0" title="Green Heal"></div>
+        <div class="color-preset" style="background: rgb(0,255,100)" data-color="0,255,100" title="Light Heal"></div>
+
+        <!-- Magic colors -->
+        <div class="color-preset" style="background: rgb(150,0,255)" data-color="150,0,255" title="Magic"></div>
+        <div class="color-preset" style="background: rgb(0,150,255)" data-color="0,150,255" title="Ice"></div>
+        <div class="color-preset" style="background: rgb(255,0,150)" data-color="255,0,150" title="Poison"></div>
+
+        <!-- Neutral -->
+        <div class="color-preset" style="background: rgb(200,200,200)" data-color="200,200,200" title="Normal"></div>
+        <div class="color-preset" style="background: rgb(255,200,100)" data-color="255,200,100" title="Gold"></div>
+    </div>
+
+    <script>
+        // === BIẾN CẤU HÌNH ===
+        let config = {
+            fontSize: 48,
+            fontWeight: 'bold',
+            strokeWidth: 3,
+            strokeColor: '#000',
+            shadowBlur: 4,
+            shadowOffset: 2
+        };
+
+        // Màu hiện tại
+        let color1 = 'rgb(240,0,0)';  // Đỏ damage
+        let color2 = 'rgb(0,180,0)';  // Xanh heal
+
+        // === HÀM VẼ DAMAGE TEXT ===
+        function drawDamageText(ctx, text, x, y, color) {
+            // Set font
+            ctx.font = `${config.fontWeight} ${config.fontSize}px Roboto`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // Shadow
+            ctx.save();
+            // ctx.shadowColor = '#000';
+            // ctx.shadowBlur = config.shadowBlur;
+            // ctx.shadowOffsetX = config.shadowOffset;
+            // ctx.shadowOffsetY = config.shadowOffset;
+
+            // Viền đen
+            ctx.strokeStyle = config.strokeColor;
+            ctx.lineWidth = config.strokeWidth;
+            ctx.strokeText(text, x, y);
+
+            ctx.restore();
+
+            // Viền chính (không shadow)
+            ctx.strokeStyle = config.strokeColor;
+            ctx.lineWidth = config.strokeWidth;
+            ctx.strokeText(text, x, y);
+
+            // Text màu
+            ctx.fillStyle = color;
+            ctx.fillText(text, x, y);
+        }
+
+        // === HÀM RENDER CHÍNH ===
+        function render() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Lấy text
+            const text1 = document.getElementById('text1').value || '157';
+            const text2 = document.getElementById('text2').value || '89';
+
+            // Update config
+            config.fontSize = document.getElementById('fontSize').value;
+            config.strokeWidth = document.getElementById('stroke').value;
+
+            // Vẽ 2 text
+            drawDamageText(ctx, text1, 200, 150, color1);
+            drawDamageText(ctx, text2, 400, 150, color2);
+        }
+
+        // === EVENT LISTENERS ===
+        document.getElementById('text1').addEventListener('input', render);
+        document.getElementById('text2').addEventListener('input', render);
+        document.getElementById('fontSize').addEventListener('input', render);
+        document.getElementById('stroke').addEventListener('input', render);
+
+        // Click chọn màu
+        let selectingFor = 1; // 1 = text1, 2 = text2
+
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('color-preset')) {
+                const colorData = e.target.dataset.color;
+                const newColor = `rgb(${colorData})`;
+
+                if (selectingFor === 1) {
+                    color1 = newColor;
+                    selectingFor = 2; // Next click cho text2
+                } else {
+                    color2 = newColor;
+                    selectingFor = 1; // Next click cho text1
+                }
+
+                render();
+            }
+        });
+
+        // === RENDER LẦN ĐẦU ===
+        render();
+
+        console.log('=== HƯỚNG DẪN SỬ DỤNG ===');
+        console.log('1. Click màu để đổi màu text (luân phiên text1 -> text2)');
+        console.log('2. Biến config để tùy chỉnh font');
+        console.log('3. Hàm drawDamageText() để vẽ text');
+        console.log('4. Hàm render() để vẽ lại toàn bộ');
+    </script>
+</body>
+
+</html>

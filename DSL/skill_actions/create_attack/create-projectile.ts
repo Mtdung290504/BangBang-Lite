@@ -1,4 +1,4 @@
-import type { Appearance, Collider } from '../../common-types';
+import type { Sprite, Collider } from '../../common-types';
 import type { SkillEventHandler } from '../../events/event-manifest';
 import type { ValueWithUnit } from '../../utils-types';
 
@@ -30,7 +30,7 @@ interface Bouncing {
 /** Projectile enhancements union type */
 type ProjectileEnhancement = Tracking | Piercing | Bouncing;
 
-interface CreateProjectileOptions extends Appearance, SkillEventHandler {
+interface CreateProjectileOptions extends Sprite, SkillEventHandler {
 	name: string;
 
 	/** Inherit from tank by default */

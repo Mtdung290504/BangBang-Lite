@@ -11,6 +11,7 @@ document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded'
 
 async function init() {
 	const ROOM_ID = getSearchParam(ROOM_SEARCH_PARAM_KEY);
+	await document.fonts.ready;
 
 	if (ROOM_ID) {
 		const playerName = prompt('Nhập tên:') || 'Không nhập tên bị gay';

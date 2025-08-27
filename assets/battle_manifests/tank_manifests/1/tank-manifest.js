@@ -28,7 +28,13 @@ export const stats = {
 		},
 
 		additional: {
-			'energy-point': 150,
+			'energy-point': {
+				amount: 150,
+				recover: {
+					every: 3,
+					amount: { amount: 5, unit: 'unit' },
+				},
+			},
 		},
 
 		'movement-speed': 160,
@@ -81,7 +87,7 @@ export const skills = {
 		'casting-method': { type: 'in-direction' },
 
 		// Tiêu hao 25đ năng lượng
-		'resource-consumption': { energy: { amount: 25, unit: 'point' } },
+		'resource-consumption': { energy: { amount: 25, unit: 'unit' } },
 
 		actions: [
 			{
@@ -132,7 +138,7 @@ export const skills = {
 		cooldown: 1.5,
 
 		'casting-method': { type: 'in-direction' },
-		'resource-consumption': { energy: { amount: 50, unit: 'point' } },
+		'resource-consumption': { energy: { amount: 50, unit: 'unit' } },
 		actions: ['implement-later: Lướt'],
 	},
 

@@ -1,5 +1,5 @@
 /** Unit đo lường chung cho các giá trị */
-type ValueUnit = 'point' | 'percent';
+type ValueUnit = 'unit' | 'percent';
 
 /**
  * - Generic interface cho giá trị có đơn vị đo
@@ -8,7 +8,10 @@ type ValueUnit = 'point' | 'percent';
 interface ValueWithUnit {
 	amount: number;
 
-	/** Default using % */
+	/**
+	 * Default: `percent`
+	 * (Dùng unit khi muốn sử dụng đơn vị mặc định của ngữ cảnh, ví dụ điểm với năng lượng, giây với thời gian CD)
+	 */
 	unit?: ValueUnit;
 }
 

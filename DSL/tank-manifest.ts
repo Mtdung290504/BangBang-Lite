@@ -1,3 +1,5 @@
+import type { ValueWithUnit } from './utils-types';
+
 interface ShootingStats {
 	'fire-rate': 60 | 90 | 120;
 	'fire-range': 336 | 408 | 480 | 552 | 168;
@@ -18,7 +20,13 @@ interface AttackPowerStats {
 }
 
 interface AdditionalStats {
-	'energy-point': 100 | 150 | 200;
+	'energy-point': {
+		amount: 100 | 150 | 200;
+		recover?: {
+			every: number;
+			amount: ValueWithUnit;
+		};
+	};
 }
 
 interface FullStats {
