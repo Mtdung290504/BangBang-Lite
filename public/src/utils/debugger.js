@@ -57,6 +57,68 @@ export default {
 	},
 };
 
+// Insert global CSS once
+function ensureGlobalStyle() {
+	if (document.getElementById('debugger-styles')) return;
+
+	const globalStyle = document.createElement('style');
+	globalStyle.id = 'debugger-styles';
+	globalStyle.textContent = `
+		.debugger-container {
+			position: fixed;
+			background: rgba(0, 0, 0, 0.85);
+			border-radius: 6px;
+			border: 1px solid rgba(255, 255, 255, 0.5);
+			resize: both;
+			overflow: hidden;
+			font-family: Monaco, Consolas, "Courier New", monospace;
+			font-size: 15px;
+			line-height: 1.4;
+			display: flex;
+			flex-direction: column;
+		}
+		.debugger-header {
+			background: rgba(255, 255, 255, 0.25);
+			padding: 5px 10px;
+			color: deepskyblue;
+			font-size: 20px;
+			font-weight: bold;
+			cursor: grab;
+			user-select: none;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+			display: flex;
+			align-items: center;
+			letter-spacing: 0.5px;
+			min-height: ${CONFIG.headerHeight}px;
+		}
+		.debugger-content {
+			flex: 1;
+			padding: 8px 12px;
+			white-space: pre-wrap;
+			user-select: text;
+			overflow-y: auto;
+			overflow-x: hidden;
+			margin: 0;
+		}
+
+		.debugger-container pre::-webkit-scrollbar {
+			width: 10px;
+		}
+		.debugger-container pre::-webkit-scrollbar-track {
+			background: rgba(230, 230, 230, .2);
+		}
+		.debugger-container pre::-webkit-scrollbar-thumb {
+			background: rgba(230, 230, 230, .8);
+			border-radius: 5px;
+			cursor: pointer;
+		}
+		.debugger-container pre::-webkit-scrollbar-thumb:active {
+			background: rgba(230, 230, 230, .5);
+		}
+	`;
+	document.head.appendChild(globalStyle);
+}
+
 /**
  * Debug a variable by logging it to the console and displaying it in a draggable debug view.
  *
@@ -69,10 +131,16 @@ export default {
 function debugVariable(variable = {}, { fps = CONFIG.fps, name = '_' } = {}) {
 	console.log('> [Debugger] Debugging variable:', variable);
 
+	ensureGlobalStyle();
+
 	// Container element
 	const container = document.createElement('div');
 	const header = document.createElement('div');
 	const content = document.createElement('pre');
+
+	container.className = 'debugger-container';
+	header.className = 'debugger-header';
+	content.className = 'debugger-content';
 
 	let cache = '';
 	let rafId = null;
@@ -85,83 +153,18 @@ function debugVariable(variable = {}, { fps = CONFIG.fps, name = '_' } = {}) {
 	const position = calculatePosition(registry.length);
 	const maxHeight = calculateMaxHeight(position.top);
 
-	// Container styles
-	Object.assign(container.style, {
-		position: 'fixed',
-		top: `${position.top}px`,
-		left: `${position.left}px`,
-		background: 'rgba(0, 0, 0, 0.85)',
-		color: debuggerColor,
-		zIndex: position.zIndex,
-		minWidth: `${CONFIG.minWidth}px`,
-		maxWidth: `${CONFIG.maxWidth}px`,
-		maxHeight: `${maxHeight}px`,
-		borderRadius: '6px',
-		border: '1px solid rgba(255, 255, 255, 0.5)',
-		overflow: 'hidden',
-		resize: 'both',
-		fontFamily: 'Monaco, Consolas, "Courier New", monospace',
-		fontSize: '15px',
-		lineHeight: '1.4',
-		display: 'flex',
-		flexDirection: 'column',
-	});
-
-	// Header styles
-	Object.assign(header.style, {
-		background: 'rgba(255, 255, 255, 0.25)',
-		color: 'deepskyblue',
-		padding: '5px 10px',
-		fontSize: '20px',
-		fontWeight: 'bold',
-		cursor: 'grab',
-		userSelect: 'none',
-		borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-		minHeight: `${CONFIG.headerHeight}px`,
-		display: 'flex',
-		alignItems: 'center',
-		letterSpacing: '0.5px',
-	});
-
-	// Content styles
-	Object.assign(content.style, {
-		flex: '1',
-		padding: '8px 12px',
-		whiteSpace: 'pre-wrap',
-		userSelect: 'text',
-		overflowY: 'auto',
-		overflowX: 'hidden',
-		margin: '0',
-		// Custom scrollbar
-		scrollbarWidth: 'thin',
-		scrollbarColor: `${debuggerColor}40 transparent`,
-	});
+	// Dynamic styles
+	container.style.top = `${position.top}px`;
+	container.style.left = `${position.left}px`;
+	container.style.zIndex = `${position.zIndex}`;
+	container.style.minWidth = `${CONFIG.minWidth}px`;
+	container.style.maxWidth = `${CONFIG.maxWidth}px`;
+	container.style.maxHeight = `${maxHeight}px`;
+	container.style.color = debuggerColor;
 
 	header.textContent = name;
 	container.appendChild(header);
 	container.appendChild(content);
-
-	// Custom scrollbar styles
-	const style = document.createElement('style');
-	const scrollbarId = `debugger-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-	container.classList.add(scrollbarId);
-
-	style.textContent = `
-		.${scrollbarId} pre::-webkit-scrollbar {
-			width: 6px;
-		}
-		.${scrollbarId} pre::-webkit-scrollbar-track {
-			background: transparent;
-		}
-		.${scrollbarId} pre::-webkit-scrollbar-thumb {
-			background: ${debuggerColor}40;
-			border-radius: 3px;
-		}
-		.${scrollbarId} pre::-webkit-scrollbar-thumb:hover {
-			background: ${debuggerColor}80;
-		}
-	`;
-	document.head.appendChild(style);
 	document.body.appendChild(container);
 
 	let isDestroyed = false;
@@ -169,11 +172,11 @@ function debugVariable(variable = {}, { fps = CONFIG.fps, name = '_' } = {}) {
 	let lastUpdate = 0;
 	const interval = 1000 / fps;
 
-	// Optimized update function - cache check interval = update interval (no need faster)
+	// Optimized update function
 	const update = (time = 0) => {
 		if (isDestroyed) return;
 
-		// 🚫 SKIP UPDATE completely when hidden - no cache check, no work at all
+		// SKIP UPDATE completely when hidden - no cache check, no work at all
 		if (!isVisible) {
 			rafId = requestAnimationFrame(update);
 			return;
@@ -196,12 +199,11 @@ function debugVariable(variable = {}, { fps = CONFIG.fps, name = '_' } = {}) {
 			}
 			lastUpdate = time;
 		}
-
 		rafId = requestAnimationFrame(update);
 	};
 	rafId = requestAnimationFrame(update);
 
-	// Drag functionality - ONLY on header
+	// Drag functionality
 	let isDragging = false;
 	let startX = 0,
 		startY = 0;
@@ -248,21 +250,17 @@ function debugVariable(variable = {}, { fps = CONFIG.fps, name = '_' } = {}) {
 		if (isDestroyed) return;
 		isDestroyed = true;
 
-		if (rafId) {
-			cancelAnimationFrame(rafId);
-		}
+		if (rafId) cancelAnimationFrame(rafId);
 
 		container.remove();
-		style.remove();
+		// style.remove();
 
 		window.removeEventListener('mousemove', onMouseMove);
 		window.removeEventListener('mouseup', onMouseUp);
 
 		// Remove from registry
 		const index = registry.findIndex((item) => item.element === container);
-		if (index > -1) {
-			registry.splice(index, 1);
-		}
+		if (index > -1) registry.splice(index, 1);
 
 		// Reposition remaining debuggers
 		repositionDebuggers();
@@ -291,12 +289,7 @@ function debugVariable(variable = {}, { fps = CONFIG.fps, name = '_' } = {}) {
 			if (typeof window['debuggers'] === 'undefined') {
 				window['debuggers'] = {};
 			}
-			window['debuggers'][exportName] = {
-				destroy,
-				hide,
-				show,
-				variable,
-			};
+			window['debuggers'][exportName] = { destroy, hide, show, variable };
 		},
 	};
 }
@@ -304,14 +297,13 @@ function debugVariable(variable = {}, { fps = CONFIG.fps, name = '_' } = {}) {
 /**
  * Calculate optimal position for new debugger with intelligent layering
  * @param {number} index
- * @returns {{top: number, left: number, zIndex: number}}
  */
 function calculatePosition(index) {
 	const viewportWidth = window.innerWidth;
 	const viewportHeight = window.innerHeight;
 
 	const debuggerWidth = CONFIG.maxWidth + CONFIG.spacing;
-	const debuggerHeight = 200; // Estimated height
+	const debuggerHeight = 200;
 
 	// Calculate how many debuggers can fit in viewport
 	const maxCols = Math.floor((viewportWidth - CONFIG.margin * 2) / debuggerWidth) || 1;
@@ -329,8 +321,7 @@ function calculatePosition(index) {
 	let left = CONFIG.margin + col * debuggerWidth;
 	let top = CONFIG.margin + row * (debuggerHeight + CONFIG.spacing);
 
-	// Layer offset - slightly offset each layer for visibility
-	const layerOffset = layer * 20; // 20px offset per layer
+	const layerOffset = layer * 20;
 	left += layerOffset;
 	top += layerOffset;
 
@@ -344,16 +335,12 @@ function calculatePosition(index) {
 
 	// Higher z-index for newer layers
 	const zIndex = 9999 + layer;
-
-	// console.log(`> [Debugger] Position #${index}: Layer ${layer}, Position (${left}, ${top}), zIndex ${zIndex}`);
-
 	return { left, top, zIndex };
 }
 
 /**
  * Calculate max height based on available viewport space
  * @param {number} top
- * @returns {number}
  */
 function calculateMaxHeight(top) {
 	const availableHeight = window.innerHeight - top - CONFIG.margin - CONFIG.headerHeight;
@@ -380,9 +367,7 @@ function repositionDebuggers() {
 
 		// Update header and scrollbar colors
 		const header = item.element.querySelector('div');
-		if (header) {
-			header.style.color = newColor;
-		}
+		if (header) header.style.color = newColor;
 	});
 }
 
@@ -440,7 +425,7 @@ function serializeSpecialTypes(value) {
 		return {
 			__type: 'Map',
 			size: value.size,
-			entries: Array.from(value.entries()).slice(0, 10), // Limit entries for performance
+			entries: Array.from(value.entries()).slice(0, 10),
 		};
 	}
 	if (value instanceof Set) {
@@ -477,29 +462,21 @@ function serializeSpecialTypes(value) {
 				if (value.src) preview.src = value.src;
 				if (value.href) preview.href = value.href;
 				hasProps = Object.keys(preview).length > 0;
-			}
-
-			// For other objects, try to get all enumerable properties
-			else {
+			} else {
 				try {
-					const keys = Object.keys(value); // Lấy hết properties
+					const keys = Object.keys(value);
 					for (const key of keys) {
 						if (typeof value[key] !== 'function') {
 							preview[key] = value[key];
 							hasProps = true;
 						}
 					}
-				} catch (e) {
-					// Ignore errors
-				}
+				} catch (e) {}
 			}
 
 			// If we have properties, show them, otherwise just show constructor name
 			if (hasProps) {
-				return {
-					__constructor: constructorName,
-					...preview,
-				};
+				return { __constructor: constructorName, ...preview };
 			} else {
 				return `{}: ${constructorName}`;
 			}
