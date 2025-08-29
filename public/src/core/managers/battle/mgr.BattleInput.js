@@ -1,4 +1,4 @@
-import { ACTIONS_KEYS, CONTROL_KEY } from '../../../configs/action-keys.js';
+import { ACTIONS_KEYS, CONTROL_KEY } from '../../../../configs/action-keys.js';
 
 /**
  * @typedef {'LEFT' | 'DOWN' | 'RIGHT' | 'UP' | 'SKILL_SP' | 'SKILL_1' | 'SKILL_2' | 'SKILL_ULTIMATE' | 'TOGGLE_AUTO_ATK'} ActionKey

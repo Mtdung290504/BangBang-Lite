@@ -1,4 +1,4 @@
-import { MAX_PARALLEL_REQUESTS } from '../configs/constants/game-system-configs.js';
+import { MAX_PARALLEL_REQUESTS } from '../../configs/constants/game-system-configs.js';
 import { loader, storage } from './assets_managers/index.js';
 
 const LOG_PREFIX = '> [Net.preloader]';

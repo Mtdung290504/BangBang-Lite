@@ -12,7 +12,7 @@ export class BufferedEmitter {
 		this.getFrameRate = getFrameRate;
 		this.ratio = ratio;
 
-		/** @type {number | null} */
+		/** @type {number | NodeJS.Timeout | null} */
 		this.timeoutId = null;
 
 		/** @type {any[]} */
@@ -38,7 +38,7 @@ export class BufferedEmitter {
 	emit(event, ...data) {
 		this.queue.push([event, ...data]);
 		if (this.timeoutId === null) {
-			this.timeoutId = /**@type {number} */ (setTimeout(() => this.flush(), this.delay));
+			this.timeoutId = setTimeout(() => this.flush(), this.delay);
 		}
 	}
 

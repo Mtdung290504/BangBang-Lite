@@ -1,11 +1,11 @@
 import { preloadPhase1, preloadPhase2 } from '../network/preloader.js';
 import { storage } from '../network/assets_managers/index.js';
 
-import { SANDBOX_PLAYER_NAME } from '../configs/constants/game-system-configs.js';
+import { SANDBOX_PLAYER_NAME } from '../../configs/constants/game-system-configs.js';
 import { getSandboxPlayers } from '../network/socket/handlers/roomHandler.js';
 import getSandboxSocket from '../network/socket/getSandboxSocket.js';
 
-import __debugger from '../utils/debugger.js';
+import __debugger from '../../utils/debugger.js';
 __debugger.listen();
 
 import * as battleView from '../UIs/battleUI.js';

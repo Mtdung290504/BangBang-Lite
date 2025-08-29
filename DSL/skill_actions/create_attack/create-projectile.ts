@@ -45,7 +45,16 @@ interface CreateProjectileOptions extends Sprite, SkillEventHandler {
 	collider: Collider;
 }
 
-/** Default shooting action with sprite key = `normal-attack` */
+/**
+ * Default shooting action with sprite key = `normal-attack`
+ *
+ * Note:
+ * - flight-range: inherit
+ * - flight-speed: inherit
+ * - sprite-key: normal-attack
+ * - on-hit: dealt normal-attack damage
+ *
+ */
 interface CreateDefaultProjectile
 	extends Omit<CreateProjectileOptions, 'flight-range' | 'flight-speed' | 'sprite-key' | 'on-hit'> {
 	name: 'create-default-projectile';
@@ -74,8 +83,7 @@ const defaultShoot: CreateDefaultProjectile = {
 	name: 'create-default-projectile',
 	collider: {
 		type: 'rectangle',
-		width: 0,
-		height: 0,
+		size: { width: 0, height: 0 },
 	},
 };
 const customShoot: CreateCustomProjectile = {
@@ -99,7 +107,6 @@ const customShoot: CreateCustomProjectile = {
 
 	collider: {
 		type: 'rectangle',
-		width: 0,
-		height: 0,
+		size: { width: 0, height: 0 },
 	},
 };

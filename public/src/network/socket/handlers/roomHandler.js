@@ -1,7 +1,7 @@
 import Player from '../../../../../models/Player.js';
-import { SANDBOX_SOCKET_ID } from '../../../configs/constants/game-system-configs.js';
+import { SANDBOX_SOCKET_ID } from '../../../../configs/constants/game-system-configs.js';
 import { renderPlayersView, views, setMapImageView, setReadyState, setTankImageView } from '../../../UIs/roomUI.js';
-import { safeArea, asInstanceOf } from '../../../utils/safe-handlers.js';
+import { safeArea, asInstanceOf } from '../../../../utils/safe-handlers.js';
 
 /**
  * @typedef {import('socket.io-client').Socket} Socket

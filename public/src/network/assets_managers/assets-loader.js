@@ -1,5 +1,5 @@
-import { SPRITE_MANIFEST_404_KEY } from '../../configs/constants/game-system-configs.js';
-import { ASSETS_PATH } from '../../configs/constants/paths.js';
+import { SPRITE_MANIFEST_404_KEY } from '../../../configs/constants/game-system-configs.js';
+import { ASSETS_PATH } from '../../../configs/constants/paths.js';
 
 const LOAD_SPRITE_LOG_PREFIX = '> [Net.assets-loader.loadSprite]';
 const LOAD_MAP_LOG_PREFIX = '> [Net.assets-loader.loadMapAssets]';

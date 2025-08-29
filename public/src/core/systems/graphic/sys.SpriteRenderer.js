@@ -1,12 +1,12 @@
 // System builder and context
-import defineSystemFactory from '../../../factory/factory_builders/defineSystemFactory.js';
+import defineSystemFactory from '../../factory/factory_builders/defineSystemFactory.js';
 import { RenderContext } from './contexts.js';
 
 // Utils
 import { degToRad } from '../../fomulars/angle.js';
 
 // Components
-import SpeedComponent from '../../components/combat/com.Speed.js';
+import SpeedComponent from '../../components/combat/stats/com.Speed.js';
 import SpriteComponent from '../../components/graphic/com.Sprite.js';
 import PositionComponent from '../../components/physics/com.Position.js';
 

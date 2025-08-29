@@ -2,7 +2,7 @@ import {
 	BACKGROUND_DELTA_LAYER,
 	SCENES_DELTA_LAYER,
 	TANK_DEFAULT_LAYER,
-} from '../../../configs/constants/game-constants.js';
+} from '../../../../configs/constants/domain_constants/com.constants.js';
 import { RenderContext } from './contexts.js';
 
 const MapRendererFactory = { create };

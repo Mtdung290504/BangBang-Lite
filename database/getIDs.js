@@ -1,6 +1,6 @@
 import { readdir } from 'fs/promises';
 import { join } from 'path';
-import { MAP_BASE_PATH, SPRITE_BASE_PATH } from '../public/src/configs/constants/paths.js';
+import { MAP_BASE_PATH, SPRITE_BASE_PATH } from '../public/configs/constants/paths.js';
 import { memoize } from '../utils/memoize.js';
 
 const getMapIDs = memoize(rawGetMapIDs, { ttl: 1000 * 60 * 60 });

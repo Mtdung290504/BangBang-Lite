@@ -2,7 +2,7 @@ import {
 	ROOM_SEARCH_PARAM_KEY,
 	SANDBOX_MAP_PARAM_KEY,
 	SANDBOX_TANK_PARAM_KEY,
-} from './src/configs/constants/game-system-configs.js';
+} from './configs/constants/game-system-configs.js';
 
 const URLsearchParams = new URLSearchParams(location.search);
 const getSearchParam = (key = '') => URLsearchParams.get(key)?.trim();

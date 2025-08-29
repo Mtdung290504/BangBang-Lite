@@ -171,6 +171,12 @@ export default class EntityManager {
 	 */
 	getEntitiesWithComponents(componentTypes) {
 		if (componentTypes.length === 0) return new Map();
+		if (componentTypes.length === 1) {
+			const map = this.getEntitiesWithComponent(componentTypes[0]);
+			const result = new Map();
+			for (const [entity, comp] of map) result.set(entity, [comp]);
+			return result;
+		}
 
 		// Lấy danh sách Map<entity, component> của từng component
 		const maps = componentTypes.map((t) => this._components.get(t) || new Map());

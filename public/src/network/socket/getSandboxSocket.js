@@ -1,4 +1,4 @@
-import { SANDBOX_SOCKET_ID } from '../../configs/constants/game-system-configs.js';
+import { SANDBOX_SOCKET_ID } from '../../../configs/constants/game-system-configs.js';
 
 /**
  * Tạo một fake socket để mô phỏng hành vi trong môi trường sandbox

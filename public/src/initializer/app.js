@@ -15,7 +15,7 @@ import * as roomView from '../UIs/roomUI.js';
 
 // Config & debugs
 import { LOGIC_FPS } from '../core/managers/system/mgr.game-loop.js';
-import __debugger from '../utils/debugger.js';
+import __debugger from '../../utils/debugger.js';
 import { initBattle } from './battle.js';
 __debugger.listen();
 
