@@ -121,12 +121,24 @@ export default class EntityManager {
 	 * Lấy component instance từ entity.
 	 *
 	 * @template T
+	 * @overload
+	 * @param {number} entity ID entity
+	 * @param {new (...args: any[]) => T} componentType Class của component
+	 * @param {true} [strict] Có throw lỗi khi không tìm thấy không
+	 * @returns {T} Instance của component
 	 *
+	 * @template T
+	 * @overload
+	 * @param {number} entity ID entity
+	 * @param {new (...args: any[]) => T} componentType Class của component
+	 * @param {false} strict Có throw lỗi khi không tìm thấy không
+	 * @returns {T | null} Instance của component hoặc null
+	 *
+	 * @template T
 	 * @param {number} entity ID entity
 	 * @param {new (...args: any[]) => T} componentType Class của component
 	 * @param {boolean} [strict=true] Có throw lỗi khi không tìm thấy không
-	 *
-	 * @returns {T} Instance của component
+	 * @returns {T | null} Instance của component
 	 * @throws {Error} Khi không tìm thấy component và strict=true
 	 */
 	getComponent(entity, componentType, strict = true) {

@@ -7,6 +7,8 @@
  * - Map assets (background, scenes): Map
  */
 
+import Player from '../../../../models/Player.js';
+
 /**
  * @typedef {import('.types/sprite-manifest').SpriteManifest} SpriteManifest
  * @typedef {import('DSL/tank-manifest').TankManifest} TankManifest
@@ -52,15 +54,18 @@ export const mapManifests = new Map();
  * Lưu assetIDs sau preload phase 1
  * @type {{ mapIDs: number[], tankIDs: number[] }}
  */
-export let assetIDs = { mapIDs: [], tankIDs: [] };
+export let assetIDs;
 
 /**
  * @param {number[]} mapIDs
  * @param {number[]} tankIDs
  */
 export function setAssetIDs(mapIDs, tankIDs) {
-	assetIDs.mapIDs = mapIDs;
-	assetIDs.tankIDs = tankIDs;
+	if (!assetIDs) {
+		assetIDs = { mapIDs, tankIDs };
+		return;
+	}
+	console.warn('> [AssetsStorage] Asset IDs can only be set once, subsequent function calls are useless.');
 }
 
 /**

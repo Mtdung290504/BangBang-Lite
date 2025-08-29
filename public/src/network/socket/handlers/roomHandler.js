@@ -1,4 +1,5 @@
 import Player from '../../../../../models/Player.js';
+import { SANDBOX_SOCKET_ID } from '../../../configs/constants/game-system-configs.js';
 import { renderPlayersView, views, setMapImageView, setReadyState, setTankImageView } from '../../../UIs/roomUI.js';
 import { safeArea, asInstanceOf } from '../../../utils/safe-handlers.js';
 
@@ -8,7 +9,7 @@ import { safeArea, asInstanceOf } from '../../../utils/safe-handlers.js';
 
 /**
  * ***Note:*** Hiện tại mới là raw object nhận từ socket, chưa chuyển thành Player
- * @type {{ [playerID: string]: Player }}
+ * @type {{ [socketID: string]: Player }}
  */
 let players = {};
 
@@ -126,12 +127,12 @@ function setupViewEventListeners(socket) {
 /**
  * Lấy room player giả định cho sandbox
  * @param {string} playerName
- * @param {string} sandboxSocketID
+ * @returns {{ [socketID: string]: Player }}
  */
-function getSandboxPlayers(playerName, sandboxSocketID) {
-	return [
+function getSandboxPlayers(playerName) {
+	const players = [
 		Player.fromJSON({
-			socketID: sandboxSocketID,
+			socketID: SANDBOX_SOCKET_ID,
 			name: playerName,
 			team: 0,
 			using: { tankID: 1 },
@@ -145,4 +146,7 @@ function getSandboxPlayers(playerName, sandboxSocketID) {
 			});
 		}),
 	];
+
+	// Convert từ mảng sang object với key = socketID
+	return Object.fromEntries(players.map((p) => [p.socketID, p]));
 }

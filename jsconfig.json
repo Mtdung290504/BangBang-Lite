@@ -26,7 +26,7 @@
         "module": "es2022",
         "moduleResolution": "bundler",
         "target": "es2022",
-        "strict": true, // Gợi ý thêm
+        // "strict": true, // Gợi ý thêm
         // "noEmit": true // Không xuất file, chỉ dùng để kiểm tra
     },
     "include": [

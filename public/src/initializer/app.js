@@ -16,6 +16,7 @@ import * as roomView from '../UIs/roomUI.js';
 // Config & debugs
 import { LOGIC_FPS } from '../core/managers/system/mgr.game-loop.js';
 import __debugger from '../utils/debugger.js';
+import { initBattle } from './battle.js';
 __debugger.listen();
 
 const DEBUG_MODE = true;
@@ -50,10 +51,15 @@ export async function init(roomID, playerName) {
 	socket.on('dispatch:all-player-ready', () => {
 		const { playingMapID: mapID, players } = roomHandlers;
 		preloadPhase2(mapID, Object.values(players));
-		roomView.destroy();
 
 		// TODO: Setup and start game
 		console.log('> [App] Start battle');
+		roomView.destroy();
+		if (DEBUG_MODE) {
+			__debugger.observe(players, { name: 'Players' });
+			// __debugger.hideAll();
+		}
+		initBattle(socket, players);
 	});
 
 	if (DEBUG_MODE) {

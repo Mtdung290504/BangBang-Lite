@@ -1,4 +1,4 @@
-export class PositionComponent {
+export default class PositionComponent {
 	/**
 	 * @param {number} x
 	 * @param {number} y

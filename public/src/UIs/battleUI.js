@@ -1,5 +1,10 @@
+import { createViewBinding } from '../../libs/view_binding/index.js';
 import { CANVAS_ID } from '../configs/constants/game-system-configs.js';
 
-export function display() {
-	document.getElementById(CANVAS_ID).style = undefined;
+const { viewBinding } = createViewBinding({ canvas: `#${CANVAS_ID} = canvas` });
+
+export const views = viewBinding.bind();
+
+export function setup() {
+	views.canvas.removeAttribute('style');
 }

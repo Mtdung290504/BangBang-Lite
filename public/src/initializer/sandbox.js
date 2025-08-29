@@ -8,8 +8,9 @@ import getSandboxSocket from '../network/socket/getSandboxSocket.js';
 import __debugger from '../utils/debugger.js';
 __debugger.listen();
 
-import * as roomView from '../UIs/roomUI.js';
 import * as battleView from '../UIs/battleUI.js';
+import * as roomView from '../UIs/roomUI.js';
+import { initBattle } from './battle.js';
 
 const DEBUG_MODE = true;
 
@@ -23,7 +24,7 @@ export async function init(usingTankID = 1, playingMapID = 0) {
 	playingMapID = Number(playingMapID);
 
 	const sandBoxSocket = getSandboxSocket();
-	const players = getSandboxPlayers(SANDBOX_PLAYER_NAME, sandBoxSocket.id);
+	const players = getSandboxPlayers(SANDBOX_PLAYER_NAME);
 
 	const preloadPhase1Result = await preloadPhase1();
 	const { sprites, mapAssets, tankManifests, mapManifests } = storage;
@@ -33,7 +34,7 @@ export async function init(usingTankID = 1, playingMapID = 0) {
 	}
 
 	// Trong room thật, chỉ preload phase 2 khi vào trận
-	const preloadPhase2Result = await preloadPhase2(playingMapID, players);
+	const preloadPhase2Result = await preloadPhase2(playingMapID, Object.values(players));
 	if (!preloadPhase2Result) {
 		alert('Lỗi khi tải tài nguyên, cần tải lại trang hoặc thử vào lại sau!');
 		return;
@@ -48,16 +49,8 @@ export async function init(usingTankID = 1, playingMapID = 0) {
 		__debugger.hideAll();
 	}
 
-	// setupViews();
-
 	// TODO: setup battle
+	roomView.destroy();
+	battleView.setup();
+	initBattle(sandBoxSocket, players);
 }
-
-// function setupViews() {
-// 	roomView.setMapImageView(1);
-// 	roomView.setTankImageView(1);
-// 	roomView.setRoomIDView('Demo room');
-
-// 	// roomView.destroy();
-// 	// battleView.display();
-// }
