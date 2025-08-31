@@ -33,30 +33,30 @@ export function createCanvasManager(canvas, options) {
 		const parent = canvas.parentElement;
 		if (!parent) throw new Error('> [CanvasManager] Canvas parent element is undefined???');
 
-		// Nếu mode là screen, đặt canvas resolution bằng với parent (tức screen)
-		if (config.resolution === 'screen') {
-			const parent = canvas.parentElement;
+		let targetWidth = parent.clientWidth;
+		let targetHeight = parent.clientHeight;
 
-			canvas.width = parent.clientWidth;
-			canvas.height = parent.clientHeight;
-			return;
+		// Resize kích thước hiển thị canvas
+		canvas.style.width = `${targetWidth}px`;
+		canvas.style.height = `${targetHeight}px`;
+
+		// Nếu resolution là "screen", đặt canvas resolution bằng với parent (tức bằng với size screen hiện tại)
+		if (config.resolution === 'screen') {
+			canvas.width = targetWidth;
+			canvas.height = targetHeight;
+			ctx?.setTransform(1, 0, 0, 1, 0, 0);
 		}
 
 		// Nếu không, chỉnh sửa canvas resolution cho bằng resolution được cấu hình
 		else {
+			// Hỗ trợ màn hình retina/hiDPI bằng cách scale theo devicePixelRatio (mode screen không cần)
 			const dpr = config.useDevicePixelRatio ? window.devicePixelRatio || 1 : 1;
-			let targetWidth = parent.clientWidth;
-			let targetHeight = parent.clientHeight;
-
-			// Kích thước hiển thị
-			canvas.style.width = `${targetWidth}px`;
-			canvas.style.height = `${targetHeight}px`;
 
 			// Kích thước thực tế theo resolution
 			canvas.width = ((config.resolution * targetWidth) / targetHeight) * dpr;
 			canvas.height = config.resolution * dpr;
 
-			// QUAN TRỌNG: Reset transform trước khi scale
+			// QUAN TRỌNG: Reset scale transform trước khi scale
 			ctx?.setTransform(1, 0, 0, 1, 0, 0);
 
 			// Scale để vẽ đúng tỷ lệ

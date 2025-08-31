@@ -10,6 +10,7 @@ import Player from '../../../models/Player.js';
 import BattleInputManager from '../core/managers/battle/mgr.BattleInput.js';
 import createCanvasManager from '../core/managers/system/mgr.canvas.js';
 import EntityManager from '../core/managers/battle/mgr.Entity.js';
+import * as gameLoopManager from '../core/managers/system/mgr.game-loop.js';
 
 // Systems
 import CameraSystem from '../core/systems/combat/sys.Camera.js';
@@ -21,6 +22,7 @@ import { storage } from '../network/assets_managers/index.js';
 import * as battleView from '../UIs/battleUI.js';
 
 const LOG_PREFIX = '> [initializer.Battle]';
+const playerTankAndInput = new Map();
 
 /**
  * @param {AbstractSocket} socket
@@ -31,9 +33,16 @@ export function initBattle(socket, mapID, players) {
 	console.log('\n\n> [initializer.Battle] Battle initializing...');
 	const context = new EntityManager();
 
+	const selfSocketID = socket.id;
+	if (!selfSocketID) throw new Error(msg('Self socket ID is undefined???'));
+
+	// Setup map
+	for (const socketID in players)
+		if (!playerTankAndInput.has(socketID)) playerTankAndInput.set(socketID, { tank: undefined, input: undefined });
+
 	// Setup canvas với auto resize
-	const canvasManager = createCanvasManager(battleView.views.canvas, { resolution: 1080, autoResize: true });
-	const { context: context2D, canvas } = canvasManager;
+	const canvasManager = createCanvasManager(battleView.views.canvas, { resolution: 'screen', autoResize: true });
+	const { context: context2D } = canvasManager;
 
 	// Setup camera
 	const { camera, cleanUpCameraEvent } = setupCamera(canvasManager, mapID);
@@ -42,9 +51,17 @@ export function initBattle(socket, mapID, players) {
 	// Setup player input
 	const playerInput = setupPlayerInputHandler(socket, camera);
 	playerInput.listen();
+	camera.setMouseState(playerInput.mouseState); // Đặt mouse state vào camera system để chuẩn hóa tọa độ mỗi frame
 	console.log(msg('Player input setup complete'), playerInput);
 
 	console.log(msg('Battle initiated successfully\n\n\n'));
+
+	// Start game
+	gameLoopManager.start(() => {
+		console.log(msg('Battle started'));
+		// gameLoopManager.startLogicLoop(() => {});
+		// gameLoopManager.startRenderLoop(() => {});
+	});
 }
 
 /**
@@ -52,13 +69,15 @@ export function initBattle(socket, mapID, players) {
  * @param {CameraSystem} camera - Camera để chuẩn hóa tọa độ chuột screen về tọa độ game
  */
 function setupPlayerInputHandler(socket, camera) {
+	// Note: tọa độ chuột chỉ được chuẩn hóa khi mouse move, vì vậy khi camera di chuyển thì tọa độ chuột sẽ bị lệch
+	// Note: đã fix bằng cách thêm hàm `normalizeMouseState` vào CameraSystem
 	const inputHandler = new BattleInputManager(socket, (mouseState) => {
 		const { canvas, viewportX, viewportY } = camera;
 		const { left, top } = canvas.getBoundingClientRect();
-		let { mouseX: lastMouseX, mouseY: lastMouseY } = mouseState;
+		let { x: lastMouseX, y: lastMouseY } = mouseState;
 
-		mouseState.mouseX = lastMouseX - left + viewportX;
-		mouseState.mouseY = lastMouseY - top + viewportY;
+		mouseState.x = lastMouseX - left + viewportX;
+		mouseState.y = lastMouseY - top + viewportY;
 	});
 
 	return inputHandler;
@@ -87,12 +106,7 @@ function setupCamera(canvasManager, mapID) {
 	window.addEventListener('scroll', (e) => e.preventDefault(), { signal: signalController.signal });
 	window.addEventListener('resize', () => camera.update(), { signal: signalController.signal });
 
-	return {
-		camera,
-		cleanUpCameraEvent() {
-			signalController.abort();
-		},
-	};
+	return { camera, cleanUpCameraEvent: () => signalController.abort() };
 }
 
 /**

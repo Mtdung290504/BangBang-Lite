@@ -1,3 +1,5 @@
+import BattleInputManager from '../../managers/battle/mgr.BattleInput.js';
+
 /**
  * Camera của game
  *
@@ -94,7 +96,16 @@ export default class CameraSystem {
 	 * Updates the camera position based on the current target.
 	 */
 	update() {
-		const { x: targetX, y: targetY } = this.targetPosition;
+		let { x: targetX, y: targetY } = this.targetPosition;
+
+		// Di chuyển bản đồ theo trỏ chuột khi giữ chuột phải
+		if (this.mouseState) {
+			this.normalizeMouseState();
+			if (this.mouseState.rightMouseDown) {
+				targetX = this.mouseState.x;
+				targetY = this.mouseState.y;
+			}
+		}
 
 		// Tính biên dead zone
 		const leftBound = this.viewportX + (this.width - this.deadZoneWidth) / 2;
@@ -116,6 +127,28 @@ export default class CameraSystem {
 		}
 
 		this._clamp();
+	}
+
+	/**
+	 * Đặt mouse state để camera chuẩn hóa và theo dõi
+	 * @param {BattleInputManager['mouseState']} mouseState
+	 */
+	setMouseState(mouseState) {
+		this.mouseState = mouseState;
+	}
+
+	/**
+	 * Chuẩn hóa tọa độ chuột screen về tọa độ chuột game
+	 */
+	normalizeMouseState() {
+		if (!this.mouseState) return;
+
+		const { canvas, viewportX, viewportY } = this;
+		const { left, top } = canvas.getBoundingClientRect();
+		let { x: lastMouseX, y: lastMouseY } = this.mouseState;
+
+		this.mouseState.x = lastMouseX - left + viewportX;
+		this.mouseState.y = lastMouseY - top + viewportY;
 	}
 
 	/**

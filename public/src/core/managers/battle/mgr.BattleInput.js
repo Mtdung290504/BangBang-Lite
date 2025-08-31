@@ -8,12 +8,12 @@ import { ACTIONS_KEYS, CONTROL_KEY } from '../../../../configs/action-keys.js';
 export default class BattleInputManager {
 	/**
 	 * @param {{ emit: (event: string, ...data: any) => void }} [emitter]
-	 * @param {(mouseState: { mouseX: number, mouseY: number }) => void} [normalizeMousePosition]
+	 * @param {(mouseState: { x: number, y: number }) => void} [normalizeMousePosition]
 	 */
 	constructor(emitter, normalizeMousePosition) {
 		this.mouseState = {
-			mouseX: 0,
-			mouseY: 0,
+			x: 0,
+			y: 0,
 			leftMouseDown: false,
 			rightMouseDown: false,
 		};
@@ -60,8 +60,9 @@ export default class BattleInputManager {
 	 * @param {MouseEvent} event
 	 */
 	_onMouseMove(event) {
-		this.mouseState.mouseX = event.clientX;
-		this.mouseState.mouseY = event.clientY;
+		this.mouseState.x = event.clientX;
+		this.mouseState.y = event.clientY;
+		this.normalizeMousePosition?.(this.mouseState);
 		this._emitMouseState();
 	}
 

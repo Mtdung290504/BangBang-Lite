@@ -16,7 +16,7 @@ const TankHeadRotateSystem = defineSystemFactory([TankHeadComponent])
 		const movement = context.getComponent(eID, MovementComponent);
 
 		const { inputManager } = context.getComponent(tankEID, InputComponent);
-		const { mouseX, mouseY } = inputManager.mouseState;
+		const { x: mouseX, y: mouseY } = inputManager.mouseState;
 
 		const dx = mouseX - pos.x;
 		const dy = mouseY - pos.y;
