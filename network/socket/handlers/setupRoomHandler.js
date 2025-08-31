@@ -36,7 +36,9 @@ export default function setupRoomHandlers(io, playerSocket) {
 
 		// Dispatch event render UI
 		const roomData = roomManager.getRoomData(roomID);
-		if (roomData?.readyPlayers) {
+
+		// Fix vấn đề 1 player nhưng vẫn vào trận
+		if (roomData && roomData.readyPlayers && roomData.readyPlayers.length > 1) {
 			if (allPlayerReady) return io.to(roomID).emit('dispatch:all-player-ready', roomData);
 			dispatchUpdatePlayers(roomID, { readyPlayers: roomData.readyPlayers });
 		}
