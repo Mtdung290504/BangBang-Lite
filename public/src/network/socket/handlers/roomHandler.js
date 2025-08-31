@@ -126,16 +126,19 @@ function setupViewEventListeners(socket) {
 
 /**
  * Lấy room player giả định cho sandbox
+ *
  * @param {string} playerName
+ * @param {number} usingTankID
+ *
  * @returns {{ [socketID: string]: Player }}
  */
-function getSandboxPlayers(playerName) {
+function getSandboxPlayers(playerName, usingTankID) {
 	const players = [
 		Player.fromJSON({
 			socketID: SANDBOX_SOCKET_ID,
 			name: playerName,
 			team: 0,
-			using: { tankID: 1 },
+			using: { tankID: usingTankID },
 		}),
 		...[0, 1, 2].map((fakeID) => {
 			return Player.fromJSON({

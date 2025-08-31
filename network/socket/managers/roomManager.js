@@ -1,6 +1,17 @@
 import Player from '../../../models/Player.js';
 import { getMapIDs, getTankIDs } from '../../../database/getIDs.js';
 
+/**
+ * @typedef {import('socket.io').Socket} Socket
+ * @typedef {{
+ *      players: { [socketID: string]: Player }
+ *      teams: Set<string>[]
+ *      readyPlayers: Set<string>
+ *      loadedPlayers: Set<string>
+ * 		playingMap: number
+ * }} Room
+ */
+
 const mapIDs = await getMapIDs();
 const tankIDs = await getTankIDs();
 
@@ -248,14 +259,3 @@ function createNewRoom(roomID) {
 function setSocketRoomID(socket, roomID) {
 	socket.data['roomID'] = roomID;
 }
-
-/**
- * @typedef {import('socket.io').Socket} Socket
- * @typedef {{
- *      players: { [socketID: string]: Player }
- *      teams: Set<string>[]
- *      readyPlayers: Set<string>
- *      loadedPlayers: Set<string>
- * 		playingMap: number
- * }} Room
- */

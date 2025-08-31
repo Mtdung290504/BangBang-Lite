@@ -66,7 +66,11 @@ export function setRoomIDView(roomID) {
  */
 export function setMapImageView(mapID) {
 	const { mapImageContainer: imageContainer } = views;
+
+	// @ts-expect-error
 	imageContainer.innerHTML = '';
+
+	// @ts-expect-error
 	imageContainer.appendChild(storage.getMapIcon(mapID).cloneNode());
 }
 

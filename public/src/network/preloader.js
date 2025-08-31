@@ -42,6 +42,7 @@ async function loadAllIDs() {
  * @returns {Promise<boolean>}
  */
 async function preloadPhase1() {
+	console.log('\n\n> [Net.preloader] Preload phase 1 staring...');
 	const { mapIDs, tankIDs } = await loadAllIDs();
 	storage.setAssetIDs(mapIDs, tankIDs);
 
@@ -71,7 +72,7 @@ async function preloadPhase1() {
 
 		await runWithConcurrencyLimit(tasks, MAX_PARALLEL_REQUESTS);
 
-		console.log(msg('Preload Phase 1 completed successfully'));
+		console.log(msg('Preload Phase 1 completed successfully\n\n\n'));
 		return true;
 	} catch (error) {
 		console.error(msg('Preload Phase 1 failed:'), error);
@@ -97,6 +98,7 @@ async function preloadPhase1() {
  * @param {import('models/Player.js').default[]} players
  */
 async function preloadPhase2(mapID, players) {
+	console.log('\n\n> [Net.preloader] Preload phase 2 staring...');
 	try {
 		const tasks = [];
 
@@ -230,7 +232,7 @@ async function preloadPhase2(mapID, players) {
 
 		await runWithConcurrencyLimit([...remainingTasks, ...skillSpriteTasks], MAX_PARALLEL_REQUESTS);
 
-		console.log(msg('Preload Phase 2 completed successfully'));
+		console.log(msg('Preload Phase 2 completed successfully\n\n\n'));
 		return true;
 	} catch (error) {
 		console.error(msg('Preload Phase 2 failed:'), error);

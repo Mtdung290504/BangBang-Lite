@@ -14,3 +14,7 @@
 -   Log bằng tiếng Anh
 -   Log nên có prefix để dễ tìm/phân biệt
 -   Với các Message/Promt hiển thị cho user, sử dụng tiếng Việt
+
+## Quy định code
+
+-   Biến không sử dụng, thay vì để "_" thì đặt tên biến bắt đầu bằng _

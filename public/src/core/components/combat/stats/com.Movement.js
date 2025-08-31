@@ -1,4 +1,4 @@
-export default class SpeedComponent {
+export default class MovementComponent {
 	/**
 	 * @param {number} speed
 	 * @param {number} [angle=0] - The direction of the movement in degrees.

@@ -7,10 +7,10 @@ import { ACTIONS_KEYS, CONTROL_KEY } from '../../../../configs/action-keys.js';
 
 export default class BattleInputManager {
 	/**
-	 * @param {{ emit: (event: 'mouse-event' | 'key-event', ...data: any) => void }} [emitter]
+	 * @param {{ emit: (event: string, ...data: any) => void }} [emitter]
+	 * @param {(mouseState: { mouseX: number, mouseY: number }) => void} [normalizeMousePosition]
 	 */
-	constructor(emitter) {
-		/** @type {{ mouseX: number, mouseY: number, leftMouseDown: boolean, rightMouseDown: boolean }} */
+	constructor(emitter, normalizeMousePosition) {
 		this.mouseState = {
 			mouseX: 0,
 			mouseY: 0,
@@ -32,15 +32,25 @@ export default class BattleInputManager {
 
 		/** @type {AbortController | null} */
 		this.abortController = null;
-		this.emitter = emitter;
+
+		if (this.emitter && this.normalizeMousePosition) {
+			/**@type {'local' | 'remote'} */
+			this.type = 'local';
+			this.emitter = emitter;
+			this.normalizeMousePosition = normalizeMousePosition;
+		} else this.type = 'remote';
 	}
 
-	/**@private */
+	/**
+	 * @private
+	 */
 	_emitMouseState() {
 		this.emitter?.emit('mouse-event', this.mouseState);
 	}
 
-	/**@private */
+	/**
+	 * @private
+	 */
 	_emitActionState() {
 		this.emitter?.emit('key-event', this.actionState);
 	}
@@ -90,10 +100,36 @@ export default class BattleInputManager {
 
 	/**
 	 * @private
+	 * @param {string} key
+	 * @returns {ActionKey | undefined}
+	 */
+	_mapKeyToAction(key) {
+		const upper = key.toUpperCase();
+
+		// Ưu tiên map qua CONTROL_KEY nếu có
+		if (CONTROL_KEY[upper]) {
+			return CONTROL_KEY[upper];
+		}
+
+		// Map trực tiếp arrow keys
+		const arrowMap = {
+			ArrowUp: ACTIONS_KEYS['UP'],
+			ArrowDown: ACTIONS_KEYS['DOWN'],
+			ArrowLeft: ACTIONS_KEYS['LEFT'],
+			ArrowRight: ACTIONS_KEYS['RIGHT'],
+		};
+
+		// @ts-expect-error: Type mismatch nhưng chắc chắn không lỗi
+		return arrowMap[key];
+	}
+
+	/**
+	 * @private
 	 * @param {KeyboardEvent} event
 	 */
 	_onKeyDown(event) {
-		const controlAction = CONTROL_KEY[event.key.toUpperCase()];
+		const controlAction = this._mapKeyToAction(event.key);
+
 		if (controlAction && controlAction in this.actionState) {
 			// controlAction is guaranteed to be a BattleActionKey since it exists in actionState
 			this.actionState[/** @type {BattleActionKey} */ (controlAction)] = true;
@@ -106,7 +142,8 @@ export default class BattleInputManager {
 	 * @param {KeyboardEvent} event
 	 */
 	_onKeyUp(event) {
-		const controlAction = CONTROL_KEY[event.key.toUpperCase()];
+		const controlAction = this._mapKeyToAction(event.key);
+
 		if (controlAction && controlAction in this.actionState) {
 			// controlAction is guaranteed to be a BattleActionKey since it exists in actionState
 			this.actionState[/** @type {BattleActionKey} */ (controlAction)] = false;

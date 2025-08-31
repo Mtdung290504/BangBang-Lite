@@ -1,3 +1,10 @@
+/**
+ * Camera của game
+ *
+ * - Đưa vào nhóm system nhưng nó không giống system cho lắm vì chỉ chạy trên 1 player và vừa chứa data vừa update
+ * - Nhưng không đưa vào nhóm system thì chả biết cho vào đâu
+ * - Tuy nhiên nó là thành phần chạy từng frame
+ */
 export default class CameraSystem {
 	/**
 	 * @param {HTMLCanvasElement} canvas - Canvas vẽ đồ họa
@@ -5,6 +12,7 @@ export default class CameraSystem {
 	constructor(canvas) {
 		/**Tạm hiểu là tọa độ x góc trái trên của camera */
 		this.viewportX = 0;
+
 		/**Tạm hiểu là tọa độ y góc trái trên của camera */
 		this.viewportY = 0;
 
@@ -14,41 +22,64 @@ export default class CameraSystem {
 
 		/**Chiều rộng của bản đồ game */
 		this.mapWidth = 0;
+
 		/**Chiều cao của bản đồ game */
 		this.mapHeight = 0;
+
+		// Viewport (kích thước tầm nhìn của camera), tách biệt với canvas
+		this.viewportWidth = canvas ? canvas.width : 0;
+		this.viewportHeight = canvas ? canvas.height : 0;
+
+		/**
+		 * Tỉ lệ dead zone theo chiều rộng/chiều cao viewport.
+		 * @private
+		 */
+		this._deadZoneRatio = 1 / 6;
 	}
 
-	/**Game canvas width */
+	/** Camera viewport width */
 	get width() {
-		if (!this.canvas) return 0;
-		return this.canvas.width;
+		return this.viewportWidth;
 	}
 
-	/**Game canvas height */
+	/** Camera viewport height */
 	get height() {
-		if (!this.canvas) return 0;
-		return this.canvas.height;
+		return this.viewportHeight;
 	}
 
 	/** Khoảng giá trị mà sự thay đổi tọa độ x của target chưa làm camera dịch chuyển */
 	get deadZoneWidth() {
-		return this.width / 6;
+		return this.width * this._deadZoneRatio;
 	}
 
 	/** Khoảng giá trị mà sự thay đổi tọa độ y của target chưa làm camera dịch chuyển */
 	get deadZoneHeight() {
-		return this.height / 6;
+		return this.height * this._deadZoneRatio;
 	}
 
 	/**
 	 * Đặt lại kích thước bản đồ game
 	 *
 	 * @param {number} mapWidth
-	 * @param {number} mapHeight
+	 * @param {number} mapHeight}
 	 */
 	setMapSize(mapWidth, mapHeight) {
 		this.mapWidth = mapWidth;
 		this.mapHeight = mapHeight;
+	}
+
+	/**
+	 * Đặt kích thước viewport của camera (tách biệt với canvas)
+	 *
+	 * @param {number} width
+	 * @param {number} height
+	 */
+	setSize(width, height) {
+		this.viewportWidth = width;
+		this.viewportHeight = height;
+
+		// Bản cũ khi setSize chuyển dead zone về width/6, height/6
+		this._deadZoneRatio = 1 / 6;
 	}
 
 	/**
@@ -92,6 +123,15 @@ export default class CameraSystem {
 	 */
 	getTranslate() {
 		return { x: -this.viewportX, y: -this.viewportY };
+	}
+
+	/**
+	 * Áp transform camera trực tiếp lên context (giữ tương thích bản cũ)
+	 * @param {CanvasRenderingContext2D} context
+	 */
+	apply(context) {
+		const t = this.getTranslate();
+		context.translate(t.x, t.y);
 	}
 
 	/**

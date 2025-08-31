@@ -1,5 +1,3 @@
-const DEFAULT_RESOLUTION = 1080;
-
 export default createCanvasManager;
 
 /**
@@ -7,59 +5,65 @@ export default createCanvasManager;
  *
  * @param {HTMLCanvasElement} canvas - Canvas element cần quản lý
  * @param {Object} options - Các tùy chọn cấu hình
- * @param {number} [options.resolution] - Độ phân giải mặc định (default: 1080)
- * @param {boolean} [options.autoResize] - Tự động resize khi window thay đổi kích thước (default: true)
+ * @param {number | 'screen'} options.resolution - Độ phân giải mặc định (default: 1080)
+ * @param {boolean} options.autoResize - Tự động resize khi window thay đổi kích thước (default: true)
  * @param {boolean} [options.useDevicePixelRatio] - Sử dụng device pixel ratio (default: true)
  */
-export function createCanvasManager(canvas, options = {}) {
+export function createCanvasManager(canvas, options) {
 	// Validate canvas
-	if (!canvas || !(canvas instanceof HTMLCanvasElement)) {
+	if (!canvas || !(canvas instanceof HTMLCanvasElement))
 		throw new Error('> [CanvasManager] Canvas element is required and must be a valid HTMLCanvasElement');
-	}
 
 	const config = {
-		resolution: options.resolution || DEFAULT_RESOLUTION,
-		autoResize: options.autoResize !== false, // default true
+		resolution: options.resolution,
+		autoResize: options.autoResize,
 		useDevicePixelRatio: options.useDevicePixelRatio !== false, // default true
 	};
 
 	const ctx = canvas.getContext('2d');
-	if (ctx === null) throw new Error('> [CanvasManager] Context 2D is null, why???');
+	if (ctx === null) throw new Error('> [CanvasManager] Context 2D is null???');
 
 	/**@type {(() => void) | null} */
 	let onWindowResizeCall = null;
 
 	/**
-	 * Resize canvas dựa trên tỷ lệ cửa sổ và độ phân giải
+	 * Resize canvas với kích thước tùy chỉnh (để gọi từ bên ngoài)
 	 */
 	function resize() {
-		resizeToSize(window.innerWidth, window.innerHeight);
-	}
+		const parent = canvas.parentElement;
+		if (!parent) throw new Error('> [CanvasManager] Canvas parent element is undefined???');
 
-	/**
-	 * Resize canvas với kích thước tùy chỉnh (để gọi từ bên ngoài)
-	 * @param {number} targetWidth - Chiều rộng hiển thị mục tiêu
-	 * @param {number} targetHeight - Chiều cao hiển thị mục tiêu
-	 */
-	function resizeToSize(targetWidth, targetHeight) {
-		// if (options.autoResize === true) return;
-		const dpr = config.useDevicePixelRatio ? window.devicePixelRatio || 1 : 1;
+		// Nếu mode là screen, đặt canvas resolution bằng với parent (tức screen)
+		if (config.resolution === 'screen') {
+			const parent = canvas.parentElement;
 
-		// Kích thước hiển thị
-		canvas.style.width = `${targetWidth}px`;
-		canvas.style.height = `${targetHeight}px`;
+			canvas.width = parent.clientWidth;
+			canvas.height = parent.clientHeight;
+			return;
+		}
 
-		// Kích thước thực tế theo resolution
-		canvas.width = ((config.resolution * targetWidth) / targetHeight) * dpr;
-		canvas.height = config.resolution * dpr;
+		// Nếu không, chỉnh sửa canvas resolution cho bằng resolution được cấu hình
+		else {
+			const dpr = config.useDevicePixelRatio ? window.devicePixelRatio || 1 : 1;
+			let targetWidth = parent.clientWidth;
+			let targetHeight = parent.clientHeight;
 
-		// QUAN TRỌNG: Reset transform trước khi scale
-		ctx?.setTransform(1, 0, 0, 1, 0, 0);
+			// Kích thước hiển thị
+			canvas.style.width = `${targetWidth}px`;
+			canvas.style.height = `${targetHeight}px`;
 
-		// Scale để vẽ đúng tỷ lệ
-		const scaleX = canvas.width / targetWidth;
-		const scaleY = canvas.height / targetHeight;
-		ctx?.scale(scaleX, scaleY);
+			// Kích thước thực tế theo resolution
+			canvas.width = ((config.resolution * targetWidth) / targetHeight) * dpr;
+			canvas.height = config.resolution * dpr;
+
+			// QUAN TRỌNG: Reset transform trước khi scale
+			ctx?.setTransform(1, 0, 0, 1, 0, 0);
+
+			// Scale để vẽ đúng tỷ lệ
+			const scaleX = canvas.width / targetWidth;
+			const scaleY = canvas.height / targetHeight;
+			ctx?.scale(scaleX, scaleY);
+		}
 	}
 
 	/**
@@ -75,9 +79,18 @@ export function createCanvasManager(canvas, options = {}) {
 	}
 
 	/**
-	 * Bật tự động resize khi window thay đổi kích thước
+	 * @param {boolean} mode
 	 */
-	function enableAutoResize() {
+	function setAutoResize(mode) {
+		if (mode) _enableAutoResize();
+		else _disableAutoResize();
+	}
+
+	/**
+	 * Bật tự động resize khi window thay đổi kích thước
+	 * @private
+	 */
+	function _enableAutoResize() {
 		if (config.autoResize && !onWindowResizeCall) {
 			onWindowResizeCall = resize;
 			window.addEventListener('resize', onWindowResizeCall);
@@ -86,40 +99,27 @@ export function createCanvasManager(canvas, options = {}) {
 
 	/**
 	 * Tắt tự động resize
+	 * @private
 	 */
-	function disableAutoResize() {
+	function _disableAutoResize() {
 		if (onWindowResizeCall) {
 			window.removeEventListener('resize', onWindowResizeCall);
 			onWindowResizeCall = null;
 		}
 	}
 
-	/**
-	 * Lấy thông tin hiện tại của canvas
-	 */
-	function getInfo() {
-		return {
-			resolution: config.resolution,
-			autoResize: config.autoResize,
-			useDevicePixelRatio: config.useDevicePixelRatio,
-			canvasWidth: canvas.width,
-			canvasHeight: canvas.height,
-			displayWidth: canvas.style.width,
-			displayHeight: canvas.style.height,
-		};
-	}
-
-	if (config.autoResize) enableAutoResize(); // Khởi tạo
+	if (config.autoResize) _enableAutoResize(); // Khởi tạo
 	resize(); // Resize lần đầu
 
 	// Return API object
 	return {
 		resize,
-		resizeToSize,
+		setAutoResize,
 		setResolution,
-		enableAutoResize,
-		disableAutoResize,
-		getInfo,
+
+		get config() {
+			return config;
+		},
 
 		get canvas() {
 			return canvas;

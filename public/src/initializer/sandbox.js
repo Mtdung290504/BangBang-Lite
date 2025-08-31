@@ -24,7 +24,7 @@ export async function init(usingTankID = 1, playingMapID = 0) {
 	playingMapID = Number(playingMapID);
 
 	const sandBoxSocket = getSandboxSocket();
-	const players = getSandboxPlayers(SANDBOX_PLAYER_NAME);
+	const players = getSandboxPlayers(SANDBOX_PLAYER_NAME, usingTankID);
 
 	const preloadPhase1Result = await preloadPhase1();
 	const { sprites, mapAssets, tankManifests, mapManifests } = storage;
@@ -52,5 +52,5 @@ export async function init(usingTankID = 1, playingMapID = 0) {
 	// TODO: setup battle
 	roomView.destroy();
 	battleView.setup();
-	initBattle(sandBoxSocket, players);
+	initBattle(sandBoxSocket, playingMapID, players);
 }

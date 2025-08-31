@@ -6,7 +6,7 @@ import { RenderContext } from './contexts.js';
 import { degToRad } from '../../fomulars/angle.js';
 
 // Components
-import SpeedComponent from '../../components/combat/stats/com.Speed.js';
+import MovementComponent from '../../components/combat/stats/com.Movement.js';
 import SpriteComponent from '../../components/graphic/com.Sprite.js';
 import PositionComponent from '../../components/physics/com.Position.js';
 
@@ -16,7 +16,7 @@ const SpriteRendererFactory = defineSystemFactory([SpriteComponent, PositionComp
 
 		function render() {
 			const { context2D } = sysContext;
-			const angle = context.getComponent(eID, SpeedComponent, false)?.angle ?? 0;
+			const angle = context.getComponent(eID, MovementComponent, false)?.angle ?? 0;
 
 			const { resource } = sprite;
 			const manifest = resource.manifest;
