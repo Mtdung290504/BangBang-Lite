@@ -38,10 +38,11 @@ export default class BattleInputManager {
 		/** @type {AbortController | null} */
 		this.abortController = null;
 
-		/**@type {'local' | 'remote'} */
-		this.type = this.emitter && this.camera ? 'local' : 'remote';
 		this.emitter = emitter;
 		this.camera = camera;
+
+		/**@type {'local' | 'remote'} */
+		this.type = this.emitter && this.camera ? 'local' : 'remote';
 	}
 
 	/**

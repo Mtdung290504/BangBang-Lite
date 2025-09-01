@@ -6,8 +6,6 @@
 /**@type {TankManifest} */
 export const stats = {
 	name: '???',
-	// 'assets-manifest': '/assets/jsons/assets_manifests/000.json',
-	// 'skill-manifest': '/assets/jsons/skill_manifests/000.json',
 	'stat-components': {
 		shooting: {
 			'fire-rate': 120,
@@ -27,6 +25,8 @@ export const stats = {
 		},
 		'movement-speed': 180,
 	},
+	'render-size': 62.5,
+	'hitbox-size': 55,
 };
 
 export const skills = {};

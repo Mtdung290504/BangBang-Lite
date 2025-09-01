@@ -21,13 +21,18 @@ import { storage } from '../../network/assets_managers/index.js';
 // UIs
 import * as battleView from '../../UIs/battleUI.js';
 import { BufferedEmitter } from '../../network/helpers/net.BufferedEmitter.js';
+import createTank from '../../core/factory/battle/fac.Tank.js';
 
 const LOG_PREFIX = '> [initializer.Battle]';
 const DEBUG_MODE = false;
-const playerTankAndInput = new Map();
 
 /**
- * Khởi tạo game, lưu ý nó không giải phóng view, phải thực hiện bên ngoài
+ * @type {Map<string, { tankEID: number, inputManager: BattleInputManager }>}
+ */
+const playerRegistry = new Map();
+
+/**
+ * Khởi tạo game, lưu ý nó không giải phóng view, phải thực hiện việc đó bên ngoài
  *
  * @param {AbstractSocket} socket
  * @param {number} mapID
@@ -42,7 +47,9 @@ export default function initBattle(socket, mapID, players) {
 
 	// Setup map
 	for (const socketID in players)
-		if (!playerTankAndInput.has(socketID)) playerTankAndInput.set(socketID, { tank: undefined, input: undefined });
+		if (!playerRegistry.has(socketID))
+			// @ts-expect-error: Type quy định sai nhưng vì đây là khởi tạo nên chấp nhận được
+			playerRegistry.set(socketID, { tankEID: undefined, inputManager: undefined });
 
 	// Setup canvas với auto resize
 	const canvasManager = createCanvasManager(battleView.views.canvas, { resolution: 'screen', autoResize: true });
@@ -55,19 +62,47 @@ export default function initBattle(socket, mapID, players) {
 
 	// Setup emitter and player input
 	const bufferedEmitter = new BufferedEmitter(socket, () => gameLoopManager.LOGIC_FPS);
-	const playerInput = new BattleInputManager(bufferedEmitter, camera);
-	playerInput.listen();
-	console.log(msg('Player input setup complete'), playerInput);
+	const selfInputManager = new BattleInputManager(bufferedEmitter, camera);
+	selfInputManager.listen();
+	console.log(msg('Player input setup complete'), selfInputManager);
 
+	// Setup tanks
+	setupTanks(context, players, { selfSocketID, selfInputManager });
 	console.log(msg('Battle initiated successfully\n\n\n'));
 
-	// Start game
-	gameLoopManager.start(() => {
-		gameLoopManager.setProgressLog(DEBUG_MODE);
-		console.log(msg('Battle started, using context:'), context);
-		// gameLoopManager.startLogicLoop(() => {});
-		// gameLoopManager.startRenderLoop(() => {});
+	/**
+	 * Start battle sau khi setup socket listener
+	 */
+	const start = () =>
+		gameLoopManager.start(() => {
+			gameLoopManager.setProgressLog(DEBUG_MODE);
+			console.log('\n\n', msg('Battle started, using context:'), context);
+			// gameLoopManager.startLogicLoop(() => {});
+			// gameLoopManager.startRenderLoop(() => {});
+		});
+
+	return { context, playerRegistry, start };
+}
+
+/**
+ * @param {EntityManager} context
+ * @param {{ [socketID: string]: Player }} players
+ * @param {Object} self
+ * @param {string} self.selfSocketID
+ * @param {BattleInputManager} self.selfInputManager
+ */
+function setupTanks(context, players, { selfSocketID, selfInputManager }) {
+	// Khởi tạo tank cho các player khác
+	const anotherPlayerSocket = Object.keys(players).filter((socketID) => socketID !== selfSocketID);
+	anotherPlayerSocket.forEach((socketID) => {
+		const { tankEID, inputManager } = createTank(context, players[socketID]);
+		playerRegistry.set(socketID, { tankEID, inputManager });
 	});
+
+	// Khởi tạo tank cho mình
+	// Khởi tạo cho bản thân sau là có lý do, render tank của bản thân sẽ luôn hiện trên các tank khác (trừ khi nó bay)
+	const { tankEID } = createTank(context, players[selfSocketID], selfInputManager);
+	playerRegistry.set(selfSocketID, { tankEID, inputManager: selfInputManager });
 }
 
 /**

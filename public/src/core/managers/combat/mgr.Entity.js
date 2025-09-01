@@ -71,9 +71,9 @@ export default class EntityManager {
 	 * Gắn nhiều component vào entity cùng lúc.
 	 *
 	 * @param {number} entity ID entity
-	 * @param {...object} components Danh sách component instances
+	 * @param {object[]} components Danh sách component instances
 	 */
-	addComponents(entity, ...components) {
+	addComponents(entity, components) {
 		for (const component of components) {
 			this.addComponent(entity, component);
 		}

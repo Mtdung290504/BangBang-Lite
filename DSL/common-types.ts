@@ -19,7 +19,7 @@ interface Circle {
 	};
 }
 
-export type Collider = Rectangle | Circle;
+type Collider = Rectangle | Circle;
 
 interface Sprite {
 	/** Sprite key của thực thể để render */
@@ -32,4 +32,4 @@ interface Sprite {
 	};
 }
 
-export type { Sprite };
+export type { Sprite, Collider };

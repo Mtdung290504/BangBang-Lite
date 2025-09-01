@@ -40,17 +40,32 @@ export async function init(usingTankID = 1, playingMapID = 0) {
 		return;
 	}
 
+	// TODO: setup battle
+	roomView.destroy();
+	battleView.setup();
+
+	const battle = initBattle(sandBoxSocket, playingMapID, players);
+
+	// TODO: Setup socket listener with battle.playerRegistry and start battle
+	setupSocketListener(battle.playerRegistry);
+	battle.start();
+
+	// Create debuggers
 	if (DEBUG_MODE) {
 		__debugger.observe(players, { name: 'Players' });
 		__debugger.observe(sprites, { name: 'Sprite storage' });
 		__debugger.observe(mapAssets, { name: 'Map assets' });
 		__debugger.observe(tankManifests, { name: 'Tank manifests' });
 		__debugger.observe(mapManifests, { name: 'Map manifests' });
+		__debugger.observe(battle.context, { name: 'Entity Manager (Context)' });
 		__debugger.hideAll();
 	}
+}
 
-	// TODO: setup battle
-	roomView.destroy();
-	battleView.setup();
-	initBattle(sandBoxSocket, playingMapID, players);
+/**
+ * @param {ReturnType<typeof initBattle>['playerRegistry']} playerRegistry
+ */
+function setupSocketListener(playerRegistry) {
+	// TODO: Setup socket listener in real app
+	console.log('> [Sandbox] Simulate socket listener setup using:', playerRegistry);
 }

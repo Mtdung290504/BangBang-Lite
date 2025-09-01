@@ -27,4 +27,30 @@ export default class ColliderComponent {
 			this.width = this.height = this.radius * 2;
 		}
 	}
+
+	/**
+	 * @template {import('DSL/common-types.ts').Collider} C
+	 * @param {C} dsl
+	 * @returns {C['type'] extends 'rectangle' ? ColliderComponent<'rectangle'> : ColliderComponent<'circle'>}
+	 */
+	static fromDSL(dsl) {
+		switch (dsl.type) {
+			case 'rectangle':
+				// @ts-expect-error: Suy luận không đủ mạnh nhưng dùng switch case là chắc cú rồi
+				return new ColliderComponent('rectangle', {
+					width: dsl.size.width,
+					height: dsl.size.height,
+				});
+
+			case 'circle':
+				// @ts-expect-error: Suy luận không đủ mạnh nhưng dùng switch case là chắc cú rồi
+				return new ColliderComponent('circle', {
+					radius: dsl.size.radius,
+					'sector-angle': dsl.size['sector-angle'],
+				});
+
+			default:
+				throw new Error(`> [ColliderComponent] Unknown collider type`);
+		}
+	}
 }

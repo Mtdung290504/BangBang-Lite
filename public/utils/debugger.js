@@ -21,28 +21,28 @@ const CONFIG = {
 /**@type {{ destroy: () => void, hide: () => void, show: () => void, element: HTMLElement }[]} */
 const registry = [];
 
-export default {
+const __debugger = {
 	observe: debugVariable,
 
 	showAll() {
-		console.log('> [Debugger] Show all debuggers');
+		console.log('> [Debugger] Show all debuggers\n\n\n');
 		for (const { show } of registry) show();
 	},
 
 	hideAll() {
-		console.log('> [Debugger] Hide all debuggers');
+		console.log('> [Debugger] Hide all debuggers\n\n\n');
 		for (const { hide } of registry) hide();
 	},
 
 	destroyAll() {
-		console.log('> [Debugger] Destroy all debuggers');
+		console.log('> [Debugger] Destroy all debuggers\n\n\n');
 		for (const { destroy } of registry) destroy();
 		registry.length = 0; // Clear registry
 	},
 
 	listen() {
 		if (this.listening) return;
-		console.log('> [Debugger] Started and running...');
+		console.log('> [Debugger] Started and running...\n\n\n');
 		this.listening = true;
 
 		window.addEventListener('keydown', (e) => {
@@ -56,6 +56,8 @@ export default {
 		});
 	},
 };
+
+export default __debugger;
 
 // Insert global CSS once
 function ensureGlobalStyle() {
