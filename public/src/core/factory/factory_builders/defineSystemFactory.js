@@ -1,4 +1,4 @@
-import EntityManager from '../../managers/battle/mgr.Entity.js';
+import EntityManager from '../../managers/combat/mgr.Entity.js';
 
 /**
  * @template {[...(new (...args: any[]) => any)[]]} const PrimaryComponents

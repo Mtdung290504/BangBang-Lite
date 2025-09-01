@@ -1,4 +1,4 @@
-import BattleInputManager from '../../managers/battle/mgr.BattleInput.js';
+import BattleInputManager from '../input/mgr.BattleInput.js';
 
 /**
  * Camera của game
@@ -7,7 +7,7 @@ import BattleInputManager from '../../managers/battle/mgr.BattleInput.js';
  * - Nhưng không đưa vào nhóm system thì chả biết cho vào đâu
  * - Tuy nhiên nó là thành phần chạy từng frame
  */
-export default class CameraSystem {
+export default class CameraManager {
 	/**
 	 * @param {HTMLCanvasElement} canvas - Canvas vẽ đồ họa
 	 */

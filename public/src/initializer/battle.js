@@ -7,13 +7,13 @@
 import Player from '../../../models/Player.js';
 
 // Managers
-import BattleInputManager from '../core/managers/battle/mgr.BattleInput.js';
+import BattleInputManager from '../core/managers/input/mgr.BattleInput.js';
 import createCanvasManager from '../core/managers/system/mgr.canvas.js';
-import EntityManager from '../core/managers/battle/mgr.Entity.js';
+import EntityManager from '../core/managers/combat/mgr.Entity.js';
 import * as gameLoopManager from '../core/managers/system/mgr.game-loop.js';
 
 // Systems
-import CameraSystem from '../core/systems/combat/sys.Camera.js';
+import CameraManager from '../core/managers/graphic/mgr.Camera.js';
 
 // Storage
 import { storage } from '../network/assets_managers/index.js';
@@ -66,7 +66,7 @@ export function initBattle(socket, mapID, players) {
 
 /**
  * @param {AbstractSocket} socket
- * @param {CameraSystem} camera - Camera để chuẩn hóa tọa độ chuột screen về tọa độ game
+ * @param {CameraManager} camera - Camera để chuẩn hóa tọa độ chuột screen về tọa độ game
  */
 function setupPlayerInputHandler(socket, camera) {
 	// Note: tọa độ chuột chỉ được chuẩn hóa khi mouse move, vì vậy khi camera di chuyển thì tọa độ chuột sẽ bị lệch
@@ -89,7 +89,7 @@ function setupPlayerInputHandler(socket, camera) {
  */
 function setupCamera(canvasManager, mapID) {
 	const { canvas } = canvasManager;
-	const camera = new CameraSystem(canvas);
+	const camera = new CameraManager(canvas);
 
 	// Lấy map manifest để lấy map size
 	const mapManifest = storage.getMapManifest(mapID);

@@ -2,7 +2,7 @@
  * Demo sử dụng defineSystemFactory
  */
 
-import EntityManager from '../../managers/battle/mgr.Entity.js';
+import EntityManager from '../../managers/combat/mgr.Entity.js';
 import defineSystemFactory from './defineSystemFactory.js';
 
 class NetworkContext {

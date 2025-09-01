@@ -1,4 +1,4 @@
-import BattleInputManager from '../../managers/battle/mgr.BattleInput.js';
+import BattleInputManager from '../../managers/input/mgr.BattleInput.js';
 
 export default class InputComponent {
 	/**
