@@ -1,23 +1,23 @@
-// Input
-import BattleInputManager from '../core/managers/battle/mgr.BattleInput.js';
-
 // Socket
-import { BufferedEmitter } from '../network/helpers/net.BufferedEmitter.js';
-import getConnectedSocket from '../network/socket/getConnectedSocket.js';
+import getConnectedSocket from '../../network/socket/getConnectedSocket.js';
 
 // Assets
-import { preloadPhase1, preloadPhase2 } from '../network/preloader.js';
-import { storage } from '../network/assets_managers/index.js';
+import { preloadPhase1, preloadPhase2 } from '../../network/preloader.js';
+import { storage } from '../../network/assets_managers/index.js';
 
 // Room
-import { roomHandlers } from '../network/socket/handlers/index.js';
-import * as roomView from '../UIs/roomUI.js';
+import { roomHandlers } from '../../network/socket/handlers/index.js';
+
+// UIs
+import * as roomView from '../../UIs/roomUI.js';
+import * as battleView from '../../UIs/battleUI.js';
 
 // Config & debugs
-import { LOGIC_FPS } from '../core/managers/system/mgr.game-loop.js';
-import __debugger from '../../utils/debugger.js';
-import { initBattle } from './battle.js';
+import __debugger from '../../../utils/debugger.js';
 __debugger.listen();
+
+// Initializer
+import initBattle from '../battle/init.js';
 
 const DEBUG_MODE = true;
 
@@ -47,19 +47,21 @@ export async function init(roomID, playerName) {
 	}
 
 	// Listen for all-player-ready event to preload
-	// Đăng ký sự kiện sau nên đọc dữ liệu từ roomHandler thay vì socket data
+	// *Đăng ký sự kiện sau nên đọc dữ liệu từ roomHandler thay vì socket data
 	socket.on('dispatch:all-player-ready', () => {
 		const { playingMapID: mapID, players } = roomHandlers;
 		preloadPhase2(mapID, Object.values(players));
 
 		// TODO: Setup and start game
-		console.log('> [App] Start battle');
+		console.log('> [App] Setup view and Start battle initializer...');
 		roomView.destroy();
+		battleView.setup();
+		initBattle(socket, mapID, players);
+
 		if (DEBUG_MODE) {
 			__debugger.observe(players, { name: 'Players' });
-			// __debugger.hideAll();
+			__debugger.hideAll();
 		}
-		initBattle(socket, players);
 	});
 
 	if (DEBUG_MODE) {
@@ -67,13 +69,9 @@ export async function init(roomID, playerName) {
 		__debugger.observe(mapAssets, { name: 'Map assets' });
 		__debugger.observe(mapManifests, { name: 'Map Manifests' });
 		__debugger.observe(tankManifests, { name: 'Tank Manifests' });
-		__debugger.hideAll();
 	}
 
 	roomView.setup(roomID, socket);
-
-	// const inputMgr = setupInputManager(new BufferedEmitter(socket, () => LOGIC_FPS), DEBUG_MODE);
-	// inputMgr.listen();
 }
 
 async function setupSocket(debug = false) {
@@ -88,14 +86,4 @@ async function setupSocket(debug = false) {
 		alert('Lỗi khi kết nối đến server, cần tải lại trang hoặc thử vào lại sau!');
 		throw error;
 	}
-}
-
-/**
- * @param {ConstructorParameters<typeof BattleInputManager>[0]} emitter
- * @param {boolean} debug
- */
-function setupInputManager(emitter, debug = false) {
-	const inputMgr = new BattleInputManager(emitter);
-	if (debug) __debugger.observe(inputMgr, { name: 'Input manager' });
-	return inputMgr;
 }

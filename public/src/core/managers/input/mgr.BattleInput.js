@@ -7,16 +7,21 @@ import { ACTIONS_KEYS, CONTROL_KEY } from '../../../../configs/action-keys.js';
 
 export default class BattleInputManager {
 	/**
-	 * @param {{ emit: (event: string, ...data: any) => void }} [emitter]
-	 * @param {(mouseState: { x: number, y: number }) => void} [normalizeMousePosition]
+	 * Khởi tạo input manager cho local player (chính mình)
+	 * @overload
+	 * @param {{ emit: (event: string, ...data: any) => void }} emitter
+	 * @param {import('../graphic/mgr.Camera.js').default} camera
 	 */
-	constructor(emitter, normalizeMousePosition) {
-		this.mouseState = {
-			x: 0,
-			y: 0,
-			leftMouseDown: false,
-			rightMouseDown: false,
-		};
+	/**
+	 * Khởi tạo input manager cho remote player (người chơi khác)
+	 * @overload
+	 */
+	/**
+	 * @param {{ emit: (event: string, ...data: any) => void }} [emitter]
+	 * @param {import('../graphic/mgr.Camera.js').default} [camera]
+	 */
+	constructor(emitter, camera) {
+		this.mouseState = { x: 0, y: 0, leftMouseDown: false, rightMouseDown: false };
 
 		/** @type {Record<BattleActionKey, boolean>} */
 		this.actionState = {
@@ -33,12 +38,10 @@ export default class BattleInputManager {
 		/** @type {AbortController | null} */
 		this.abortController = null;
 
-		if (this.emitter && this.normalizeMousePosition) {
-			/**@type {'local' | 'remote'} */
-			this.type = 'local';
-			this.emitter = emitter;
-			this.normalizeMousePosition = normalizeMousePosition;
-		} else this.type = 'remote';
+		/**@type {'local' | 'remote'} */
+		this.type = this.emitter && this.camera ? 'local' : 'remote';
+		this.emitter = emitter;
+		this.camera = camera;
 	}
 
 	/**
@@ -60,9 +63,17 @@ export default class BattleInputManager {
 	 * @param {MouseEvent} event
 	 */
 	_onMouseMove(event) {
-		this.mouseState.x = event.clientX;
-		this.mouseState.y = event.clientY;
-		this.normalizeMousePosition?.(this.mouseState);
+		let { clientX, clientY } = event;
+
+		if (this.type === 'local' && this.camera) {
+			const { x, y } = this.camera.screenToWorld(clientX, clientY);
+			clientX = x;
+			clientY = y;
+		}
+
+		this.mouseState.x = clientX;
+		this.mouseState.y = clientY;
+
 		this._emitMouseState();
 	}
 

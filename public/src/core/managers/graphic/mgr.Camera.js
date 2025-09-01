@@ -1,35 +1,27 @@
 import BattleInputManager from '../input/mgr.BattleInput.js';
 
-/**
- * Camera của game
- *
- * - Đưa vào nhóm system nhưng nó không giống system cho lắm vì chỉ chạy trên 1 player và vừa chứa data vừa update
- * - Nhưng không đưa vào nhóm system thì chả biết cho vào đâu
- * - Tuy nhiên nó là thành phần chạy từng frame
- */
 export default class CameraManager {
 	/**
 	 * @param {HTMLCanvasElement} canvas - Canvas vẽ đồ họa
 	 */
 	constructor(canvas) {
-		/**Tạm hiểu là tọa độ x góc trái trên của camera */
+		/** Tạm hiểu là tọa độ x góc trái trên của camera */
 		this.viewportX = 0;
-
-		/**Tạm hiểu là tọa độ y góc trái trên của camera */
+		/** Tạm hiểu là tọa độ y góc trái trên của camera */
 		this.viewportY = 0;
 
-		/**Tọa độ của mục tiêu cần theo dõi */
+		/** Tọa độ của mục tiêu cần theo dõi */
 		this.targetPosition = { x: 0, y: 0 };
 		this.canvas = canvas;
 
-		/**Chiều rộng của bản đồ game */
+		/** Chiều rộng của bản đồ game */
 		this.mapWidth = 0;
-
-		/**Chiều cao của bản đồ game */
+		/** Chiều cao của bản đồ game */
 		this.mapHeight = 0;
 
-		// Viewport (kích thước tầm nhìn của camera), tách biệt với canvas
+		/** Chiều rộng tầm nhìn camera */
 		this.viewportWidth = canvas ? canvas.width : 0;
+		/** Chiều cao tầm nhìn camera */
 		this.viewportHeight = canvas ? canvas.height : 0;
 
 		/**
@@ -98,15 +90,6 @@ export default class CameraManager {
 	update() {
 		let { x: targetX, y: targetY } = this.targetPosition;
 
-		// Di chuyển bản đồ theo trỏ chuột khi giữ chuột phải
-		if (this.mouseState) {
-			this.normalizeMouseState();
-			if (this.mouseState.rightMouseDown) {
-				targetX = this.mouseState.x;
-				targetY = this.mouseState.y;
-			}
-		}
-
 		// Tính biên dead zone
 		const leftBound = this.viewportX + (this.width - this.deadZoneWidth) / 2;
 		const rightBound = this.viewportX + (this.width + this.deadZoneWidth) / 2;
@@ -130,25 +113,31 @@ export default class CameraManager {
 	}
 
 	/**
-	 * Đặt mouse state để camera chuẩn hóa và theo dõi
-	 * @param {BattleInputManager['mouseState']} mouseState
+	 * Convert từ screen coords sang world coords
+	 *
+	 * @param {number} screenX
+	 * @param {number} screenY
 	 */
-	setMouseState(mouseState) {
-		this.mouseState = mouseState;
+	screenToWorld(screenX, screenY) {
+		const { left, top } = this.canvas.getBoundingClientRect();
+		return {
+			x: screenX - left + this.viewportX,
+			y: screenY - top + this.viewportY,
+		};
 	}
 
 	/**
-	 * Chuẩn hóa tọa độ chuột screen về tọa độ chuột game
+	 * Convert từ world coords sang screen coords
+	 *
+	 * @param {number} worldX
+	 * @param {number} worldY
 	 */
-	normalizeMouseState() {
-		if (!this.mouseState) return;
-
-		const { canvas, viewportX, viewportY } = this;
-		const { left, top } = canvas.getBoundingClientRect();
-		let { x: lastMouseX, y: lastMouseY } = this.mouseState;
-
-		this.mouseState.x = lastMouseX - left + viewportX;
-		this.mouseState.y = lastMouseY - top + viewportY;
+	worldToScreen(worldX, worldY) {
+		const { left, top } = this.canvas.getBoundingClientRect();
+		return {
+			x: worldX - this.viewportX + left,
+			y: worldY - this.viewportY + top,
+		};
 	}
 
 	/**

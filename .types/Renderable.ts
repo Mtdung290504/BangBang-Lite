@@ -1,4 +1,4 @@
-export default interface Renderable {
+export type Renderable = {
 	layer: number;
 	render: () => void;
-}
+};
