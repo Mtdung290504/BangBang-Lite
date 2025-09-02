@@ -17,7 +17,7 @@ import __debugger from '../../../utils/debugger.js';
 __debugger.listen();
 
 // Initializer
-import initBattle from '../battle/init.js';
+import setupBattle from '../battle/setup.js';
 
 const DEBUG_MODE = true;
 
@@ -56,7 +56,7 @@ export async function init(roomID, playerName) {
 		console.log('> [App] Setup view and Start battle initializer...');
 		roomView.destroy();
 		battleView.setup();
-		initBattle(socket, mapID, players);
+		setupBattle(socket, mapID, players);
 
 		if (DEBUG_MODE) {
 			__debugger.observe(players, { name: 'Players' });

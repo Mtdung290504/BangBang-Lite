@@ -60,21 +60,33 @@ export default class BattleInputManager {
 	}
 
 	/**
+	 * Export API chuẩn hóa để dùng trong TankHeadRotate system, mục đích:
+	 * - Fix vấn để chuột phải di chuyển thì mới chuẩn hóa, trong khi camera di chuyển cũng sẽ cần chuẩn hóa lại
+	 * - Nhưng nếu cho camera sử dụng hàm này thì sẽ bị phụ thuộc chéo
+	 */
+	mouseScreenToWorld() {
+		if (this.type !== 'local') return;
+
+		const { x: screenX, y: screenY } = this.mouseState;
+		// @ts-expect-error: camera theo định nghĩa có thể là undefined, nhưng khi type đã là local thì chắc chắn camera tồn tại
+		const { x: worldX, y: worldY } = this.camera.screenToWorld(screenX, screenY);
+
+		this.mouseState.x = worldX;
+		this.mouseState.y = worldY;
+	}
+
+	/**
 	 * @private
 	 * @param {MouseEvent} event
 	 */
 	_onMouseMove(event) {
 		let { clientX, clientY } = event;
 
-		if (this.type === 'local' && this.camera) {
-			const { x, y } = this.camera.screenToWorld(clientX, clientY);
-			clientX = x;
-			clientY = y;
-		}
-
 		this.mouseState.x = clientX;
 		this.mouseState.y = clientY;
 
+		// Chuẩn hóa lại tọa độ chuột rồi emit
+		this.mouseScreenToWorld();
 		this._emitMouseState();
 	}
 

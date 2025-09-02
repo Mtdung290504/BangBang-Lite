@@ -42,7 +42,7 @@ const TankMovementSystem = defineSystemFactory([TankComponent])
 		// *Tính vector vận tốc thực:
 		const speedVal = speed * SPEED_CALCULATION_CONSTANT;
 
-		// Chuẩn hóa vector hướng di chuyển về độ dài 1 (Tránh hiện tượng đi chéo nhanh hơn)
+		// Chuẩn hóa độ dài của vector hướng di chuyển về 1 (Tránh hiện tượng đi chéo nhanh hơn)
 		// Và nhân với speed và SPEED_CALCULATION_CONSTANT để ra vận tốc thực (*Đây chính là vector vận tốc trong frame này)
 		velocity.dx = (rawDx / moveLength) * speedVal;
 		velocity.dy = (rawDy / moveLength) * speedVal;

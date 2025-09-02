@@ -24,8 +24,6 @@ import { TANK_DEFAULT_SIZE } from '../../../../configs/constants/domain_constant
  */
 
 /**
- * - Thực chất là khởi tạo tank body
- *
  * @param {EntityManager} context
  * @param {import('models/Player.js').default} player
  * @param {BattleInputManager} [inputManager]
@@ -100,6 +98,9 @@ function createTankHead(context, tankEID, renderSize) {
 
 	context.addComponent(tankHeadEID, new TankHeadComponent(tankEID));
 	context.addComponent(tankHeadEID, new MovementComponent(0));
+
+	// *Sử dụng cho render, tại render system không nên biết mối quan hệ giữa tank và head.
+	context.addComponent(tankHeadEID, context.getComponent(tankEID, PositionComponent));
 
 	// Đặt render size cho sprite, tương tự với body
 	const headSprite = new SpriteComponent(storage.getSprite(tankID, skinID, 'head'), getParentLayer);

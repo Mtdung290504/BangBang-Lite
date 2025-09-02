@@ -10,7 +10,7 @@ __debugger.listen();
 
 import * as battleView from '../../UIs/battleUI.js';
 import * as roomView from '../../UIs/roomUI.js';
-import initBattle from '../battle/init.js';
+import setupBattle from '../battle/setup.js';
 
 const DEBUG_MODE = true;
 
@@ -43,8 +43,7 @@ export async function init(usingTankID = 1, playingMapID = 0) {
 	// TODO: setup battle
 	roomView.destroy();
 	battleView.setup();
-
-	const battle = initBattle(sandBoxSocket, playingMapID, players);
+	const battle = setupBattle(sandBoxSocket, playingMapID, players);
 
 	// TODO: Setup socket listener with battle.playerRegistry and start battle
 	setupSocketListener(battle.playerRegistry);
@@ -63,7 +62,7 @@ export async function init(usingTankID = 1, playingMapID = 0) {
 }
 
 /**
- * @param {ReturnType<typeof initBattle>['playerRegistry']} playerRegistry
+ * @param {ReturnType<typeof setupBattle>['playerRegistry']} playerRegistry
  */
 function setupSocketListener(playerRegistry) {
 	// TODO: Setup socket listener in real app

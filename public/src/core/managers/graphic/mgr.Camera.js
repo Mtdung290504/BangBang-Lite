@@ -1,5 +1,3 @@
-import BattleInputManager from '../input/mgr.BattleInput.js';
-
 export default class CameraManager {
 	/**
 	 * @param {HTMLCanvasElement} canvas - Canvas vẽ đồ họa

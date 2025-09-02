@@ -76,14 +76,16 @@ class SystemFactoryBuilder {
 		 */
 		function create(...args) {
 			/** @type {any} */
-			let ctx = null;
-			if (CtxClass) ctx = new CtxClass(...args);
+			let sysContext = null;
+			if (CtxClass) sysContext = new CtxClass(...args);
+
+			const context = args[0];
 
 			return {
 				primaryComponents,
 
 				/**@type {ContextClass extends undefined ? never : InstanceType<ContextClass>} */
-				sysContext: ctx,
+				sysContext,
 
 				/**
 				 * @param {number} eid
@@ -94,19 +96,19 @@ class SystemFactoryBuilder {
 				 */
 				process(eid, components) {
 					if (!processor) return;
-					if (ctx !== null) processor(ctx, eid, components);
-					else processor(eid, components);
+					if (sysContext !== null) processor(context, eid, components, sysContext);
+					else processor(context, eid, components);
 				},
 
 				init() {
 					if (!init) return;
-					if (ctx !== null) init(ctx);
+					if (sysContext !== null) init(sysContext);
 					else init();
 				},
 
 				teardown() {
 					if (!teardown) return;
-					if (ctx !== null) teardown(ctx);
+					if (sysContext !== null) teardown(sysContext);
 					else teardown();
 				},
 			};
