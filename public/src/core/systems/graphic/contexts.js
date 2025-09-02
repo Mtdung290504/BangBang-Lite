@@ -1,5 +1,5 @@
 /**
- * @typedef {import('.types/Renderable.js').default} Renderable
+ * @typedef {import('.types/Renderable').Renderable} Renderable
  */
 
 export class RenderContext {
@@ -32,5 +32,26 @@ export class RenderContext {
 		const callbacks = [...this.renderCallbacks];
 		this.renderCallbacks.length = 0;
 		return callbacks;
+	}
+}
+
+export class MapRenderContext extends RenderContext {
+	/**
+	 * Render context bổ sung cho map render system
+	 *
+	 * @param {CanvasRenderingContext2D} context2D
+	 * @param {() => boolean} getDebugState
+	 *
+	 * @param {Object} resource
+	 * @param {import('DSL/map-manifest').MapManifest} resource.mapManifest
+	 * @param {HTMLImageElement} resource.backgroundImage
+	 * @param {HTMLImageElement} [resource.scenesImage]
+	 */
+	constructor(context2D, getDebugState, { mapManifest, backgroundImage, scenesImage }) {
+		super(context2D, getDebugState);
+
+		this.mapManifest = mapManifest;
+		this.backgroundImage = backgroundImage;
+		this.scenesImage = scenesImage;
 	}
 }

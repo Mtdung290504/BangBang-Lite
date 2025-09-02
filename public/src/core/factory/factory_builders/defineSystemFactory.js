@@ -75,11 +75,12 @@ class SystemFactoryBuilder {
 		 * @param {ContextClass extends undefined ? [context: EntityManager] : [context: EntityManager, ...ConstructorParameters<NonNullable<ContextClass>>]} args
 		 */
 		function create(...args) {
+			const context = args[0];
+			args.shift();
+
 			/** @type {any} */
 			let sysContext = null;
 			if (CtxClass) sysContext = new CtxClass(...args);
-
-			const context = args[0];
 
 			return {
 				primaryComponents,

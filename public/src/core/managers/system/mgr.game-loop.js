@@ -4,7 +4,7 @@ let progressLog = false;
 
 // FPS control
 const LOGIC_FPS = 60;
-let renderFPS = 60;
+let renderFPS = 61;
 let lastRenderTime = 0;
 
 // Lưu trữ để không phải thực hiện phép chia nhiều lần trong render loop
@@ -68,12 +68,12 @@ function startRenderLoop(renderer) {
 			progressLog && console.log('> [mgr.game-loop]: Drawing...');
 
 			// Render và cảnh báo frame nặng
-			const frameStart = performance.now();
+			// const frameStart = performance.now();
 			renderer();
-			const frameTime = performance.now() - frameStart;
+			// const frameTime = performance.now() - frameStart;
 
 			// Note (đơn vị: s)
-			if (frameTime > 1 / renderFPS) console.warn(`> [mgr.game-loop] Heavy frame: ${frameTime.toFixed(2)}ms`);
+			// if (frameTime > 1 / renderFPS) console.warn(`> [mgr.game-loop] Heavy frame: ${frameTime.toFixed(2)}ms`);
 
 			lastRenderTime = currentTime;
 		}

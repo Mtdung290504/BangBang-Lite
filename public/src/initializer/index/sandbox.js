@@ -12,7 +12,7 @@ import * as battleView from '../../UIs/battleUI.js';
 import * as roomView from '../../UIs/roomUI.js';
 import setupBattle from '../battle/setup.js';
 
-const DEBUG_MODE = true;
+const DEBUG_MODE = false;
 
 /**
  * @param {number | string} [playingMapID=0]

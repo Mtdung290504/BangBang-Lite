@@ -6,8 +6,9 @@
 // Models
 import Player from '../../../../models/Player.js';
 
-// Storage
+// Network
 import { storage } from '../../network/assets_managers/index.js';
+import { BufferedEmitter } from '../../network/helpers/net.BufferedEmitter.js';
 
 // Managers
 import BattleInputManager from '../../core/managers/input/mgr.BattleInput.js';
@@ -18,9 +19,16 @@ import * as gameLoopManager from '../../core/managers/system/mgr.game-loop.js';
 
 // UIs
 import * as battleView from '../../UIs/battleUI.js';
-import { BufferedEmitter } from '../../network/helpers/net.BufferedEmitter.js';
+
+// Factories
 import createTank from '../../core/factory/battle/fac.createTank.js';
+
+// Setup system manager
 import setupLogicSystems from './setupLogicSystems.js';
+import setupRenderSystems from './setupRenderSystems.js';
+
+// Position component to camera follow
+import PositionComponent from '../../core/components/physics/com.Position.js';
 
 const LOG_PREFIX = '> [initializer.Battle]';
 const DEBUG_MODE = false;
@@ -46,7 +54,8 @@ export default function setupBattle(socket, mapID, players) {
 
 	// Setup canvas, đặt auto resize
 	const canvasManager = createCanvasManager(battleView.views.canvas, { resolution: 'screen', autoResize: true });
-	const { context: context2D } = canvasManager;
+	const { context: context2D, canvas } = canvasManager;
+	const { width: cw, height: ch } = canvas;
 	console.log(msg('Canvas manager setup complete'), canvasManager);
 
 	// Setup camera
@@ -60,7 +69,7 @@ export default function setupBattle(socket, mapID, players) {
 	console.log(msg('Player input setup complete'), selfInputManager);
 
 	// Setup tanks và lưu thông tin và registry. Có thể trong tương lai dùng để sync trạng thái
-	setupTanks(context, mapID, players, { selfSocketID, selfInputManager });
+	const selfTankEID = setupTanks(context, mapID, players, { selfSocketID, selfInputManager });
 	console.log(msg('Battle initiated successfully\n\n\n'));
 
 	/**
@@ -69,12 +78,26 @@ export default function setupBattle(socket, mapID, players) {
 	const start = () =>
 		gameLoopManager.start(() => {
 			const logicSysManager = setupLogicSystems(context);
+			const renderSysManager = setupRenderSystems(context, context2D, mapID, () => DEBUG_MODE);
+			camera.follow(context.getComponent(selfTankEID, PositionComponent));
 
 			gameLoopManager.setProgressLog(DEBUG_MODE);
 			console.log('\n\n', msg('Battle started, using context:'), context);
 
-			gameLoopManager.startLogicLoop(() => logicSysManager.updateAll());
-			// gameLoopManager.startRenderLoop(() => {});
+			gameLoopManager.startLogicLoop(() => {
+				logicSysManager.updateAll();
+				camera.update();
+			});
+
+			gameLoopManager.startRenderLoop(() => {
+				context2D.clearRect(0, 0, cw, ch);
+				context2D.save();
+				camera.apply(context2D);
+
+				// TODO: Calling draw systems
+				renderSysManager.renderAll();
+				context2D.restore();
+			});
 		});
 
 	return { context, start, playerRegistry };
@@ -127,6 +150,8 @@ function setupTanks(context, mapID, players, { selfSocketID, selfInputManager })
 	// Khởi tạo cho bản thân sau là có lý do, render tank của bản thân sẽ luôn hiện trên các tank khác (trừ khi nó bay)
 	const { tankEID } = createTank(context, mapID, players[selfSocketID], selfInputManager);
 	playerRegistry.set(selfSocketID, { tankEID, inputManager: selfInputManager });
+
+	return tankEID;
 }
 
 /**

@@ -10,7 +10,7 @@ import MovementComponent from '../../components/combat/stats/com.Movement.js';
 import SpriteComponent from '../../components/graphic/com.Sprite.js';
 import PositionComponent from '../../components/physics/com.Position.js';
 
-const SpriteRendererFactory = defineSystemFactory([SpriteComponent, PositionComponent], RenderContext)
+const SpriteRenderer = defineSystemFactory([SpriteComponent, PositionComponent], RenderContext)
 	.withProcessor((context, eID, [sprite, pos], sysContext) => {
 		sysContext.addRenderCallback({ layer: sprite.getLayer(), render });
 
@@ -90,4 +90,4 @@ const SpriteRendererFactory = defineSystemFactory([SpriteComponent, PositionComp
 	})
 	.build();
 
-export default SpriteRendererFactory;
+export default SpriteRenderer;

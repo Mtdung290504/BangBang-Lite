@@ -49,7 +49,7 @@ const TankMovementSystem = defineSystemFactory([TankComponent])
 
 		// *Xử lý xoay thân tank:
 		const targetAngle = angleFs.radToDeg(Math.atan2(velocity.dy, velocity.dx));
-		const rotateSpeed = speedVal / ROTATE_CALCULATION_CONSTANT;
+		const rotateSpeed = speed / ROTATE_CALCULATION_CONSTANT;
 
 		// Hiệu số góc giữa góc mục tiêu và góc hiện tại
 		let angleDiff = angleFs.normalize(targetAngle - angle);

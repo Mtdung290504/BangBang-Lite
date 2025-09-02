@@ -13,7 +13,7 @@ import ShadowComponent from '../../components/graphic/com.Shadow.js';
 // Constants
 import { SHADOW_DELTA_LAYER } from '../../../../configs/constants/domain_constants/com.constants.js';
 
-const ShadowRendererFactory = defineSystemFactory([SpriteComponent, PositionComponent, ShadowComponent], RenderContext)
+const ShadowRenderer = defineSystemFactory([SpriteComponent, PositionComponent, ShadowComponent], RenderContext)
 	.withProcessor((_context, _eID, [sprite, pos, shadow], sysContext) => {
 		sysContext.addRenderCallback({ layer: sprite.getLayer() + SHADOW_DELTA_LAYER, render });
 
@@ -60,7 +60,7 @@ const ShadowRendererFactory = defineSystemFactory([SpriteComponent, PositionComp
 
 			// tô bóng với màu đen thay vì giữ màu sprite
 			context2D.globalCompositeOperation = 'source-atop';
-			context2D.fillStyle = 'rgba(0,0,0,1)';
+			context2D.fillStyle = 'rgba(0, 0, 0, 1)';
 
 			// Vẽ ảnh gốc làm mask
 			context2D.drawImage(resource.sprite, sx, sy, sw, sh, dx + ox, dy + oy, dw, dh);
@@ -76,4 +76,4 @@ const ShadowRendererFactory = defineSystemFactory([SpriteComponent, PositionComp
 	})
 	.build();
 
-export default ShadowRendererFactory;
+export default ShadowRenderer;

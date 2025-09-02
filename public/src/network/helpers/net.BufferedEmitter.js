@@ -1,5 +1,6 @@
 /**
  * Emitter gom nhiều event thành batch để gửi một lần
+ * Nếu cùng tên event thì chỉ giữ lại data của event mới nhất
  */
 export class BufferedEmitter {
 	/**
@@ -15,8 +16,8 @@ export class BufferedEmitter {
 		/** @type {number | NodeJS.Timeout | null} */
 		this.timeoutId = null;
 
-		/** @type {any[]} */
-		this.queue = [];
+		/** @type {Map<string, any[]>} - Map event name -> data mới nhất */
+		this.eventMap = new Map();
 	}
 
 	/**
@@ -31,12 +32,15 @@ export class BufferedEmitter {
 
 	/**
 	 * Thay vì emit ngay, gom lại
+	 * Nếu event name đã tồn tại, thay thế bằng data mới
 	 *
 	 * @param {string} event
 	 * @param {...any} data
 	 */
 	emit(event, ...data) {
-		this.queue.push([event, ...data]);
+		// Lưu hoặc cập nhật event với data mới nhất
+		this.eventMap.set(event, data);
+
 		if (this.timeoutId === null) {
 			this.timeoutId = setTimeout(() => this.flush(), this.delay);
 		}
@@ -44,12 +48,16 @@ export class BufferedEmitter {
 
 	/**
 	 * Gửi một lần tất cả event đã gom
+	 * Emit từng event riêng lẻ thay vì gom thành batch
 	 */
 	flush() {
 		this.timeoutId = null;
-		if (this.queue.length > 0) {
-			this.target.emit('batch', this.queue);
-			this.queue = [];
+		if (this.eventMap.size > 0) {
+			// Emit từng event riêng lẻ
+			for (const [eventName, data] of this.eventMap.entries()) {
+				this.target.emit(eventName, data[0]);
+			}
+			this.eventMap.clear();
 		}
 	}
 
@@ -61,7 +69,7 @@ export class BufferedEmitter {
 			clearTimeout(this.timeoutId);
 			this.timeoutId = null;
 		}
-		if (this.queue.length > 0) {
+		if (this.eventMap.size > 0) {
 			this.flush();
 		}
 	}
