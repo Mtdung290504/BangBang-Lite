@@ -2,7 +2,7 @@ export default class Player {
 	/**
 	 * @param {string} socketID
 	 * @param {string} name
-	 * @param {number} team
+	 * @param {0 | 1} team
 	 * @param {{
 	 * 		tankID?: number
 	 * 		skinID?: number
@@ -24,7 +24,7 @@ export default class Player {
 	 * @param {Object} param0
 	 * @param {string} param0.socketID
 	 * @param {string} param0.name
-	 * @param {number} param0.team
+	 * @param {0 | 1} param0.team
 	 * @param {{
 	 * 		tankID?: number
 	 * 		skinID?: number

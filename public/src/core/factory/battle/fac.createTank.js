@@ -1,22 +1,29 @@
 import { storage } from '../../../network/assets_managers/index.js';
 
+// Tank components
 import TankComponent from '../../components/combat/objects/com.Tank.js';
 import TankHeadComponent from '../../components/combat/objects/com.TankHead.js';
 
+// Stats components
 import AdditionalAttributesComponent from '../../components/combat/stats/com.AdditionalAttributes.js';
 import MovementComponent from '../../components/combat/stats/com.Movement.js';
 import ShootingComponent from '../../components/combat/stats/com.Shooting.js';
 import SurvivalComponent from '../../components/combat/stats/com.Survival.js';
 
+// Display components
 import ShadowComponent from '../../components/graphic/com.Shadow.js';
 import SpriteComponent from '../../components/graphic/com.Sprite.js';
 
+// Physics components
 import ColliderComponent from '../../components/physics/com.Collider.js';
 import PositionComponent from '../../components/physics/com.Position.js';
 import VelocityComponent from '../../components/physics/com.Velocity.js';
 
+// Input handlers
 import InputComponent from '../../components/input/com.Input.js';
 import BattleInputManager from '../../managers/input/mgr.BattleInput.js';
+
+// Constants
 import { TANK_DEFAULT_SIZE } from '../../../../configs/constants/domain_constants/com.constants.js';
 
 /**
@@ -24,14 +31,24 @@ import { TANK_DEFAULT_SIZE } from '../../../../configs/constants/domain_constant
  */
 
 /**
+ * @type {ReturnType<typeof createAppearPositionGetter> | undefined}
+ */
+let getAppearPosition = undefined;
+
+/**
  * @param {EntityManager} context
+ * @param {number} mapID
  * @param {import('models/Player.js').default} player
  * @param {BattleInputManager} [inputManager]
  */
-export default function createTank(context, player, inputManager) {
+export default function createTank(context, mapID, player, inputManager) {
 	const { tankID, skinID } = player.using;
 	const { stats: tankManifest } = storage.getTankManifests(tankID);
 	const { 'stat-components': stats } = tankManifest;
+
+	const mapManifest = storage.getMapManifest(mapID);
+	if (!mapManifest) throw new Error('> [fac.createTank] mapManifest is undefined???');
+	if (!getAppearPosition) getAppearPosition = createAppearPositionGetter(mapManifest['appear-coords']);
 
 	// Create tank entity
 	const tankEID = context.createEntity();
@@ -56,7 +73,7 @@ export default function createTank(context, player, inputManager) {
 		new VelocityComponent(),
 
 		// TODO: Đọc vị trí xuất hiện từ map manifest
-		new PositionComponent(0, 0),
+		new PositionComponent(...getAppearPosition(player.team)),
 	]);
 
 	// Tank stats components
@@ -112,4 +129,50 @@ function createTankHead(context, tankEID, renderSize) {
 	]);
 
 	return tankHeadEID;
+}
+
+/**
+ * Tạo hàm lấy vị trí xuất hiện cho từng team từ dữ liệu "appear-coords".
+ *
+ * @param {number[][][]} appearCoords - Dữ liệu gốc, dạng [ [ [x,y], ... ], [ [x,y], ... ] ].
+ * @returns {(team: 0 | 1) => [x: number, y: number]} Hàm lấy vị trí xuất hiện. Mỗi lần gọi trả về một [x, y], đồng thời đẩy vị trí đó xuống cuối danh sách team.
+ */
+function createAppearPositionGetter(appearCoords) {
+	if (!Array.isArray(appearCoords) || appearCoords.length !== 2) {
+		throw new Error('appearCoords phải là mảng 2 chiều [team][positions].');
+	}
+
+	/**
+	 * Hàm shuffle Fisher–Yates
+	 * @param {any[]} arr
+	 */
+	const shuffle = (arr) => {
+		const a = arr.slice();
+		for (let i = a.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[a[i], a[j]] = [a[j], a[i]];
+		}
+		return a;
+	};
+
+	// Random xem team 0 / 1 sẽ dùng tập nào
+	const flip = Math.random() < 0.5;
+	const teamPositions = [shuffle(appearCoords[flip ? 1 : 0]), shuffle(appearCoords[flip ? 0 : 1])];
+
+	/**
+	 * Lấy vị trí xuất hiện cho 1 team.
+	 * Mỗi lần gọi: lấy phần tử đầu, rồi đẩy xuống cuối.
+	 *
+	 * @param {0 | 1} team - Chỉ số team (0 hoặc 1).
+	 */
+	function getAppearPosition(team) {
+		if (team !== 0 && team !== 1) {
+			throw new Error('Team phải là 0 hoặc 1.');
+		}
+		const pos = teamPositions[team].shift();
+		teamPositions[team].push(pos);
+		return pos;
+	}
+
+	return getAppearPosition;
 }
