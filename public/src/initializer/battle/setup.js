@@ -124,7 +124,14 @@ function setupCamera(canvasManager, mapID) {
 	const signalController = new AbortController();
 	window.addEventListener('contextmenu', (e) => e.preventDefault(), { signal: signalController.signal });
 	window.addEventListener('scroll', (e) => e.preventDefault(), { signal: signalController.signal });
-	window.addEventListener('resize', () => camera.update(), { signal: signalController.signal });
+	window.addEventListener(
+		'resize',
+		() => {
+			camera.setSize(canvas.width, canvas.height);
+			camera.update();
+		},
+		{ signal: signalController.signal }
+	);
 
 	return { camera, cleanUpCameraEvent: () => signalController.abort() };
 }

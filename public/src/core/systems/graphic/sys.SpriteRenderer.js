@@ -27,10 +27,12 @@ const SpriteRenderer = defineSystemFactory([SpriteComponent, PositionComponent],
 			// Calculate frame dimensions
 			const frameSize = manifest['frame-size'];
 			const paddingRatio = manifest['padding-ratio'] || 0;
-			const renderSize = manifest['render-size'] || {
-				width: manifest['frame-size'].width * (1 - paddingRatio),
-				height: manifest['frame-size'].height * (1 - paddingRatio),
-			};
+			const renderSize =
+				manifest['render-size'] ||
+				(manifest['render-size'] = {
+					width: manifest['frame-size'].width * (1 - paddingRatio),
+					height: manifest['frame-size'].height * (1 - paddingRatio),
+				});
 
 			// Calculate actual image size without padding
 			const paddingX = frameSize.width * paddingRatio;

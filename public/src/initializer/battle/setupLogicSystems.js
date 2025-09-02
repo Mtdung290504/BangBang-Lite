@@ -1,4 +1,4 @@
-import LogicSystemsManager from '../../core/managers/system/mgr.LogicSystems.js';
+import LogicSystemsManager from '../../core/managers/system/mgr.LogicSystem.js';
 
 import ApplyMovementSystem from '../../core/systems/physic/movement/sys.ApplyMovement.js';
 import TankHeadRotateSystem from '../../core/systems/physic/movement/sys.TankHeadRotate.js';
@@ -17,6 +17,9 @@ export default function setupLogicSystems(context) {
 	logicSystemsManager.registry(TankMovementSystem.create(context));
 	logicSystemsManager.registry(ApplyMovementSystem.create(context));
 	logicSystemsManager.registry(TankHeadRotateSystem.create(context));
+
+	logicSystemsManager.finalize();
+	logicSystemsManager.initAll();
 
 	return logicSystemsManager;
 }

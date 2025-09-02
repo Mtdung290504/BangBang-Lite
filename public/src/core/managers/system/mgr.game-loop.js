@@ -4,11 +4,12 @@ let progressLog = false;
 
 // FPS control
 const LOGIC_FPS = 60;
-let renderFPS = 61;
+let renderFPS = 60;
 let lastRenderTime = 0;
 
 // Lưu trữ để không phải thực hiện phép chia nhiều lần trong render loop
 let renderInterval = 1000 / renderFPS;
+setRenderFPS(renderFPS);
 
 export { LOGIC_FPS, getFPSInfo, setRenderFPS, startLogicLoop, startRenderLoop, start, stop, setProgressLog };
 
@@ -95,7 +96,7 @@ function setRenderFPS(fps) {
 		return;
 	}
 
-	renderFPS = fps + 1;
+	renderFPS = fps + 5;
 	renderInterval = 1000 / renderFPS;
 	console.log(`> [mgr.game-loop] Render FPS has been set to: ${fps}`);
 }
