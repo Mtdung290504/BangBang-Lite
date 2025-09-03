@@ -1,1 +1,4 @@
-export { default as setupRoomHandlers } from './setupRoomHandler.js';
+import setupRoomHandlers from './setupRoomHandler.js';
+import setupBattleHandlers from './setupBattleHandler.js';
+
+export { setupRoomHandlers, setupBattleHandlers };

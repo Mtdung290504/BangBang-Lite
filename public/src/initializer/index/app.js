@@ -48,9 +48,9 @@ export async function init(roomID, playerName) {
 
 	// Listen for all-player-ready event to preload
 	// *Đăng ký sự kiện sau nên đọc dữ liệu từ roomHandler thay vì socket data
-	socket.on('dispatch:all-player-ready', () => {
+	socket.on('dispatch:all-player-ready', async () => {
 		const { playingMapID: mapID, players } = roomHandlers;
-		preloadPhase2(mapID, Object.values(players));
+		await preloadPhase2(mapID, Object.values(players));
 
 		console.log('> [App] Setup view and Start battle initializer...');
 		roomView.destroy();
@@ -72,6 +72,7 @@ export async function init(roomID, playerName) {
 		__debugger.observe(mapAssets, { name: 'Map assets' });
 		__debugger.observe(mapManifests, { name: 'Map Manifests' });
 		__debugger.observe(tankManifests, { name: 'Tank Manifests' });
+		__debugger.hideAll();
 	}
 
 	roomView.setup(roomID, socket);

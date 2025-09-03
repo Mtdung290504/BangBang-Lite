@@ -21,10 +21,11 @@ export function setup(socket, playerRegistry) {
 	socketEvents.forEach(([event, handler]) => socket.on(event, handler));
 
 	/**
-	 * @param {string} socketID
-	 * @param {BattleInputManager['mouseState']} mouseState
+	 * @param {Object} data
+	 * @param {string} data.socketID
+	 * @param {BattleInputManager['mouseState']} data.mouseState
 	 */
-	function syncMouseState(socketID, mouseState) {
+	function syncMouseState({ socketID, mouseState }) {
 		const playerState = playerRegistry.get(socketID);
 
 		if (playerState) {
@@ -39,10 +40,11 @@ export function setup(socket, playerRegistry) {
 	}
 
 	/**
-	 * @param {string} socketID
-	 * @param {BattleInputManager['actionState']} actionState
+	 * @param {Object} data
+	 * @param {string} data.socketID
+	 * @param {BattleInputManager['actionState']} data.actionState
 	 */
-	function syncActionState(socketID, actionState) {
+	function syncActionState({ socketID, actionState }) {
 		const playerState = playerRegistry.get(socketID);
 
 		if (playerState) {

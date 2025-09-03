@@ -33,14 +33,18 @@ export default function setupRoomHandlers(io, playerSocket) {
 	playerSocket.on('request:toggle-ready-state', () => {
 		const roomID = roomManager.getSocketRoomID(playerSocket);
 		const allPlayerReady = roomManager.socketToggleReadyState(playerSocket);
-
-		// Dispatch event render UI
 		const roomData = roomManager.getRoomData(roomID);
 
-		// Fix vấn đề 1 player nhưng vẫn vào trận
 		if (roomData && roomData.readyPlayers) {
-			if (allPlayerReady && roomData.readyPlayers.length > 1)
+			// Fix vấn đề 1 player nhưng vẫn vào trận
+			if (allPlayerReady && roomData.readyPlayers.length > 1) {
+				console.log('Dumamay');
+				// Khi trận đấu bắt đầu, khóa room để không ai vào hay thay đổi tank/map được nữa
+				roomManager.lockRoom(roomID);
 				return io.to(roomID).emit('dispatch:all-player-ready', roomData);
+			}
+
+			// Dispatch event render UI
 			dispatchUpdatePlayers(roomID, { readyPlayers: roomData.readyPlayers });
 		}
 	});
@@ -50,6 +54,7 @@ export default function setupRoomHandlers(io, playerSocket) {
 		const roomID = roomManager.getSocketRoomID(playerSocket);
 		const playerName = roomManager.getPlayerName(playerSocket);
 		const changeSuccess = roomManager.socketChangeTeam(playerSocket);
+
 		if (!changeSuccess) {
 			console.log(
 				`> [SocketServer.RoomHandler.onEvent:change-team] Reject change team: Room::${roomID}, Player::${playerName}`
@@ -62,6 +67,7 @@ export default function setupRoomHandlers(io, playerSocket) {
 		if (roomData?.players) {
 			dispatchUpdatePlayers(roomID, { players: roomData.players });
 		}
+
 		console.log(
 			`> [SocketServer.RoomHandler.onEvent:change-team] Change team success: Room::${roomID}, Player::${playerName}`
 		);

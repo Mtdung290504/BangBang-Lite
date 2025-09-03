@@ -55,14 +55,14 @@ export default class BattleInputManager {
 	 * @private
 	 */
 	_emitMouseState() {
-		this.emitter?.emit('mouse-event', this.mouseState);
+		this.emitter?.emit('request-sync:mouse-state', this.mouseState);
 	}
 
 	/**
 	 * @private
 	 */
 	_emitActionState() {
-		this.emitter?.emit('key-event', this.actionState);
+		this.emitter?.emit('request-sync:action-state', this.actionState);
 	}
 
 	/**

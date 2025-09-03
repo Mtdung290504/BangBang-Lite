@@ -1,6 +1,5 @@
 import { Server as SocketServer } from 'socket.io';
-import { setupRoomHandlers } from './handlers/index.js';
-import setupBattleHandlers from './handlers/setupBattleHandler.js';
+import { setupRoomHandlers, setupBattleHandlers } from './handlers/index.js';
 
 /**
  * Initialize socket.io and attach to an HTTP server
