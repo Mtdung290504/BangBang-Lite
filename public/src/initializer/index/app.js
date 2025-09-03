@@ -6,7 +6,7 @@ import { preloadPhase1, preloadPhase2 } from '../../network/preloader.js';
 import { storage } from '../../network/assets_managers/index.js';
 
 // Room
-import { roomHandlers } from '../../network/socket/handlers/index.js';
+import { battleHandlers, roomHandlers } from '../../network/socket/handlers/index.js';
 
 // UIs
 import * as roomView from '../../UIs/roomUI.js';
@@ -52,11 +52,14 @@ export async function init(roomID, playerName) {
 		const { playingMapID: mapID, players } = roomHandlers;
 		preloadPhase2(mapID, Object.values(players));
 
-		// TODO: Setup and start game
 		console.log('> [App] Setup view and Start battle initializer...');
 		roomView.destroy();
 		battleView.setup();
-		setupBattle(socket, mapID, players);
+
+		// TODO: Setup and start battle
+		const battle = setupBattle(socket, mapID, players);
+		const detroyBattleHandler = battleHandlers.setup(socket, battle.playerRegistry);
+		battle.start();
 
 		if (DEBUG_MODE) {
 			__debugger.observe(players, { name: 'Players' });

@@ -8,12 +8,18 @@ import { ACTIONS_KEYS, CONTROL_KEY } from '../../../../configs/action-keys.js';
 export default class BattleInputManager {
 	/**
 	 * Khởi tạo input manager cho local player (chính mình)
+	 * - Cần gọi hàm `listen` để lắng nghe sự kiện
+	 * - Sau khi listen, mỗi khi có sự kiện nó tự chuẩn hóa tọa độ chuột (nếu là mouse move event) và emit state
+	 *
 	 * @overload
 	 * @param {{ emit: (event: string, ...data: any) => void }} emitter
 	 * @param {import('../graphic/mgr.Camera.js').default} camera
 	 */
 	/**
 	 * Khởi tạo input manager cho remote player (người chơi khác)
+	 * - Nó không làm gì cả trừ việc giữ trạng thái và được cập nhật từ socket.
+	 * - Bất cứ gọi hàm nào đều gây bug không mong muốn
+	 *
 	 * @overload
 	 */
 	/**
@@ -177,6 +183,8 @@ export default class BattleInputManager {
 	}
 
 	listen() {
+		if (this.type === 'remote')
+			throw new Error('> [mgr.BattleInput] Input manager type remote is not allowed to use listen');
 		this.abortController = new AbortController();
 		const signal = this.abortController.signal;
 

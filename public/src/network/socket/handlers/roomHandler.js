@@ -144,7 +144,7 @@ function getSandboxPlayers(playerName, usingTankID) {
 			return Player.fromJSON({
 				socketID: (fakeID + 1).toString(),
 				name: playerName,
-				team: fakeID ? 1 : fakeID,
+				team: fakeID ? 1 : 0,
 				using: { tankID: fakeID === 2 ? 1 : 0 },
 			});
 		}),

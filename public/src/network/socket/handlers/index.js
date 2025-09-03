@@ -1,2 +1,4 @@
 import * as roomHandlers from './roomHandler.js';
-export { roomHandlers };
+import * as battleHandlers from './battleHandler.js';
+
+export { roomHandlers, battleHandlers };
