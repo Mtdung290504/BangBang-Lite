@@ -1,4 +1,4 @@
-/**@type {import('DSL/map-manifest').MapManifest} */
+/**@type {import('.types/dsl/map-manifest').MapManifest} */
 export default {
 	size: {
 		width: 2000,

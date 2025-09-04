@@ -1,5 +1,6 @@
 /**
- * @typedef {import('.types/Renderable').Renderable} Renderable
+ * @typedef {import('.types/src/graphic/graphics').Renderable} _Renderable
+ * @typedef {import('.types/dsl/map-manifest').MapManifest} _MapManifest
  */
 
 export class RenderContext {
@@ -8,18 +9,20 @@ export class RenderContext {
 	 *
 	 * @param {CanvasRenderingContext2D} context2D
 	 * @param {() => boolean} getDebugState
+	 * @param {() => number} getFPS
 	 */
-	constructor(context2D, getDebugState) {
+	constructor(context2D, getDebugState, getFPS) {
 		this.context2D = context2D;
 		this.getDebugState = getDebugState;
+		this.getFPS = getFPS;
 
-		/**@type {Array<Renderable>} */
+		/**@type {Array<_Renderable>} */
 		this.renderCallbacks = [];
 	}
 
 	/**
 	 * Thêm callback render vào queue
-	 * @param {Renderable} renderable
+	 * @param {_Renderable} renderable
 	 */
 	addRenderCallback(renderable) {
 		this.renderCallbacks.push(renderable);
@@ -41,14 +44,15 @@ export class MapRenderContext extends RenderContext {
 	 *
 	 * @param {CanvasRenderingContext2D} context2D
 	 * @param {() => boolean} getDebugState
+	 * @param {() => number} getFPS
 	 *
 	 * @param {Object} resource
-	 * @param {import('DSL/map-manifest').MapManifest} resource.mapManifest
-	 * @param {HTMLImageElement} resource.backgroundImage
+	 * @param {_MapManifest} resource.mapManifest
+	 * @param {HTMLImageElement} [resource.backgroundImage]
 	 * @param {HTMLImageElement} [resource.scenesImage]
 	 */
-	constructor(context2D, getDebugState, { mapManifest, backgroundImage, scenesImage }) {
-		super(context2D, getDebugState);
+	constructor(context2D, getDebugState, getFPS, { mapManifest, backgroundImage, scenesImage }) {
+		super(context2D, getDebugState, getFPS);
 
 		this.mapManifest = mapManifest;
 		this.backgroundImage = backgroundImage;

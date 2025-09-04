@@ -56,9 +56,11 @@ const SpriteRenderer = defineSystemFactory([SpriteComponent, PositionComponent],
 			context2D.save();
 
 			// Translate to center of sprite for rotation
-			context2D.translate(pos.x, pos.y);
-			context2D.rotate(degToRad(angle));
-			context2D.translate(-pos.x, -pos.y);
+			if (angle !== 0) {
+				context2D.translate(pos.x, pos.y);
+				context2D.rotate(degToRad(angle));
+				context2D.translate(-pos.x, -pos.y);
+			}
 
 			// Draw sprite
 			context2D.drawImage(resource.sprite, sx, sy, sw, sh, dx, dy, dw, dh);

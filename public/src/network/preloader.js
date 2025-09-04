@@ -1,3 +1,4 @@
+import { elapsedSeconds } from '../../utils/utils.js';
 import { MAX_PARALLEL_REQUESTS } from '../../configs/constants/game-system-configs.js';
 import { loader, storage } from './assets_managers/index.js';
 
@@ -43,6 +44,8 @@ async function loadAllIDs() {
  */
 async function preloadPhase1() {
 	console.log('\n\n> [Net.preloader] Preload phase 1 staring...');
+
+	const startTime = Date.now();
 	const { mapIDs, tankIDs } = await loadAllIDs();
 	storage.setAssetIDs(mapIDs, tankIDs);
 
@@ -72,10 +75,10 @@ async function preloadPhase1() {
 
 		await runWithConcurrencyLimit(tasks, MAX_PARALLEL_REQUESTS);
 
-		console.log(msg('Preload Phase 1 completed successfully\n\n\n'));
+		console.log(msg(`Preload Phase 1 completed successfully (${elapsedSeconds(startTime)}s).\n\n\n`));
 		return true;
 	} catch (error) {
-		console.error(msg('Preload Phase 1 failed:'), error);
+		console.error(msg(`Preload Phase 1 failed (${elapsedSeconds(startTime)}s):`), error);
 		return false;
 	}
 }
@@ -99,6 +102,8 @@ async function preloadPhase1() {
  */
 async function preloadPhase2(mapID, players) {
 	console.log('\n\n> [Net.preloader] Preload phase 2 staring...');
+	const startTime = Date.now();
+
 	try {
 		const tasks = [];
 
@@ -232,10 +237,10 @@ async function preloadPhase2(mapID, players) {
 
 		await runWithConcurrencyLimit([...remainingTasks, ...skillSpriteTasks], MAX_PARALLEL_REQUESTS);
 
-		console.log(msg('Preload Phase 2 completed successfully\n\n\n'));
+		console.log(msg(`Preload Phase 2 completed successfully (${elapsedSeconds(startTime)}s).\n\n\n`));
 		return true;
 	} catch (error) {
-		console.error(msg('Preload Phase 2 failed:'), error);
+		console.error(msg(`Preload Phase 2 failed (${elapsedSeconds(startTime)}s):`), error);
 		return false;
 	}
 }

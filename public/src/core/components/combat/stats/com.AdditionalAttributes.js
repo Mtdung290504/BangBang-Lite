@@ -8,8 +8,8 @@ export default class AdditionalAttributesComponent {
 	/**
 	 * @param {number} limitEnergyPoint - Giới hạn năng lượng
 	 * @param {object} [recoverConfig] - Cấu hình hồi phục tự động
-	 * @param {number} [recoverConfig.every] - Khoảng thời gian (ms) giữa mỗi lần hồi
-	 * @param {import('DSL/utils-types').ValueWithUnit} [recoverConfig.amount] - Lượng hồi mỗi lần
+	 * @param {number} recoverConfig.every - Khoảng thời gian (ms) giữa mỗi lần hồi
+	 * @param {import('.types/dsl/utils-types').ValueWithUnit} recoverConfig.amount - Lượng hồi mỗi lần
 	 */
 	constructor(limitEnergyPoint, recoverConfig) {
 		/** @private */
@@ -41,10 +41,10 @@ export default class AdditionalAttributesComponent {
 
 	/**
 	 * Khởi tạo từ DSL
-	 * @param {import('DSL/tank-manifest').AdditionalStats} dsl
+	 * @param {import('.types/dsl/tank-manifest').AdditionalStats} dsl
 	 */
 	static fromDSL(dsl) {
 		const { amount, recover } = dsl['energy-point'];
-		return new AdditionalAttributesComponent(amount, recover ?? null);
+		return new AdditionalAttributesComponent(amount, recover);
 	}
 }

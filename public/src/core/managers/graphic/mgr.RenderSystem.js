@@ -1,28 +1,21 @@
 /**
- * @template {(new (...args: any) => any)[]} [T=any]
- * @typedef {Partial<{
- * 		primaryComponents: T;
- *      sysContext: any;
- * 		process(eid: number, components: {
- * 			[K in keyof T]: T[K] extends new (...args: any) => infer R ? R : never
- * 		}): void;
- * 		init(): void;
- * 		teardown(): void;
- * }>} AbstractRenderSystem
+ * @template {Array<new (...args: any) => any>} [T=any[]]
+ * @typedef {import('.types/src/graphic/systems').AbstractRenderSystem<T>} _AbstractRenderSystem
  */
 
 /**
- * @typedef {import('.types/Renderable').Renderable} Renderable
+ * @typedef {import('.types/src/graphic/graphics.js').Renderable} _Renderable
+ * @typedef {import('../combat/mgr.Entity.js').default} _EntityManager
  */
 
 /**
- * Quản lý toàn bộ render systems trong ECS.
- * Khác với LogicSystemsManager, systems được gom tối đa theo primaryComponents
- * và render callbacks được sort theo layer trước khi thực thi.
+ * Quản lý toàn bộ render systems trong ECS. Khác với LogicSystemsManager:
+ * - Systems được gom tối đa theo primaryComponents
+ * - Render callbacks được sort theo layer trước khi thực thi.
  */
 export default class RenderSystemsManager {
 	/**
-	 * @param {import('../combat/mgr.Entity.js').default} context
+	 * @param {_EntityManager} context
 	 */
 	constructor(context) {
 		this.context = context;
@@ -30,7 +23,7 @@ export default class RenderSystemsManager {
 		/**
 		 * Danh sách systems đã đăng ký theo thứ tự.
 		 *
-		 * @type {Array<{system: AbstractRenderSystem, primaryComponents?: any[], componentsKey: string}>}
+		 * @type {Array<{system: _AbstractRenderSystem, primaryComponents?: any[], componentsKey: string}>}
 		 * @private
 		 */
 		this._systems = [];
@@ -47,7 +40,7 @@ export default class RenderSystemsManager {
 		/**
 		 * Tất cả render callbacks được thu thập trong frame hiện tại.
 		 *
-		 * @type {Array<Renderable>}
+		 * @type {Array<_Renderable>}
 		 * @private
 		 */
 		this._renderCallbacks = [];
@@ -74,7 +67,7 @@ export default class RenderSystemsManager {
 	 * Đăng ký một render system.
 	 *
 	 * @template {(new (...args: any) => any)[]} T
-	 * @param {AbstractRenderSystem<T>} system - Kết quả từ factory.create()
+	 * @param {_AbstractRenderSystem<T>} system - Kết quả từ factory.create()
 	 */
 	register(system) {
 		// Validation

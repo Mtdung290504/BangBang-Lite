@@ -12,6 +12,7 @@ export { loadSprite, loadTankManifests, loadSkillDescription, loadMapAssets, loa
 
 /**
  * Load sprite của tank, nhận về manifest và HTMLImageElement
+ * - Note: Nếu không có sprite manifest, giá trị frame-size sẽ lấy theo kích thước ảnh gốc
  *
  * @param {number} tankID
  * @param {number} skinID
@@ -24,7 +25,7 @@ export { loadSprite, loadTankManifests, loadSkillDescription, loadMapAssets, loa
  *
  * @returns {Promise<{
  * 		sprite: HTMLImageElement,
- * 		manifest: import('.types/sprite-manifest').SpriteManifest | {
+ * 		manifest: import('.types/src/graphic/graphics').SpriteManifest | {
  * 			'frame-size': { width: number, height: number },
  * 			'frames-position': [{ x: 0, y: 0 }],
  * 		}
@@ -112,8 +113,8 @@ function checkManifest404(spriteFullKey) {
  * }} [logger] - Logger (option - default dùng console)
  *
  * @returns {Promise<{
- * 		stats: import('DSL/tank-manifest').TankManifest
- * 		skills: import('DSL/skills/skill-manifest').SkillManifest
+ * 		stats: import('.types/dsl/tank-manifest.js').TankManifest
+ * 		skills: import('.types/dsl/skills/skill-manifest.js').SkillManifest
  * }>}
  *
  * @throws {Error} Khi tải tank manifest lỗi
@@ -254,7 +255,7 @@ async function loadMapAssets(mapID, logger = {}) {
  * 		error?: (msg: string | Error) => void
  * }} [logger] - Logger (option - default dùng console)
  *
- * @returns {Promise<import('DSL/map-manifest').MapManifest>}
+ * @returns {Promise<import('.types/dsl/map-manifest.js').MapManifest>}
  *
  * @throws {Error} Khi tải tank manifest lỗi
  */

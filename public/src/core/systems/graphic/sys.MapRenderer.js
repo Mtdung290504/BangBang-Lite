@@ -19,6 +19,7 @@ function create(sysContext) {
 
 	/** @param {HTMLImageElement} [image] */
 	const drawMapLayer = (image) => image && context2D.drawImage(image, 0, 0, mw, mh);
+
 	return {
 		process() {
 			sysContext.addRenderCallback({ layer: BACKGROUND_LAYER, render: () => drawMapLayer(backgroundImage) });

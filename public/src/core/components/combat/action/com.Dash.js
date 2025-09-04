@@ -26,7 +26,7 @@ export default class DashComponent {
 
 	/**
 	 * Parse từ DSL sang options cho constructor.
-	 * @param {import('DSL/skill_actions/move/dash').Dash} dsl
+	 * @param {import('.types/dsl/skill_actions/move/dash').Dash} dsl
 	 */
 	static parseDSL(dsl) {
 		return {

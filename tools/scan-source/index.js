@@ -2,6 +2,11 @@
 
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Lấy đường dẫn của file hiện tại
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Danh sách các phần mở rộng file code phổ biến
 const CODE_EXTENSIONS = [
@@ -85,13 +90,24 @@ const IGNORE_FILES = [
 	'*.tmp',
 	'*.md',
 	'*.txt',
+	'.scan-output.md', // Bỏ qua file output của tool
 ];
 
 function shouldIgnoreDir(dirName) {
 	return IGNORE_DIRS.includes(dirName) || dirName.startsWith('.');
 }
 
-function shouldIgnoreFile(fileName) {
+function shouldIgnoreFile(fileName, fullPath) {
+	// Bỏ qua chính file tool này
+	if (path.resolve(fullPath) === path.resolve(__filename)) {
+		return true;
+	}
+
+	// Bỏ qua file output của tool trước đó
+	if (fileName === '.scan-output.md') {
+		return true;
+	}
+
 	if (IGNORE_FILES.includes(fileName)) return true;
 	if (fileName.startsWith('.') && fileName !== '.env' && fileName !== '.gitignore') return true;
 	return false;
@@ -162,7 +178,7 @@ function scanDirectory(dirPath, basePath = dirPath) {
 					results.push(...scanDirectory(fullPath, basePath));
 				}
 			} else if (stat.isFile()) {
-				if (!shouldIgnoreFile(item) && isCodeFile(fullPath)) {
+				if (!shouldIgnoreFile(item, fullPath) && isCodeFile(fullPath)) {
 					const relativePath = path.relative(basePath, fullPath);
 					results.push({
 						relativePath: relativePath.replace(/\\/g, '/'), // Normalize path separators
@@ -182,7 +198,8 @@ function scanDirectory(dirPath, basePath = dirPath) {
 function generateOutput(files, targetDir) {
 	let content = `# Code Scan Results\n\n`;
 	content += `Thời gian quét: ${new Date().toLocaleString('vi-VN')}\n`;
-	content += `Tổng số file: ${files.length}\n\n`;
+	content += `Tổng số file: ${files.length}\n`;
+	content += `Tool scanner: ${path.basename(__filename)} (đã bỏ qua)\n\n`;
 	content += `---\n\n`;
 
 	for (const file of files) {
@@ -216,6 +233,7 @@ function main() {
 	if (args.length === 0) {
 		console.log('Sử dụng: node tool.js <thư-mục-cần-quét>');
 		console.log('Ví dụ: node tool.js ./src');
+		console.log(`Tool hiện tại: ${path.basename(__filename)} (sẽ được tự động bỏ qua)`);
 		process.exit(1);
 	}
 
@@ -232,15 +250,16 @@ function main() {
 	}
 
 	console.log(`Bắt đầu quét thư mục: ${targetDir}`);
+	console.log(`Tool scanner: ${path.basename(__filename)} (sẽ được bỏ qua)`);
 
 	const files = scanDirectory(targetDir);
 
 	if (files.length === 0) {
-		console.log('Không tìm thấy file code nào trong thư mục này.');
+		console.log('Không tìm thấy file code nào trong thư mục này (ngoại trừ tool scanner).');
 		return;
 	}
 
-	console.log(`Đã tìm thấy ${files.length} file code:`);
+	console.log(`\nĐã tìm thấy ${files.length} file code:`);
 	files.forEach((file) => {
 		console.log(`  - ${file.relativePath}`);
 	});

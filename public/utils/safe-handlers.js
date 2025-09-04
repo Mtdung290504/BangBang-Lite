@@ -26,6 +26,6 @@ export function safeArea(runable, errorHandler = (error) => console.error(`Error
 		}
 		runable();
 	} catch (error) {
-		errorHandler(error);
+		if (error instanceof Error) errorHandler(error);
 	}
 }

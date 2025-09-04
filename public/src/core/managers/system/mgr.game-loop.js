@@ -65,19 +65,14 @@ function startRenderLoop(renderer) {
 
 		// Kiểm tra đủ thời gian theo render FPS mới gọi hàm render frame tiếp theo
 		// 1000 / fps = delta time (đơn vị: ms)
-		if (currentTime - lastRenderTime >= renderInterval) {
-			progressLog && console.log('> [mgr.game-loop]: Drawing...');
+		// if (currentTime - lastRenderTime >= renderInterval) {
+		// 	progressLog && console.log('> [mgr.game-loop]: Drawing...');
+		// 	renderer();
+		// 	lastRenderTime = currentTime;
+		// }
 
-			// Render và cảnh báo frame nặng
-			// const frameStart = performance.now();
-			renderer();
-			// const frameTime = performance.now() - frameStart;
-
-			// Note (đơn vị: s)
-			// if (frameTime > 1 / renderFPS) console.warn(`> [mgr.game-loop] Heavy frame: ${frameTime.toFixed(2)}ms`);
-
-			lastRenderTime = currentTime;
-		}
+		// Tạm thời không giới hạn FPS
+		renderer();
 
 		requestAnimationFrame(renderFrame);
 	}

@@ -26,7 +26,7 @@ export default class CameraManager {
 		 * Tỉ lệ dead zone theo chiều rộng/chiều cao viewport.
 		 * @private
 		 */
-		this._deadZoneRatio = 1 / 6;
+		this._deadZoneRatio = 1 / 8;
 	}
 
 	/** Camera viewport width */
@@ -69,9 +69,6 @@ export default class CameraManager {
 	setSize(width, height) {
 		this.viewportWidth = width;
 		this.viewportHeight = height;
-
-		// Bản cũ khi setSize chuyển dead zone về width/6, height/6
-		this._deadZoneRatio = 1 / 6;
 	}
 
 	/**
@@ -139,19 +136,11 @@ export default class CameraManager {
 	}
 
 	/**
-	 * Lấy về tọa đô cần render
+	 * Lấy về tọa độ cần render
+	 * @returns {[ translateX: number, translateY: number ]}
 	 */
 	getTranslate() {
-		return { x: -this.viewportX, y: -this.viewportY };
-	}
-
-	/**
-	 * Áp transform camera trực tiếp lên context (giữ tương thích bản cũ)
-	 * @param {CanvasRenderingContext2D} context
-	 */
-	apply(context) {
-		const t = this.getTranslate();
-		context.translate(t.x, t.y);
+		return [-this.viewportX, -this.viewportY];
 	}
 
 	/**

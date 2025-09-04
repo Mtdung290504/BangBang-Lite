@@ -1,4 +1,12 @@
-export type LayerConfig = { type: 'static'; value: number } | { type: 'relative'; value: number };
+export type LayerConfig =
+	| {
+			type: 'static';
+			value: number;
+	  }
+	| {
+			type: 'relative';
+			value: number;
+	  };
 
 export type SpriteManifest = {
 	/**Các frame có thể có padding */
@@ -18,4 +26,9 @@ export type SpriteManifest = {
 
 	/** Delta layer relative to player layer, mặc định bằng với tank = 0 */
 	'layer-config'?: LayerConfig;
+};
+
+export type Renderable = {
+	layer: number;
+	render: () => void;
 };

@@ -70,35 +70,47 @@ export default function setupBattle(socket, mapID, players) {
 
 	// Setup tanks và lưu thông tin và registry. Có thể trong tương lai dùng để sync trạng thái
 	const selfTankEID = setupTanks(context, mapID, players, { selfSocketID, selfInputManager });
+	// Camera theo dõi player theo mặc định
+	camera.follow(context.getComponent(selfTankEID, PositionComponent));
 	console.log(msg('Battle initiated successfully\n\n\n'));
+
+	// Setup các system
+	const logicSysManager = setupLogicSystems(context);
+	const renderSysManager = setupRenderSystems(
+		context,
+		context2D,
+		mapID,
+		() => DEBUG_MODE,
+		gameLoopManager.getFPSInfo
+	);
 
 	/**
 	 * Start battle sau khi setup socket listener
 	 */
-	const start = () =>
+	function start() {
+		gameLoopManager.setProgressLog(DEBUG_MODE);
 		gameLoopManager.start(() => {
-			const logicSysManager = setupLogicSystems(context);
-			const renderSysManager = setupRenderSystems(context, context2D, mapID, () => DEBUG_MODE);
-			camera.follow(context.getComponent(selfTankEID, PositionComponent));
-
-			gameLoopManager.setProgressLog(DEBUG_MODE);
 			console.log('\n\n', msg('Battle started, using context:'), context);
 
 			gameLoopManager.startLogicLoop(() => {
+				// Update toàn bộ logic và di chuyển camera
 				logicSysManager.updateAll();
 				camera.update();
 			});
 
 			gameLoopManager.startRenderLoop(() => {
+				// Clear canvas
 				context2D.clearRect(0, 0, cw, ch);
 				context2D.save();
-				camera.apply(context2D);
 
-				// TODO: Calling draw systems
+				// Di chuyển đến vị trí cần render và render toàn bộ
+				context2D.translate(...camera.getTranslate());
 				renderSysManager.renderAll();
+
 				context2D.restore();
 			});
 		});
+	}
 
 	return { context, start, playerRegistry };
 }

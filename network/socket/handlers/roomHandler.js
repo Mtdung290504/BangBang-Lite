@@ -1,10 +1,12 @@
 import * as socketManagers from '../managers/index.js';
 
+export default { setup };
+
 /**
  * @param {import('socket.io').Server} io
  * @param {import('socket.io').Socket} playerSocket
  */
-export default function setupRoomHandlers(io, playerSocket) {
+function setup(io, playerSocket) {
 	const { roomManager } = socketManagers;
 
 	// Handle player join room event

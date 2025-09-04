@@ -14,8 +14,7 @@ import { SPEED_CALCULATION_CONSTANT } from '../../../../../configs/constants/dom
 import * as angleFs from '../../../fomulars/angle.js';
 
 /**
- * System xử lý dash cho Tank.
- * *Lưu ý phải chạy sau TankMovement
+ * System xử lý dash cho Tank. *Lưu ý phải chạy sau TankMovement
  */
 const DashSystem = defineSystemFactory([TankComponent])
 	.withProcessor((context, eID, [_tank]) => {

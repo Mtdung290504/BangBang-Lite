@@ -13,8 +13,9 @@ import SpriteRenderer from '../../core/systems/graphic/sys.SpriteRenderer.js';
  * @param {CanvasRenderingContext2D} context2D
  * @param {number} mapID
  * @param {() => boolean} getDebugState
+ * @param {() => number} getFPS
  */
-export default function setupRenderSystems(context, context2D, mapID, getDebugState) {
+export default function setupRenderSystems(context, context2D, mapID, getDebugState, getFPS) {
 	const renderSystemsManager = new RenderSystemsManager(context);
 
 	const mapManifest = storage.getMapManifest(mapID);
@@ -24,14 +25,14 @@ export default function setupRenderSystems(context, context2D, mapID, getDebugSt
 
 	renderSystemsManager.register(
 		MapRenderer.create(
-			new MapRenderContext(context2D, getDebugState, {
+			new MapRenderContext(context2D, getDebugState, getFPS, {
 				mapManifest,
 				backgroundImage: mapAssets.background,
 				scenesImage: mapAssets.scenes ?? undefined,
 			})
 		)
 	);
-	renderSystemsManager.register(SpriteRenderer.create(context, context2D, getDebugState));
+	renderSystemsManager.register(SpriteRenderer.create(context, context2D, getDebugState, getFPS));
 
 	renderSystemsManager.finalize();
 	renderSystemsManager.initAll();

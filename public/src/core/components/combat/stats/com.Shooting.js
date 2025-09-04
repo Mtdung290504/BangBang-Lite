@@ -22,7 +22,7 @@ export default class ShootingComponent {
 
 	/**
 	 * Khởi tạo ShootingComponent từ DSL.
-	 * @param {import('DSL/tank-manifest').ShootingStats} dsl - Dữ liệu DSL định nghĩa ShootingStats
+	 * @param {import('.types/dsl/tank-manifest').ShootingStats} dsl - Dữ liệu DSL định nghĩa ShootingStats
 	 */
 	static fromDSL(dsl) {
 		return new ShootingComponent(dsl['fire-rate'], dsl['fire-range'] * RANGE_MODIFIER, dsl['flight-speed']);

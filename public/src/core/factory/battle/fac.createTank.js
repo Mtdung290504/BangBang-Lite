@@ -72,7 +72,7 @@ export default function createTank(context, mapID, player, inputManager) {
 		new MovementComponent(stats['movement-speed'], 0),
 		new VelocityComponent(),
 
-		// TODO: Đọc vị trí xuất hiện từ map manifest
+		// TODO: Đọc vị trí xuất hiện từ map manifest *Cần đưa logic này lên server, nếu không giữa các client sẽ bị lộn xộn
 		// new PositionComponent(...getAppearPosition(player.team)),
 		new PositionComponent(200, 200),
 	]);

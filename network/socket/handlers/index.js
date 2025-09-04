@@ -1,4 +1,4 @@
-import setupRoomHandlers from './setupRoomHandler.js';
-import setupBattleHandlers from './setupBattleHandler.js';
+import roomHandler from './roomHandler.js';
+import battleHandler from './battleHandler.js';
 
-export { setupRoomHandlers, setupBattleHandlers };
+export { roomHandler, battleHandler };

@@ -49,7 +49,7 @@ export default class SurvivalComponent {
 
 	/**
 	 * Khởi tạo SurvivalComponent từ DSL.
-	 * @param {import('DSL/tank-manifest').SurvivalStats} dsl - Dữ liệu DSL định nghĩa SurvivalStats
+	 * @param {import('.types/dsl/tank-manifest').SurvivalStats} dsl - Dữ liệu DSL định nghĩa SurvivalStats
 	 */
 	static fromDSL(dsl) {
 		return new SurvivalComponent(dsl['limit-HP'], dsl['physical-armor'], dsl['energy-shield']);

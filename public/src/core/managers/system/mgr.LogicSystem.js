@@ -1,21 +1,18 @@
 /**
- * @template {(new (...args: any) => any)[]} [T=any]
- * @typedef {Partial<{
- * 		primaryComponents: T;
- * 		process(eid: number, components: {
- * 			[K in keyof T]: T[K] extends new (...args: any) => infer R ? R : never
- * 		}): void;
- * 		init(): void;
- * 		teardown(): void;
- * }>} AbstractSystem
+ * @template {Array<new (...args: any) => any>} [T=any]
+ * @typedef {import('.types/src/core/systems').AbstractSystem<T>} _AbstractSystem
  */
 
 /**
- * Quản lý toàn bộ systems trong ECS.
+ * @typedef {import('../combat/mgr.Entity.js').default} _EntityManager
+ */
+
+/**
+ * Quản lý toàn bộ logic systems trong ECS.
  */
 export default class LogicSystemsManager {
 	/**
-	 * @param {import('../combat/mgr.Entity.js').default} context
+	 * @param {_EntityManager} context
 	 */
 	constructor(context) {
 		this.context = context;
@@ -23,7 +20,7 @@ export default class LogicSystemsManager {
 		/**
 		 * Danh sách systems đã đăng ký theo thứ tự.
 		 *
-		 * @type {Array<{system: AbstractSystem, primaryComponents?: any[], componentsKey: string}>}
+		 * @type {Array<{system: _AbstractSystem, primaryComponents?: any[], componentsKey: string}>}
 		 * @private
 		 */
 		this._systems = [];
@@ -59,7 +56,7 @@ export default class LogicSystemsManager {
 	 * Đăng ký một system.
 	 *
 	 * @template {(new (...args: any) => any)[]} T
-	 * @param {AbstractSystem<T>} system - Kết quả từ factory.create()
+	 * @param {_AbstractSystem<T>} system - Kết quả từ factory.create()
 	 */
 	registry(system) {
 		// Validation
