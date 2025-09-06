@@ -1,14 +1,20 @@
 import { SPRITE_MANIFEST_404_KEY } from '../../../configs/constants/game-system-configs.js';
 import { ASSETS_PATH } from '../../../configs/constants/paths.js';
 
-const LOAD_SPRITE_LOG_PREFIX = '> [Net.assets-loader.loadSprite]';
-const LOAD_MAP_LOG_PREFIX = '> [Net.assets-loader.loadMapAssets]';
-const LOAD_MAP_ICON_LOG_PREFIX = '> [Net.assets-loader.loadMapIcon]';
-const LOAD_TANK_MANIFESTS_LOG_PREFIX = '> [Net.assets-loader.loadTankManifests]';
-const LOAD_MAP_MANIFESTS_LOG_PREFIX = '> [Net.assets-loader.loadMapManifests]';
-const LOAD_SKILL_DESCRIPTION_LOG_PREFIX = '> [Net.assets-loader.loadSkillDescription]';
+const LOAD_SPRITE_LOG_PREFIX = '> [net.assets-loader.loadSprite]';
+const LOAD_MAP_LOG_PREFIX = '> [net.assets-loader.loadMapAssets]';
+const LOAD_MAP_ICON_LOG_PREFIX = '> [net.assets-loader.loadMapIcon]';
+const LOAD_TANK_MANIFESTS_LOG_PREFIX = '> [net.assets-loader.loadTankManifests]';
+const LOAD_MAP_MANIFESTS_LOG_PREFIX = '> [net.assets-loader.loadMapManifests]';
+const LOAD_SKILL_DESCRIPTION_LOG_PREFIX = '> [net.assets-loader.loadSkillDescription]';
 
 export { loadSprite, loadTankManifests, loadSkillDescription, loadMapAssets, loadMapManifests, loadMapIcon };
+
+/**
+ * @typedef {import('.types/src/graphic/graphics').SpriteManifest} _SpriteManifest
+ * @typedef {import('.types/dsl/tank-manifest.js').TankManifest} _TankManifest
+ * @typedef {import('.types/dsl/skills/skill-manifest.js').SkillManifest} _SkillManifest
+ */
 
 /**
  * Load sprite của tank, nhận về manifest và HTMLImageElement
@@ -17,15 +23,10 @@ export { loadSprite, loadTankManifests, loadSkillDescription, loadMapAssets, loa
  * @param {number} tankID
  * @param {number} skinID
  * @param {string} spriteKey
- * @param {{
- * 		log?: (msg: string) => void
- * 		warn?: (msg: string) => void
- * 		error?: (msg: string | Error) => void
- * }} [logger] - Logger (option - default dùng console)
  *
  * @returns {Promise<{
  * 		sprite: HTMLImageElement,
- * 		manifest: import('.types/src/graphic/graphics').SpriteManifest | {
+ * 		manifest: _SpriteManifest | {
  * 			'frame-size': { width: number, height: number },
  * 			'frames-position': [{ x: 0, y: 0 }],
  * 		}
@@ -34,12 +35,11 @@ export { loadSprite, loadTankManifests, loadSkillDescription, loadMapAssets, loa
  * @throws {Error} Khi tải ảnh hoặc manifest lỗi (trừ 404)
  */
 async function loadSprite(tankID, skinID, spriteKey, logger = {}) {
-	const { log = console.log, warn = console.warn, error = console.error } = logger;
 	const spriteFullKey = `${tankID}_${skinID}_${spriteKey}`;
-	const msg = (/** @type {string}*/ text) => `${LOAD_SPRITE_LOG_PREFIX} Sprite:[${spriteFullKey}] - ${text}`;
+	const msg = (text = '...') => `${LOAD_SPRITE_LOG_PREFIX} Sprite:[${spriteFullKey}] - ${text}`;
 
 	const { manifestPath, spritePath } = ASSETS_PATH.sprite(tankID, spriteKey, skinID);
-	log(msg('Start loading'));
+	console.log(msg('Start loading'));
 	const startTime = performance.now();
 
 	// Parallel requests
@@ -51,12 +51,12 @@ async function loadSprite(tankID, skinID, spriteKey, logger = {}) {
 	});
 	const manifestPromise = checkManifest404(spriteFullKey)
 		? Promise.resolve().then(() => {
-				log(msg('Detect known manifest 404, using default value'));
+				console.log(msg('Detect known manifest 404, using default value'));
 				return null;
 		  })
 		: fetch(manifestPath).then(async (res) => {
 				if (res.status === 404) {
-					log(msg('Manifest does not exist, using default value'));
+					console.log(msg('Manifest does not exist, using default value'));
 					cacheManifest404(spriteFullKey);
 					return null;
 				}
@@ -73,10 +73,10 @@ async function loadSprite(tankID, skinID, spriteKey, logger = {}) {
 			'frames-position': [{ x: 0, y: 0 }],
 		};
 
-		log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
+		console.log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
 		return { sprite, manifest };
 	} catch (e) {
-		error(msg('Error:'), e);
+		console.error(msg('Error:'), e);
 		throw e;
 	}
 }
@@ -106,37 +106,22 @@ function checkManifest404(spriteFullKey) {
  * Load tank manifests (stats và skills)
  *
  * @param {number} tankID
- * @param {{
- * 		log?: (msg: string) => void
- * 		warn?: (msg: string) => void
- * 		error?: (msg: string | Error) => void
- * }} [logger] - Logger (option - default dùng console)
- *
- * @returns {Promise<{
- * 		stats: import('.types/dsl/tank-manifest.js').TankManifest
- * 		skills: import('.types/dsl/skills/skill-manifest.js').SkillManifest
- * }>}
- *
+ * @returns {Promise<{ stats: _TankManifest, skills: _SkillManifest }>}
  * @throws {Error} Khi tải tank manifest lỗi
  */
-async function loadTankManifests(tankID, logger = {}) {
-	const { log = console.log, error = console.error } = logger;
-	const msg = (/** @type {string}*/ text) => `${LOAD_TANK_MANIFESTS_LOG_PREFIX} Tank:${tankID} - ${text}`;
+async function loadTankManifests(tankID) {
+	const msg = (text = '...') => `${LOAD_TANK_MANIFESTS_LOG_PREFIX} Tank:${tankID} - ${text}`;
 
 	const { manifestPath } = ASSETS_PATH.tankManifest(tankID);
-	log(msg('Start loading'));
+	console.log(msg('Start loading'));
 	const startTime = performance.now();
 
 	try {
 		const module = await import(manifestPath);
-
-		log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
-		return {
-			stats: module.stats,
-			skills: module.skills,
-		};
+		console.log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
+		return { stats: module.stats, skills: module.skills };
 	} catch (e) {
-		error(msg('Error:'), e);
+		console.error(msg('Error:'), e);
 		throw e;
 	}
 }
@@ -145,22 +130,14 @@ async function loadTankManifests(tankID, logger = {}) {
  * Load skill description của tank
  *
  * @param {number} tankID
- * @param {{
- * 		log?: (msg: string) => void
- * 		warn?: (msg: string) => void
- * 		error?: (msg: string | Error) => void
- * }} [logger] - Logger (option - default dùng console)
- *
  * @returns {Promise<any>}
- *
  * @throws {Error} Khi tải skill description lỗi
  */
-async function loadSkillDescription(tankID, logger = {}) {
-	const { log = console.log, error = console.error } = logger;
-	const msg = (/** @type {string}*/ text) => `${LOAD_SKILL_DESCRIPTION_LOG_PREFIX} Tank:${tankID} - ${text}`;
+async function loadSkillDescription(tankID) {
+	const msg = (text = '...') => `${LOAD_SKILL_DESCRIPTION_LOG_PREFIX} Tank:${tankID} - ${text}`;
 
 	const { skillDescriptionPath } = ASSETS_PATH.tankManifest(tankID);
-	log(msg('Start loading'));
+	console.log(msg('Start loading'));
 	const startTime = performance.now();
 
 	try {
@@ -170,10 +147,10 @@ async function loadSkillDescription(tankID, logger = {}) {
 		}
 
 		const skillDescription = await res.json();
-		log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
+		console.log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
 		return skillDescription;
 	} catch (e) {
-		error(msg('Error:'), e);
+		console.error(msg('Error:'), e);
 		throw e;
 	}
 }
@@ -182,25 +159,17 @@ async function loadSkillDescription(tankID, logger = {}) {
  * Load toàn bộ asset của map gồm background layer và scene
  *
  * @param {number} mapID
- * @param {{
- * 		log?: (msg: string) => void
- * 		warn?: (msg: string) => void
- * 		error?: (msg: string | Error) => void
- * }} [logger] - Logger (option - default dùng console)
- *
  * @returns {Promise<{
  * 		background: HTMLImageElement,
  * 		scenes: HTMLImageElement | null
- * }>}.
- *
+ * }>}
  * @throws {Error} Khi tải background hoặc scenes lỗi (trừ 404 scenes)
  */
-async function loadMapAssets(mapID, logger = {}) {
-	const { log = console.log, warn = console.warn, error = console.error } = logger;
-	const msg = (/** @type {string}*/ text) => `${LOAD_MAP_LOG_PREFIX} Map:[${mapID}] - ${text}`;
+async function loadMapAssets(mapID) {
+	const msg = (text = '...') => `${LOAD_MAP_LOG_PREFIX} Map:[${mapID}] - ${text}`;
 
 	const { backgroundPath, scenesPath } = ASSETS_PATH.map(mapID);
-	log(msg('Start loading'));
+	console.log(msg('Start loading'));
 	const startTime = performance.now();
 
 	try {
@@ -209,10 +178,10 @@ async function loadMapAssets(mapID, logger = {}) {
 			loadImageWithHttpCheck(backgroundPath, { allow404: false, label: 'background' }),
 		]);
 
-		log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
+		console.log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
 		return { background, scenes };
 	} catch (e) {
-		error(msg('Error:'), e);
+		console.error(msg('Error:'), e);
 		throw e;
 	}
 
@@ -228,7 +197,7 @@ async function loadMapAssets(mapID, logger = {}) {
 		// Check HTTP status first
 		const res = await fetch(url, { method: 'HEAD' });
 		if (res.status === 404 && allow404) {
-			warn(msg(`${label} does not exist, returning null`));
+			console.warn(msg(`${label} does not exist, returning null`));
 			return null;
 		}
 		if (!res.ok) {
@@ -249,31 +218,23 @@ async function loadMapAssets(mapID, logger = {}) {
  * Load map manifests (size và một số thứ khác trong tương lai)
  *
  * @param {number} mapID
- * @param {{
- * 		log?: (msg: string) => void
- * 		warn?: (msg: string) => void
- * 		error?: (msg: string | Error) => void
- * }} [logger] - Logger (option - default dùng console)
- *
  * @returns {Promise<import('.types/dsl/map-manifest.js').MapManifest>}
- *
  * @throws {Error} Khi tải tank manifest lỗi
  */
-async function loadMapManifests(mapID, logger = {}) {
-	const { log = console.log, error = console.error } = logger;
-	const msg = (/** @type {string}*/ text) => `${LOAD_MAP_MANIFESTS_LOG_PREFIX} Map:${mapID} - ${text}`;
+async function loadMapManifests(mapID) {
+	const msg = (text = '...') => `${LOAD_MAP_MANIFESTS_LOG_PREFIX} Map:${mapID} - ${text}`;
 
 	const { manifestPath } = ASSETS_PATH.map(mapID);
-	log(msg('Start loading'));
+	console.log(msg('Start loading'));
 	const startTime = performance.now();
 
 	try {
 		const module = await import(manifestPath);
 
-		log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
+		console.log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
 		return module['default'];
 	} catch (e) {
-		error(msg('Error:'), e);
+		console.error(msg('Error:'), e);
 		throw e;
 	}
 }
@@ -282,22 +243,14 @@ async function loadMapManifests(mapID, logger = {}) {
  * Load icon của map
  *
  * @param {number} mapID
- * @param {{
- * 		log?: (msg: string) => void
- * 		warn?: (msg: string) => void
- * 		error?: (msg: string | Error) => void
- * }} [logger] - Logger (option - default dùng console)
- *
  * @returns {Promise<HTMLImageElement>}
- *
  * @throws {Error} Khi tải icon lỗi
  */
-async function loadMapIcon(mapID, logger = {}) {
-	const { log = console.log, error = console.error } = logger;
-	const msg = (/** @type {string}*/ text) => `${LOAD_MAP_ICON_LOG_PREFIX} MapIcon:[${mapID}] - ${text}`;
+async function loadMapIcon(mapID) {
+	const msg = (text = '...') => `${LOAD_MAP_ICON_LOG_PREFIX} MapIcon:[${mapID}] - ${text}`;
 
 	const { iconPath } = ASSETS_PATH.map(mapID);
-	log(msg('Start loading'));
+	console.log(msg('Start loading'));
 	const startTime = performance.now();
 
 	try {
@@ -308,10 +261,10 @@ async function loadMapIcon(mapID, logger = {}) {
 			image.onerror = (err) => reject(new Error(msg(`Error loading map icon: ${err}`)));
 		});
 
-		log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
+		console.log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
 		return img;
 	} catch (e) {
-		error(msg('Error:'), e);
+		console.error(msg('Error:'), e);
 		throw e;
 	}
 }

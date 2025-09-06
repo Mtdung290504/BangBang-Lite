@@ -14,6 +14,8 @@
  * @typedef {import('.types/dsl/map-manifest.js').MapManifest} _MapManifest
  */
 
+const LOG_PREFIX = '> [net.asset-storage]';
+
 /**
  * Lưu sprite, key dạng `${tankID}_${skinID}_${spriteKey}`
  * @type {Record<string, { sprite: HTMLImageElement, manifest: _SpriteManifest }>}
@@ -55,6 +57,8 @@ export const mapManifests = new Map();
 export let assetIDs;
 
 /**
+ * Đặt assetID trong quá trình preload, hàm này như một bước thiết lập và chỉ có thể gọi 1 lần.
+ *
  * @param {number[]} mapIDs
  * @param {number[]} tankIDs
  */
@@ -69,9 +73,9 @@ export function setAssetIDs(mapIDs, tankIDs) {
 /**
  * Thêm sprite vào storage
  *
- * @param {number} tankID  ID của tank
- * @param {number} skinID  ID của skin
- * @param {string} spriteKey  Tên sprite
+ * @param {number} tankID - ID của tank
+ * @param {number} skinID - ID của skin
+ * @param {string} spriteKey - Tên sprite
  * @param {{ sprite: HTMLImageElement, manifest: _SpriteManifest }} spriteData  Dữ liệu sprite và manifest
  */
 export function setSprite(tankID, skinID, spriteKey, spriteData) {
@@ -88,19 +92,10 @@ export function setSprite(tankID, skinID, spriteKey, spriteData) {
  */
 export function getSprite(tankID, skinID, spriteKey) {
 	const key = `${tankID}_${skinID}_${spriteKey}`;
-	return sprites[key];
-}
+	const result = sprites[key];
+	if (result) return result;
 
-/**
- * Kiểm tra sprite đã tồn tại chưa
- *
- * @param {number} tankID
- * @param {number} skinID
- * @param {string} spriteKey
- */
-export function hasSprite(tankID, skinID, spriteKey) {
-	const key = `${tankID}_${skinID}_${spriteKey}`;
-	return key in sprites;
+	throw new Error(msg(`Sprite:[${key}] not found`));
 }
 
 /**
@@ -114,6 +109,18 @@ export function getSpriteKeyBuilder(tankID, skinID) {
 	return /** @param {string} spriteKey */ function (spriteKey) {
 		return getSprite(tankID, skinID, spriteKey);
 	};
+}
+
+/**
+ * Kiểm tra sprite đã tồn tại chưa (Dùng cho loader chứ trong battle thường không cần)
+ *
+ * @param {number} tankID
+ * @param {number} skinID
+ * @param {string} spriteKey
+ */
+export function hasSprite(tankID, skinID, spriteKey) {
+	const key = `${tankID}_${skinID}_${spriteKey}`;
+	return key in sprites;
 }
 
 /**
@@ -134,8 +141,9 @@ export function setMapIcon(mapID, img) {
  */
 export function getMapIcon(mapID) {
 	const mapIcon = mapIcons.get(mapID);
-	if (!mapIcon) throw new Error(`Map:[${mapID}] icon does not exist`);
-	return mapIcon;
+	if (mapIcon) return mapIcon;
+
+	throw new Error(`Map:[${mapID}] icon does not exist`);
 }
 
 /**
@@ -240,4 +248,11 @@ export function getTankManifests(tankID) {
  */
 export function hasTankManifests(tankID) {
 	return tankManifests.has(tankID);
+}
+
+/**
+ * @param {string} text
+ */
+function msg(text) {
+	return `${LOG_PREFIX} ${text}`;
 }
