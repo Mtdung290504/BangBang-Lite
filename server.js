@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import http from 'http';
 import dotenv from 'dotenv';
 import getWifiIP from './network/getWifiIP.js';
@@ -15,6 +16,9 @@ const MODELS_PATH = process.env.MODELS_PATH;
 
 const app = express();
 const server = http.createServer(app);
+
+// Endpoint for detect host role
+app.get('/ping', cors(), (_req, res) => res.status(200).json({ pong: true }));
 
 // Serve map/tank ID
 app.get('/ids/:type', async (req, res) => {

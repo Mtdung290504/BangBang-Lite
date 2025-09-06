@@ -32,12 +32,9 @@ const DEBUG_MODE = true;
  *
  * @param {string} roomID
  * @param {string} playerName
+ * @param {'host' | 'client'} role
  */
-export async function init(roomID, playerName) {
-	// Setup socket & join room
-	const socket = await setupSocket(DEBUG_MODE);
-	socket.emit('request:join-room', roomID, playerName);
-
+export async function init(roomID, playerName, role) {
 	// Preload phase 1 for lobby
 	const preloadPhase1Result = await preloadPhase1();
 	const { sprites, mapAssets, mapManifests, tankManifests } = storage;
@@ -46,20 +43,28 @@ export async function init(roomID, playerName) {
 		return;
 	}
 
+	// Setup socket & join room
+	const socket = await setupSocket(DEBUG_MODE);
+	socket.emit('request:join-room', roomID, { playerName, role });
+
 	// Listen for all-player-ready event to preload
 	// *Đăng ký sự kiện sau nên đọc dữ liệu từ roomHandler thay vì socket data
 	socket.on('dispatch:all-player-ready', async () => {
+		roomView.destroy();
+
 		const { playingMapID: mapID, players } = roomHandlers;
 		await preloadPhase2(mapID, Object.values(players));
 
 		console.log('> [App] Setup view and Start battle initializer...');
-		roomView.destroy();
 		battleView.setup();
 
 		// TODO: Setup and start battle
 		const battle = setupBattle(socket, mapID, players);
 		const detroyBattleHandler = battleHandlers.setup(socket, battle.playerRegistry);
-		battle.start();
+
+		// Thông báo tải xong và đợi tất cả tải xong, timeout 10s
+		socket.emit('dispatch:loaded');
+		socket.once('dispatch:all-player-loaded', () => battle.start());
 
 		if (DEBUG_MODE) {
 			__debugger.observe(players, { name: 'Players' });

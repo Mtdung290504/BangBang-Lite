@@ -27,6 +27,9 @@ const rooms = new Map();
  */
 const lockedRooms = new Set();
 
+/**@type {string | null} */
+export let hostSocketID = null;
+
 // Public functions
 
 /**
@@ -75,9 +78,10 @@ export function getPlayerName(socket) {
  * @param {Socket} socket
  * @param {string} roomID - Thực tế là tên của room
  * @param {string} playerName - Trong tương lai khi phát triển thực tế, thay bằng playerID, query thuộc tính khác từ db hay đâu đó
+ * @param {'host' | 'client'} role
  * @returns {Promise<boolean>}
  */
-export async function socketJoinRoom(socket, roomID, playerName) {
+export async function socketJoinRoom(socket, roomID, playerName, role) {
 	// Block blank roomID, invalid name or join to locked room
 	if (!roomID.trim() || lockedRooms.has(roomID) || !playerName.trim()) return false;
 
@@ -95,6 +99,8 @@ export async function socketJoinRoom(socket, roomID, playerName) {
 	await socket.join(roomID);
 	setSocketRoomID(socket, roomID);
 
+	if (role === 'host') hostSocketID = socket.id;
+
 	return true;
 }
 
@@ -109,7 +115,6 @@ export async function socketJoinRoom(socket, roomID, playerName) {
 export function socketChangeTeam(socket) {
 	const roomID = getSocketRoomID(socket);
 	const room = rooms.get(roomID);
-	// console.log('> [SocketServer.RoomManager.socketChangeTeam] Debug data before change team:', room, room.teams);
 
 	if (!room) return false;
 	if (lockedRooms.has(roomID)) return false; // Fails when room is locked
@@ -171,7 +176,7 @@ export function socketChangeTank(socket, tankID) {
 
 /**
  * @param {Socket} socket
- * @returns {boolean} If all players are ready, return true
+ * @returns {boolean} If all players are ready and number of player > 1, return true
  */
 export function socketToggleReadyState(socket) {
 	const room = rooms.get(getSocketRoomID(socket));
@@ -183,7 +188,11 @@ export function socketToggleReadyState(socket) {
 	}
 
 	room.readyPlayers.add(socket.id);
-	return room.readyPlayers.size === Object.keys(room.players).length; // All player ready
+
+	return (
+		room.readyPlayers.size > 1 && // Phải trên 1 người chơi sẵn sàng mới tính
+		room.readyPlayers.size === Object.keys(room.players).length // Số người chơi sẵn sàng bằng tổng số người trong room
+	);
 }
 
 /**
@@ -195,6 +204,9 @@ export function socketMarkLoaded(socket) {
 	if (!room) return false;
 
 	room.loadedPlayers.add(socket.id);
+
+	// Không check size > 1 như `socketToggleReadyState` vì không đời nào diễn ra?
+	// Chưa chắc, nếu đang load mà nó disconnect thì sao?
 	return room.loadedPlayers.size === Object.keys(room.players).length;
 }
 

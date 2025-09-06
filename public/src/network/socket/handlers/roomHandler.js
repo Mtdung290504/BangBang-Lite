@@ -36,9 +36,8 @@ function setup(socket) {
 	});
 
 	// Nhận và xử lý event update player từ server
-	socket.on('dispatch:update-players', (roomData) => {
-		// `players` có thể null với response của event `toggle-ready-state`
-		players = roomData.players ?? players; // Mới là raw object, chưa chuyển thành `Player`
+	socket.on('dispatch:update-room-state', (roomData) => {
+		players = roomData.players; // Mới là raw object, chưa chuyển thành `Player`
 		for (const playerID in players) {
 			const rawPlayer = players[playerID];
 			players[playerID] = Player.fromJSON(rawPlayer); // Convert thành Player
@@ -48,13 +47,17 @@ function setup(socket) {
 		// First time connect event, log or do sth in future
 		if (firstInit) {
 			console.log('> [Socket.RoomHandler.onEvent:join-success] Join room success');
+
+			// Đồng bộ mapID trong lần đầu join room
+			setMapImageView(roomData.playingMap);
 			firstInit = false;
 		}
 
 		console.log('> [Socket.RoomHandler.onEvent:update-players] Receive players data in room:', roomData);
 		renderPlayersView(players, readyPlayers); // Render danh sách player
-		// Note ?? '_' chỉ để an toàn type, chứ thực tế socket.id luôn tồn tại vì đã get từ trước, nếu lỗi thì đã handle trước rồi
-		setReadyState(readyPlayers.includes(socket.id ?? '_')); // Đặt trạng thái cho nút sẵn sàng
+
+		// @ts-expect-error: `socket.id` luôn tồn tại trong ngữ cảnh này
+		setReadyState(readyPlayers.includes(socket.id)); // Đặt trạng thái cho nút sẵn sàng
 	});
 
 	// Event đổi map
@@ -82,17 +85,26 @@ function setup(socket) {
 			roomData
 		);
 
-		players = roomData.players ?? players; // Mới là raw object, chưa chuyển thành `Player`
+		// Cập nhật lại players
+		players = roomData.players; // Mới là raw object, chưa chuyển thành `Player`
 		for (const playerID in players) {
 			const rawPlayer = players[playerID];
 			players[playerID] = Player.fromJSON(rawPlayer); // Convert thành Player
 		}
 
+		// Cập nhật lại map
 		playingMapID = roomData.playingMap;
 
-		// Cập nhật view tương tự event `dispatch:update-players`
-		renderPlayersView(players, readyPlayers);
-		setReadyState(readyPlayers.includes(socket.id ?? '_'));
+		// Việc cập nhật lại View sẽ bị lỗi do hiện tại giải phóng sau khi toàn bộ player sẵn sàng
+		// Trong tương lai nếu chỉ thay đổi display thì đoạn code bên dưới có thể sẽ hữu dụng
+		if (false) {
+			setMapImageView(playingMapID);
+
+			// Cập nhật view tương tự event `dispatch:update-room-state`
+			renderPlayersView(players, readyPlayers);
+			// @ts-expect-error: Tương tự event `dispatch:update-room-state`
+			setReadyState(readyPlayers.includes(socket.id));
+		}
 	});
 
 	setupViewEventListeners(socket);

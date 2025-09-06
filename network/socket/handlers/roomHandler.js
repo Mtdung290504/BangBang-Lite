@@ -10,7 +10,7 @@ function setup(io, playerSocket) {
 	const { roomManager } = socketManagers;
 
 	// Handle player join room event
-	playerSocket.on('request:join-room', async (roomID, playerName) => {
+	playerSocket.on('request:join-room', async (roomID, { playerName, role }) => {
 		// Check type of roomID & playerName
 		if (typeof roomID !== 'string' || typeof playerName !== 'string') {
 			return rejectJoinRoom(
@@ -20,35 +20,34 @@ function setup(io, playerSocket) {
 
 		// Join room
 		console.log(
-			`> [SocketServer.RoomHandler.onEvent:join-room] Receive event join room: room::${roomID} - player::${playerName}`
+			`> [SocketServer.RoomHandler.onEvent:join-room] Receive event join room: Room:[${roomID}] - Player:[${playerName}] - Role:[${role}]`
 		);
-		const success = await roomManager.socketJoinRoom(playerSocket, roomID, playerName);
+		const success = await roomManager.socketJoinRoom(playerSocket, roomID, playerName, role);
 		if (!success)
 			return rejectJoinRoom(`> [SocketServer.RoomHandler.onEvent:join-room] roomManager.socketJoinRoom failed`);
 
 		// Dispatch event render UI
 		const roomData = roomManager.getRoomData(roomID);
-		if (roomData) dispatchUpdatePlayers(roomID, roomData);
+		if (roomData) dispatchUpdateRoomState(roomID, roomData);
 	});
 
 	// Handle player ready/unready event
 	playerSocket.on('request:toggle-ready-state', () => {
 		const roomID = roomManager.getSocketRoomID(playerSocket);
 		const allPlayerReady = roomManager.socketToggleReadyState(playerSocket);
+
 		const roomData = roomManager.getRoomData(roomID);
+		if (!roomData) return;
 
-		if (roomData && roomData.readyPlayers) {
-			// Fix vấn đề 1 player nhưng vẫn vào trận
-			if (allPlayerReady && roomData.readyPlayers.length > 1) {
-				console.log('Dumamay');
-				// Khi trận đấu bắt đầu, khóa room để không ai vào hay thay đổi tank/map được nữa
-				roomManager.lockRoom(roomID);
-				return io.to(roomID).emit('dispatch:all-player-ready', roomData);
-			}
-
-			// Dispatch event render UI
-			dispatchUpdatePlayers(roomID, { readyPlayers: roomData.readyPlayers });
+		if (allPlayerReady) {
+			// Khi trận đấu bắt đầu, khóa room để không ai vào hay thay đổi tank/map được nữa
+			roomManager.lockRoom(roomID);
+			io.to(roomID).emit('dispatch:all-player-ready', roomData);
+			return;
 		}
+
+		// Dispatch event render UI
+		dispatchUpdateRoomState(roomID, roomData);
 	});
 
 	// Handle player change team event
@@ -66,9 +65,7 @@ function setup(io, playerSocket) {
 
 		// Dispatch event render UI
 		const roomData = roomManager.getRoomData(roomID);
-		if (roomData?.players) {
-			dispatchUpdatePlayers(roomID, { players: roomData.players });
-		}
+		if (roomData) dispatchUpdateRoomState(roomID, roomData);
 
 		console.log(
 			`> [SocketServer.RoomHandler.onEvent:change-team] Change team success: Room::${roomID}, Player::${playerName}`
@@ -89,7 +86,7 @@ function setup(io, playerSocket) {
 
 		// Dispatch event rerender UI for another player
 		const roomData = roomManager.getRoomData(roomID);
-		if (roomData) dispatchUpdatePlayers(roomID, roomData);
+		if (roomData) dispatchUpdateRoomState(roomID, roomData);
 	});
 
 	// Handle player change map request
@@ -126,7 +123,8 @@ function setup(io, playerSocket) {
 		playerSocket.emit('dispatch:change-tank', tankID);
 	});
 
-	playerSocket.on('loaded', () => {
+	// TODO: Cần cơ chế timeout sau này, đề phòng mọi người phải đợi 1 người
+	playerSocket.on('dispatch:loaded', () => {
 		const roomID = roomManager.getSocketRoomID(playerSocket);
 		const allPlayerLoaded = roomManager.socketMarkLoaded(playerSocket);
 		if (allPlayerLoaded) io.to(roomID).emit('dispatch:all-player-loaded');
@@ -142,12 +140,9 @@ function setup(io, playerSocket) {
 
 	/**
 	 * @param {string} roomID
-	 * @param {{
-	 *      players?: { [socketID: string]: import('../../../models/Player.js').default }
-	 *      readyPlayers?: string[]
-	 * }} roomData
+	 * @param {NonNullable<ReturnType<typeof socketManagers.roomManager.getRoomData>>} roomData
 	 */
-	function dispatchUpdatePlayers(roomID, roomData) {
-		io.to(roomID).emit('dispatch:update-players', roomData);
+	function dispatchUpdateRoomState(roomID, roomData) {
+		io.to(roomID).emit('dispatch:update-room-state', roomData);
 	}
 }
