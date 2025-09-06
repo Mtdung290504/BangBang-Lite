@@ -11,4 +11,10 @@ export default class VelocityComponent {
 		this.dy = dy ?? 0;
 		this.dz = dz ?? 0;
 	}
+
+	reset() {
+		this.dx = 0;
+		this.dy = 0;
+		this.dz = 0;
+	}
 }

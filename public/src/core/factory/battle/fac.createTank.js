@@ -25,6 +25,8 @@ import BattleInputManager from '../../managers/input/mgr.BattleInput.js';
 
 // Constants
 import { TANK_DEFAULT_SIZE } from '../../../../configs/constants/domain_constants/com.constants.js';
+import NetworkPositionComponent from '../../components/network/com.NetworkPosition.js';
+import VelocityHistoryComponent from '../../components/network/com.VelocityHistory.js';
 
 /**
  * @typedef {import('../../managers/combat/mgr.Entity.js').default} EntityManager
@@ -100,7 +102,11 @@ export default function createTank(context, mapID, player, inputManager) {
 		// TODO: Bổ sung StatusBar sau này nếu cần
 	]);
 
-	return { tankEID, tankHeadEID: createTankHead(context, tankEID, renderSize), inputManager };
+	// Network sync components
+	const networkPosition = new NetworkPositionComponent();
+	context.addComponents(tankEID, [networkPosition, new VelocityHistoryComponent()]);
+
+	return { tankEID, tankHeadEID: createTankHead(context, tankEID, renderSize), inputManager, networkPosition };
 }
 
 /**

@@ -18,6 +18,8 @@ __debugger.listen();
 
 // Initializer
 import setupBattle from '../battle/setup.js';
+import { LOGIC_FPS } from '../../core/managers/system/mgr.game-loop.js';
+import PositionComponent from '../../core/components/physics/com.Position.js';
 
 const DEBUG_MODE = true;
 
@@ -61,6 +63,19 @@ export async function init(roomID, playerName, role) {
 		// TODO: Setup and start battle
 		const battle = setupBattle(socket, mapID, players);
 		const detroyBattleHandler = battleHandlers.setup(socket, battle.playerRegistry);
+
+		// Setup sync system
+		if (role === 'host') {
+			const { context, playerRegistry } = battle;
+			setInterval(() => {
+				/**@type {{[socketID: string]: PositionComponent }} */
+				const positionStates = {};
+				for (const [socketID, { tankEID }] of playerRegistry)
+					positionStates[socketID] = context.getComponent(tankEID, PositionComponent);
+
+				battleHandlers.syncPositionState(socket, positionStates);
+			}, LOGIC_FPS);
+		}
 
 		// Thông báo tải xong và đợi tất cả tải xong, timeout 10s
 		socket.emit('dispatch:loaded');

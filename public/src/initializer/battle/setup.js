@@ -1,6 +1,7 @@
 /**
- * @typedef {import('../../network/assets_managers/assets-storage.js')} Storage
- * @typedef {{ id: string | undefined, emit: (...args: any[]) => void }} AbstractSocket
+ * @typedef {import('../../network/assets_managers/assets-storage.js')} _Storage
+ * @typedef {{ id: string | undefined, emit: (...args: any[]) => void }} _AbstractSocket
+ * @typedef {import('../../core/components/network/com.NetworkPosition.js').default} _NetworkPosition
  */
 
 // Models
@@ -34,14 +35,14 @@ const LOG_PREFIX = '> [initializer.Battle]';
 const DEBUG_MODE = false;
 
 /**
- * @type {Map<string, { tankEID: number, inputManager: BattleInputManager }>}
+ * @type {Map<string, { tankEID: number, inputManager: BattleInputManager, networkPosition: _NetworkPosition }>}
  */
 const playerRegistry = new Map();
 
 /**
  * Khởi tạo game, lưu ý nó không giải phóng view, phải thực hiện việc đó bên ngoài
  *
- * @param {AbstractSocket} socket
+ * @param {_AbstractSocket} socket
  * @param {number} mapID
  * @param {{ [socketID: string]: Player }} players
  */
@@ -161,14 +162,14 @@ function setupTanks(context, mapID, players, { selfSocketID, selfInputManager })
 	// Khởi tạo tank cho các player khác
 	const anotherPlayerSocket = Object.keys(players).filter((socketID) => socketID !== selfSocketID);
 	anotherPlayerSocket.forEach((socketID) => {
-		const { tankEID, inputManager } = createTank(context, mapID, players[socketID]);
-		playerRegistry.set(socketID, { tankEID, inputManager });
+		const { tankEID, inputManager, networkPosition } = createTank(context, mapID, players[socketID]);
+		playerRegistry.set(socketID, { tankEID, inputManager, networkPosition });
 	});
 
 	// Khởi tạo tank cho mình
 	// Khởi tạo cho bản thân sau là có lý do, render tank của bản thân sẽ luôn hiện trên các tank khác (trừ khi nó bay)
-	const { tankEID } = createTank(context, mapID, players[selfSocketID], selfInputManager);
-	playerRegistry.set(selfSocketID, { tankEID, inputManager: selfInputManager });
+	const { tankEID, networkPosition } = createTank(context, mapID, players[selfSocketID], selfInputManager);
+	playerRegistry.set(selfSocketID, { tankEID, inputManager: selfInputManager, networkPosition });
 
 	return tankEID;
 }

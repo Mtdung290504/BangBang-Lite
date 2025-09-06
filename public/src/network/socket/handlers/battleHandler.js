@@ -1,11 +1,14 @@
 /**
- * @typedef {import('socket.io-client').Socket} Socket
- * @typedef {import('../../../core/managers/input/mgr.BattleInput.js').default} BattleInputManager
+ * @typedef {import('socket.io-client').Socket} _Socket
+ * @typedef {import('../../../core/components/network/com.NetworkPosition.js').default} _NetworkPosition
+ * @typedef {import('../../../core/managers/input/mgr.BattleInput.js').default} _BattleInputManager
+ * @typedef {Map<string, { tankEID: number, inputManager: _BattleInputManager, networkPosition: _NetworkPosition }>} _PlayerRegistry
+ * @typedef {{ [socketID: string]: { x: number, y: number } }} _PositionStates
  */
 
 /**
- * @param {Socket} socket
- * @param {Map<string, { tankEID: number, inputManager: BattleInputManager }>} playerRegistry
+ * @param {_Socket} socket
+ * @param {_PlayerRegistry} playerRegistry
  *
  * @returns Hàm giải phóng các battle event
  */
@@ -16,6 +19,7 @@ export function setup(socket, playerRegistry) {
 	const socketEvents = [
 		['dispatch:sync-mouse-state', syncMouseState],
 		['dispatch:sync-action-state', syncActionState],
+		['dispatch:sync-position-state', syncPositionState],
 	];
 
 	socketEvents.forEach(([event, handler]) => socket.on(event, handler));
@@ -23,7 +27,7 @@ export function setup(socket, playerRegistry) {
 	/**
 	 * @param {Object} data
 	 * @param {string} data.socketID
-	 * @param {BattleInputManager['mouseState']} data.mouseState
+	 * @param {_BattleInputManager['mouseState']} data.mouseState
 	 */
 	function syncMouseState({ socketID, mouseState }) {
 		const playerState = playerRegistry.get(socketID);
@@ -42,7 +46,7 @@ export function setup(socket, playerRegistry) {
 	/**
 	 * @param {Object} data
 	 * @param {string} data.socketID
-	 * @param {BattleInputManager['actionState']} data.actionState
+	 * @param {_BattleInputManager['actionState']} data.actionState
 	 */
 	function syncActionState({ socketID, actionState }) {
 		const playerState = playerRegistry.get(socketID);
@@ -58,7 +62,35 @@ export function setup(socket, playerRegistry) {
 		);
 	}
 
+	/**
+	 * @param {_PositionStates} positionStates
+	 */
+	function syncPositionState(positionStates) {
+		for (const socketID in positionStates) {
+			const playerState = playerRegistry.get(socketID);
+
+			if (playerState) {
+				const { x, y } = positionStates[socketID];
+				playerState.networkPosition.x = x;
+				playerState.networkPosition.y = y;
+			}
+
+			console.warn(
+				`> [BattleHandler] Network data problem, playerState with socketID:[${socketID}] does not exist in registry:`,
+				playerRegistry
+			);
+		}
+	}
+
 	return () => socketEvents.forEach(([event, handler]) => socket.off(event, handler));
+}
+
+/**
+ * @param {_Socket} socket
+ * @param {_PositionStates} positionStates
+ */
+export function syncPositionState(socket, positionStates) {
+	socket.emit('request-sync:position-state', positionStates);
 }
 
 /**
