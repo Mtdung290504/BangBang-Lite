@@ -17,8 +17,8 @@ export default function setupLogicSystems(context) {
 
 	logicSystemsManager.registry(TankPositionSyncSystem.create(context));
 	logicSystemsManager.registry(TankMovementSystem.create(context));
-	logicSystemsManager.registry(ApplyMovementSystem.create(context));
 	logicSystemsManager.registry(TankHeadRotateSystem.create(context));
+	logicSystemsManager.registry(ApplyMovementSystem.create(context));
 
 	logicSystemsManager.finalize();
 	logicSystemsManager.initAll();

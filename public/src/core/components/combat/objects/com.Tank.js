@@ -6,5 +6,6 @@ export default class TankComponent {
 	constructor(tankID, skinID) {
 		this.tankID = tankID;
 		this.skinID = skinID;
+		this.tankHeadEID = -1;
 	}
 }

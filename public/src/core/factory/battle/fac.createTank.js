@@ -57,8 +57,9 @@ export default function createTank(context, mapID, player, inputManager) {
 	inputManager = inputManager ?? new BattleInputManager();
 
 	// Add tank/input components
+	const tankComponent = new TankComponent(tankID, skinID);
 	context.addComponents(tankEID, [
-		new TankComponent(tankID, skinID),
+		tankComponent,
 		new InputComponent(inputManager), // Input để đọc, nếu không phải tank của mình thì tạo mới
 	]);
 
@@ -106,7 +107,10 @@ export default function createTank(context, mapID, player, inputManager) {
 	const networkPosition = new NetworkPositionComponent();
 	context.addComponents(tankEID, [networkPosition, new VelocityHistoryComponent()]);
 
-	return { tankEID, tankHeadEID: createTankHead(context, tankEID, renderSize), inputManager, networkPosition };
+	const tankHeadEID = createTankHead(context, tankEID, renderSize);
+	tankComponent.tankHeadEID = tankHeadEID;
+
+	return { tankEID, tankHeadEID, inputManager, networkPosition };
 }
 
 /**
