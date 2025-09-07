@@ -8,10 +8,21 @@ export default class NetworkPositionComponent {
 
 		/**@type {number | null} */
 		this.y = null;
+
+		/**@type {number | null} */
+		this.targetX = null;
+
+		/**@type {number | null} */
+		this.targetY = null;
 	}
 
 	reset() {
 		this.x = null;
 		this.y = null;
+	}
+
+	resetTarget() {
+		this.targetX = null;
+		this.targetY = null;
 	}
 }

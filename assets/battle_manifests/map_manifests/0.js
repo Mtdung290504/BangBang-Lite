@@ -1,8 +1,8 @@
 /**@type {import('.types/dsl/map-manifest').MapManifest} */
 export default {
 	size: {
-		width: 1624,
-		height: 1230.6,
+		width: 1624 * 1.04,
+		height: 1230.6 * 1.04,
 	},
 	'appear-coords': [
 		[

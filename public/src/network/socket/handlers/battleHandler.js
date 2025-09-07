@@ -73,6 +73,7 @@ export function setup(socket, playerRegistry) {
 				const { x, y } = positionStates[socketID];
 				playerState.networkPosition.x = x;
 				playerState.networkPosition.y = y;
+				continue;
 			}
 
 			console.warn(

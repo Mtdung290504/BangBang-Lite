@@ -3,9 +3,7 @@ import defineSystemFactory from '../../../factory/factory_builders/defineSystemF
 
 // Components
 import PositionComponent from '../../../components/physics/com.Position.js';
-import VelocityComponent from '../../../components/physics/com.Velocity.js';
 import NetworkPositionComponent from '../../../components/network/com.NetworkPosition.js';
-import VelocityHistoryComponent from '../../../components/network/com.VelocityHistory.js';
 import TankComponent from '../../../components/combat/objects/com.Tank.js';
 
 /**
@@ -14,19 +12,34 @@ import TankComponent from '../../../components/combat/objects/com.Tank.js';
 const TankPositionSyncSystem = defineSystemFactory([TankComponent])
 	.withProcessor((context, eID, [_tank]) => {
 		const pos = context.getComponent(eID, PositionComponent);
-		const vel = context.getComponent(eID, VelocityComponent);
-		const velHistory = context.getComponent(eID, VelocityHistoryComponent);
 		const networkPos = context.getComponent(eID, NetworkPositionComponent);
 
-		if (networkPos.x && networkPos.y) {
-			pos.x = networkPos.x + velHistory.dxFromLastSync;
-			pos.y = networkPos.y + velHistory.dyFromLastSync;
-			networkPos.reset(); // Đặt các tọa độ về null
-			velHistory.reset(); // Đặt các delta coords về 0
-		}
+		// if (networkPos.x && networkPos.y) {
+		// 	pos.x = networkPos.x;
+		// 	pos.y = networkPos.y;
+		// 	networkPos.reset(); // Đặt các tọa độ về null
+		// }
 
-		// velHistory.dxFromLastSync += vel.dx;
-		// velHistory.dxFromLastSync += vel.dy;
+		// New handlers:
+		if (networkPos.x && networkPos.y) {
+			networkPos.targetX = networkPos.x; // Lưu target thay vì snap ngay
+			networkPos.targetY = networkPos.y;
+			networkPos.reset();
+		}
+		// Smooth movement đến target
+		if (networkPos.targetX !== null && networkPos.targetY !== null) {
+			const LERP_SPEED = 0.3; // Điều chỉnh này để mượt hơn/lag hơn
+
+			pos.x += (networkPos.targetX - pos.x) * LERP_SPEED;
+			pos.y += (networkPos.targetY - pos.y) * LERP_SPEED;
+
+			// Dừng lerp khi đủ gần
+			if (Math.hypot(networkPos.targetX - pos.x, networkPos.targetY - pos.y) < 1) {
+				pos.x = networkPos.targetX;
+				pos.y = networkPos.targetY;
+				networkPos.resetTarget();
+			}
+		}
 	})
 	.build();
 

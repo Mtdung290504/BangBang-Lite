@@ -64,22 +64,31 @@ export async function init(roomID, playerName, role) {
 		const battle = setupBattle(socket, mapID, players);
 		const detroyBattleHandler = battleHandlers.setup(socket, battle.playerRegistry);
 
-		// Setup sync system
-		if (role === 'host') {
-			const { context, playerRegistry } = battle;
-			setInterval(() => {
-				/**@type {{[socketID: string]: PositionComponent }} */
-				const positionStates = {};
-				for (const [socketID, { tankEID }] of playerRegistry)
-					positionStates[socketID] = context.getComponent(tankEID, PositionComponent);
-
-				battleHandlers.syncPositionState(socket, positionStates);
-			}, LOGIC_FPS);
-		}
-
 		// Thông báo tải xong và đợi tất cả tải xong, timeout 10s
 		socket.emit('dispatch:loaded');
-		socket.once('dispatch:all-player-loaded', () => battle.start());
+		socket.once('dispatch:all-player-loaded', (hostSocketID) => {
+			battle.start();
+
+			// Setup sync system
+			if (hostSocketID === socket.id) {
+				const { context, playerRegistry } = battle;
+				startSync();
+
+				function startSync() {
+					dispatchSyncPositionState();
+					setTimeout(startSync, 1000 / LOGIC_FPS);
+				}
+
+				function dispatchSyncPositionState() {
+					/**@type {{[socketID: string]: PositionComponent }} */
+					const positionStates = {};
+					for (const [socketID, { tankEID }] of playerRegistry)
+						positionStates[socketID] = context.getComponent(tankEID, PositionComponent);
+
+					battleHandlers.syncPositionState(socket, positionStates);
+				}
+			}
+		});
 
 		if (DEBUG_MODE) {
 			__debugger.observe(players, { name: 'Players' });

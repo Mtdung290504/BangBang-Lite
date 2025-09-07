@@ -17,7 +17,7 @@ async function init() {
 		console.log('> [AppGateway] Init play mode, room ID:', ROOM_ID);
 
 		const role = await detectRole();
-		const playerName = prompt('Nhập tên:') || 'Không nhập tên bị gay';
+		const playerName = prompt('Nhập tên:') || '_';
 
 		if (ROOM_ID && playerName.trim()) {
 			console.log('> [AppGateway] Init play mode, role:', role);

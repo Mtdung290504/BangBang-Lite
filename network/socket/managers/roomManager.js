@@ -28,9 +28,13 @@ const rooms = new Map();
 const lockedRooms = new Set();
 
 /**@type {string | null} */
-export let hostSocketID = null;
+let hostSocketID = null;
 
 // Public functions
+
+export function getHostSocketID() {
+	return hostSocketID;
+}
 
 /**
  * Khóa room khi tất cả player sẵn sàng và trận đấu bắt đầu

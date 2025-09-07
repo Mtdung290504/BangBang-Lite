@@ -127,7 +127,11 @@ function setup(io, playerSocket) {
 	playerSocket.on('dispatch:loaded', () => {
 		const roomID = roomManager.getSocketRoomID(playerSocket);
 		const allPlayerLoaded = roomManager.socketMarkLoaded(playerSocket);
-		if (allPlayerLoaded) io.to(roomID).emit('dispatch:all-player-loaded');
+
+		// Nếu có role host, lấy người cuối cùng có role host, nếu không, lấy người sẵn sàng đầu tiên
+		const hostSocketID = roomManager.getHostSocketID() || roomManager.getRoomData(roomID)?.readyPlayers[0];
+
+		if (allPlayerLoaded) io.to(roomID).emit('dispatch:all-player-loaded', hostSocketID);
 	});
 
 	/**
