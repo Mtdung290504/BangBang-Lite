@@ -9,6 +9,8 @@ import { degToRad } from '../../fomulars/angle.js';
 import MovementComponent from '../../components/combat/stats/com.Movement.js';
 import SpriteComponent from '../../components/graphic/com.Sprite.js';
 import PositionComponent from '../../components/physics/com.Position.js';
+import TankComponent from '../../components/combat/objects/com.Tank.js';
+import ShadowComponent from '../../components/graphic/com.Shadow.js';
 
 const SpriteRenderer = defineSystemFactory([SpriteComponent, PositionComponent], RenderContext)
 	.withProcessor((context, eID, [sprite, pos], sysContext) => {
@@ -16,80 +18,57 @@ const SpriteRenderer = defineSystemFactory([SpriteComponent, PositionComponent],
 
 		function render() {
 			const { context2D } = sysContext;
-			const angle = context.getComponent(eID, MovementComponent, false)?.angle ?? 0;
 
-			const { resource } = sprite;
-			const manifest = resource.manifest;
+			// Sử dụng movement component nếu sprite cần xoay, không thì không đặt
+			const movementComponent = context.getComponent(eID, MovementComponent, false);
+			const angle = movementComponent?.angle ?? 0;
 
-			// Get current frame position
-			const currentFrame = manifest['frames-position'][sprite.currentFrameIdx];
+			// Sử dụng cached frame data
+			const frameData = sprite.getCurrentFrameData();
 
-			// Calculate frame dimensions
-			const frameSize = manifest['frame-size'];
-			const paddingRatio = manifest['padding-ratio'] || 0;
-			const renderSize =
-				manifest['render-size'] ||
-				(manifest['render-size'] = {
-					width: manifest['frame-size'].width * (1 - paddingRatio),
-					height: manifest['frame-size'].height * (1 - paddingRatio),
-				});
+			// Sử dụng precomputed destination coordinates
+			const destCoords = sprite.getDestinationCoords(pos);
+			const { width: renderW, height: renderH } = destCoords.renderSize;
 
-			// Calculate actual image size without padding
-			const paddingX = frameSize.width * paddingRatio;
-			const paddingY = frameSize.height * paddingRatio;
-			const actualWidth = frameSize.width - 2 * paddingX;
-			const actualHeight = frameSize.height - 2 * paddingY;
-
-			// Source coordinates (skip padding)
-			const sx = currentFrame.x + paddingX;
-			const sy = currentFrame.y + paddingY;
-			const sw = actualWidth;
-			const sh = actualHeight;
-
-			// Destination coordinates (centered at position)
-			const dx = pos.x - renderSize.width / 2;
-			const dy = pos.y - renderSize.height / 2;
-			const dw = renderSize.width;
-			const dh = renderSize.height;
-
-			// Save canvas state
 			context2D.save();
 
-			// Translate to center of sprite for rotation
+			// Nếu góc quay khác 0 mới xử lý xoay
 			if (angle !== 0) {
 				context2D.translate(pos.x, pos.y);
 				context2D.rotate(degToRad(angle));
 				context2D.translate(-pos.x, -pos.y);
 			}
 
-			// Draw sprite
-			context2D.drawImage(resource.sprite, sx, sy, sw, sh, dx, dy, dw, dh);
+			// Render shadow nếu là tank
+			const shadow = context.getComponent(eID, ShadowComponent, false);
+			if (shadow) {
+				const { alpha, blur, offsetRatioX, offsetRatioY } = shadow;
+				context2D.shadowColor = `rgba(0, 0, 0, ${alpha})`;
+				context2D.shadowBlur = blur;
+				context2D.shadowOffsetX = renderW * offsetRatioX;
+				context2D.shadowOffsetY = renderH * offsetRatioY;
+			}
 
-			// Render debug border
+			context2D.drawImage(
+				sprite.resource.sprite,
+				frameData.sx,
+				frameData.sy,
+				frameData.sw,
+				frameData.sh,
+				destCoords.dx,
+				destCoords.dy,
+				destCoords.dw,
+				destCoords.dh
+			);
+
+			// Vẽ border nếu trong mode debug
 			if (sysContext.getDebugState()) {
 				context2D.strokeStyle = 'white';
 				context2D.lineWidth = 2;
-				context2D.strokeRect(dx, dy, dw, dh);
+				context2D.strokeRect(destCoords.dx, destCoords.dy, destCoords.dw, destCoords.dh);
 			}
 
-			// Restore canvas state
 			context2D.restore();
-
-			// Update frame index
-			sprite.currentFrameIdx++;
-
-			// Handle animation loop
-			if (sprite.currentFrameIdx >= sprite.lastFrameIdx) {
-				if (manifest.duration !== undefined) {
-					// TODO: Xử lý thế nào khi animation kết thúc?
-					// Đợi xóa entity hay đánh dấu và xóa SpriteComponent ở Cleanup system?
-					// For now, stop at last frame
-					sprite.currentFrameIdx = sprite.lastFrameIdx - 1;
-				} else {
-					// Loop infinitely
-					sprite.currentFrameIdx = 0;
-				}
-			}
 		}
 	})
 	.build();

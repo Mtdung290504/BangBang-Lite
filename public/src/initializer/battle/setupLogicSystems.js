@@ -1,5 +1,6 @@
 import LogicSystemsManager from '../../core/managers/system/mgr.LogicSystem.js';
 
+import SpriteNextFrameSystem from '../../core/systems/graphic/sys.SpriteNextFrame.js';
 import ApplyMovementSystem from '../../core/systems/physic/movement/sys.ApplyMovement.js';
 import TankHeadRotateSystem from '../../core/systems/physic/movement/sys.TankHeadRotate.js';
 import TankMovementSystem from '../../core/systems/physic/movement/sys.TankMovement.js';
@@ -19,6 +20,7 @@ export default function setupLogicSystems(context) {
 	logicSystemsManager.registry(TankMovementSystem.create(context));
 	logicSystemsManager.registry(TankHeadRotateSystem.create(context));
 	logicSystemsManager.registry(ApplyMovementSystem.create(context));
+	logicSystemsManager.registry(SpriteNextFrameSystem.create(context));
 
 	logicSystemsManager.finalize();
 	logicSystemsManager.initAll();

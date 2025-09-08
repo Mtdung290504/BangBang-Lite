@@ -137,6 +137,7 @@ function createTankHead(context, tankEID, renderSize) {
 	context.addComponents(tankHeadEID, [
 		headSprite,
 		// TODO: Bổ sung shadow nếu cần
+		new ShadowComponent(),
 	]);
 
 	return tankHeadEID;

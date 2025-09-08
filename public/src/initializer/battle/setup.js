@@ -77,13 +77,7 @@ export default function setupBattle(socket, mapID, players) {
 
 	// Setup các system
 	const logicSysManager = setupLogicSystems(context);
-	const renderSysManager = setupRenderSystems(
-		context,
-		context2D,
-		mapID,
-		() => DEBUG_MODE,
-		gameLoopManager.getFPSInfo
-	);
+	const renderSysManager = setupRenderSystems(context, context2D, mapID, () => DEBUG_MODE);
 
 	/**
 	 * Start battle sau khi setup socket listener

@@ -9,12 +9,10 @@ export class RenderContext {
 	 *
 	 * @param {CanvasRenderingContext2D} context2D
 	 * @param {() => boolean} getDebugState
-	 * @param {() => number} getFPS
 	 */
-	constructor(context2D, getDebugState, getFPS) {
+	constructor(context2D, getDebugState) {
 		this.context2D = context2D;
 		this.getDebugState = getDebugState;
-		this.getFPS = getFPS;
 
 		/**@type {Array<_Renderable>} */
 		this.renderCallbacks = [];
@@ -44,15 +42,14 @@ export class MapRenderContext extends RenderContext {
 	 *
 	 * @param {CanvasRenderingContext2D} context2D
 	 * @param {() => boolean} getDebugState
-	 * @param {() => number} getFPS
 	 *
 	 * @param {Object} resource
 	 * @param {_MapManifest} resource.mapManifest
 	 * @param {HTMLImageElement} [resource.backgroundImage]
 	 * @param {HTMLImageElement} [resource.scenesImage]
 	 */
-	constructor(context2D, getDebugState, getFPS, { mapManifest, backgroundImage, scenesImage }) {
-		super(context2D, getDebugState, getFPS);
+	constructor(context2D, getDebugState, { mapManifest, backgroundImage, scenesImage }) {
+		super(context2D, getDebugState);
 
 		this.mapManifest = mapManifest;
 		this.backgroundImage = backgroundImage;
