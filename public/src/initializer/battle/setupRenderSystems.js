@@ -1,8 +1,12 @@
 import { storage } from '../../network/assets_managers/index.js';
+
 import RenderSystemsManager from '../../core/managers/graphic/mgr.RenderSystem.js';
+
 import { MapRenderContext } from '../../core/systems/graphic/contexts.js';
+
 import MapRenderer from '../../core/systems/graphic/sys.MapRenderer.js';
 import SpriteRenderer from '../../core/systems/graphic/sys.SpriteRenderer.js';
+import StatusBarRenderer from '../../core/systems/graphic/sys.StatusBarRenderer.js';
 
 /**
  * @typedef {import('../../core/managers/combat/mgr.Entity.js').default} EntityManager
@@ -32,6 +36,7 @@ export default function setupRenderSystems(context, context2D, mapID, getDebugSt
 		)
 	);
 	renderSystemsManager.register(SpriteRenderer.create(context, context2D, getDebugState));
+	renderSystemsManager.register(StatusBarRenderer.create(context, context2D, getDebugState));
 
 	renderSystemsManager.finalize();
 	renderSystemsManager.initAll();

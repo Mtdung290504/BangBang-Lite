@@ -27,6 +27,7 @@ import BattleInputManager from '../../managers/input/mgr.BattleInput.js';
 import { TANK_DEFAULT_SIZE } from '../../../../configs/constants/domain_constants/com.constants.js';
 import NetworkPositionComponent from '../../components/network/com.NetworkPosition.js';
 import VelocityHistoryComponent from '../../components/network/com.VelocityHistory.js';
+import StatusBarComponent from '../../components/graphic/com.Status.js';
 
 /**
  * @typedef {import('../../managers/combat/mgr.Entity.js').default} EntityManager
@@ -41,9 +42,10 @@ let getAppearPosition = undefined;
  * @param {EntityManager} context
  * @param {number} mapID
  * @param {import('models/Player.js').default} player
+ * @param {import('.types/src/core/combat/faction').Faction} faction
  * @param {BattleInputManager} [inputManager]
  */
-export default function createTank(context, mapID, player, inputManager) {
+export default function createTank(context, mapID, player, faction, inputManager) {
 	const { tankID, skinID } = player.using;
 	const { stats: tankManifest } = storage.getTankManifests(tankID);
 	const { 'stat-components': stats } = tankManifest;
@@ -52,16 +54,13 @@ export default function createTank(context, mapID, player, inputManager) {
 	if (!mapManifest) throw new Error('> [fac.createTank] mapManifest is undefined???');
 	if (!getAppearPosition) getAppearPosition = createAppearPositionGetter(mapManifest['appear-coords']);
 
-	// Create tank entity
+	// Create tank entity, if undefined inputManager, create
 	const tankEID = context.createEntity();
 	inputManager = inputManager ?? new BattleInputManager();
 
 	// Add tank/input components
-	const tankComponent = new TankComponent(tankID, skinID);
-	context.addComponents(tankEID, [
-		tankComponent,
-		new InputComponent(inputManager), // Input để đọc, nếu không phải tank của mình thì tạo mới
-	]);
+	const tankComponent = new TankComponent(tankID, skinID, storage.getSpriteKeyBuilder(tankID, skinID));
+	context.addComponents(tankEID, [tankComponent, new InputComponent(inputManager)]);
 
 	// Tank physics components
 	context.addComponents(tankEID, [
@@ -96,12 +95,7 @@ export default function createTank(context, mapID, player, inputManager) {
 	bodySprite.resource.manifest['render-size'] = renderSize;
 
 	// Tank graphic components
-	context.addComponents(tankEID, [
-		bodySprite,
-		new ShadowComponent(),
-
-		// TODO: Bổ sung StatusBar sau này nếu cần
-	]);
+	context.addComponents(tankEID, [bodySprite, new ShadowComponent(), new StatusBarComponent(faction, player.name)]);
 
 	// Network sync components
 	const networkPosition = new NetworkPositionComponent();

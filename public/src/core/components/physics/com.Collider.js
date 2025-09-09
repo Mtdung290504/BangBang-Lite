@@ -18,13 +18,13 @@ export default class ColliderComponent {
 			this.height = rectSize.height;
 			this.radius = Math.sqrt(this.width * this.width + this.height * this.height);
 			this.sectorAngle = 0;
-		}
-
-		if (type === 'circle') {
+		} else if (type === 'circle') {
 			const circleSize = /** @type {{ radius: number, 'sector-angle'?: number }} */ (size);
 			this.radius = circleSize.radius;
 			this.sectorAngle = circleSize['sector-angle'] ?? 360;
 			this.width = this.height = this.radius * 2;
+		} else {
+			throw new Error('> [ColliderComponent] Invalid type');
 		}
 	}
 

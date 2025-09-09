@@ -9,7 +9,6 @@ import { degToRad } from '../../fomulars/angle.js';
 import MovementComponent from '../../components/combat/stats/com.Movement.js';
 import SpriteComponent from '../../components/graphic/com.Sprite.js';
 import PositionComponent from '../../components/physics/com.Position.js';
-import TankComponent from '../../components/combat/objects/com.Tank.js';
 import ShadowComponent from '../../components/graphic/com.Shadow.js';
 
 const SpriteRenderer = defineSystemFactory([SpriteComponent, PositionComponent], RenderContext)

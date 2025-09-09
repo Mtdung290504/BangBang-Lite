@@ -4,7 +4,7 @@ import SpriteNextFrameSystem from '../../core/systems/graphic/sys.SpriteNextFram
 import ApplyMovementSystem from '../../core/systems/physic/movement/sys.ApplyMovement.js';
 import TankHeadRotateSystem from '../../core/systems/physic/movement/sys.TankHeadRotate.js';
 import TankMovementSystem from '../../core/systems/physic/movement/sys.TankMovement.js';
-import TankPositionSyncSystem from '../../core/systems/physic/network/sys.TankPositionSync.js';
+import TankPositionSyncSystem from '../../core/systems/network/sys.TankPositionSync.js';
 
 /**
  * @typedef {import('../../core/managers/combat/mgr.Entity.js').default} EntityManager

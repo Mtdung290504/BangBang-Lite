@@ -11,7 +11,7 @@ export default class ShadowComponent {
 	 */
 	constructor(shadowConfig) {
 		/** Độ tối của bóng, mặc định 0.45 */
-		this.alpha = shadowConfig?.alpha ?? 0.45;
+		this.alpha = shadowConfig?.alpha ?? 0.4;
 
 		/** Độ nhòe của bóng, mặc định 2 */
 		this.blur = shadowConfig?.blur ?? 2;

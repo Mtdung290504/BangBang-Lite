@@ -76,7 +76,7 @@ export async function init(roomID, playerName, role) {
 
 				function startSync() {
 					dispatchSyncPositionState();
-					setTimeout(startSync, 1000 / LOGIC_FPS);
+					setTimeout(startSync, (1000 / LOGIC_FPS) * 2);
 				}
 
 				function dispatchSyncPositionState() {

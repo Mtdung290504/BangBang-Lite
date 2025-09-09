@@ -106,9 +106,7 @@ export function getSprite(tankID, skinID, spriteKey) {
  * @param {number} skinID
  */
 export function getSpriteKeyBuilder(tankID, skinID) {
-	return /** @param {string} spriteKey */ function (spriteKey) {
-		return getSprite(tankID, skinID, spriteKey);
-	};
+	return (spriteKey = '') => getSprite(tankID, skinID, spriteKey);
 }
 
 /**

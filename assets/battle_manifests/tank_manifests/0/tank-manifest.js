@@ -13,7 +13,7 @@ export const stats = {
 			'flight-speed': 10,
 		},
 		survival: {
-			'limit-HP': 4840,
+			'limit-HP': 6840,
 			'physical-armor': 138,
 			'energy-shield': 108,
 		},

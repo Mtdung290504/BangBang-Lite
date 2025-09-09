@@ -153,16 +153,24 @@ function setupCamera(canvasManager, mapID) {
  * @param {BattleInputManager} self.selfInputManager
  */
 function setupTanks(context, mapID, players, { selfSocketID, selfInputManager }) {
+	const selfTeam = players[selfSocketID].team;
+
 	// Khởi tạo tank cho các player khác
 	const anotherPlayerSocket = Object.keys(players).filter((socketID) => socketID !== selfSocketID);
 	anotherPlayerSocket.forEach((socketID) => {
-		const { tankEID, inputManager, networkPosition } = createTank(context, mapID, players[socketID]);
+		const player = players[socketID];
+		const { tankEID, inputManager, networkPosition } = createTank(
+			context,
+			mapID,
+			player,
+			player.team !== selfTeam ? 'enemy' : 'ally'
+		);
 		playerRegistry.set(socketID, { tankEID, inputManager, networkPosition });
 	});
 
 	// Khởi tạo tank cho mình
 	// Khởi tạo cho bản thân sau là có lý do, render tank của bản thân sẽ luôn hiện trên các tank khác (trừ khi nó bay)
-	const { tankEID, networkPosition } = createTank(context, mapID, players[selfSocketID], selfInputManager);
+	const { tankEID, networkPosition } = createTank(context, mapID, players[selfSocketID], 'self', selfInputManager);
 	playerRegistry.set(selfSocketID, { tankEID, inputManager: selfInputManager, networkPosition });
 
 	return tankEID;
