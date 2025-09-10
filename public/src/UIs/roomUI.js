@@ -83,7 +83,7 @@ export function setTankImageView(tankID) {
 }
 
 /**
- * @param {{ [playerID: string]: import('../../../models/Player.js').default }} players
+ * @param {{ [playerID: string]: import('../../../models/public/Player.js').default }} players
  * @param {string[]} readyPlayers
  * @returns {void}
  */

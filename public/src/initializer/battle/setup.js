@@ -5,7 +5,7 @@
  */
 
 // Models
-import Player from '../../../../models/Player.js';
+import Player from '../../../../models/public/Player.js';
 
 // Network
 import { storage } from '../../network/assets_managers/index.js';

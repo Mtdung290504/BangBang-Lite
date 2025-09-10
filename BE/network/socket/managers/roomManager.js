@@ -1,15 +1,9 @@
-import Player from '../../../../models/Player.js';
+import Room from '../../../../models/private/Room.js';
+import Player from '../../../../models/public/Player.js';
 import { getMapIDs, getTankIDs } from '../../../database/getIDs.js';
 
 /**
  * @typedef {import('socket.io').Socket} Socket
- * @typedef {{
- *      players: { [socketID: string]: Player }
- *      teams: Set<string>[]
- *      readyPlayers: Set<string>
- *      loadedPlayers: Set<string>
- * 		playingMap: number
- * }} Room
  */
 
 const mapIDs = await getMapIDs();
@@ -27,7 +21,7 @@ const rooms = new Map();
  */
 const lockedRooms = new Set();
 
-/**@type {string | null} */
+/** @type {string | null} */
 let hostSocketID = null;
 
 // Public functions
@@ -255,14 +249,7 @@ export function getSocketRoomID(socket) {
  * @returns {Room}
  */
 function createNewRoom(roomID) {
-	const room = {
-		players: {},
-		teams: [new Set(), new Set()],
-		readyPlayers: new Set(),
-		loadedPlayers: new Set(),
-		playingMap: 0,
-	};
-
+	const room = new Room();
 	rooms.set(roomID, room);
 	console.log(`> [SocketServer.RoomManager] Created Room::${roomID}\n`);
 	return room;

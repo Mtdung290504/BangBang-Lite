@@ -41,7 +41,7 @@ let getAppearPosition = undefined;
 /**
  * @param {EntityManager} context
  * @param {number} mapID
- * @param {import('models/Player.js').default} player
+ * @param {import('models/public/Player.js').default} player
  * @param {import('.types-system/src/core/combat/faction.js').Faction} faction
  * @param {BattleInputManager} [inputManager]
  */

@@ -98,7 +98,7 @@ async function preloadPhase1() {
  * - *Note for future:* Có thể cần parse DSL để import động builder (Cái này khi nào hệ thống rất lớn rồi tính)
  *
  * @param {number} mapID
- * @param {import('models/Player.js').default[]} players
+ * @param {import('models/public/Player.js').default[]} players
  */
 async function preloadPhase2(mapID, players) {
 	console.log('\n\n> [Net.preloader] Preload phase 2 staring...');
