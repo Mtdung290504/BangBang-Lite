@@ -24,7 +24,7 @@ export default class AttackPowerComponent {
 
 	/**
 	 * Khởi tạo AttackPowerComponent từ DSL.
-	 * @param {import('.types/dsl/tank-manifest').AttackPowerStats} dsl - Dữ liệu DSL định nghĩa AttackPowerStats
+	 * @param {import('.types-system/dsl/tank-manifest').AttackPowerStats} dsl - Dữ liệu DSL định nghĩa AttackPowerStats
 	 */
 	static fromDSL(dsl) {
 		return new AttackPowerComponent(

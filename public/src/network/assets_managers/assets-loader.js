@@ -11,9 +11,9 @@ const LOAD_SKILL_DESCRIPTION_LOG_PREFIX = '> [net.assets-loader.loadSkillDescrip
 export { loadSprite, loadTankManifests, loadSkillDescription, loadMapAssets, loadMapManifests, loadMapIcon };
 
 /**
- * @typedef {import('.types/src/graphic/graphics').SpriteManifest} _SpriteManifest
- * @typedef {import('.types/dsl/tank-manifest.js').TankManifest} _TankManifest
- * @typedef {import('.types/dsl/skills/skill-manifest.js').SkillManifest} _SkillManifest
+ * @typedef {import('.types-system/src/graphic/graphics.js').SpriteManifest} _SpriteManifest
+ * @typedef {import('.types-system/dsl/tank-manifest.js').TankManifest} _TankManifest
+ * @typedef {import('.types-system/dsl/skills/skill-manifest.js').SkillManifest} _SkillManifest
  */
 
 /**
@@ -218,7 +218,7 @@ async function loadMapAssets(mapID) {
  * Load map manifests (size và một số thứ khác trong tương lai)
  *
  * @param {number} mapID
- * @returns {Promise<import('.types/dsl/map-manifest.js').MapManifest>}
+ * @returns {Promise<import('.types-system/dsl/map-manifest.js').MapManifest>}
  * @throws {Error} Khi tải tank manifest lỗi
  */
 async function loadMapManifests(mapID) {

@@ -8,10 +8,10 @@
  */
 
 /**
- * @typedef {import('.types/src/graphic/graphics').SpriteManifest} _SpriteManifest
- * @typedef {import('.types/dsl/tank-manifest.js').TankManifest} _TankManifest
- * @typedef {import('.types/dsl/skills/skill-manifest.js').SkillManifest} _SkillManifest
- * @typedef {import('.types/dsl/map-manifest.js').MapManifest} _MapManifest
+ * @typedef {import('.types-system/src/graphic/graphics').SpriteManifest} _SpriteManifest
+ * @typedef {import('.types-system/dsl/tank-manifest.js').TankManifest} _TankManifest
+ * @typedef {import('.types-system/dsl/skills/skill-manifest.js').SkillManifest} _SkillManifest
+ * @typedef {import('.types-system/dsl/map-manifest.js').MapManifest} _MapManifest
  */
 
 const LOG_PREFIX = '> [net.asset-storage]';

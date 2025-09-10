@@ -29,7 +29,7 @@ export default class ColliderComponent {
 	}
 
 	/**
-	 * @template {import('.types/dsl/common-types').Collider} C
+	 * @template {import('.types-system/dsl/common-types').Collider} C
 	 * @param {C} dsl
 	 * @returns {C['type'] extends 'rectangle' ? ColliderComponent<'rectangle'> : ColliderComponent<'circle'>}
 	 */

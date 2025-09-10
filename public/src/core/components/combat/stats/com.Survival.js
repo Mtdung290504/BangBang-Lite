@@ -1,6 +1,8 @@
-const DEFAULT_HEALING_EFFECT = 0;
-const DEFAULT_DMG_REDUCTION = 0;
-const DEFAULT_DODGE_RATE = 0;
+import {
+	DEFAULT_DMG_REDUCTION,
+	DEFAULT_DODGE_RATE,
+	DEFAULT_HEALING_EFFECT,
+} from '../../../../../configs/constants/domain_constants/com.constants.js';
 
 export default class SurvivalComponent {
 	/** In(De)creasing healing receive - Unit: % */
@@ -49,7 +51,7 @@ export default class SurvivalComponent {
 
 	/**
 	 * Khởi tạo SurvivalComponent từ DSL.
-	 * @param {import('.types/dsl/tank-manifest').SurvivalStats} dsl - Dữ liệu DSL định nghĩa SurvivalStats
+	 * @param {import('.types-system/dsl/tank-manifest').SurvivalStats} dsl - Dữ liệu DSL định nghĩa SurvivalStats
 	 */
 	static fromDSL(dsl) {
 		return new SurvivalComponent(dsl['limit-HP'], dsl['physical-armor'], dsl['energy-shield']);

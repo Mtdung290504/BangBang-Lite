@@ -3,7 +3,7 @@
  */
 export default class StatusBarComponent {
 	/**
-	 * @param {import('.types/src/core/combat/faction').Faction} faction
+	 * @param {import('.types-system/src/core/combat/faction').Faction} faction
 	 * @param {string} displayName
 	 */
 	constructor(faction, displayName = '') {

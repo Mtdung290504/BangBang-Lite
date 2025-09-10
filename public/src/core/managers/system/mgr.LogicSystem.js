@@ -1,6 +1,6 @@
 /**
  * @template {Array<new (...args: any) => any>} [T=any]
- * @typedef {import('.types/src/core/systems').AbstractSystem<T>} _AbstractSystem
+ * @typedef {import('.types-system/src/core/systems.js').AbstractSystem<T>} _AbstractSystem
  */
 
 /**

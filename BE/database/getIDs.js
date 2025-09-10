@@ -1,12 +1,10 @@
 import { readdir } from 'fs/promises';
 import { join } from 'path';
-import { MAP_BASE_PATH, SPRITE_BASE_PATH } from '../public/configs/constants/paths.js';
+import { MAP_BASE_PATH, SPRITE_BASE_PATH } from '../../public/configs/constants/paths.js';
 import { memoize } from '../utils/memoize.js';
 
-const getMapIDs = memoize(rawGetMapIDs, { ttl: 1000 * 60 * 60 });
-const getTankIDs = memoize(rawGetTankIDs, { ttl: 1000 * 60 * 60 });
-
-export { getMapIDs, getTankIDs };
+export const getMapIDs = memoize(rawGetMapIDs, { ttl: 1000 * 60 * 60 });
+export const getTankIDs = memoize(rawGetTankIDs, { ttl: 1000 * 60 * 60 });
 
 /**
  * - Trả về danh sách thư mục con trong assets/images/maps (tính từ project root)

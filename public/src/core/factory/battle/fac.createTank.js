@@ -42,7 +42,7 @@ let getAppearPosition = undefined;
  * @param {EntityManager} context
  * @param {number} mapID
  * @param {import('models/Player.js').default} player
- * @param {import('.types/src/core/combat/faction').Faction} faction
+ * @param {import('.types-system/src/core/combat/faction.js').Faction} faction
  * @param {BattleInputManager} [inputManager]
  */
 export default function createTank(context, mapID, player, faction, inputManager) {

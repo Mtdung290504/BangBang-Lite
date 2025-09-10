@@ -1,10 +1,10 @@
 /**
  * @template {Array<new (...args: any) => any>} [T=any[]]
- * @typedef {import('.types/src/graphic/systems').AbstractRenderSystem<T>} _AbstractRenderSystem
+ * @typedef {import('.types-system/src/graphic/systems.js').AbstractRenderSystem<T>} _AbstractRenderSystem
  */
 
 /**
- * @typedef {import('.types/src/graphic/graphics.js').Renderable} _Renderable
+ * @typedef {import('.types-system/src/graphic/graphics.js').Renderable} _Renderable
  * @typedef {import('../combat/mgr.Entity.js').default} _EntityManager
  */
 

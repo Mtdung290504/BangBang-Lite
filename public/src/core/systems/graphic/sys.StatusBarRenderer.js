@@ -6,7 +6,6 @@ import { RenderContext } from './contexts.js';
 import PositionComponent from '../../components/physics/com.Position.js';
 import StatusBarComponent from '../../components/graphic/com.Status.js';
 import SurvivalComponent from '../../components/combat/stats/com.Survival.js';
-import ColliderComponent from '../../components/physics/com.Collider.js';
 
 // Constants
 import {
@@ -19,8 +18,9 @@ import {
 	HP_BAR_WIDTH,
 	STATUS_BAR_COLORS,
 	STATUS_BAR_FONT_SIZE,
-	TANK_DEFAULT_LAYER,
-} from '../../../../configs/constants/domain_constants/com.constants.js';
+} from '../../../../configs/constants/domain_constants/sys.constants.js';
+import { TANK_DEFAULT_LAYER } from '../../../../configs/constants/domain_constants/com.constants.js';
+
 import AdditionalAttributesComponent from '../../components/combat/stats/com.AdditionalAttributes.js';
 import SpriteComponent from '../../components/graphic/com.Sprite.js';
 

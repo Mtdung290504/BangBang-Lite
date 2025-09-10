@@ -65,9 +65,10 @@ export default function setupBattle(socket, mapID, players) {
 
 	// Setup emitter và player input
 	const bufferedEmitter = new BufferedEmitter(socket, () => gameLoopManager.LOGIC_FPS);
-	const selfInputManager = new BattleInputManager(bufferedEmitter, camera);
-	selfInputManager.listen();
-	console.log(msg('Player input setup complete'), selfInputManager);
+	const selfLocalInputManager = new BattleInputManager(bufferedEmitter, camera);
+	selfLocalInputManager.listen();
+	const selfInputManager = new BattleInputManager();
+	console.log(msg('Player input setup complete'), selfLocalInputManager);
 
 	// Setup tanks và lưu thông tin và registry. Có thể trong tương lai dùng để sync trạng thái
 	const selfTankEID = setupTanks(context, mapID, players, { selfSocketID, selfInputManager });

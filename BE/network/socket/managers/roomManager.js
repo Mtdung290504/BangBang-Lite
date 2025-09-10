@@ -1,4 +1,4 @@
-import Player from '../../../models/Player.js';
+import Player from '../../../../models/Player.js';
 import { getMapIDs, getTankIDs } from '../../../database/getIDs.js';
 
 /**

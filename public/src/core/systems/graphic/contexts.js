@@ -1,6 +1,6 @@
 /**
- * @typedef {import('.types/src/graphic/graphics').Renderable} _Renderable
- * @typedef {import('.types/dsl/map-manifest').MapManifest} _MapManifest
+ * @typedef {import('.types-system/src/graphic/graphics').Renderable} _Renderable
+ * @typedef {import('.types-system/dsl/map-manifest').MapManifest} _MapManifest
  */
 
 export class RenderContext {

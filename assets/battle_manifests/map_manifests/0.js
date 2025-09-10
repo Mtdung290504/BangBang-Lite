@@ -1,4 +1,4 @@
-/**@type {import('.types/dsl/map-manifest').MapManifest} */
+/**@type {import('.types-system/dsl/map-manifest').MapManifest} */
 export default {
 	size: {
 		width: 1624 * 1.04,

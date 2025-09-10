@@ -4,7 +4,7 @@ export default class SpriteComponent {
 	 *
 	 * @param {Object} resource
 	 * @param {HTMLImageElement} resource.sprite - Sprite sheet
-	 * @param {import('.types/src/graphic/graphics').SpriteManifest} resource.manifest - Đặc tả sprite
+	 * @param {import('.types-system/src/graphic/graphics').SpriteManifest} resource.manifest - Đặc tả sprite
 	 * @param {(() => number) | undefined} [getParentLayer]
 	 */
 	constructor(resource, getParentLayer) {

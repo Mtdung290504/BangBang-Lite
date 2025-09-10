@@ -13,12 +13,14 @@ function setup(io, playerSocket) {
 		const roomID = roomManager.getSocketRoomID(playerSocket);
 
 		// Note: Chỉ gửi cho những socket khác ngoài bản thân, dùng socket thay vì io
-		playerSocket.to(roomID).emit('dispatch:sync-mouse-state', { socketID: playerSocket.id, mouseState });
+		// playerSocket.to(roomID).emit('dispatch:sync-mouse-state', { socketID: playerSocket.id, mouseState });
+		io.to(roomID).emit('dispatch:sync-mouse-state', { socketID: playerSocket.id, mouseState });
 	});
 
 	playerSocket.on('request-sync:action-state', (actionState) => {
 		const roomID = roomManager.getSocketRoomID(playerSocket);
-		playerSocket.to(roomID).emit('dispatch:sync-action-state', { socketID: playerSocket.id, actionState });
+		// playerSocket.to(roomID).emit('dispatch:sync-action-state', { socketID: playerSocket.id, actionState });
+		io.to(roomID).emit('dispatch:sync-action-state', { socketID: playerSocket.id, actionState });
 	});
 
 	playerSocket.on('request-sync:position-state', (positionState) => {

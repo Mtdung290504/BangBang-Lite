@@ -1,4 +1,4 @@
-const RANGE_MODIFIER = 50 / 67;
+import { PROJECTILE_SPEED_CALCULATION_CONSTANT } from '../../../../../configs/constants/domain_constants/com.constants.js';
 
 export default class ShootingComponent {
 	/**
@@ -22,9 +22,13 @@ export default class ShootingComponent {
 
 	/**
 	 * Khởi tạo ShootingComponent từ DSL.
-	 * @param {import('.types/dsl/tank-manifest').ShootingStats} dsl - Dữ liệu DSL định nghĩa ShootingStats
+	 * @param {import('.types-system/dsl/tank-manifest').ShootingStats} dsl - Dữ liệu DSL định nghĩa ShootingStats
 	 */
 	static fromDSL(dsl) {
-		return new ShootingComponent(dsl['fire-rate'], dsl['fire-range'] * RANGE_MODIFIER, dsl['flight-speed']);
+		return new ShootingComponent(
+			dsl['fire-rate'],
+			dsl['fire-range'] * PROJECTILE_SPEED_CALCULATION_CONSTANT,
+			dsl['flight-speed']
+		);
 	}
 }
