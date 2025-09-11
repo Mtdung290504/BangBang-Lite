@@ -124,22 +124,17 @@ function setupCamera(canvasManager, mapID) {
 	if (!mapManifest) throw new Error(msg('Map manifest is undefined???'));
 	const { width: mapWidth, height: mapHeight } = mapManifest.size;
 
-	// Đặt map size cho camera
+	// Đặt map size cho camera, update lần đầu tiên
 	camera.setMapSize(mapWidth, mapHeight);
-	camera.update();
+	camera.update(); // (thực chất không quá quan trọng vì game loop luôn cập nhật camera)
 
 	// Event listeners: Chặn hành vi mặc định của scroll, context menu
 	const signalController = new AbortController();
 	window.addEventListener('contextmenu', (e) => e.preventDefault(), { signal: signalController.signal });
 	window.addEventListener('scroll', (e) => e.preventDefault(), { signal: signalController.signal });
-	window.addEventListener(
-		'resize',
-		() => {
-			camera.setSize(canvas.width, canvas.height);
-			camera.update();
-		},
-		{ signal: signalController.signal }
-	);
+	window.addEventListener('resize', () => camera.setSize(canvas.width, canvas.height), {
+		signal: signalController.signal,
+	});
 
 	return { camera, cleanUpCameraEvent: () => signalController.abort() };
 }

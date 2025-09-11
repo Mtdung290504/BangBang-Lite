@@ -50,14 +50,14 @@ const SpriteRenderer = defineSystemFactory([SpriteComponent, PositionComponent],
 
 			context2D.drawImage(
 				sprite.resource.sprite,
-				frameData.sx,
-				frameData.sy,
-				frameData.sw,
-				frameData.sh,
-				destCoords.dx,
-				destCoords.dy,
-				destCoords.dw,
-				destCoords.dh
+				frameData.sx, // Tọa độ X gốc (trên ảnh nguồn) nơi bắt đầu cắt.
+				frameData.sy, // Tọa độ Y gốc (trên ảnh nguồn) nơi bắt đầu cắt.
+				frameData.sw, // Chiều rộng phần ảnh nguồn cần cắt.
+				frameData.sh, // Chiều cao phần ảnh nguồn cần cắt.
+				destCoords.dx, // Tọa độ X trên canvas nơi sẽ vẽ phần ảnh đã cắt.
+				destCoords.dy, // Tọa độ Y trên canvas nơi sẽ vẽ phần ảnh đã cắt.
+				destCoords.dw, // Chiều rộng để vẽ lên canvas. Nếu khác sw, ảnh sẽ bị co giãn theo tỷ lệ ngang.
+				destCoords.dh // Chiều cao để vẽ lên canvas. Nếu khác sh, ảnh sẽ bị co giãn theo tỷ lệ dọc.
 			);
 
 			// Vẽ border nếu trong mode debug

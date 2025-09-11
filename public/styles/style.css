@@ -231,10 +231,10 @@ canvas {
 	background-size: cover;
 	background-position: center;
 	margin-bottom: 5px;
-	background-image: url('./image-resource/default-avatar.png');
+	background-image: url('./image-resource/default-avatars/0.png');
 }
 .player-slot .avatar[data-id='2'] {
-	background-image: url('./image-resource/default-avatar-2.png');
+	background-image: url('./image-resource/default-avatars/1.png');
 }
 
 .player-slot .name {

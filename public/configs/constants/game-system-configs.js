@@ -1,22 +1,11 @@
-const MAX_PARALLEL_REQUESTS = 20;
+export const MAX_PARALLEL_REQUESTS = 20;
 
-const ROOM_SEARCH_PARAM_KEY = 'room';
-const SANDBOX_MAP_PARAM_KEY = 'map';
-const SANDBOX_TANK_PARAM_KEY = 'tank';
-const SANDBOX_PLAYER_NAME = 'Dungx';
-const SANDBOX_SOCKET_ID = 'sandbox-socketID';
+export const ROOM_SEARCH_PARAM_KEY = 'room';
+export const SANDBOX_MAP_PARAM_KEY = 'map';
+export const SANDBOX_TANK_PARAM_KEY = 'tank';
+export const SANDBOX_PLAYER_NAME = 'Dungx';
+export const SANDBOX_SOCKET_ID = 'sandbox-socketID';
 
-const CANVAS_ID = 'battle-canvas';
+export const CANVAS_ID = 'battle-canvas';
 
-const SPRITE_MANIFEST_404_KEY = 'SPRITE_MANIFEST_404';
-
-export {
-	MAX_PARALLEL_REQUESTS,
-	ROOM_SEARCH_PARAM_KEY,
-	SANDBOX_MAP_PARAM_KEY,
-	SANDBOX_TANK_PARAM_KEY,
-	SANDBOX_PLAYER_NAME,
-	SANDBOX_SOCKET_ID,
-	CANVAS_ID,
-	SPRITE_MANIFEST_404_KEY,
-};
+export const SPRITE_MANIFEST_404_KEY = 'SPRITE_MANIFEST_404';

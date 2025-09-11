@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Configuration constants
 const CONFIG = {
 	// Performance settings
