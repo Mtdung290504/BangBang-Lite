@@ -104,7 +104,12 @@ export default function createTank(context, mapID, player, faction, inputManager
 	const tankHeadEID = createTankHead(context, tankEID, renderSize);
 	tankComponent.tankHeadEID = tankHeadEID;
 
-	return { tankEID, tankHeadEID, inputManager, networkPosition };
+	return {
+		tankEID,
+		//  tankHeadEID,
+		inputManager,
+		networkPosition,
+	};
 }
 
 /**

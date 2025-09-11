@@ -10,7 +10,7 @@ __debugger.listen();
 
 import * as battleView from '../../UIs/battleUI.js';
 import * as roomView from '../../UIs/roomUI.js';
-import setupBattle from '../battle/setup.js';
+import setupBattle from '../battle/setupBattle.js';
 
 const DEBUG_MODE = false;
 
@@ -43,7 +43,7 @@ export async function init(usingTankID = 1, playingMapID = 0) {
 	// TODO: setup battle
 	roomView.destroy();
 	battleView.setup();
-	const battle = setupBattle(sandBoxSocket, playingMapID, players);
+	const battle = setupBattle(sandBoxSocket, playingMapID, players, true);
 
 	// TODO: Setup socket listener with battle.playerRegistry and start battle
 	setupSocketListener(battle.playerRegistry);

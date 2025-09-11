@@ -25,7 +25,7 @@ function setup(io, playerSocket) {
 
 	playerSocket.on('request-sync:position-state', (positionState) => {
 		const roomID = roomManager.getSocketRoomID(playerSocket);
-		// playerSocket.to(roomID).emit('dispatch:sync-position-state', positionState);
-		io.to(roomID).emit('dispatch:sync-position-state', positionState);
+		playerSocket.to(roomID).emit('dispatch:sync-position-state', positionState);
+		// io.to(roomID).emit('dispatch:sync-position-state', positionState);
 	});
 }

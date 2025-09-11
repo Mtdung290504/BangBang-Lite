@@ -194,6 +194,8 @@ export default class BattleInputManager {
 		document.addEventListener('mouseup', this._onMouseUp.bind(this), { signal });
 		document.addEventListener('keydown', this._onKeyDown.bind(this), { signal });
 		document.addEventListener('keyup', this._onKeyUp.bind(this), { signal });
+
+		return this;
 	}
 
 	destroy() {

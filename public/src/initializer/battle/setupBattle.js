@@ -34,9 +34,7 @@ import PositionComponent from '../../core/components/physics/com.Position.js';
 const LOG_PREFIX = '> [initializer.Battle]';
 const DEBUG_MODE = false;
 
-/**
- * @type {Map<string, { tankEID: number, inputManager: BattleInputManager, networkPosition: _NetworkPosition }>}
- */
+/** @type {Map<string, { tankEID: number, inputManager: BattleInputManager, networkPosition: _NetworkPosition }>} */
 const playerRegistry = new Map();
 
 /**
@@ -45,8 +43,9 @@ const playerRegistry = new Map();
  * @param {_AbstractSocket} socket
  * @param {number} mapID
  * @param {{ [socketID: string]: Player }} players
+ * @param {true} [sandbox]
  */
-export default function setupBattle(socket, mapID, players) {
+export default function setupBattle(socket, mapID, players, sandbox) {
 	console.log('\n\n> [initializer.Battle] Battle initializing...');
 	const context = new EntityManager();
 
@@ -64,14 +63,19 @@ export default function setupBattle(socket, mapID, players) {
 	console.log(msg('Camera setup complete, waiting for target to track'), camera);
 
 	// Setup emitter và player input
-	const bufferedEmitter = new BufferedEmitter(socket, () => gameLoopManager.LOGIC_FPS);
-	const selfLocalInputManager = new BattleInputManager(bufferedEmitter, camera);
-	selfLocalInputManager.listen();
+	// const bufferedEmitter = new BufferedEmitter(socket, () => gameLoopManager.LOGIC_FPS);
+	// const selfLocalInputManager = new BattleInputManager(bufferedEmitter, camera);
+	const selfLocalInputManager = new BattleInputManager(socket, camera).listen();
 	const selfInputManager = new BattleInputManager();
-	console.log(msg('Player input setup complete'), selfLocalInputManager);
+	const usingInputManager = sandbox ? selfLocalInputManager : selfInputManager;
+	console.log(msg('Player input setup complete'), usingInputManager);
 
 	// Setup tanks và lưu thông tin và registry. Có thể trong tương lai dùng để sync trạng thái
-	const selfTankEID = setupTanks(context, mapID, players, { selfSocketID, selfInputManager });
+	const selfTankEID = setupTanks(context, mapID, players, {
+		selfSocketID,
+		selfInputManager: usingInputManager,
+	});
+
 	// Camera theo dõi player theo mặc định
 	camera.follow(context.getComponent(selfTankEID, PositionComponent));
 	console.log(msg('Battle initiated successfully\n\n\n'));
@@ -143,7 +147,6 @@ function setupCamera(canvasManager, mapID) {
  * @param {EntityManager} context
  * @param {number} mapID
  * @param {{ [socketID: string]: Player }} players
- *
  * @param {Object} self
  * @param {string} self.selfSocketID
  * @param {BattleInputManager} self.selfInputManager
@@ -155,13 +158,9 @@ function setupTanks(context, mapID, players, { selfSocketID, selfInputManager })
 	const anotherPlayerSocket = Object.keys(players).filter((socketID) => socketID !== selfSocketID);
 	anotherPlayerSocket.forEach((socketID) => {
 		const player = players[socketID];
-		const { tankEID, inputManager, networkPosition } = createTank(
-			context,
-			mapID,
-			player,
-			player.team !== selfTeam ? 'enemy' : 'ally'
-		);
-		playerRegistry.set(socketID, { tankEID, inputManager, networkPosition });
+		const faction = player.team !== selfTeam ? 'enemy' : 'ally';
+
+		playerRegistry.set(socketID, createTank(context, mapID, player, faction));
 	});
 
 	// Khởi tạo tank cho mình
