@@ -21,7 +21,11 @@ async function init() {
 		console.log('> [AppGateway] Init play mode, room ID:', ROOM_ID);
 
 		const role = await detectRole();
-		const playerName = getStoredPlayerName(formatName(prompt('Nhập tên:') || '_'));
+		let playerName = getStoredPlayerName();
+		if (!playerName) {
+			playerName = formatName(prompt('Nhập tên:') || '_');
+			savePlayerName(playerName);
+		}
 
 		if (ROOM_ID && playerName.trim()) {
 			console.log('> [AppGateway] Init play mode, role:', role);
@@ -60,15 +64,19 @@ async function detectRole(timeout = 100) {
 }
 
 /**
- * Lấy tên user từ session storage, nếu không tồn tại thì gán giá trị được truyền vào
- * @param {string} fallbackValue
+ * Lấy tên user từ session storage
  */
-function getStoredPlayerName(fallbackValue) {
+function getStoredPlayerName() {
 	const playerName = sessionStorage.getItem(PLAYER_NAME_SESSION_STORAGE_KEY);
 	if (playerName) return playerName;
+}
 
-	sessionStorage.setItem(PLAYER_NAME_SESSION_STORAGE_KEY, fallbackValue);
-	return fallbackValue;
+/**
+ * Lưu tên player vào session storage
+ * @param {string} playerName
+ */
+function savePlayerName(playerName) {
+	sessionStorage.setItem(PLAYER_NAME_SESSION_STORAGE_KEY, playerName);
 }
 
 /**
