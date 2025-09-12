@@ -1,6 +1,9 @@
 import {
+	PLAYER_NAME_SESSION_STORAGE_KEY,
 	ROOM_SEARCH_PARAM_KEY,
 	SANDBOX_MAP_PARAM_KEY,
+	SANDBOX_PLAYER_NAME,
+	SANDBOX_PLAYER_NAME_PARAM_KEY,
 	SANDBOX_TANK_PARAM_KEY,
 } from './configs/constants/game-system-configs.js';
 
@@ -13,23 +16,33 @@ async function init() {
 	const ROOM_ID = getSearchParam(ROOM_SEARCH_PARAM_KEY);
 	await document.fonts.ready;
 
+	// Có room ID, khởi tạo chế độ chơi
 	if (ROOM_ID) {
 		console.log('> [AppGateway] Init play mode, room ID:', ROOM_ID);
 
 		const role = await detectRole();
-		const playerName = prompt('Nhập tên:') || '_';
+		const playerName = getStoredPlayerName(formatName(prompt('Nhập tên:') || '_'));
 
 		if (ROOM_ID && playerName.trim()) {
 			console.log('> [AppGateway] Init play mode, role:', role);
 			(await import('./src/initializer/index/app.js')).init(ROOM_ID, playerName, role);
-		} else location.href = '/';
-	} else {
-		console.log('> [AppGateway] Init sandbox mode');
-		(await import('./src/initializer/index/sandbox.js')).init(
-			getSearchParam(SANDBOX_TANK_PARAM_KEY),
-			getSearchParam(SANDBOX_MAP_PARAM_KEY)
-		);
+		} else {
+			alert('Thông tin không hợp lệ');
+			location.href = '/';
+		}
+
+		return;
 	}
+
+	// Không có room ID, vào sandbox mode
+	console.log('> [AppGateway] Init sandbox mode');
+
+	const playerName = formatName(getSearchParam(SANDBOX_PLAYER_NAME_PARAM_KEY) || SANDBOX_PLAYER_NAME);
+	const usingTankID = getSearchParam(SANDBOX_TANK_PARAM_KEY);
+	const playingMapID = getSearchParam(SANDBOX_MAP_PARAM_KEY);
+
+	const initializer = await import('./src/initializer/index/sandbox.js');
+	initializer.init(playerName, usingTankID, playingMapID);
 }
 
 async function detectRole(timeout = 100) {
@@ -44,4 +57,27 @@ async function detectRole(timeout = 100) {
 		clearTimeout(timer);
 		return 'client'; // timeout hoặc lỗi kết nối -> role client
 	}
+}
+
+/**
+ * Lấy tên user từ session storage, nếu không tồn tại thì gán giá trị được truyền vào
+ * @param {string} fallbackValue
+ */
+function getStoredPlayerName(fallbackValue) {
+	const playerName = sessionStorage.getItem(PLAYER_NAME_SESSION_STORAGE_KEY);
+	if (playerName) return playerName;
+
+	sessionStorage.setItem(PLAYER_NAME_SESSION_STORAGE_KEY, fallbackValue);
+	return fallbackValue;
+}
+
+/**
+ * Rút gọn tên tối đa 12 ký tự, nếu dài hơn sẽ thêm "..."
+ *
+ * @param {string} name
+ * @param {number} [limit=14] - giới hạn ký tự
+ */
+function formatName(name, limit = 14) {
+	if (typeof name !== 'string') return '';
+	return name.length > limit ? name.slice(0, limit - 3) + '...' : name;
 }

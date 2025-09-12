@@ -1,30 +1,31 @@
 import { preloadPhase1, preloadPhase2 } from '../../network/preloader.js';
 import { storage } from '../../network/assets_managers/index.js';
 
-import { SANDBOX_PLAYER_NAME } from '../../../configs/constants/game-system-configs.js';
 import { getSandboxPlayers } from '../../network/socket/handlers/roomHandler.js';
 import getSandboxSocket from '../../network/socket/getSandboxSocket.js';
 
-import __debugger from '../../../utils/debugger.js';
-__debugger.listen();
-
 import * as battleView from '../../UIs/battleUI.js';
 import * as roomView from '../../UIs/roomUI.js';
+
 import setupBattle from '../battle/setupBattle.js';
 
-const DEBUG_MODE = false;
+import __debugger from '../../../utils/debugger.js';
+__debugger.listen();
+const DEBUG_MODE = true;
 
 /**
+ * Khởi tạo môi trường game sandbox
+ *
+ * @param {string} playerName
  * @param {number | string} [playingMapID=0]
  * @param {number | string} [usingTankID=1]
- * @returns {Promise<void>}
  */
-export async function init(usingTankID = 1, playingMapID = 0) {
+export async function init(playerName, usingTankID = 1, playingMapID = 0) {
 	usingTankID = Number(usingTankID);
 	playingMapID = Number(playingMapID);
 
 	const sandBoxSocket = getSandboxSocket();
-	const players = getSandboxPlayers(SANDBOX_PLAYER_NAME, usingTankID);
+	const players = getSandboxPlayers(playerName, usingTankID);
 
 	const preloadPhase1Result = await preloadPhase1();
 	const { sprites, mapAssets, tankManifests, mapManifests } = storage;

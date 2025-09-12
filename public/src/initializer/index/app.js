@@ -27,6 +27,8 @@ import PositionComponent from '../../core/components/physics/com.Position.js';
 const DEBUG_MODE = true;
 
 /**
+ * Khởi tạo phòng đấu
+ *
  * - Request join room
  * - Preload phase 1
  * - Khi tất cả trong room sẵn sàng:
@@ -118,6 +120,10 @@ function setupSyncSystem(socket, battle) {
 	}
 }
 
+/**
+ * Thiết lập kết nối đến server, alert và crash nếu thất bại
+ * @param {boolean} debug
+ */
 async function setupSocket(debug = false) {
 	try {
 		const socket = await getConnectedSocket();

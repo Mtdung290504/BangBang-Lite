@@ -221,6 +221,13 @@ function debugVariable(variable = {}, { fps = CONFIG.fps, name = '_' } = {}) {
 		initialLeft = parseInt(container.style.left);
 		initialTop = parseInt(container.style.top);
 		header.style.cursor = 'grabbing';
+
+		// Giả lập focus tăng z-index để xem
+		for (const { element } of registry) {
+			element.style.zIndex = 9999;
+			container.style.zIndex = 10000;
+		}
+
 		e.preventDefault();
 	};
 
@@ -346,7 +353,7 @@ function calculatePosition(index) {
  * @param {number} top
  */
 function calculateMaxHeight(top) {
-	const availableHeight = window.innerHeight - top - CONFIG.margin - CONFIG.headerHeight;
+	const availableHeight = window.innerHeight - CONFIG.margin - CONFIG.headerHeight;
 	return Math.max(150, availableHeight); // Minimum 150px
 }
 
