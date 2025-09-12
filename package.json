@@ -5,8 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "node --watch server.js",
-		"debug": "node --watch --inspect server.js",
-		"start": "node server.js"
+		"start": "node server.js play",
+		"debug": "node --watch --inspect server.js"
 	},
 	"keywords": [],
 	"author": "",
@@ -15,6 +15,7 @@
 	"dependencies": {
 		"cors": "^2.8.5",
 		"dotenv": "^16.5.0",
+		"esbuild": "^0.25.9",
 		"express": "^4.21.2",
 		"socket.io": "^4.8.1",
 		"socket.io-client": "^4.8.1",
