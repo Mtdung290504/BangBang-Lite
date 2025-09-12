@@ -64,15 +64,19 @@ export function setup(socket, playerRegistry) {
 
 	/**
 	 * @param {_PositionStates} positionStates
+	 * @param {number} timestamp
 	 */
-	function syncPositionState(positionStates) {
+	function syncPositionState(positionStates, timestamp) {
 		for (const socketID in positionStates) {
 			const playerState = playerRegistry.get(socketID);
 
 			if (playerState) {
 				const { x, y } = positionStates[socketID];
-				playerState.networkPosition.x = x;
-				playerState.networkPosition.y = y;
+				// playerState.networkPosition.x = x;
+				// playerState.networkPosition.y = y;
+
+				// New handler
+				playerState.networkPosition.setNetworkPosition(x, y, timestamp);
 				continue;
 			}
 
@@ -91,7 +95,8 @@ export function setup(socket, playerRegistry) {
  * @param {_PositionStates} positionStates
  */
 export function syncPositionState(socket, positionStates) {
-	socket.emit('request-sync:position-state', positionStates);
+	// Bổ sung timestamp
+	socket.emit('request-sync:position-state', positionStates, Date.now());
 }
 
 /**

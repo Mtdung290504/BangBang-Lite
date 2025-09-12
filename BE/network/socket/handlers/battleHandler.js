@@ -23,9 +23,10 @@ function setup(io, playerSocket) {
 		io.to(roomID).emit('dispatch:sync-action-state', { socketID: playerSocket.id, actionState });
 	});
 
-	playerSocket.on('request-sync:position-state', (positionState) => {
+	// Bổ sung timestamp
+	playerSocket.on('request-sync:position-state', (positionState, timestamp) => {
 		const roomID = roomManager.getSocketRoomID(playerSocket);
-		playerSocket.to(roomID).emit('dispatch:sync-position-state', positionState);
-		// io.to(roomID).emit('dispatch:sync-position-state', positionState);
+		// playerSocket.to(roomID).emit('dispatch:sync-position-state', positionState, timestamp);
+		io.to(roomID).emit('dispatch:sync-position-state', positionState, timestamp);
 	});
 }

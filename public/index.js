@@ -36,6 +36,20 @@ async function init() {
 		}
 
 		return;
+
+		async function detectRole(timeout = 100) {
+			const controller = new AbortController();
+			const timer = setTimeout(() => controller.abort(), timeout);
+
+			try {
+				const res = await fetch('http://127.0.0.1:3000/ping/', { signal: controller.signal });
+				clearTimeout(timer);
+				return res.ok ? 'host' : 'client'; // Nếu status 200 thì role là host (chính là máy chạy server)
+			} catch {
+				clearTimeout(timer);
+				return 'client'; // timeout hoặc lỗi kết nối -> role client
+			}
+		}
 	}
 
 	// Không có room ID, vào sandbox mode
@@ -47,20 +61,6 @@ async function init() {
 
 	const initializer = await import('./src/initializer/index/sandbox.js');
 	initializer.init(playerName, usingTankID, playingMapID);
-}
-
-async function detectRole(timeout = 100) {
-	const controller = new AbortController();
-	const timer = setTimeout(() => controller.abort(), timeout);
-
-	try {
-		const res = await fetch('http://127.0.0.1:3000/ping/', { signal: controller.signal });
-		clearTimeout(timer);
-		return res.ok ? 'host' : 'client'; // Nếu status 200 thì role là host (chính là máy chạy server)
-	} catch {
-		clearTimeout(timer);
-		return 'client'; // timeout hoặc lỗi kết nối -> role client
-	}
 }
 
 /**
