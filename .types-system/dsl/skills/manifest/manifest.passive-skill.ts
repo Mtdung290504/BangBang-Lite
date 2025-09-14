@@ -1,7 +1,11 @@
 import type { TankEventActorsMap } from '../../events/event-manifest';
 import { AttackPowerStats, ShootingStats, SurvivalStats } from '../../tank-manifest';
-import { ValueWithUnit } from '../../utils-types';
-import type { SkillAction, SkillTiming } from '../base-skill';
+import { ValueWithUnit } from '../value-with-unit';
+
+import type { SkillTiming } from '../base-skill';
+
+// Note sửa ActionBased thành chuyên biệt cho passive skill
+import type { PassiveSkillAction } from '../actions/skill-actions';
 
 /**
  * Bị động kích hoạt theo event - Ví dụ Kirito
@@ -19,7 +23,7 @@ interface EventTriggeredPassive extends SkillTiming {
 	condition?: [];
 
 	/** Hành động khi trigger */
-	actions: SkillAction;
+	actions: PassiveSkillAction[];
 }
 
 /**
@@ -29,7 +33,7 @@ interface PeriodicPassive extends SkillTiming {
 	type: 'periodic';
 
 	/** Hành động khi trigger */
-	actions: SkillAction;
+	actions: PassiveSkillAction[];
 
 	/** Điều kiện để có thể trigger (optional) */
 	conditions?: [];

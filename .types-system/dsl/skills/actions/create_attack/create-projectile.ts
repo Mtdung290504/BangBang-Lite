@@ -2,7 +2,7 @@ import type { Collider } from '../../../../src/core/physics/dsl.ColliderDeclarat
 import type { SpriteDeclaration } from '../../../../src/graphic/dsl.SpriteDeclaration';
 
 import type { SkillEventHandler } from '../../../events/event-manifest';
-import type { ValueWithUnit } from '../../../utils-types';
+import type { ValueWithUnit } from '../../value-with-unit';
 
 /** Projectile enhancement: can track a target */
 interface Tracking {
@@ -94,10 +94,10 @@ const customShoot: CreateCustomProjectile = {
 	'flight-range': 600,
 	'flight-speed': 15,
 	'on-hit': {
-		enemy: ['implement-later'],
+		enemy: ['implement-later:'],
 	},
 	'on-dealt-damage': {
-		self: ['implement-later'],
+		self: ['implement-later:'],
 	},
 	enhancements: [
 		{

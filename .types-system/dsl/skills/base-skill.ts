@@ -1,6 +1,6 @@
 import type { SkillConsumption } from './skill-consumption';
-import type { SkillAction } from './actions/index';
-import type { SkillCastingMethods } from './context/context.casting-methods';
+import type { SkillCastAction } from './actions/skill-actions';
+import type { SkillCast, SkillCastingMethods, TargetedSkillCast } from './context/context.casting-methods';
 
 /** Thời gian hồi chiêu dùng chung cho mọi skill */
 interface SkillTiming {
@@ -9,25 +9,18 @@ interface SkillTiming {
 }
 
 /**
- * Hành vi cơ bản của 1 skill
- * - Nó làm gì
- * - Nó tiêu hao gì
+ * Helper type để tạo skill với casting method cụ thể
  */
-interface ActionBased {
-	/**
-	 * Định nghĩa loại và lượng tài nguyên tiêu hao
-	 * Note: Một số skill có thể sử dụng current-energy-point để tăng damage nên tung ra, lưu snapshot vào skill hay gì đó rồi hẵn trừ
-	 */
+type WithCasting<T, CastMethod extends SkillCastingMethods> = T & {
+	'casting-method'?: CastMethod;
 	'resource-consumption'?: SkillConsumption;
-
-	/** Đánh thường cũng phải có casting (Ví dụ đánh thường cường hóa của KKS) */
-	'casting-method'?: SkillCastingMethods;
-
-	/** Cờ để tăng ST hoặc cho các skill hấp thụ */
 	property: 'skill' | 'normal-attack';
+	actions: SkillCastAction<CastMethod>[];
+};
 
-	/** Danh sách hành động */
-	actions: SkillAction[];
-}
+/**
+ * Helper để tạo ActionBased với tất cả casting methods
+ */
+type ActionBased<T = {}> = WithCasting<T, SkillCast> | WithCasting<T, TargetedSkillCast>;
 
-export type { SkillAction, ActionBased, SkillTiming };
+export type { SkillTiming, WithCasting, ActionBased };

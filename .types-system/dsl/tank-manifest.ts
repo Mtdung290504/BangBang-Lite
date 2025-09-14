@@ -1,4 +1,5 @@
-import type { ValueWithUnit } from './utils-types';
+import type { ValueWithUnit } from './skills/value-with-unit';
+import type { TankDamageType } from './enums/damage-types';
 
 interface ShootingStats {
 	'fire-rate': 60 | 90 | 120;
@@ -13,7 +14,7 @@ interface SurvivalStats {
 }
 
 interface AttackPowerStats {
-	'damage-type': 'physical' | 'energy';
+	'damage-type': TankDamageType;
 	'attack-power': number;
 	penetration: number;
 	'crit-damage': 150 | 200;

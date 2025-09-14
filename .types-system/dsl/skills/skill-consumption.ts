@@ -1,4 +1,4 @@
-import type { ValueWithUnit } from '../utils-types';
+import type { ValueWithUnit } from './value-with-unit';
 
 /** Tiêu hao cả năng lượng và máu */
 type SkillConsumptionBuilder<T extends string[] = []> = Partial<{ [K in T[number]]: ValueWithUnit }>;

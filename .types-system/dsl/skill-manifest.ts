@@ -21,64 +21,66 @@ interface SkillManifest<Phases extends number[] = []> {
 
 export type { SkillManifest };
 
-// const test: SkillManifest = {
-// 	passive: [
-// 		{
-// 			type: 'permanent-buff',
-// 			'stat-modifiers': [
-// 				{
-// 					attribute: 'flight-speed',
-// 					value: { amount: 50 },
-// 				},
-// 			],
-// 		},
-// 		{
-// 			type: 'event-triggered',
-// 			'trigger-event': 'on-activate-skill',
-// 			actions: 'implement-later: Tạo khiên phản đòn',
-// 		},
-// 	],
+const test: SkillManifest = {
+	passive: [
+		{
+			type: 'permanent-buff',
+			'stat-modifiers': [
+				{
+					attribute: 'flight-speed',
+					value: { amount: 50 },
+				},
+			],
+		},
+		{
+			type: 'event-triggered',
+			'trigger-event': 'on-activate-skill',
+			actions: ['implement-later: Tạo khiên phản đòn'],
+		},
+	],
 
-// 	'normal-attack': {
-// 		type: 'normal',
-// 		property: 'normal-attack',
-// 		actions: [
-// 			{
-// 				name: 'create-default-projectile',
-// 				collider: {
-// 					type: 'rectangle',
-// 					width: 0,
-// 					height: 0,
-// 				},
-// 				enhancements: [{ name: 'bouncing', 'hit-limit': 3, 'damage-reduction': { amount: 50 } }],
-// 				'on-dealt-damage': { self: ['implement-later: Hồi 5 năng lượng'] },
-// 			},
-// 		],
-// 	},
+	'normal-attack': {
+		type: 'normal',
+		property: 'normal-attack',
+		actions: [
+			{
+				name: 'create-default-projectile',
+				collider: { type: 'rectangle', size: { width: 0, height: 0 } },
+				enhancements: [{ name: 'bouncing', 'hit-limit': 3, 'damage-reduction': { amount: 50 } }],
+				'on-dealt-damage': { self: ['implement-later: Hồi 5 năng lượng'] },
+			},
+		],
+	},
 
-// 	s1: {
-// 		type: 'normal',
-// 		property: 'skill',
-// 		cooldown: 8,
-// 		'resource-consumption': { energy: { amount: 25, unit: 'point' } },
-// 		actions: ['implement-later: Gây damage, tăng tốc, bóng quay về'],
-// 	},
+	s1: {
+		type: 'normal',
+		property: 'skill',
+		cooldown: 8,
 
-// 	s2: {
-// 		type: 'stacked',
-// 		property: 'skill',
-// 		'max-stack': 2,
-// 		'stack-time': 8,
-// 		cooldown: 1.5,
-// 		'resource-consumption': { energy: { amount: 50, unit: 'point' } },
-// 		actions: ['implement-later: Lướt'],
-// 	},
+		'casting-method': {
+			type: 'on-target',
+			target: 'enemy',
+		},
 
-// 	ultimate: {
-// 		type: 'normal',
-// 		property: 'skill',
-// 		cooldown: 8,
-// 		'resource-consumption': { energy: { amount: 0, unit: 'point' } },
-// 		actions: ['implement-later: Tung bóng bay xuyên, đẩy lui'],
-// 	},
-// };
+		'resource-consumption': { energy: { amount: 25, unit: 'unit' } },
+		actions: ['implement-later: Gây damage, tăng tốc, bóng quay về'],
+	},
+
+	s2: {
+		type: 'stacked',
+		property: 'skill',
+		'max-stack': 2,
+		'stack-time': 8,
+		cooldown: 1.5,
+		'resource-consumption': { energy: { amount: 50, unit: 'unit' } },
+		actions: ['implement-later: Lướt'],
+	},
+
+	ultimate: {
+		type: 'normal',
+		property: 'skill',
+		cooldown: 8,
+		'resource-consumption': { energy: { amount: 0, unit: 'unit' } },
+		actions: ['implement-later: Tung bóng bay xuyên, đẩy lui'],
+	},
+};

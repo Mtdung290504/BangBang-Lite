@@ -4,16 +4,15 @@
  * - Không chỉ thế, còn giới hạn bớt context mà các action có thể sử dụng
  */
 
-/** Phạm vi giới hạn */
-type Range = { range: number };
-
-/** Kích thước, đường kính với skill `at-area`, độ rộng với skill `in-direction` */
-type Size = { size: number };
+interface UseRange {
+	/** Quy định phạm vi kích hoạt chiêu, mặc định bằng tầm bắn của tank */
+	range?: number;
+}
 
 /**
  * Skill người chơi khóa mục tiêu (Ví dụ: Q mất máu)
  */
-interface ChosenTargetCast extends Range {
+interface ChosenTargetCast extends UseRange {
 	type: 'on-target';
 	target: 'any' | 'ally' | 'enemy';
 }
@@ -33,15 +32,23 @@ interface ImmediateCast {
 }
 
 /** Skill chọn vùng tung ra (Ví dụ: R Magneto) */
-interface AreaCast extends Range, Size {
+interface AreaCast extends UseRange {
 	type: 'at-area';
+
+	/** Không tác động đến logic game, chỉ hiển thị vòng tròn có d = size chỉ định */
+	display?: { size: number };
 }
 
 /** Skill theo hướng (Ví dụ: E TV)*/
-interface DirectionCast extends Range, Size {
+interface DirectionCast extends UseRange {
 	type: 'in-direction';
+
+	/** Không tác động đến logic game, chỉ hiển thị mũi tên có width = size chỉ định */
+	display?: { size: number };
 }
 
 type SkillCast = ImmediateCast | AreaCast | DirectionCast;
 
-export type SkillCastingMethods = TargetedSkillCast | SkillCast;
+type SkillCastingMethods = TargetedSkillCast | SkillCast;
+
+export type { SkillCast, TargetedSkillCast, SkillCastingMethods };

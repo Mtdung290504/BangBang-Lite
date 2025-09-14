@@ -1,4 +1,4 @@
-import { SkillAction } from '../skills/actions/index';
+import { SkillCastAction } from '../skills/actions/skill-actions';
 
 type TankEventActors = {
 	[K in [
@@ -47,10 +47,10 @@ interface TankEventActorsMap extends TankEventActors {
 
 interface SkillEventHandler {
 	/** Khi skill trúng 1 target nào đó, khai báo những gì áp dụng lên target */
-	'on-hit': { [K in ['ally', 'enemy', 'self'][number]]?: SkillAction[] };
+	'on-hit': { [K in ['ally', 'enemy', 'self'][number]]?: SkillCastAction[] };
 
 	/** Khi gây sát thương thành công, bản thân kích hoạt gì đó, áp dụng lên kẻ địch gì đó */
-	'on-dealt-damage'?: { [K in ['enemy', 'self'][number]]?: SkillAction[] };
+	'on-dealt-damage'?: { [K in ['enemy', 'self'][number]]?: SkillCastAction[] };
 }
 
 // Usage in future:

@@ -1,8 +1,10 @@
 import type { SurvivalStats, AttackPowerStats, AdditionalStats } from '../../../tank-manifest';
-import type { ValueWithUnit } from '../../../utils-types';
+import type { ValueWithUnit } from '../../value-with-unit';
+import type { DamageType } from '../../../enums/damage-types';
 
-interface CreateDamage {
+interface DealtDamage {
 	name: 'dealt-damage';
+
 	source: {
 		attribute:
 			| keyof SurvivalStats
@@ -13,9 +15,14 @@ interface CreateDamage {
 			| 'current-energy-point';
 		of: 'self' | 'target';
 	};
+
 	value: ValueWithUnit;
+
+	/** Mặc định là `main` */
+	type?: 'main' | 'bonus';
+
+	/** Mặc định kế thừa từ tank */
+	'damage-type'?: DamageType;
 }
 
-type CreateDamageAction = CreateDamage;
-
-export type { CreateDamageAction };
+export type { DealtDamage };
