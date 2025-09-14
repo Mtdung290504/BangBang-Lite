@@ -1,5 +1,5 @@
-import type { SurvivalStats, AttackPowerStats, AdditionalStats } from '../../tank-manifest';
-import type { ValueWithUnit } from '../../utils-types';
+import type { SurvivalStats, AttackPowerStats, AdditionalStats } from '../../../tank-manifest';
+import type { ValueWithUnit } from '../../../utils-types';
 
 interface CreateDamage {
 	name: 'dealt-damage';

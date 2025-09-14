@@ -1,6 +1,6 @@
 /**
  * @typedef {import('.types-system/dsl/tank-manifest').TankManifest} TankManifest
- * @typedef {import('.types-system/dsl/skills/skill-manifest').SkillManifest} SkillManifest
+ * @typedef {import('.types-system/dsl/skill-manifest').SkillManifest} SkillManifest
  */
 
 /**@type {TankManifest} */
@@ -63,7 +63,7 @@ export const skills = {
 	'normal-attack': {
 		type: 'normal',
 		property: 'normal-attack',
-		'casting-method': { type: 'in-direction' },
+		// 'casting-method': { type: 'in-direction' },
 		actions: [
 			{
 				name: 'create-default-projectile',
@@ -83,7 +83,7 @@ export const skills = {
 		cooldown: 8,
 
 		// Cách dùng chiêu: chọn hướng
-		'casting-method': { type: 'in-direction' },
+		'casting-method': { type: 'in-direction', range: 528, size: 60 },
 
 		// Tiêu hao 25đ năng lượng
 		'resource-consumption': { energy: { amount: 25, unit: 'unit' } },
@@ -136,7 +136,7 @@ export const skills = {
 		'stack-time': 8,
 		cooldown: 1.5,
 
-		'casting-method': { type: 'in-direction' },
+		'casting-method': { type: 'in-direction', range: 480, size: 60 },
 		'resource-consumption': { energy: { amount: 50, unit: 'unit' } },
 		actions: ['implement-later: Lướt'],
 	},
@@ -146,7 +146,7 @@ export const skills = {
 		property: 'skill',
 		cooldown: 8,
 
-		'casting-method': { type: 'in-direction' },
+		'casting-method': { type: 'in-direction', range: 528, size: 80 },
 		actions: ['implement-later: Tung bóng bay xuyên, đẩy lui'],
 	},
 };

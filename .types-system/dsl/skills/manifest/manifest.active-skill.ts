@@ -1,4 +1,4 @@
-import type { ActionBased, SkillTiming } from './base-skill';
+import type { ActionBased, SkillTiming } from '../base-skill';
 
 /**
  * Skill cơ bản, dùng xong hồi chiêu, không có gì đặc biệt

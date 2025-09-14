@@ -1,6 +1,8 @@
-import type { Sprite, Collider } from '../../common-types';
-import type { SkillEventHandler } from '../../events/event-manifest';
-import type { ValueWithUnit } from '../../utils-types';
+import type { Collider } from '../../../../src/core/physics/dsl.ColliderDeclaration';
+import type { SpriteDeclaration } from '../../../../src/graphic/dsl.SpriteDeclaration';
+
+import type { SkillEventHandler } from '../../../events/event-manifest';
+import type { ValueWithUnit } from '../../../utils-types';
 
 /** Projectile enhancement: can track a target */
 interface Tracking {
@@ -30,7 +32,7 @@ interface Bouncing {
 /** Projectile enhancements union type */
 type ProjectileEnhancement = Tracking | Piercing | Bouncing;
 
-interface CreateProjectileOptions extends Sprite, SkillEventHandler {
+interface CreateProjectileOptions extends SpriteDeclaration, SkillEventHandler {
 	name: string;
 
 	/** Inherit from tank by default */

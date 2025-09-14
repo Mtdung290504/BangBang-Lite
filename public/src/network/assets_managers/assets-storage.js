@@ -10,7 +10,7 @@
 /**
  * @typedef {import('.types-system/src/graphic/graphics').SpriteManifest} _SpriteManifest
  * @typedef {import('.types-system/dsl/tank-manifest.js').TankManifest} _TankManifest
- * @typedef {import('.types-system/dsl/skills/skill-manifest.js').SkillManifest} _SkillManifest
+ * @typedef {import('.types-system/dsl/skill-manifest').SkillManifest} _SkillManifest
  * @typedef {import('.types-system/dsl/map-manifest.js').MapManifest} _MapManifest
  */
 

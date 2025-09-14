@@ -11,9 +11,9 @@ const LOAD_SKILL_DESCRIPTION_LOG_PREFIX = '> [net.assets-loader.loadSkillDescrip
 export { loadSprite, loadTankManifests, loadSkillDescription, loadMapAssets, loadMapManifests, loadMapIcon };
 
 /**
- * @typedef {import('.types-system/src/graphic/graphics.js').SpriteManifest} _SpriteManifest
- * @typedef {import('.types-system/dsl/tank-manifest.js').TankManifest} _TankManifest
- * @typedef {import('.types-system/dsl/skills/skill-manifest.js').SkillManifest} _SkillManifest
+ * @typedef {import('.types-system/src/graphic/graphics').SpriteManifest} _SpriteManifest
+ * @typedef {import('.types-system/dsl/tank-manifest').TankManifest} _TankManifest
+ * @typedef {import('.types-system/dsl/skill-manifest').SkillManifest} _SkillManifest
  */
 
 /**

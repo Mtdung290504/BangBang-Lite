@@ -1,6 +1,6 @@
 import type { SkillConsumption } from './skill-consumption';
-import type { SkillAction } from '../skill_actions/index';
-import type { ActiveSkillCast } from './skill-active-cast';
+import type { SkillAction } from './actions/index';
+import type { SkillCastingMethods } from './context/context.casting-methods';
 
 /** Thời gian hồi chiêu dùng chung cho mọi skill */
 interface SkillTiming {
@@ -20,7 +20,8 @@ interface ActionBased {
 	 */
 	'resource-consumption'?: SkillConsumption;
 
-	'casting-method': ActiveSkillCast;
+	/** Đánh thường cũng phải có casting (Ví dụ đánh thường cường hóa của KKS) */
+	'casting-method'?: SkillCastingMethods;
 
 	/** Cờ để tăng ST hoặc cho các skill hấp thụ */
 	property: 'skill' | 'normal-attack';

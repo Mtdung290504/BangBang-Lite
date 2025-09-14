@@ -5,7 +5,7 @@ export default class ColliderComponent {
 	/**
 	 * @param {T} type
 	 * @param { T extends 'rectangle' ? { width: number, height: number }
-	 * 		: T extends 'circle' ? { radius: number, 'sector-angle'?: number }
+	 * 		: T extends 'circle' ? { radius: number }
 	 * 		: never
 	 * } size
 	 */
@@ -17,11 +17,9 @@ export default class ColliderComponent {
 			this.width = rectSize.width;
 			this.height = rectSize.height;
 			this.radius = Math.sqrt(this.width * this.width + this.height * this.height);
-			this.sectorAngle = 0;
 		} else if (type === 'circle') {
-			const circleSize = /** @type {{ radius: number, 'sector-angle'?: number }} */ (size);
+			const circleSize = /** @type {{ radius: number }} */ (size);
 			this.radius = circleSize.radius;
-			this.sectorAngle = circleSize['sector-angle'] ?? 360;
 			this.width = this.height = this.radius * 2;
 		} else {
 			throw new Error('> [ColliderComponent] Invalid type');
@@ -29,7 +27,7 @@ export default class ColliderComponent {
 	}
 
 	/**
-	 * @template {import('.types-system/dsl/common-types').Collider} C
+	 * @template {import('.types-system/src/core/physics/dsl.ColliderDeclaration.js').Collider} C
 	 * @param {C} dsl
 	 * @returns {C['type'] extends 'rectangle' ? ColliderComponent<'rectangle'> : ColliderComponent<'circle'>}
 	 */
@@ -44,10 +42,7 @@ export default class ColliderComponent {
 
 			case 'circle':
 				// @ts-expect-error: Suy luận không đủ mạnh nhưng dùng switch case là chắc cú rồi
-				return new ColliderComponent('circle', {
-					radius: dsl.size.radius,
-					'sector-angle': dsl.size['sector-angle'],
-				});
+				return new ColliderComponent('circle', { radius: dsl.size.radius });
 
 			default:
 				throw new Error(`> [ColliderComponent] Unknown collider type`);

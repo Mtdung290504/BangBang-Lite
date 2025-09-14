@@ -1,5 +1,5 @@
-import type { SkillEntry } from './active-skill-manifest';
-import type { PassiveSkillEntry } from './passive-skill-manifest';
+import type { SkillEntry } from './skills/manifest/manifest.active-skill';
+import type { PassiveSkillEntry } from './skills/manifest/manifest.passive-skill';
 
 /**
  * Định nghĩa tổng cho manifest, có thể có phase hoặc skill

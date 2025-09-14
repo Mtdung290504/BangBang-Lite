@@ -1,4 +1,4 @@
-import { SkillAction } from '../skill_actions/index';
+import { SkillAction } from '../skills/actions/index';
 
 type TankEventActors = {
 	[K in [

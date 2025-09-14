@@ -1,7 +1,7 @@
-import type { TankEventActorsMap } from '../events/event-manifest';
-import { AttackPowerStats, ShootingStats, SurvivalStats } from '../tank-manifest';
-import { ValueWithUnit } from '../utils-types';
-import type { SkillAction, SkillTiming } from './base-skill';
+import type { TankEventActorsMap } from '../../events/event-manifest';
+import { AttackPowerStats, ShootingStats, SurvivalStats } from '../../tank-manifest';
+import { ValueWithUnit } from '../../utils-types';
+import type { SkillAction, SkillTiming } from '../base-skill';
 
 /**
  * Bị động kích hoạt theo event - Ví dụ Kirito
