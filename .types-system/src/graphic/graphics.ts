@@ -15,7 +15,7 @@ export type SpriteManifest = {
 	/**Kích thước gốc của từng frame */
 	'frame-size': { width: number; height: number };
 
-	/**Kích thước render, mặc định bằng `frame-size` */
+	/**Kích thước render, mặc định bằng `frame-size`, trừ khi bị ghi đè */
 	'render-size'?: { width: number; height: number };
 
 	/**Danh sách các vị trí của các frame trong sprite */

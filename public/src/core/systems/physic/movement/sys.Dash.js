@@ -5,7 +5,7 @@ import defineSystemFactory from '../../../factory/factory_builders/defineSystemF
 import TankComponent from '../../../components/combat/objects/com.Tank.js';
 import VelocityComponent from '../../../components/physics/com.Velocity.js';
 import DashComponent from '../../../components/combat/action/com.Dash.js';
-import MovementComponent from '../../../components/combat/stats/com.Movement.js';
+import MovementComponent from '../../../components/physics/com.Movement.js';
 
 // Constants
 import { SPEED_CALCULATION_CONSTANT } from '../../../../../configs/constants/domain_constants/com.constants.js';

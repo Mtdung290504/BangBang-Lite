@@ -17,5 +17,7 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "typescript.preferences.importModuleSpecifier": "relative",
         "typescript.preferences.importModuleSpecifierEnding": "index"
-    }
+    },
+    "typescript.suggest.autoImports": true,
+    "javascript.suggest.autoImports": true,
 }

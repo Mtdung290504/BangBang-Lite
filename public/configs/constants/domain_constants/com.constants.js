@@ -14,6 +14,7 @@ export const TANK_DEFAULT_LAYER = 0;
 export const BACKGROUND_DELTA_LAYER = -5;
 export const SCENES_DELTA_LAYER = 5;
 export const SHADOW_DELTA_LAYER = -2;
+export const SKILL_EFFECT_LAYER = 10;
 
 /** Size mặc định của tank dùng cho cả default render và hitbox */
 export const TANK_DEFAULT_SIZE = 52.5;

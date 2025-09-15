@@ -8,7 +8,7 @@ export default class ShootingComponent {
 	 */
 	constructor(fireRate, range, flightSpeed) {
 		/** Thời điểm bắn gần nhất (ms) */
-		this.lastFireTime = Date.now();
+		this.lastFireTime = 0;
 
 		/** Khoảng cách giữa 2 phát bắn (ms) */
 		this.fireRate = (60 / fireRate) * 1000;

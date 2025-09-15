@@ -6,7 +6,7 @@ import TankHeadComponent from '../../components/combat/objects/com.TankHead.js';
 
 // Stats components
 import AdditionalAttributesComponent from '../../components/combat/stats/com.AdditionalAttributes.js';
-import MovementComponent from '../../components/combat/stats/com.Movement.js';
+import MovementComponent from '../../components/physics/com.Movement.js';
 import ShootingComponent from '../../components/combat/stats/com.Shooting.js';
 import SurvivalComponent from '../../components/combat/stats/com.Survival.js';
 
@@ -28,10 +28,10 @@ import { TANK_DEFAULT_SIZE } from '../../../../configs/constants/domain_constant
 import NetworkPositionComponent from '../../components/network/com.NetworkPosition.js';
 import VelocityHistoryComponent from '../../components/network/com.VelocityHistory.js';
 import StatusBarComponent from '../../components/graphic/com.Status.js';
+import AttackPowerComponent from '../../components/combat/stats/com.AttackPower.js';
 
-/**
- * @typedef {import('../../managers/combat/mgr.Entity.js').default} EntityManager
- */
+// Use type only
+import EntityManager from '../../managers/combat/mgr.Entity.js';
 
 /**
  * @type {ReturnType<typeof createAppearPositionGetter> | undefined}
@@ -83,6 +83,7 @@ export default function createTank(context, mapID, player, faction, inputManager
 	context.addComponents(tankEID, [
 		SurvivalComponent.fromDSL(stats.survival),
 		ShootingComponent.fromDSL(stats.shooting),
+		AttackPowerComponent.fromDSL(stats['attack-power']),
 	]);
 	stats.additional && context.addComponent(tankEID, AdditionalAttributesComponent.fromDSL(stats.additional));
 

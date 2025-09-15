@@ -60,7 +60,9 @@ export const skills = {
 			{
 				description: `Bắn đạn tâng, tối đa 3 lần, mỗi lần giảm 50% ST, gây ST hồi 5 năng lượng`,
 
-				name: 'create-default-projectile',
+				action: '@create:projectile',
+				type: 'default',
+
 				collider: { type: 'rectangle', size: { width: 0, height: 0 } },
 				enhancements: [{ name: 'bouncing', 'hit-limit': 3, 'damage-reduction': { amount: 50 } }],
 				'on-dealt-damage': { self: [{ name: 'recover-energy', amount: 5 }] },
@@ -82,7 +84,8 @@ export const skills = {
 		actions: [
 			{
 				// Bắn đạn
-				name: 'create-custom-projectile',
+				action: '@create:projectile',
+				type: 'custom',
 				'flight-speed': 10,
 
 				// Event

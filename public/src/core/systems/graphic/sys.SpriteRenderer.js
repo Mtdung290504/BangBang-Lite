@@ -6,11 +6,11 @@ import { RenderContext } from './contexts.js';
 import { degToRad } from '../../fomulars/angle.js';
 
 // Components
-import MovementComponent from '../../components/combat/stats/com.Movement.js';
+import MovementComponent from '../../components/physics/com.Movement.js';
 import SpriteComponent from '../../components/graphic/com.Sprite.js';
 import PositionComponent from '../../components/physics/com.Position.js';
 import ShadowComponent from '../../components/graphic/com.Shadow.js';
-import InputComponent from '../../components/input/com.Input.js';
+// import InputComponent from '../../components/input/com.Input.js';
 
 const SpriteRenderer = defineSystemFactory([SpriteComponent, PositionComponent], RenderContext)
 	.withProcessor((context, eID, [sprite, pos], sysContext) => {
@@ -70,11 +70,11 @@ const SpriteRenderer = defineSystemFactory([SpriteComponent, PositionComponent],
 
 			context2D.restore();
 
-			const input = context.getComponent(eID, InputComponent, false);
-			if (!input) return;
-			context2D.save();
-			renderAim(context2D, 220, input.inputManager.mouseState);
-			context2D.restore();
+			// const input = context.getComponent(eID, InputComponent, false);
+			// if (!input) return;
+			// context2D.save();
+			// renderAim(context2D, 220, input.inputManager.mouseState);
+			// context2D.restore();
 		}
 	})
 	.build();

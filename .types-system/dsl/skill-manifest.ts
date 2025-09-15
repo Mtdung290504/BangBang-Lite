@@ -44,7 +44,8 @@ const test: SkillManifest = {
 		property: 'normal-attack',
 		actions: [
 			{
-				name: 'create-default-projectile',
+				action: '@create:projectile',
+				type: 'default',
 				collider: { type: 'rectangle', size: { width: 0, height: 0 } },
 				enhancements: [{ name: 'bouncing', 'hit-limit': 3, 'damage-reduction': { amount: 50 } }],
 				'on-dealt-damage': { self: ['implement-later: Hồi 5 năng lượng'] },
@@ -60,7 +61,8 @@ const test: SkillManifest = {
 
 		actions: [
 			{
-				name: 'create-custom-projectile',
+				action: '@create:projectile',
+				type: 'custom',
 				collider: { type: 'circle', size: { radius: 50 } },
 				'sprite-key': 's1',
 				'on-hit': {

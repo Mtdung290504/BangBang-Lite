@@ -4,6 +4,8 @@ import type { SpriteDeclaration } from '../../../../src/graphic/dsl.SpriteDeclar
 import type { SkillEventHandler } from '../../../events/event-manifest';
 import type { ValueWithUnit } from '../../value-with-unit';
 
+import type { ActionDeclaration } from '../base-action';
+
 /** Projectile enhancement: can track a target */
 interface Tracking {
 	name: 'tracking';
@@ -32,8 +34,8 @@ interface Bouncing {
 /** Projectile enhancements union type */
 type ProjectileEnhancement = Tracking | Piercing | Bouncing;
 
-interface CreateProjectileOptions extends SpriteDeclaration, SkillEventHandler {
-	name: string;
+interface CreateProjectileBased extends ActionDeclaration {
+	action: '@create:projectile';
 
 	/** Inherit from tank by default */
 	'flight-range'?: number;
@@ -45,63 +47,50 @@ interface CreateProjectileOptions extends SpriteDeclaration, SkillEventHandler {
 	'hit-effect-sprite'?: string;
 
 	collider: Collider;
+
+	enhancements?: ProjectileEnhancement[];
 }
 
 /**
- * Default shooting action with sprite key = `normal-attack`
- *
- * Note:
- * - flight-range: inherit
- * - flight-speed: inherit
- * - sprite-key: normal-attack
- * - on-hit: dealt normal-attack damage
- *
+ * - *Mặc định với projectile, nếu không có `render-size` trong manifest thì nó sẽ được lấy từ `collider`*
+ * - Với type là custom, phải truyền vào 'on-hit' và 'sprite-key'
  */
-interface CreateDefaultProjectile
-	extends Omit<CreateProjectileOptions, 'flight-range' | 'flight-speed' | 'sprite-key' | 'on-hit'> {
-	name: 'create-default-projectile';
-	enhancements?: ProjectileEnhancement[];
+type CreateProjectileAction = CreateProjectileBased &
+	(
+		| (SkillEventHandler & SpriteDeclaration & { type: 'custom' })
+		| (Partial<SkillEventHandler> & Partial<SpriteDeclaration> & { type: 'default' })
+	);
 
-	/**
-	 * Tùy chọn vì mặc định đã là gây damage
-	 * Bổ sung vào hành vi mặc định chứ không ghi đè
-	 */
-	'on-hit'?: SkillEventHandler['on-hit'];
-
-	// Note:
-	// flight-range: inherit
-	// flight-speed: inherit
-	// sprite-key: normal-attack
-	// on-hit: dealt normal-attack damage
-}
-
-interface CreateCustomProjectile extends CreateProjectileOptions {
-	name: 'create-custom-projectile';
-	enhancements?: ProjectileEnhancement[];
-}
-
-export type CreateProjectileAction = CreateDefaultProjectile | CreateCustomProjectile;
+export type { CreateProjectileAction };
 
 // Usages
 
-const defaultShoot: CreateDefaultProjectile = {
-	name: 'create-default-projectile',
+const defaultShoot: CreateProjectileAction = {
+	action: '@create:projectile',
+	type: 'default',
+	collider: { type: 'rectangle', size: { width: 0, height: 0 } },
+};
+
+const customShoot: CreateProjectileAction = {
+	action: '@create:projectile',
+	type: 'custom',
+
+	'sprite-key': 's1',
+	'flight-range': 600,
+	'flight-speed': 15,
+
 	collider: {
 		type: 'rectangle',
 		size: { width: 0, height: 0 },
 	},
-};
-const customShoot: CreateCustomProjectile = {
-	name: 'create-custom-projectile',
-	'sprite-key': 's1',
-	'flight-range': 600,
-	'flight-speed': 15,
+
 	'on-hit': {
 		enemy: ['implement-later:'],
 	},
 	'on-dealt-damage': {
 		self: ['implement-later:'],
 	},
+
 	enhancements: [
 		{
 			name: 'bouncing',
@@ -109,9 +98,4 @@ const customShoot: CreateCustomProjectile = {
 			'damage-reduction': { amount: 25 },
 		},
 	],
-
-	collider: {
-		type: 'rectangle',
-		size: { width: 0, height: 0 },
-	},
 };

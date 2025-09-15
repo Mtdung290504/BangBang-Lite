@@ -4,7 +4,7 @@ import defineSystemFactory from '../../../factory/factory_builders/defineSystemF
 // Components
 import TankHeadComponent from '../../../components/combat/objects/com.TankHead.js';
 import PositionComponent from '../../../components/physics/com.Position.js';
-import MovementComponent from '../../../components/combat/stats/com.Movement.js';
+import MovementComponent from '../../../components/physics/com.Movement.js';
 import InputComponent from '../../../components/input/com.Input.js';
 
 // Utils
