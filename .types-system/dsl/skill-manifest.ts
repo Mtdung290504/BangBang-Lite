@@ -56,14 +56,28 @@ const test: SkillManifest = {
 		type: 'normal',
 		property: 'skill',
 		cooldown: 8,
-
-		'casting-method': {
-			type: 'on-target',
-			target: 'enemy',
-		},
-
 		'resource-consumption': { energy: { amount: 25, unit: 'unit' } },
-		actions: ['implement-later: Gây damage, tăng tốc, bóng quay về'],
+
+		actions: [
+			{
+				name: 'create-custom-projectile',
+				collider: { type: 'circle', size: { radius: 50 } },
+				'sprite-key': 's1',
+				'on-hit': {
+					enemy: [
+						{
+							name: 'dealt-damage',
+							source: { attribute: 'attack-power', of: 'self' },
+							value: { amount: 125 },
+						},
+					],
+				},
+				'on-dealt-damage': {
+					self: ['implement-later: tăng tốc'],
+				},
+			},
+			'implement-later: Gây damage, tăng tốc, bóng quay về',
+		],
 	},
 
 	s2: {

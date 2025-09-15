@@ -1,6 +1,7 @@
 import type { SkillConsumption } from './skill-consumption';
 import type { SkillCastAction } from './actions/skill-actions';
-import type { SkillCast, SkillCastingMethods, TargetedSkillCast } from './context/context.casting-methods';
+import type { SkillCast, TargetedSkillCast } from './context/context.casting-methods';
+import { SkillEventHandler } from '../events/event-manifest';
 
 /** Thời gian hồi chiêu dùng chung cho mọi skill */
 interface SkillTiming {
@@ -8,19 +9,22 @@ interface SkillTiming {
 	cooldown?: number;
 }
 
-/**
- * Helper type để tạo skill với casting method cụ thể
- */
-type WithCasting<T, CastMethod extends SkillCastingMethods> = T & {
-	'casting-method'?: CastMethod;
+/** Khai báo tiêu hao và thuộc tính của skill */
+interface ActionProps {
 	'resource-consumption'?: SkillConsumption;
 	property: 'skill' | 'normal-attack';
-	actions: SkillCastAction<CastMethod>[];
-};
+}
 
-/**
- * Helper để tạo ActionBased với tất cả casting methods
- */
-type ActionBased<T = {}> = WithCasting<T, SkillCast> | WithCasting<T, TargetedSkillCast>;
+type ActionBased = ActionProps &
+	(
+		| {
+				'casting-method'?: SkillCast;
+				actions: SkillCastAction[];
+		  }
+		| {
+				'casting-method'?: TargetedSkillCast;
+				actions: SkillEventHandler;
+		  }
+	);
 
-export type { SkillTiming, WithCasting, ActionBased };
+export type { SkillTiming, ActionBased };

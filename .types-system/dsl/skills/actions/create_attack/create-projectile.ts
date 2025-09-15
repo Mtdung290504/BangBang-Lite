@@ -62,7 +62,10 @@ interface CreateDefaultProjectile
 	name: 'create-default-projectile';
 	enhancements?: ProjectileEnhancement[];
 
-	/** Tùy chọn vì mặc định đã là gây damage */
+	/**
+	 * Tùy chọn vì mặc định đã là gây damage
+	 * Bổ sung vào hành vi mặc định chứ không ghi đè
+	 */
 	'on-hit'?: SkillEventHandler['on-hit'];
 
 	// Note:

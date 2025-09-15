@@ -30,10 +30,7 @@ export const stats = {
 		additional: {
 			'energy-point': {
 				amount: 150,
-				recover: {
-					every: 3,
-					amount: { amount: 5, unit: 'unit' },
-				},
+				recover: { every: 3, amount: 5 },
 			},
 		},
 
@@ -46,33 +43,27 @@ export const skills = {
 	passive: [
 		{
 			type: 'permanent-buff',
-			'stat-modifiers': [
-				{
-					attribute: 'flight-speed',
-					value: { amount: 50 },
-				},
-			],
+			'stat-modifiers': [{ attribute: 'flight-speed', value: { amount: 50, unit: '%' } }],
 		},
 		{
 			type: 'event-triggered',
 			'trigger-event': 'on-activate-skill',
-			actions: 'implement-later: Tạo khiên phản đòn',
+			actions: ['implement-later: Tạo khiên phản đòn'],
 		},
 	],
 
 	'normal-attack': {
 		type: 'normal',
 		property: 'normal-attack',
-		// 'casting-method': { type: 'in-direction' },
+
 		actions: [
 			{
+				description: `Bắn đạn tâng, tối đa 3 lần, mỗi lần giảm 50% ST, gây ST hồi 5 năng lượng`,
+
 				name: 'create-default-projectile',
-				collider: {
-					type: 'rectangle',
-					size: { width: 0, height: 0 },
-				},
+				collider: { type: 'rectangle', size: { width: 0, height: 0 } },
 				enhancements: [{ name: 'bouncing', 'hit-limit': 3, 'damage-reduction': { amount: 50 } }],
-				'on-dealt-damage': { self: ['implement-later: Hồi 5 năng lượng'] },
+				'on-dealt-damage': { self: [{ name: 'recover-energy', amount: 5 }] },
 			},
 		],
 	},
@@ -83,17 +74,18 @@ export const skills = {
 		cooldown: 8,
 
 		// Cách dùng chiêu: chọn hướng
-		'casting-method': { type: 'in-direction', range: 528, size: 60 },
+		'casting-method': { type: 'in-direction', range: 528, display: { size: 60 } },
 
 		// Tiêu hao 25đ năng lượng
-		'resource-consumption': { energy: { amount: 25, unit: 'unit' } },
+		'resource-consumption': { energy: { amount: 25 } },
 
 		actions: [
 			{
 				// Bắn đạn
 				name: 'create-custom-projectile',
+				'flight-speed': 10,
 
-				// Event của đạn
+				// Event
 				'on-hit': {
 					enemy: [
 						// Gây 135% tấn công
@@ -109,21 +101,12 @@ export const skills = {
 					self: ['implement-later: Tăng tốc 75%'],
 				},
 
-				// Thông số đạn
-				'flight-speed': 10,
-
 				// Hitbox
-				collider: {
-					type: 'circle',
-					size: { radius: 30 },
-				},
+				collider: { type: 'circle', size: { radius: 30 } },
 
-				// Sprite đạn
+				// Sprite
 				'sprite-key': 's1',
-				'render-size': {
-					width: 60,
-					height: 60,
-				},
+				'render-size': { width: 60, height: 60 },
 			},
 		],
 	},
@@ -136,7 +119,7 @@ export const skills = {
 		'stack-time': 8,
 		cooldown: 1.5,
 
-		'casting-method': { type: 'in-direction', range: 480, size: 60 },
+		'casting-method': { type: 'in-direction', range: 480, display: { size: 60 } },
 		'resource-consumption': { energy: { amount: 50, unit: 'unit' } },
 		actions: ['implement-later: Lướt'],
 	},
@@ -146,7 +129,7 @@ export const skills = {
 		property: 'skill',
 		cooldown: 8,
 
-		'casting-method': { type: 'in-direction', range: 528, size: 80 },
+		'casting-method': { type: 'in-direction', range: 528, display: { size: 80 } },
 		actions: ['implement-later: Tung bóng bay xuyên, đẩy lui'],
 	},
 };

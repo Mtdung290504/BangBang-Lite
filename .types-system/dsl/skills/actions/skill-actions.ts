@@ -1,13 +1,11 @@
 import type { DealtDamage } from './apply_effect/dealt-damage';
 import type { CreateProjectileAction } from './create_attack/create-projectile';
-import type { SkillCast, SkillCastingMethods, TargetedSkillCast } from '../context/context.casting-methods';
+import type { RecoverEnergyAction } from './apply_effect/recover-energy';
 
-type SkillCastAction<CastingMethod extends SkillCastingMethods = SkillCastingMethods> = CastingMethod extends SkillCast
-	? CreateProjectileAction | `implement-later:${string}`
-	: CastingMethod extends TargetedSkillCast
-	? DealtDamage | `implement-later:${string}`
-	: `implement-later:${string}`;
+type Description = { description?: string };
 
-type PassiveSkillAction = `implement-later:${string}`;
+type SkillCastAction = (CreateProjectileAction | RecoverEnergyAction | `implement-later:${string}`) & Description;
+type PassiveSkillAction = `implement-later:${string}` & Description;
+type SkillHitAction = (DealtDamage | RecoverEnergyAction | `implement-later:${string}`) & Description;
 
-export type { SkillCastAction, PassiveSkillAction };
+export type { SkillCastAction, PassiveSkillAction, SkillHitAction };
