@@ -22,7 +22,7 @@ type ActionBased = ActionProps &
 				actions: SkillCastAction[];
 		  }
 		| {
-				'casting-method'?: TargetedSkillCast;
+				'casting-method': TargetedSkillCast;
 				actions: SkillEventHandler;
 		  }
 	);

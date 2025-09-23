@@ -225,6 +225,7 @@ export function setSkillDescription(tankID, skillDescription) {
  *
  * @param {number} tankID
  * @returns {{ stats: _TankManifest, skills: _SkillManifest, skillDescription: any }}
+ * @throws {Error} Khi manifest bị thiếu
  */
 export function getTankManifests(tankID) {
 	const result = tankManifests.get(tankID);

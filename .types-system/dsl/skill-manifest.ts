@@ -21,7 +21,53 @@ interface SkillManifest<Phases extends number[] = []> {
 
 export type { SkillManifest };
 
-const test: SkillManifest = {
+const phasedSkillManifest: SkillManifest<[1, 2, 3]> = {
+	phases: [1, 2, 3],
+
+	'normal-attack': {
+		type: 'phased',
+		'default-phase': 1,
+		'phases-definition': {
+			'1': {
+				type: 'normal',
+				property: 'normal-attack',
+				actions: [],
+			},
+			'2': {
+				type: 'normal',
+				property: 'normal-attack',
+				actions: [],
+			},
+			'3': {
+				type: 'normal',
+				property: 'normal-attack',
+				actions: [],
+			},
+		},
+	},
+
+	passive: [],
+
+	s1: {
+		type: 'normal',
+		property: 'normal-attack',
+		actions: [],
+	},
+
+	s2: {
+		type: 'normal',
+		property: 'normal-attack',
+		actions: [],
+	},
+
+	ultimate: {
+		type: 'normal',
+		property: 'normal-attack',
+		actions: [],
+	},
+};
+
+const noPhaseSkillManifest: SkillManifest = {
 	passive: [
 		{
 			type: 'permanent-buff',

@@ -4,8 +4,8 @@ import type { RecoverEnergyAction } from './apply_effect/recover-energy';
 
 type Description = { description?: string };
 
-type SkillCastAction = (CreateProjectileAction | RecoverEnergyAction | `implement-later:${string}`) & Description;
+type SkillCastAction = ((CreateProjectileAction | RecoverEnergyAction) & Description) | `implement-later:${string}`;
 type PassiveSkillAction = `implement-later:${string}` & Description;
-type SkillHitAction = (DealtDamage | RecoverEnergyAction | `implement-later:${string}`) & Description;
+type SkillHitAction = ((DealtDamage | RecoverEnergyAction) & Description) | `implement-later:${string}`;
 
 export type { SkillCastAction, PassiveSkillAction, SkillHitAction };

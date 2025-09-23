@@ -19,6 +19,6 @@
 		"express": "^4.21.2",
 		"socket.io": "^4.8.1",
 		"socket.io-client": "^4.8.1",
-		"stored-data-object": "^1.0.8"
+		"stored-data-object": "^1.0.10"
 	}
 }

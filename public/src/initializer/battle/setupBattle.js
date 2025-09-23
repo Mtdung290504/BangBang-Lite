@@ -24,7 +24,8 @@ import * as battleView from '../../UIs/battleUI.js';
 // Factories
 import createTank from '../../core/factory/battle/fac.createTank.js';
 
-// Setup system manager
+// Setup skills & system managers
+import setupSkill from './setupSkill.js';
 import setupLogicSystems from './setupLogicSystems.js';
 import setupRenderSystems from './setupRenderSystems.js';
 
@@ -71,13 +72,13 @@ export default function setupBattle(socket, mapID, players, sandbox) {
 	console.log(msg('Player input setup complete'), usingInputManager);
 
 	// Setup tanks và lưu thông tin và registry. Có thể trong tương lai dùng để sync trạng thái
-	const selfTankEID = setupTanks(context, mapID, players, {
-		selfSocketID,
-		selfInputManager: usingInputManager,
-	});
+	const tankEIDs = setupTanks(context, mapID, players, { selfSocketID, selfInputManager: usingInputManager });
+
+	// Setup skill cho toàn bộ tank
+	setupSkills(context, tankEIDs);
 
 	// Camera theo dõi player theo mặc định
-	camera.follow(context.getComponent(selfTankEID, PositionComponent));
+	camera.follow(context.getComponent(tankEIDs[0], PositionComponent));
 	console.log(msg('Battle initiated successfully\n\n\n'));
 
 	// Setup các system
@@ -147,12 +148,18 @@ function setupCamera(canvasManager, mapID) {
  * @param {EntityManager} context
  * @param {number} mapID
  * @param {{ [socketID: string]: Player }} players
+ *
  * @param {Object} self
  * @param {string} self.selfSocketID
  * @param {BattleInputManager} self.selfInputManager
+ *
+ * @returns Mảng chứa các tankEID với tankEID của chính mình ở đầu
  */
 function setupTanks(context, mapID, players, { selfSocketID, selfInputManager }) {
 	const selfTeam = players[selfSocketID].team;
+
+	/**@type {number[]} */
+	const tankEIDs = [];
 
 	// Khởi tạo tank cho các player khác
 	const anotherPlayerSocket = Object.keys(players).filter((socketID) => socketID !== selfSocketID);
@@ -161,6 +168,9 @@ function setupTanks(context, mapID, players, { selfSocketID, selfInputManager })
 		const faction = player.team !== selfTeam ? 'enemy' : 'ally';
 
 		playerRegistry.set(socketID, createTank(context, mapID, player, faction));
+
+		// @ts-expect-error: playerRegistry.get(socketID) buộc phải tồn tại vì nó vừa được set
+		tankEIDs.push(playerRegistry.get(socketID).tankEID);
 	});
 
 	// Khởi tạo tank cho mình
@@ -168,7 +178,15 @@ function setupTanks(context, mapID, players, { selfSocketID, selfInputManager })
 	const { tankEID, networkPosition } = createTank(context, mapID, players[selfSocketID], 'self', selfInputManager);
 	playerRegistry.set(selfSocketID, { tankEID, inputManager: selfInputManager, networkPosition });
 
-	return tankEID;
+	return [tankEID, ...tankEIDs];
+}
+
+/**
+ * @param {EntityManager} context
+ * @param {number[]} tankEIDs
+ */
+function setupSkills(context, tankEIDs) {
+	tankEIDs.forEach((tankEID) => setupSkill(context, tankEID));
 }
 
 /**

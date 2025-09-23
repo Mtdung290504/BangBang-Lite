@@ -1,9 +1,11 @@
 /**
- * @typedef {import('.types-system/dsl/tank-manifest').TankManifest} TankManifest
- * @typedef {import('.types-system/dsl/skill-manifest').SkillManifest} SkillManifest
+ * @typedef {{
+ * 		TankManifest: import('.types-system/dsl/tank-manifest').TankManifest
+ * 		SkillManifest: import('.types-system/dsl/skill-manifest').SkillManifest
+ * }} Types
  */
 
-/**@type {TankManifest} */
+/**@type {Types['TankManifest']} */
 export const stats = {
 	name: 'Tsubasa',
 
@@ -38,7 +40,7 @@ export const stats = {
 	},
 };
 
-/**@type {SkillManifest} */
+/**@type {Types['SkillManifest']} */
 export const skills = {
 	passive: [
 		{
@@ -63,9 +65,9 @@ export const skills = {
 				action: '@create:projectile',
 				type: 'default',
 
-				collider: { type: 'rectangle', size: { width: 0, height: 0 } },
+				collider: { type: 'rectangle', size: { width: 60, height: 40 } },
 				enhancements: [{ name: 'bouncing', 'hit-limit': 3, 'damage-reduction': { amount: 50 } }],
-				'on-dealt-damage': { self: [{ name: 'recover-energy', amount: 5 }] },
+				'on-dealt-damage': { self: [{ action: '@recover:energy', amount: 5 }] },
 			},
 		],
 	},

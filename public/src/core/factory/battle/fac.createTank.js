@@ -1,8 +1,9 @@
 import { storage } from '../../../network/assets_managers/index.js';
 
-// Tank components
+// Tank, context & state components
 import TankComponent from '../../components/combat/objects/com.Tank.js';
 import TankHeadComponent from '../../components/combat/objects/com.TankHead.js';
+import SkillContextComponent from '../../components/combat/state/skill/com.SkillContext.js';
 
 // Stats components
 import AdditionalAttributesComponent from '../../components/combat/stats/com.AdditionalAttributes.js';
@@ -47,8 +48,8 @@ let getAppearPosition = undefined;
  */
 export default function createTank(context, mapID, player, faction, inputManager) {
 	const { tankID, skinID } = player.using;
-	const { stats: tankManifest } = storage.getTankManifests(tankID);
-	const { 'stat-components': stats } = tankManifest;
+	const { stats: tankStatsManifest } = storage.getTankManifests(tankID);
+	const { 'stat-components': stats } = tankStatsManifest;
 
 	const mapManifest = storage.getMapManifest(mapID);
 	if (!mapManifest) throw new Error('> [fac.createTank] mapManifest is undefined???');
@@ -62,21 +63,22 @@ export default function createTank(context, mapID, player, faction, inputManager
 	const tankComponent = new TankComponent(tankID, skinID, storage.getSpriteKeyBuilder(tankID, skinID));
 	context.addComponents(tankEID, [tankComponent, new InputComponent(inputManager)]);
 
-	// Tank physics components
+	// Tank physics
+	// TODO: Đọc vị trí xuất hiện từ map manifest *Cần đưa logic này lên server, nếu không giữa các client sẽ bị lộn xộn
+	// new PositionComponent(...getAppearPosition(player.team)),
+	const tankPos = new PositionComponent(200, 200);
 	context.addComponents(tankEID, [
+		tankPos,
+
 		// Hitbox
 		ColliderComponent.fromDSL({
 			type: 'circle',
-			size: { radius: tankManifest['hitbox-size'] ?? TANK_DEFAULT_SIZE },
+			size: { radius: tankStatsManifest['hitbox-size'] ?? TANK_DEFAULT_SIZE },
 		}),
 
 		// Di chuyển
 		new MovementComponent(stats['movement-speed'], 0),
 		new VelocityComponent(),
-
-		// TODO: Đọc vị trí xuất hiện từ map manifest *Cần đưa logic này lên server, nếu không giữa các client sẽ bị lộn xộn
-		// new PositionComponent(...getAppearPosition(player.team)),
-		new PositionComponent(200, 200),
 	]);
 
 	// Tank stats components
@@ -89,7 +91,7 @@ export default function createTank(context, mapID, player, faction, inputManager
 
 	// Đặt render size cho sprite của tank
 	const bodySprite = new SpriteComponent(storage.getSprite(tankID, skinID, 'body'));
-	let renderRadius = tankManifest['render-size'] ?? TANK_DEFAULT_SIZE;
+	let renderRadius = tankStatsManifest['render-size'] ?? TANK_DEFAULT_SIZE;
 	const renderSize = { width: renderRadius * 2, height: renderRadius * 2 };
 
 	// *Note: Thay đổi sprite manifest lên tham chiếu gốc tiết kiệm và không gây bug
@@ -102,8 +104,11 @@ export default function createTank(context, mapID, player, faction, inputManager
 	const networkPosition = new NetworkPositionComponent();
 	context.addComponents(tankEID, [networkPosition, new VelocityHistoryComponent()]);
 
+	// Lưu headID vào tank, lưu tankID vào head, tạo skill context
 	const tankHeadEID = createTankHead(context, tankEID, renderSize);
+	const tankHeadAngleRef = context.getComponent(tankHeadEID, MovementComponent);
 	tankComponent.tankHeadEID = tankHeadEID;
+	context.addComponent(tankEID, new SkillContextComponent(tankPos, inputManager.mouseState, tankHeadAngleRef));
 
 	return {
 		tankEID,

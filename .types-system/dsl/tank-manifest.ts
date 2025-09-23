@@ -50,4 +50,6 @@ interface TankManifest {
 	'stat-components': FullStats;
 }
 
-export type { TankManifest, ShootingStats, SurvivalStats, AttackPowerStats, AdditionalStats };
+type SkillSlot = 's1' | 's2' | 'ultimate' | 'normal-attack';
+
+export type { TankManifest, ShootingStats, SurvivalStats, AttackPowerStats, AdditionalStats, SkillSlot };

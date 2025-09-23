@@ -5,6 +5,8 @@ import ApplyMovementSystem from '../../core/systems/physic/movement/sys.ApplyMov
 import TankHeadRotateSystem from '../../core/systems/physic/movement/sys.TankHeadRotate.js';
 import TankMovementSystem from '../../core/systems/physic/movement/sys.TankMovement.js';
 import TankPositionSyncSystem from '../../core/systems/network/sys.TankPositionSync.js';
+import SkillExecutionSystem from '../../core/systems/combat/sys.SkillExecution.js';
+import SkillActivateSystem from '../../core/systems/combat/sys.SkillActivate.js';
 
 /**
  * @typedef {import('../../core/managers/combat/mgr.Entity.js').default} EntityManager
@@ -19,6 +21,8 @@ export default function setupLogicSystems(context) {
 	logicSystemsManager.registry(TankPositionSyncSystem.create(context));
 	logicSystemsManager.registry(TankMovementSystem.create(context));
 	logicSystemsManager.registry(TankHeadRotateSystem.create(context));
+	logicSystemsManager.registry(SkillActivateSystem.create(context));
+	logicSystemsManager.registry(SkillExecutionSystem.create(context));
 	logicSystemsManager.registry(ApplyMovementSystem.create(context));
 	logicSystemsManager.registry(SpriteNextFrameSystem.create(context));
 
