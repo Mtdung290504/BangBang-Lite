@@ -11,8 +11,8 @@ export const stats = {
 	'stat-components': {
 		shooting: {
 			'fire-rate': 120,
-			'fire-range': 480,
-			'flight-speed': 10,
+			'fire-range': 336,
+			'flight-speed': 14,
 		},
 		survival: {
 			'limit-HP': 6840,
@@ -44,7 +44,7 @@ export const skills = {
 				description: `Bắn đạn`,
 				action: '@create:projectile',
 				type: 'default',
-				collider: { type: 'rectangle', size: { width: 0, height: 0 } },
+				collider: { type: 'rectangle', size: { width: 43.5 * 1.3, height: 31.5 * 1.3 } },
 			},
 		],
 	},

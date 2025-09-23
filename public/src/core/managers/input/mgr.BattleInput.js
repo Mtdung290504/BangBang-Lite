@@ -29,7 +29,7 @@ export default class BattleInputManager {
 	constructor(emitter, camera) {
 		this.mouseState = { x: 0, y: 0, leftMouseDown: false, rightMouseDown: false };
 
-		/** @type {Record<BattleActionKey, boolean>} */
+		/** @type {Record<ActionKey, boolean>} */
 		this.actionState = {
 			[ACTIONS_KEYS['LEFT']]: false,
 			[ACTIONS_KEYS['DOWN']]: false,
@@ -39,6 +39,7 @@ export default class BattleInputManager {
 			[ACTIONS_KEYS['SKILL_1']]: false,
 			[ACTIONS_KEYS['SKILL_2']]: false,
 			[ACTIONS_KEYS['SKILL_ULTIMATE']]: false,
+			[ACTIONS_KEYS['TOGGLE_AUTO_ATK']]: false,
 		};
 
 		/** @type {AbortController | null} */
@@ -111,6 +112,7 @@ export default class BattleInputManager {
 			this._emitMouseState();
 		} else if (event.button === 2) {
 			this.mouseState.rightMouseDown = true;
+			this.actionState[ACTIONS_KEYS['TOGGLE_AUTO_ATK']] = !this.actionState[ACTIONS_KEYS['TOGGLE_AUTO_ATK']];
 			this._emitMouseState();
 		}
 	}

@@ -2,7 +2,7 @@
 export const SPEED_CALCULATION_CONSTANT = (24 / 1000) * (50 / 67);
 
 /** Constant used in calculating dx and dy of projectile */
-export const PROJECTILE_SPEED_CALCULATION_CONSTANT = 50 / 67;
+export const PROJECTILE_SPEED_CALCULATION_CONSTANT = (50 / 67) * 1.05;
 
 /** Divide the speed by this value to get the rotation speed */
 export const ROTATE_CALCULATION_CONSTANT = 15;
@@ -23,3 +23,6 @@ export const TANK_DEFAULT_SIZE = 52.5;
 export const DEFAULT_HEALING_EFFECT = 0;
 export const DEFAULT_DMG_REDUCTION = 0;
 export const DEFAULT_DODGE_RATE = 0;
+
+// Shooting configs
+export const RANGE_CALCULATION_CONSTANT = 1;

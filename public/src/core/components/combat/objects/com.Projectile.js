@@ -1,5 +1,6 @@
 export default class ProjectileComponent {
 	traveledDistance = 0;
+	cleanable = false;
 
 	/**
 	 * @param {number} ownerEID

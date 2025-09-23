@@ -18,6 +18,9 @@ export default class ShootingComponent {
 
 		/** Vận tốc bay của đạn */
 		this.flightSpeed = flightSpeed;
+
+		/** Tự động bắn */
+		this.auto = false;
 	}
 
 	/**
@@ -27,8 +30,8 @@ export default class ShootingComponent {
 	static fromDSL(dsl) {
 		return new ShootingComponent(
 			dsl['fire-rate'],
-			dsl['fire-range'] * PROJECTILE_SPEED_CALCULATION_CONSTANT,
-			dsl['flight-speed']
+			dsl['fire-range'],
+			dsl['flight-speed'] * PROJECTILE_SPEED_CALCULATION_CONSTANT
 		);
 	}
 }

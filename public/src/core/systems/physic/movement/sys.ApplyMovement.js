@@ -17,7 +17,6 @@ const ApplyMovementSystem = defineSystemFactory([PositionComponent, VelocityComp
 
 		pos.x += vel.dx;
 		pos.y += vel.dy;
-		vel.reset();
 	})
 	.build();
 

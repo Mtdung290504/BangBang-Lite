@@ -18,8 +18,10 @@ import parseProjectileManifest from './parsers/parseProjectileManifest.js';
 import * as angleFs from '../../../fomulars/angle.js';
 import {
 	PROJECTILE_SPEED_CALCULATION_CONSTANT,
+	RANGE_CALCULATION_CONSTANT,
 	SKILL_EFFECT_LAYER,
 } from '../../../../../configs/constants/domain_constants/com.constants.js';
+import MovementComponent from '../../../components/physics/com.Movement.js';
 
 export default class CreateProjectileExecutor extends BaseDSLExecutor {
 	/**
@@ -47,14 +49,15 @@ export default class CreateProjectileExecutor extends BaseDSLExecutor {
 
 		// Xác định tầm bắn và tốc độ đạn
 		const shootingStats = context.getComponent(selfTankEID, ShootingComponent);
-		flightRange = flightRange !== 'inherit' ? flightRange : shootingStats.range;
+		flightRange = flightRange !== 'inherit' ? flightRange : shootingStats.range * RANGE_CALCULATION_CONSTANT;
 		flightSpeed = flightSpeed !== 'inherit' ? flightSpeed : shootingStats.flightSpeed;
 
-		// Tính velocity cho đạn
+		// Tính velocity cho đạn và xác định góc quay của đạn
 		const { angle } = skillContext.headAngleRef; // Góc xoay của đầu tank
 		const deltaX = Math.cos(angleFs.degToRad(angle)) * flightSpeed * PROJECTILE_SPEED_CALCULATION_CONSTANT;
 		const deltaY = Math.sin(angleFs.degToRad(angle)) * flightSpeed * PROJECTILE_SPEED_CALCULATION_CONSTANT;
 		const projVel = new VelocityComponent(deltaX, deltaY);
+		const projMov = new MovementComponent(0, angle);
 
 		// Tính vị trí xuất hiện của đạn (Vị trí tương đối của mũi tank)
 		const { x: selfX, y: selfY } = skillContext.selfPosRef;
@@ -78,6 +81,6 @@ export default class CreateProjectileExecutor extends BaseDSLExecutor {
 		// Tạo projectile
 		const projEID = context.createEntity();
 		const proj = new ProjectileComponent(selfTankEID, flightRange);
-		context.addComponents(projEID, [proj, projVel, projPos, projCollider, projSprite]);
+		context.addComponents(projEID, [proj, projVel, projMov, projPos, projCollider, projSprite]);
 	}
 }

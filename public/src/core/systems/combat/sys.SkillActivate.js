@@ -6,6 +6,7 @@ import EntityManager from '../../managers/combat/mgr.Entity.js';
 import TankComponent from '../../components/combat/objects/com.Tank.js';
 import TankActiveSkillsComponent from '../../components/combat/state/skill/com.TankActiveSkillsComponent.js';
 import InputComponent from '../../components/input/com.Input.js';
+import ShootingComponent from '../../components/combat/stats/com.Shooting.js';
 
 // Constants
 import { ACTIONS_KEYS } from '../../../../configs/action-keys.js';
@@ -16,10 +17,22 @@ const SkillActivateSystem = defineSystemFactory([TankComponent])
 		// Lấy input manager để đọc trạng thái các phím điều khiển
 		const { inputManager } = context.getComponent(eID, InputComponent);
 		const skillContainer = context.getComponent(eID, TankActiveSkillsComponent);
+		const shootingComponent = context.getComponent(eID, ShootingComponent);
 
-		const actions = inputManager.actionState;
+		const { actionState: actions, mouseState: mouse } = inputManager;
 
-		if (inputManager.mouseState.leftMouseDown) getSkillActivator(skillContainer, 'normal-attack')?.(context);
+		// Check normal attack interval (determined from attack speed)
+		if (Date.now() - shootingComponent.lastFireTime > shootingComponent.fireRate) {
+			// Toggle auto shoot (Tạm đặt ở đây để tránh vấn đề spam)
+			shootingComponent.auto = actions[ACTIONS_KEYS['TOGGLE_AUTO_ATK']];
+
+			if (shootingComponent.auto || mouse.leftMouseDown) {
+				getSkillActivator(skillContainer, 'normal-attack')?.(context);
+				shootingComponent.lastFireTime = Date.now();
+			}
+		}
+
+		// Activate skill
 		if (actions[ACTIONS_KEYS['SKILL_1']]) getSkillActivator(skillContainer, 's1')?.(context);
 		if (actions[ACTIONS_KEYS['SKILL_2']]) getSkillActivator(skillContainer, 's2')?.(context);
 		if (actions[ACTIONS_KEYS['SKILL_ULTIMATE']]) getSkillActivator(skillContainer, 'ultimate')?.(context);

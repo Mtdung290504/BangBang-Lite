@@ -13,7 +13,7 @@ export const stats = {
 		shooting: {
 			'fire-rate': 90,
 			'fire-range': 552,
-			'flight-speed': 10,
+			'flight-speed': 14,
 		},
 
 		survival: {
@@ -65,7 +65,7 @@ export const skills = {
 				action: '@create:projectile',
 				type: 'default',
 
-				collider: { type: 'rectangle', size: { width: 60, height: 40 } },
+				collider: { type: 'rectangle', size: { width: 41.53 * 1.07, height: 30.04 * 1.07 } },
 				enhancements: [{ name: 'bouncing', 'hit-limit': 3, 'damage-reduction': { amount: 50 } }],
 				'on-dealt-damage': { self: [{ action: '@recover:energy', amount: 5 }] },
 			},
@@ -88,7 +88,7 @@ export const skills = {
 				// Bắn đạn
 				action: '@create:projectile',
 				type: 'custom',
-				'flight-speed': 10,
+				'flight-speed': 12,
 
 				// Event
 				'on-hit': {
@@ -107,11 +107,11 @@ export const skills = {
 				},
 
 				// Hitbox
-				collider: { type: 'circle', size: { radius: 30 } },
+				collider: { type: 'circle', size: { radius: 40 } },
 
 				// Sprite
 				'sprite-key': 's1',
-				'render-size': { width: 60, height: 60 },
+				'render-size': { width: 80, height: 80 },
 			},
 		],
 	},
