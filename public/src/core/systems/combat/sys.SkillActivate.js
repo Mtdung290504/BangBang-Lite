@@ -21,11 +21,11 @@ const SkillActivateSystem = defineSystemFactory([TankComponent])
 
 		const { actionState: actions, mouseState: mouse } = inputManager;
 
+		// Toggle auto shoot (Tạm đặt ở đây để tránh vấn đề spam)
+		shootingComponent.auto = actions[ACTIONS_KEYS['TOGGLE_AUTO_ATK']];
+
 		// Check normal attack interval (determined from attack speed)
 		if (Date.now() - shootingComponent.lastFireTime > shootingComponent.fireRate) {
-			// Toggle auto shoot (Tạm đặt ở đây để tránh vấn đề spam)
-			shootingComponent.auto = actions[ACTIONS_KEYS['TOGGLE_AUTO_ATK']];
-
 			if (shootingComponent.auto || mouse.leftMouseDown) {
 				getSkillActivator(skillContainer, 'normal-attack')?.(context);
 				shootingComponent.lastFireTime = Date.now();

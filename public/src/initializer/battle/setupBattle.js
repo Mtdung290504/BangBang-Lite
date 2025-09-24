@@ -17,6 +17,7 @@ import createCanvasManager from '../../core/managers/system/mgr.canvas.js';
 import EntityManager from '../../core/managers/combat/mgr.Entity.js';
 import CameraManager from '../../core/managers/graphic/mgr.Camera.js';
 import * as gameLoopManager from '../../core/managers/system/mgr.game-loop.js';
+// import * as gameLoopManager from '../../core/managers/system/mgr.game-loop.test.js';
 
 // UIs
 import * as battleView from '../../UIs/battleUI.js';
@@ -101,7 +102,8 @@ export default function setupBattle(socket, mapID, players, sandbox) {
 
 			gameLoopManager.startRenderLoop(() => {
 				// Clear canvas
-				context2D.clearRect(0, 0, cw, ch);
+				// context2D.clearRect(0, 0, cw, ch);
+				context2D.reset();
 				context2D.save();
 
 				// Di chuyển đến vị trí cần render và render toàn bộ

@@ -2,7 +2,7 @@
 export const SPEED_CALCULATION_CONSTANT = (24 / 1000) * (50 / 67);
 
 /** Constant used in calculating dx and dy of projectile */
-export const PROJECTILE_SPEED_CALCULATION_CONSTANT = (50 / 67) * 1.05;
+export const PROJECTILE_SPEED_CALCULATION_CONSTANT = 50 / 67;
 
 /** Divide the speed by this value to get the rotation speed */
 export const ROTATE_CALCULATION_CONSTANT = 15;

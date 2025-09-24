@@ -21,7 +21,7 @@ export const stats = {
 		},
 		'attack-power': {
 			'damage-type': 'physical',
-			'attack-power': 306,
+			'attack-power': 247,
 			penetration: 26,
 			'crit-damage': 200,
 		},
@@ -44,7 +44,7 @@ export const skills = {
 				description: `Bắn đạn`,
 				action: '@create:projectile',
 				type: 'default',
-				collider: { type: 'rectangle', size: { width: 43.5 * 1.3, height: 31.5 * 1.3 } },
+				collider: { type: 'rectangle', size: { width: 25 * 1.07 * 5, height: 25 * 1.07 } },
 			},
 		],
 	},
