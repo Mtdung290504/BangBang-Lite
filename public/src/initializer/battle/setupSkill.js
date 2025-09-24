@@ -7,6 +7,7 @@ import SkillComponent from '../../core/components/combat/state/skill/com.SkillCo
 import CreateProjectileExecutor from '../../core/factory/battle/executors/CreateProjectileExecutor.js';
 import TankActiveSkillsComponent from '../../core/components/combat/state/skill/com.TankActiveSkillsComponent.js';
 import BaseDSLExecutor from '../../core/factory/battle/executors/BaseExecutor.js';
+import SkillCooldownComponent from '../../core/components/combat/state/skill/com.Cooldown.js';
 
 /**
  * @typedef {{
@@ -59,6 +60,11 @@ function parseSkill(context, skillContainer, skillSlot, skillManifest) {
 		// Create handlers for skill:
 		const skillComponent = new SkillComponent(skillContainer.ownerEID);
 		context.addComponent(skillEID, skillComponent);
+
+		if (skillManifest.cooldown) {
+			const cooldownComponent = new SkillCooldownComponent(skillManifest.cooldown);
+			context.addComponent(skillEID, cooldownComponent);
+		}
 
 		// Skill không cần khóa mục tiêu
 		if ('casting-method' in skillManifest) {

@@ -1,6 +1,8 @@
 // Builder
-import defineSystemFactory from '../../factory/factory_builders/defineSystemFactory.js';
-import SkillComponent from '../../components/combat/state/skill/com.SkillComponent.js';
+import defineSystemFactory from '../../../factory/factory_builders/defineSystemFactory.js';
+
+// Components
+import SkillComponent from '../../../components/combat/state/skill/com.SkillComponent.js';
 
 const SkillExecutionSystem = defineSystemFactory([SkillComponent])
 	.withProcessor((_context, _eID, [skill]) => {

@@ -1,16 +1,16 @@
 // Builder
-import defineSystemFactory from '../../factory/factory_builders/defineSystemFactory.js';
-import EntityManager from '../../managers/combat/mgr.Entity.js';
+import defineSystemFactory from '../../../factory/factory_builders/defineSystemFactory.js';
+import EntityManager from '../../../managers/combat/mgr.Entity.js';
 
 // Components
-import TankComponent from '../../components/combat/objects/com.Tank.js';
-import TankActiveSkillsComponent from '../../components/combat/state/skill/com.TankActiveSkillsComponent.js';
-import InputComponent from '../../components/input/com.Input.js';
-import ShootingComponent from '../../components/combat/stats/com.Shooting.js';
+import TankComponent from '../../../components/combat/objects/com.Tank.js';
+import TankActiveSkillsComponent from '../../../components/combat/state/skill/com.TankActiveSkillsComponent.js';
+import InputComponent from '../../../components/input/com.Input.js';
+import ShootingComponent from '../../../components/combat/stats/com.Shooting.js';
 
 // Constants
-import { ACTIONS_KEYS } from '../../../../configs/action-keys.js';
-import SkillComponent from '../../components/combat/state/skill/com.SkillComponent.js';
+import { ACTIONS_KEYS } from '../../../../../configs/action-keys.js';
+import SkillComponent from '../../../components/combat/state/skill/com.SkillComponent.js';
 
 const SkillActivateSystem = defineSystemFactory([TankComponent])
 	.withProcessor((context, eID, [_tank]) => {

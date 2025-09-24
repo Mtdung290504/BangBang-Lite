@@ -13,8 +13,9 @@ import TankStopMovementSystem from '../../core/systems/physic/movement/sys.TankS
 import TankPositionSyncSystem from '../../core/systems/network/sys.TankPositionSync.js';
 
 // Combat
-import SkillExecutionSystem from '../../core/systems/combat/sys.SkillExecution.js';
-import SkillActivateSystem from '../../core/systems/combat/sys.SkillActivate.js';
+import SkillExecutionSystem from '../../core/systems/combat/skill/sys.SkillExecution.js';
+import SkillActivateSystem from '../../core/systems/combat/skill/sys.SkillActivate.js';
+import SkillRequirementSystem from '../../core/systems/combat/skill/sys.SkillRequirement.js';
 import ProjectileDistanceChecker from '../../core/systems/combat/projectile/sys.ProjectileDistanceChecker.js';
 import CleanProjectileSystem from '../../core/systems/combat/projectile/sys.CleanProjectile.js';
 
@@ -32,9 +33,16 @@ export default function setupLogicSystems(context) {
 	logicSystemsManager.registry(TankPositionSyncSystem.create(context));
 	logicSystemsManager.registry(TankMovementSystem.create(context));
 	logicSystemsManager.registry(TankHeadRotateSystem.create(context));
+
+	// Skill
 	logicSystemsManager.registry(SkillActivateSystem.create(context));
+	logicSystemsManager.registry(SkillRequirementSystem.create(context));
 	logicSystemsManager.registry(SkillExecutionSystem.create(context));
-	logicSystemsManager.registry(ApplyMovementSystem.create(context)); // Common
+
+	// Common
+	logicSystemsManager.registry(ApplyMovementSystem.create(context));
+
+	// Tank
 	logicSystemsManager.registry(TankStopMovementSystem.create(context));
 
 	// Projectile

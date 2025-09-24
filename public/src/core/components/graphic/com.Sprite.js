@@ -62,14 +62,9 @@ export default class SpriteComponent {
 
 	/**
 	 * Lấy thông tin frame hiện tại với cache
-	 * @returns Frame data with precomputed source coordinates
+	 * @returns Frame data with full frame coordinates (including padding)
 	 */
 	getCurrentFrameData() {
-		if (this.paddingX === undefined || this.paddingY === undefined)
-			throw new Error('> [SpriteComponent] Padding miss???');
-		if (this.actualWidth === undefined || this.actualHeight === undefined)
-			throw new Error('> [SpriteComponent] Actual size miss???');
-
 		if (this._frameCache.has(this.currentFrameIdx)) {
 			const cached = this._frameCache.get(this.currentFrameIdx);
 			if (cached) return cached;
@@ -77,16 +72,11 @@ export default class SpriteComponent {
 
 		const manifest = this.resource.manifest;
 		const currentFrame = manifest['frames-position'][this.currentFrameIdx];
+		const frameSize = manifest['frame-size'];
 
-		// Precompute source coordinates (skip padding)
-		const frameData = {
-			sx: currentFrame.x + this.paddingX,
-			sy: currentFrame.y + this.paddingY,
-			sw: this.actualWidth,
-			sh: this.actualHeight,
-		};
-
-		// Cache for future use
+		// Sử dụng toàn bộ frame (bao gồm padding) thay vì cắt bỏ
+		// Tính và cache lại để dùng sau
+		const frameData = { sx: currentFrame.x, sy: currentFrame.y, sw: frameSize.width, sh: frameSize.height };
 		this._frameCache.set(this.currentFrameIdx, frameData);
 
 		return frameData;
@@ -94,6 +84,7 @@ export default class SpriteComponent {
 
 	/**
 	 * Tính destination coordinates dựa trên position
+	 *
 	 * @param {{ x: number, y: number }} pos - Position component
 	 * @returns Destination coordinates
 	 */
@@ -102,7 +93,7 @@ export default class SpriteComponent {
 		if (!renderSize) throw new Error('> [SpriteComponent] Render size miss???');
 
 		return {
-			renderSize: renderSize,
+			renderSize,
 			dx: pos.x - renderSize.width / 2,
 			dy: pos.y - renderSize.height / 2,
 			dw: renderSize.width,

@@ -13,7 +13,7 @@ export const stats = {
 		shooting: {
 			'fire-rate': 90,
 			'fire-range': 552,
-			'flight-speed': 12,
+			'flight-speed': 17.5,
 		},
 
 		survival: {
@@ -75,7 +75,7 @@ export const skills = {
 	s1: {
 		type: 'normal',
 		property: 'skill',
-		cooldown: 8,
+		cooldown: 0.2,
 
 		// Cách dùng chiêu: chọn hướng
 		'casting-method': { type: 'in-direction', range: 528, display: { size: 60 } },
@@ -88,7 +88,7 @@ export const skills = {
 				// Bắn đạn
 				action: '@create:projectile',
 				type: 'custom',
-				'flight-speed': 12,
+				'flight-speed': 15,
 
 				// Event
 				'on-hit': {
@@ -107,11 +107,12 @@ export const skills = {
 				},
 
 				// Hitbox
-				collider: { type: 'circle', size: { radius: 40 } },
+				collider: { type: 'circle', size: { radius: 42 } },
 
 				// Sprite
 				'sprite-key': 's1',
-				'render-size': { width: 80, height: 80 },
+				// Không cần render-size, nó kế thừa từ collider
+				// 'render-size': { width: 80, height: 80 },
 			},
 		],
 	},
@@ -132,9 +133,40 @@ export const skills = {
 	ultimate: {
 		type: 'normal',
 		property: 'skill',
-		cooldown: 8,
+		cooldown: 0.2,
 
 		'casting-method': { type: 'in-direction', range: 528, display: { size: 80 } },
-		actions: ['implement-later: Tung bóng bay xuyên, đẩy lui'],
+
+		actions: [
+			{
+				// Bắn đạn
+				action: '@create:projectile',
+				type: 'custom',
+				'flight-speed': 12,
+
+				// Event
+				'on-hit': {
+					enemy: [
+						// Gây 135% tấn công
+						{
+							name: 'dealt-damage',
+							source: { attribute: 'attack-power', of: 'self' },
+							value: { amount: 295 },
+						},
+						'implement-later: Đẩy lui',
+					],
+				},
+				'on-dealt-damage': {
+					self: [{ action: '@recover:energy', amount: 20 }],
+				},
+
+				// Hitbox
+				// collider: { type: 'rectangle', size: { width: 307.58, height: 172 } },
+				collider: { type: 'rectangle', size: { width: 286.12, height: 160 } },
+
+				// Sprite
+				'sprite-key': 's3',
+			},
+		],
 	},
 };

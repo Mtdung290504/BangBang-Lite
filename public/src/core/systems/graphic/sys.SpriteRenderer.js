@@ -25,6 +25,7 @@ const SpriteRenderer = defineSystemFactory([SpriteComponent, PositionComponent],
 
 			// Sử dụng cached frame data
 			const frameData = sprite.getCurrentFrameData();
+			const paddingRatio = sprite.resource.manifest['padding-ratio'] ?? 0;
 
 			// Sử dụng precomputed destination coordinates
 			const destCoords = sprite.getDestinationCoords(pos);
@@ -38,6 +39,11 @@ const SpriteRenderer = defineSystemFactory([SpriteComponent, PositionComponent],
 				context2D.rotate(degToRad(angle));
 				context2D.translate(-pos.x, -pos.y);
 			}
+
+			// Scale to padding size
+			context2D.translate(pos.x, pos.y);
+			context2D.scale(1 + paddingRatio * 2, 1 + paddingRatio * 2);
+			context2D.translate(-pos.x, -pos.y);
 
 			// Render shadow nếu là tank
 			const shadow = context.getComponent(eID, ShadowComponent, false);

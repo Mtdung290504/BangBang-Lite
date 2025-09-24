@@ -4,7 +4,7 @@ import type { TankDamageType } from './enums/damage-types';
 interface ShootingStats {
 	'fire-rate': 60 | 90 | 120;
 	'fire-range': 336 | 408 | 480 | 552 | 168;
-	'flight-speed': 12 | 14;
+	'flight-speed': 15 | 17.5;
 }
 
 interface SurvivalStats {

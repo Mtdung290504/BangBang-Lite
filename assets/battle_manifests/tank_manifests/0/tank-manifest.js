@@ -12,7 +12,7 @@ export const stats = {
 		shooting: {
 			'fire-rate': 120,
 			'fire-range': 336,
-			'flight-speed': 14,
+			'flight-speed': 17.5,
 		},
 		survival: {
 			'limit-HP': 6840,
