@@ -1,29 +1,29 @@
-import EntityManager from '../../../managers/combat/mgr.Entity.js';
+import EntityManager from '../../../../managers/combat/mgr.Entity.js';
 
 // Components
-import TankComponent from '../../../components/combat/objects/com.Tank.js';
-import ProjectileComponent from '../../../components/combat/objects/com.Projectile.js';
-import ShootingComponent from '../../../components/combat/stats/com.Shooting.js';
-import SkillContextComponent from '../../../components/combat/state/skill/com.SkillContext.js';
-import VelocityComponent from '../../../components/physics/com.Velocity.js';
-import ColliderComponent from '../../../components/physics/com.Collider.js';
-import PositionComponent from '../../../components/physics/com.Position.js';
-import SpriteComponent from '../../../components/graphic/com.Sprite.js';
+import TankComponent from '../../../../components/combat/objects/com.Tank.js';
+import ProjectileComponent from '../../../../components/combat/objects/com.Projectile.js';
+import ShootingComponent from '../../../../components/combat/stats/com.Shooting.js';
+import SkillContextComponent from '../../../../components/combat/state/skill/com.SkillContext.js';
+import VelocityComponent from '../../../../components/physics/com.Velocity.js';
+import ColliderComponent from '../../../../components/physics/com.Collider.js';
+import PositionComponent from '../../../../components/physics/com.Position.js';
+import SpriteComponent from '../../../../components/graphic/com.Sprite.js';
 
 // Base & parser
-import BaseDSLExecutor from './BaseExecutor.js';
+import BaseActionExecutor from '../base/executor.BaseAction.js';
 import parseProjectileManifest from './parsers/parseProjectileManifest.js';
 
 // Utils / constants
-import * as angleFs from '../../../fomulars/angle.js';
+import * as angleFs from '../../../../fomulars/angle.js';
 import {
 	PROJECTILE_SPEED_CALCULATION_CONSTANT,
 	RANGE_CALCULATION_CONSTANT,
 	SKILL_EFFECT_LAYER,
-} from '../../../../../configs/constants/domain_constants/com.constants.js';
-import MovementComponent from '../../../components/physics/com.Movement.js';
+} from '../../../../../../configs/constants/domain_constants/com.constants.js';
+import MovementComponent from '../../../../components/physics/com.Movement.js';
 
-export default class CreateProjectileExecutor extends BaseDSLExecutor {
+export default class CreateProjectileExecutor extends BaseActionExecutor {
 	/**
 	 * @param {EntityManager} context
 	 * @param {import('./parsers/parseProjectileManifest.js').CreateProjectileAction} manifest

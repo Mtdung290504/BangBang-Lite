@@ -95,7 +95,7 @@ export const skills = {
 					enemy: [
 						// Gây 135% tấn công
 						{
-							name: 'dealt-damage',
+							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
 							value: { amount: 135 },
 						},
@@ -149,7 +149,7 @@ export const skills = {
 					enemy: [
 						// Gây 135% tấn công
 						{
-							name: 'dealt-damage',
+							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
 							value: { amount: 295 },
 						},

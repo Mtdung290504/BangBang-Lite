@@ -49,6 +49,10 @@ export default class SurvivalComponent {
 		return this._currentHP;
 	}
 
+	get lostHP() {
+		return this.limitHP - this.currentHP;
+	}
+
 	/**
 	 * Khởi tạo SurvivalComponent từ DSL.
 	 * @param {import('.types-system/dsl/tank-manifest').SurvivalStats} dsl - Dữ liệu DSL định nghĩa SurvivalStats

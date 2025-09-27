@@ -1,4 +1,4 @@
-import { INHERIT_DECLARATION } from '../../../../../../configs/constants/domain_constants/fac.constants.js';
+import { INHERIT_DECLARATION } from '../../../../../../../configs/constants/domain_constants/fac.constants.js';
 
 /**
  * @typedef {import('.types-system/dsl/skills/actions/create_attack/create-projectile').CreateProjectileAction} CreateProjectileAction
@@ -8,6 +8,7 @@ import { INHERIT_DECLARATION } from '../../../../../../configs/constants/domain_
  * @param {CreateProjectileAction} manifest
  *
  * Notes:
+ * - Không kiểm tra action type, để executor làm
  * - `renderSize` của projectile mặc định kế thừa từ collider của nó
  * - `flightRange` của projectile mặc định kế thừa từ tầm bắn của tank
  * - `flightSpeed` của projectile mặc định kế thừa từ tốc độ đạn bay của tank
@@ -17,9 +18,9 @@ export default function parseProjectileManifest(manifest) {
 	const { collider, action, enhancements = [] } = manifest;
 
 	return {
-		name: action,
-		collider: collider,
-		enhancements: enhancements,
+		action,
+		collider,
+		enhancements,
 
 		onDealtDamage: manifest['on-dealt-damage'],
 		onHit: manifest['on-hit'],

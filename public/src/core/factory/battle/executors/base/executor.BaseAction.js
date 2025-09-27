@@ -1,9 +1,9 @@
-import EntityManager from '../../../managers/combat/mgr.Entity.js';
+import EntityManager from '../../../../managers/combat/mgr.Entity.js';
 
 /**
  * @abstract
  */
-export default class BaseDSLExecutor {
+export default class BaseActionExecutor {
 	/**
 	 * @param {EntityManager} context
 	 */
@@ -16,6 +16,6 @@ export default class BaseDSLExecutor {
 	 * @param {number} selfTankEID
 	 */
 	exec(selfTankEID) {
-		throw new Error('> [fac.executor.BaseExecutor] `exec` not implemented yet');
+		throw new Error('> [fac.executor.BaseActionExecutor] `exec` not implemented yet');
 	}
 }

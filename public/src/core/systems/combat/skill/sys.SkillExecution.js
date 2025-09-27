@@ -7,7 +7,6 @@ import SkillComponent from '../../../components/combat/state/skill/com.SkillComp
 const SkillExecutionSystem = defineSystemFactory([SkillComponent])
 	.withProcessor((_context, _eID, [skill]) => {
 		if (!skill.usable) return;
-
 		skill.actions.forEach((executor) => executor.exec(skill.ownerEID));
 		skill.usable = false;
 	})

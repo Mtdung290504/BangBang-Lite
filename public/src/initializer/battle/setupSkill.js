@@ -1,13 +1,16 @@
 import EntityManager from '../../core/managers/combat/mgr.Entity.js';
-
 import { storage } from '../../network/assets_managers/index.js';
 
 import TankComponent from '../../core/components/combat/objects/com.Tank.js';
 import SkillComponent from '../../core/components/combat/state/skill/com.SkillComponent.js';
-import CreateProjectileExecutor from '../../core/factory/battle/executors/CreateProjectileExecutor.js';
 import TankActiveSkillsComponent from '../../core/components/combat/state/skill/com.TankActiveSkillsComponent.js';
-import BaseDSLExecutor from '../../core/factory/battle/executors/BaseExecutor.js';
 import SkillCooldownComponent from '../../core/components/combat/state/skill/com.Cooldown.js';
+
+// Executor
+import CreateProjectileExecutor from '../../core/factory/battle/executors/action_executors/executor.CreateProjectile.js';
+
+// Only use type
+import BaseActionExecutor from '../../core/factory/battle/executors/base/executor.BaseAction.js';
 
 /**
  * @typedef {{
@@ -101,7 +104,7 @@ function parseSkill(context, skillContainer, skillSlot, skillManifest) {
  * @param {Types['SkillCastAction'][]} skillCastManifest
  */
 function parseSkillCastAction(context, skillCastManifest) {
-	/** @type {BaseDSLExecutor[]} */
+	/** @type {BaseActionExecutor[]} */
 	const result = [];
 
 	skillCastManifest.forEach((actionManifest) => {
