@@ -1,4 +1,4 @@
-import ReceiveDamageComponent from '../../../../components/combat/state/com.ReceiveDamage.js';
+import ReceivedDamageComponent from '../../../../components/combat/state/com.ReceiveDamage.js';
 import AdditionalAttributesComponent from '../../../../components/combat/stats/com.AdditionalAttributes.js';
 import AttackPowerComponent from '../../../../components/combat/stats/com.AttackPower.js';
 import SurvivalComponent from '../../../../components/combat/stats/com.Survival.js';
@@ -80,6 +80,8 @@ export default class DealtDamageExecutor extends BaseSkillHitExecutor {
 			}
 		})();
 
-		context.addComponent(targetEID, new ReceiveDamageComponent(sourceEID, damageType, damageValue, displayType));
+		context
+			.getComponent(targetEID, ReceivedDamageComponent)
+			.damageReceiveds.push({ sourceEID, damageType, damageValue, displayType });
 	}
 }

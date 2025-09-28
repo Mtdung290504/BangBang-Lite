@@ -11,6 +11,9 @@ import MovementComponent from '../../components/physics/com.Movement.js';
 import ShootingComponent from '../../components/combat/stats/com.Shooting.js';
 import SurvivalComponent from '../../components/combat/stats/com.Survival.js';
 
+// Combat stats
+import ReceivedDamageComponent from '../../components/combat/state/com.ReceiveDamage.js';
+
 // Display components
 import ShadowComponent from '../../components/graphic/com.Shadow.js';
 import SpriteComponent from '../../components/graphic/com.Sprite.js';
@@ -86,6 +89,9 @@ export default function createTank(context, mapID, player, faction, inputManager
 		SurvivalComponent.fromDSL(stats.survival),
 		ShootingComponent.fromDSL(stats.shooting),
 		AttackPowerComponent.fromDSL(stats['attack-power']),
+
+		// Combat stat components
+		new ReceivedDamageComponent(),
 	]);
 	stats.additional && context.addComponent(tankEID, AdditionalAttributesComponent.fromDSL(stats.additional));
 

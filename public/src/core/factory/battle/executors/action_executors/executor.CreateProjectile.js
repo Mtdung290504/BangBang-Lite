@@ -9,6 +9,8 @@ import VelocityComponent from '../../../../components/physics/com.Velocity.js';
 import ColliderComponent from '../../../../components/physics/com.Collider.js';
 import PositionComponent from '../../../../components/physics/com.Position.js';
 import SpriteComponent from '../../../../components/graphic/com.Sprite.js';
+import OnSkillHitManifest from '../../../../components/combat/event_container/skill/com.OnSkillHitManifest.js';
+import OnSkillDealtDamageManifest from '../../../../components/combat/event_container/skill/com.OnSkillDealtDamageManifest.js';
 
 // Base & parser
 import BaseActionExecutor from '../base/executor.BaseAction.js';
@@ -22,6 +24,7 @@ import {
 	SKILL_EFFECT_LAYER,
 } from '../../../../../../configs/constants/domain_constants/com.constants.js';
 import MovementComponent from '../../../../components/physics/com.Movement.js';
+import TargetFilterComponent from '../../../../components/combat/state/skill/com.TargetFilter.js';
 
 export default class CreateProjectileExecutor extends BaseActionExecutor {
 	/**
@@ -82,5 +85,12 @@ export default class CreateProjectileExecutor extends BaseActionExecutor {
 		const projEID = context.createEntity();
 		const proj = new ProjectileComponent(selfTankEID, flightRange);
 		context.addComponents(projEID, [proj, projVel, projMov, projPos, projCollider, projSprite]);
+
+		// Lưu event handler và target filter vào projectile
+		context.addComponents(projEID, [
+			new OnSkillHitManifest(onHit),
+			new OnSkillDealtDamageManifest(onDealtDamage),
+			new TargetFilterComponent(onHit),
+		]);
 	}
 }
