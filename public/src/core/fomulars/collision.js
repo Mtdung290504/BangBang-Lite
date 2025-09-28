@@ -1,3 +1,44 @@
+import ColliderComponent from '../components/physics/com.Collider.js';
+import PositionComponent from '../components/physics/com.Position.js';
+
+/**
+ * @param {PositionComponent} circlePos
+ * @param {ColliderComponent<'circle'>} circle
+ * @param {PositionComponent} rectPos
+ * @param {ColliderComponent<'rectangle'>} rect
+ * @param {number} [rectAngle=0]
+ */
+export function circleCollisionRectangle(circlePos, circle, rectPos, rect, rectAngle = 0) {
+	const dx = circlePos.x - rectPos.x;
+	const dy = circlePos.y - rectPos.y;
+
+	// Check for unacceptable distances
+	const maxDist = Math.max(rect.width, rect.height) / 2 + circle.radius;
+	if (dx * dx + dy * dy > maxDist * maxDist) return false;
+
+	// Convert the circle to the coordinate system of a rectangle (remove rotation)
+	const cosAngle = Math.cos(rectAngle);
+	const sinAngle = Math.sin(rectAngle);
+
+	// Circular coordinates in the new reference system
+	const localCircleX = cosAngle * dx + sinAngle * dy;
+	const localCircleY = -sinAngle * dx + cosAngle * dy;
+
+	// Get the size of the rectangle
+	const { width: rw, height: rh } = rect;
+	const { radius: cr } = circle;
+
+	// Find the closest point on the rectangle to the center of the circle
+	const closestX = Math.max(-rw / 2, Math.min(localCircleX, rw / 2));
+	const closestY = Math.max(-rh / 2, Math.min(localCircleY, rh / 2));
+
+	// Calculate the distance from the center of the circle to the nearest point
+	const distX = localCircleX - closestX;
+	const distY = localCircleY - closestY;
+
+	return distX * distX + distY * distY < cr * cr;
+}
+
 // import { Point, Circle, Line, RotableRectangle, Polygon } from '../bases/bases.mjs';
 
 // export default class CollisionsChecker {

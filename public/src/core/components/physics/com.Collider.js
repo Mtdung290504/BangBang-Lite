@@ -1,5 +1,5 @@
 /**
- * @template {('rectangle' | 'circle')} T
+ * @template {'rectangle' | 'circle'} T
  */
 export default class ColliderComponent {
 	/**
@@ -24,6 +24,9 @@ export default class ColliderComponent {
 		} else {
 			throw new Error('> [ColliderComponent] Invalid type');
 		}
+
+		/**@type {Set<number>} */
+		this.collisionTargets = new Set();
 	}
 
 	/**

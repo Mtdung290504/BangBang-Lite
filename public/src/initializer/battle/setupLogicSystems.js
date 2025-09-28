@@ -18,6 +18,8 @@ import SkillActivateSystem from '../../core/systems/combat/skill/sys.SkillActiva
 import SkillRequirementSystem from '../../core/systems/combat/skill/sys.SkillRequirement.js';
 import ProjectileDistanceChecker from '../../core/systems/combat/projectile/sys.ProjectileDistanceChecker.js';
 import CleanProjectileSystem from '../../core/systems/combat/projectile/sys.CleanProjectile.js';
+import CollisionDetectionSystem from '../../core/systems/physic/collision/sys.CollisionDetection.js';
+import CollisionResetSystem from '../../core/systems/physic/collision/sys.CollisionReset.js';
 
 /**
  * @typedef {import('../../core/managers/combat/mgr.Entity.js').default} EntityManager
@@ -41,6 +43,8 @@ export default function setupLogicSystems(context) {
 
 	// Common
 	logicSystemsManager.registry(ApplyMovementSystem.create(context));
+	logicSystemsManager.registry(CollisionResetSystem.create(context));
+	logicSystemsManager.registry(CollisionDetectionSystem.create(context));
 
 	// Tank
 	logicSystemsManager.registry(TankStopMovementSystem.create(context));
