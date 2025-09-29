@@ -1,11 +1,11 @@
 import defineSystemFactory from '../../../factory/factory_builders/defineSystemFactory.js';
 
 import ProjectileComponent from '../../../components/combat/objects/com.Projectile.js';
-import ColliderComponent from '../../../components/physics/com.Collider.js';
 import SkillHitComponent from '../../../components/combat/state/com.SkillHit.js';
 import SkillContextComponent from '../../../components/combat/state/skill/com.SkillContext.js';
 import TargetFilterComponent from '../../../components/combat/state/skill/com.TargetFilter.js';
-import TankComponent from '../../../components/combat/objects/com.Tank.js';
+
+import ColliderComponent from '../../../components/physics/com.Collider.js';
 
 const ProjectileCollisionSystem = defineSystemFactory([ProjectileComponent])
 	.withProcessor((context, eID, [proj]) => {

@@ -57,7 +57,11 @@ interface CreateProjectileBased extends ActionDeclaration {
  */
 type CreateProjectileAction = CreateProjectileBased &
 	(
-		| (SkillEventHandler & SpriteDeclaration & { type: 'custom' })
+		| (SkillEventHandler &
+				SpriteDeclaration & {
+					type: 'custom';
+					targets?: readonly (keyof SkillEventHandler['on-hit'])[];
+				})
 		| (Partial<SkillEventHandler> & Partial<SpriteDeclaration> & { type: 'default' })
 	);
 

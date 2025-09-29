@@ -47,7 +47,7 @@ export default class CreateProjectileExecutor extends BaseActionExecutor {
 		const tank = context.getComponent(selfTankEID, TankComponent);
 		const skillContext = context.getComponent(selfTankEID, SkillContextComponent);
 
-		let { flightRange, flightSpeed, renderSize, enhancements, onDealtDamage, onHit } = parsedManifest;
+		let { targets, flightRange, flightSpeed, renderSize, enhancements, onDealtDamage, onHit } = parsedManifest;
 		const { collider, spriteKey, hitEffectSprite } = parsedManifest;
 
 		// Xác định tầm bắn và tốc độ đạn
@@ -90,7 +90,7 @@ export default class CreateProjectileExecutor extends BaseActionExecutor {
 		context.addComponents(projEID, [
 			new OnSkillHitManifest(onHit),
 			new OnSkillDealtDamageManifest(onDealtDamage),
-			new TargetFilterComponent(onHit),
+			new TargetFilterComponent(targets),
 		]);
 	}
 }

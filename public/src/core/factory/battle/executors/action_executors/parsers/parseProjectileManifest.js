@@ -1,5 +1,6 @@
 import {
 	DEFAULT_HIT_HANDLER,
+	DEFAULT_SKILL_TARGET,
 	INHERIT_DECLARATION,
 } from '../../../../../../../configs/constants/domain_constants/parser.constants.js';
 
@@ -19,6 +20,18 @@ import {
  */
 export default function parseProjectileManifest(manifest) {
 	const { collider, action, type, enhancements = [], 'on-hit': onHit, 'on-dealt-damage': onDealtDamage } = manifest;
+
+	const parseTarget = () => {
+		if (type === 'default') {
+			// Type default chỉ có thể trúng địch (giá trị mặc định)
+			return DEFAULT_SKILL_TARGET;
+		} else {
+			// Tồn tại khai báo targets
+			if (manifest.targets && manifest.targets.length > 0) return manifest.targets;
+			// Nếu targets không được khai báo hoặc chỉ là mảng rỗng thì trả về giá trị mặc định
+			return DEFAULT_SKILL_TARGET;
+		}
+	};
 
 	const parseHitManifest = () => {
 		if (type === 'default') {
@@ -45,13 +58,26 @@ export default function parseProjectileManifest(manifest) {
 		return onDealtDamage;
 	};
 
+	const targets = new Set(parseTarget());
+	const parsedHitManifest = parseHitManifest();
+	const parsedDealtDamageManifest = parseDealtDamageManifest();
+
+	for (const target of targets) {
+		if (!parsedHitManifest[target])
+			console.warn(
+				`> [parser.parseProjectileManifest] Define target::[${target}] but no manifest to handle when hit`
+			);
+	}
+	// TODO: Trong tương lai cần check kỹ hơn dealt damage manifest có mà hit manifest không có dealt damage thì cảnh báo
+
 	return {
 		action,
 		collider,
 		enhancements,
+		targets,
 
-		onHit: parseHitManifest(),
-		onDealtDamage: parseDealtDamageManifest(),
+		onHit: parsedHitManifest,
+		onDealtDamage: parsedDealtDamageManifest,
 
 		hitEffectSprite: manifest['hit-effect-sprite'],
 		renderSize: manifest['render-size'] ?? INHERIT_DECLARATION,

@@ -9,3 +9,5 @@ export const DEFAULT_HIT_HANDLER = {
 };
 
 export const INHERIT_DECLARATION = /** @type {const} */ ('inherit');
+
+export const DEFAULT_SKILL_TARGET = /** @type {const} */ (['enemy']);

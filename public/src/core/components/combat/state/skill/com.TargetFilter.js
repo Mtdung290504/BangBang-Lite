@@ -1,10 +1,10 @@
 export default class TargetFilterComponent {
 	/**
-	 * @param {import('.types-system/dsl/events/event-manifest').SkillEventHandler['on-hit']} onHitManifest
+	 * @param {Set<keyof import('.types-system/dsl/events/event-manifest').SkillEventHandler['on-hit']>} targetsManifest
 	 */
-	constructor(onHitManifest) {
-		this.ally = Boolean(onHitManifest.ally);
-		this.enemy = Boolean(onHitManifest.enemy);
-		this.self = Boolean(onHitManifest.self);
+	constructor(targetsManifest) {
+		this.ally = targetsManifest.has('ally');
+		this.enemy = targetsManifest.has('enemy');
+		this.self = targetsManifest.has('self');
 	}
 }
