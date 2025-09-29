@@ -8,6 +8,8 @@ import ApplyMovementSystem from '../../core/systems/physic/movement/sys.ApplyMov
 import TankHeadRotateSystem from '../../core/systems/physic/movement/sys.TankHeadRotate.js';
 import TankMovementSystem from '../../core/systems/physic/movement/sys.TankMovement.js';
 import TankStopMovementSystem from '../../core/systems/physic/movement/sys.TankStopMovement.js';
+import CollisionDetectionSystem from '../../core/systems/physic/collision/sys.CollisionDetection.js';
+import CollisionResetSystem from '../../core/systems/physic/collision/sys.CollisionReset.js';
 
 // Network
 import TankPositionSyncSystem from '../../core/systems/network/sys.TankPositionSync.js';
@@ -18,8 +20,7 @@ import SkillActivateSystem from '../../core/systems/combat/skill/sys.SkillActiva
 import SkillRequirementSystem from '../../core/systems/combat/skill/sys.SkillRequirement.js';
 import ProjectileDistanceChecker from '../../core/systems/combat/projectile/sys.ProjectileDistanceChecker.js';
 import CleanProjectileSystem from '../../core/systems/combat/projectile/sys.CleanProjectile.js';
-import CollisionDetectionSystem from '../../core/systems/physic/collision/sys.CollisionDetection.js';
-import CollisionResetSystem from '../../core/systems/physic/collision/sys.CollisionReset.js';
+import ProjectileCollisionSystem from '../../core/systems/combat/projectile/sys.ProjectileCollision.js';
 
 /**
  * @typedef {import('../../core/managers/combat/mgr.Entity.js').default} EntityManager
@@ -51,6 +52,9 @@ export default function setupLogicSystems(context) {
 
 	// Projectile
 	logicSystemsManager.registry(ProjectileDistanceChecker.create(context));
+	logicSystemsManager.registry(ProjectileCollisionSystem.create(context));
+
+	// Clean projectile sau
 	logicSystemsManager.registry(CleanProjectileSystem.create(context));
 
 	// Sprite
@@ -58,6 +62,7 @@ export default function setupLogicSystems(context) {
 
 	logicSystemsManager.finalize();
 	logicSystemsManager.initAll();
+	console.log('> [initializer.setupLogicSystem] System groups:', logicSystemsManager.getSystemGroups());
 
 	return logicSystemsManager;
 }

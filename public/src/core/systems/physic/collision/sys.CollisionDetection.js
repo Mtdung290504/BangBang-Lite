@@ -29,7 +29,7 @@ const CollisionDetectionSystem = defineSystemFactory([ColliderComponent])
 						rectAngle
 					)
 				) {
-					console.log('Collision:', collider, checkCollider);
+					// console.log('Collision:', collider, checkCollider);
 					collider.collisionTargets.add(checkEID);
 					checkCollider.collisionTargets.add(eID);
 				}
@@ -44,7 +44,7 @@ const CollisionDetectionSystem = defineSystemFactory([ColliderComponent])
 						rectAngle
 					)
 				) {
-					console.log('Collision:', collider, checkCollider);
+					// console.log('Collision:', collider, checkCollider);
 					collider.collisionTargets.add(checkEID);
 					checkCollider.collisionTargets.add(eID);
 				}

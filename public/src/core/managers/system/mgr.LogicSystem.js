@@ -181,7 +181,7 @@ export default class LogicSystemsManager {
 	 * @param {{systems: Array<{system: any, index: number}>, primaryComponents?: any[], startIndex: number, componentsKey: string}} group
 	 * @private
 	 */
-	_processSystemGroup(group) {
+	_processSystemGroupOld(group) {
 		const { systems, primaryComponents, componentsKey } = group;
 
 		// Systems không có primaryComponents - chỉ gọi process trực tiếp
@@ -207,6 +207,48 @@ export default class LogicSystemsManager {
 		// Chạy tất cả systems trong group với cùng entities
 		for (const [eID, components] of entitiesWithComponents) {
 			for (const { system, index } of systems) {
+				try {
+					system.process(eID, components);
+				} catch (error) {
+					console.error(`Error in System at index:[${index}] processing Entity:[${eID}]:`, error);
+					throw error;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Xử lý một nhóm systems.
+	 *
+	 * @param {{systems: Array<{system: any, index: number}>, primaryComponents?: any[], startIndex: number, componentsKey: string}} group
+	 * @private
+	 */
+	_processSystemGroup(group) {
+		const { systems, primaryComponents, componentsKey } = group;
+
+		// Systems không có primaryComponents - chỉ gọi process trực tiếp
+		if (!primaryComponents || primaryComponents.length === 0) {
+			for (const { system, index } of systems) {
+				try {
+					system.process();
+				} catch (error) {
+					console.error(`Error in System at index:[${index}]:`, error);
+					throw error;
+				}
+			}
+			return;
+		}
+
+		// Lấy entities từ cache hoặc tính toán mới
+		let entitiesWithComponents = this._frameCache.get(componentsKey);
+		if (!entitiesWithComponents) {
+			entitiesWithComponents = this.context.getEntitiesWithComponents(primaryComponents);
+			this._frameCache.set(componentsKey, entitiesWithComponents);
+		}
+
+		// ✅ FIX: Chạy từng system trước, rồi mới iterate entities
+		for (const { system, index } of systems) {
+			for (const [eID, components] of entitiesWithComponents) {
 				try {
 					system.process(eID, components);
 				} catch (error) {
@@ -272,9 +314,8 @@ export default class LogicSystemsManager {
 		}
 
 		return this._precomputedGroups.map((group) => ({
-			startIndex: group.startIndex,
+			...group,
 			count: group.systems.length,
-			componentsKey: group.componentsKey,
 		}));
 	}
 

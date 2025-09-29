@@ -37,6 +37,14 @@ export default class EntityManager {
 	}
 
 	/**
+	 * Kiểm tra entity tồn tại
+	 * @param {number} eID
+	 */
+	hasEntity(eID) {
+		return this._entities.has(eID);
+	}
+
+	/**
 	 * Xóa entity và toàn bộ component của nó.
 	 * @param {number} entity ID entity cần xóa
 	 */
