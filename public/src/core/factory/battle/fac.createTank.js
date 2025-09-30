@@ -14,6 +14,7 @@ import SurvivalComponent from '../../components/combat/stats/com.Survival.js';
 // Combat stats
 import ReceivedDamageComponent from '../../components/combat/state/com.ReceiveDamage.js';
 import SkillImpactComponent from '../../components/combat/state/com.SkillImpact.js';
+import DamagesDisplayComponent from '../../components/combat/state/com.DamagesDisplay.js';
 
 // Display components
 import ShadowComponent from '../../components/graphic/com.Shadow.js';
@@ -37,6 +38,7 @@ import AttackPowerComponent from '../../components/combat/stats/com.AttackPower.
 
 // Use type only
 import EntityManager from '../../managers/combat/mgr.Entity.js';
+import { SANDBOX_SOCKET_ID } from '../../../../configs/constants/game-system-configs.js';
 
 /**
  * @type {ReturnType<typeof createAppearPositionGetter> | undefined}
@@ -69,8 +71,9 @@ export default function createTank(context, mapID, player, faction, inputManager
 
 	// Tank physics
 	// TODO: Đọc vị trí xuất hiện từ map manifest *Cần đưa logic này lên server, nếu không giữa các client sẽ bị lộn xộn
-	// new PositionComponent(...getAppearPosition(player.team)),
-	const tankPos = new PositionComponent(200, 200);
+	let tankPos = new PositionComponent(...getAppearPosition(player.team));
+	if (player.socketID.includes(SANDBOX_SOCKET_ID)) tankPos.x = tankPos.x > 1000 ? (tankPos.x /= 2) : (tankPos.x *= 2);
+
 	context.addComponents(tankEID, [
 		tankPos,
 
@@ -94,6 +97,7 @@ export default function createTank(context, mapID, player, faction, inputManager
 		// Combat stat components
 		new SkillImpactComponent(),
 		new ReceivedDamageComponent(),
+		new DamagesDisplayComponent(),
 	]);
 	stats.additional && context.addComponent(tankEID, AdditionalAttributesComponent.fromDSL(stats.additional));
 

@@ -78,7 +78,7 @@ export const skills = {
 		cooldown: 0.2,
 
 		// Cách dùng chiêu: chọn hướng
-		'casting-method': { type: 'in-direction', range: 528, display: { size: 60 } },
+		'casting-method': { type: 'in-direction', range: 480, display: { size: 60 } },
 
 		// Tiêu hao 25đ năng lượng
 		'resource-consumption': { energy: { amount: 25 } },
@@ -98,7 +98,7 @@ export const skills = {
 						{
 							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
-							value: { amount: 145 },
+							value: { amount: 145, unit: '%' },
 						},
 						'implement-later: Bóng quay về, nhặt được hồi năng lượng, tạo giáp',
 					],
@@ -153,7 +153,7 @@ export const skills = {
 						{
 							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
-							value: { amount: 384 },
+							value: { amount: 384, unit: '%' },
 						},
 						'implement-later: Đẩy lui',
 					],

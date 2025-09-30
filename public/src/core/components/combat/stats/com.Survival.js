@@ -39,9 +39,13 @@ export default class SurvivalComponent {
 	/**
 	 * Cập nhật máu hiện tại (tự động clamp trong [0, limitHP]).
 	 * @param {number} value - Máu mới
+	 * @returns - Delta của giá trị cũ và mới
 	 */
-	set currentHP(value) {
-		this._currentHP = Math.max(0, Math.min(value, this.limitHP));
+	setCurrentHP(value) {
+		const calculatedVal = Math.max(0, Math.min(value, this.limitHP));
+		const delta = this._currentHP - calculatedVal;
+		this._currentHP = calculatedVal;
+		return delta;
 	}
 
 	/** Máu hiện tại */

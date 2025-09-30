@@ -22,6 +22,8 @@ import ProjectileDistanceChecker from '../../core/systems/combat/projectile/sys.
 import CleanProjectileSystem from '../../core/systems/combat/projectile/sys.CleanProjectile.js';
 import ProjectileCollisionSystem from '../../core/systems/combat/projectile/sys.ProjectileCollision.js';
 import SkillImpactSystem from '../../core/systems/combat/event/sys.SkillImpact.js';
+import ReceiveDamageSystem from '../../core/systems/combat/event/sys.ReceiveDamage.js';
+import DeadSystem from '../../core/systems/combat/event/sys.Dead.js';
 
 /**
  * @typedef {import('../../core/managers/combat/mgr.Entity.js').default} EntityManager
@@ -57,11 +59,15 @@ export default function setupLogicSystems(context) {
 
 	// Skill impact
 	logicSystemsManager.registry(SkillImpactSystem.create(context), 'Skill_Impact');
+	logicSystemsManager.registry(ReceiveDamageSystem.create(context), 'Receive_Damage');
 
 	// Clean projectile sau
-	logicSystemsManager.registry(CleanProjectileSystem.create(context), 'Clean_Prjectile');
+	logicSystemsManager.registry(CleanProjectileSystem.create(context), 'Clean_Projectile');
 
-	// Sprite
+	// Dead
+	logicSystemsManager.registry(DeadSystem.create(context), 'Dead_System');
+
+	// Graphic
 	logicSystemsManager.registry(SpriteNextFrameSystem.create(context));
 
 	logicSystemsManager.finalize();

@@ -114,7 +114,7 @@ const noPhaseSkillManifest: SkillManifest = {
 				'on-hit': {
 					enemy: [
 						{
-							name: 'dealt-damage',
+							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
 							value: { amount: 125 },
 						},

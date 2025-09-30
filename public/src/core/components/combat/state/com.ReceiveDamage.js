@@ -8,5 +8,5 @@
 
 export default class ReceivedDamageComponent {
 	/** @type {DamageReceived[]} */
-	damageReceiveds = [];
+	damageQueue = [];
 }

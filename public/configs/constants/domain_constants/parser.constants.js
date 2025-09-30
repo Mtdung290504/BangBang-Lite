@@ -5,7 +5,7 @@
 export const DEFAULT_HIT_HANDLER = {
 	action: '@apply:damage',
 	source: { attribute: 'attack-power', of: 'self' },
-	value: { amount: 100 },
+	value: { amount: 100, unit: '%' },
 };
 
 export const INHERIT_DECLARATION = /** @type {const} */ ('inherit');

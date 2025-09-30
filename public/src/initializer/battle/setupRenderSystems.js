@@ -7,6 +7,8 @@ import { MapRenderContext } from '../../core/systems/graphic/contexts.js';
 import MapRenderer from '../../core/systems/graphic/sys.MapRenderer.js';
 import SpriteRenderer from '../../core/systems/graphic/sys.SpriteRenderer.js';
 import StatusBarRenderer from '../../core/systems/graphic/sys.StatusBarRenderer.js';
+import RenderDamagesDisplaySystem from '../../core/systems/graphic/sys.RenderDamagesDisplay.js';
+import UpdateDamagesDisplaySystem from '../../core/systems/combat/state/sys.UpdateDamagesDisplay.js';
 
 /**
  * @typedef {import('../../core/managers/combat/mgr.Entity.js').default} EntityManager
@@ -37,6 +39,10 @@ export default function setupRenderSystems(context, context2D, mapID, getDebugSt
 	);
 	renderSystemsManager.register(SpriteRenderer.create(context, context2D, getDebugState));
 	renderSystemsManager.register(StatusBarRenderer.create(context, context2D, getDebugState));
+
+	// Damage
+	renderSystemsManager.register(UpdateDamagesDisplaySystem.create(context));
+	renderSystemsManager.register(RenderDamagesDisplaySystem.create(context, context2D, getDebugState));
 
 	renderSystemsManager.finalize();
 	renderSystemsManager.initAll();

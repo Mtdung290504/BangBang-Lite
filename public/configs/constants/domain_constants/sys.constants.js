@@ -12,11 +12,14 @@ export const ENERGY_BAR_HEIGHT = 115 * 0.04;
 export const ENERGY_BAR_BORDER_RADIUS = 4;
 export const ENERGY_BAR_BORDER_WIDTH = 0.75;
 
-/**@type {{ [K in import('.types-system/src/core/combat/faction').Faction]: string } & { energy: string }} */
+/**@type {{ [K in import('.types-system/src/core/combat/faction').Faction]: string } & { energy: string, damage: string }} */
 export const STATUS_BAR_COLORS = {
-	ally: 'rgb(240, 0, 0)',
+	ally: 'rgb(52, 179, 222)',
 	energy: 'rgb(93, 228, 255)',
 	enemy: 'rgb(240, 0, 0)',
 	neutral: '',
 	self: 'rgb(0, 180, 0)',
+	damage: 'rgb(255, 0, 0)',
 };
+
+export const TEXT_DAMAGE_FONT_SIZE = 140 * 0.157;

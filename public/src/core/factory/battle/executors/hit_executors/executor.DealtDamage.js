@@ -82,6 +82,6 @@ export default class DealtDamageExecutor extends BaseSkillHitExecutor {
 
 		context
 			.getComponent(targetEID, ReceivedDamageComponent)
-			.damageReceiveds.push({ sourceEID, damageType, damageValue, displayType });
+			.damageQueue.push({ sourceEID, damageType, damageValue, displayType });
 	}
 }

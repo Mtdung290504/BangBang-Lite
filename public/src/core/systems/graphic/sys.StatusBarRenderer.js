@@ -36,13 +36,11 @@ const StatusBarRenderer = defineSystemFactory([StatusBarComponent, PositionCompo
 		function render() {
 			const { context2D } = sysContext;
 
-			for (let i = 0; i < 2; i++) {
-				// @ts-expect-error: render-size luôn tồn tại
-				let [xPos, yPos] = renderHealthBar(context2D, survival, pos, resource.manifest['render-size'], color);
-				// Nếu có năng lượng mới render
-				if (additional) yPos = renderEnergyBar(context2D, additional, xPos, yPos);
-				renderName(context2D, status.displayName, pos, yPos, color);
-			}
+			// @ts-ignore: render-size luôn tồn tại
+			let [xPos, yPos] = renderHealthBar(context2D, survival, pos, resource.manifest['render-size'], color);
+			// Nếu có năng lượng mới render
+			if (additional) yPos = renderEnergyBar(context2D, additional, xPos, yPos);
+			renderName(context2D, status.displayName, pos, yPos, color);
 		}
 	})
 	.build();
