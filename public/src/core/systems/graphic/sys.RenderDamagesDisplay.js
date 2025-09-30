@@ -12,22 +12,24 @@ const RenderDamagesDisplaySystem = defineSystemFactory([DamagesDisplayComponent]
 			const { context2D } = sysContext;
 
 			damageEffects.forEach((damageEffect) => {
-				for (let i = 0; i < 2; i++) {
-					context2D.save();
-					context2D.globalAlpha = damageEffect.opacity;
+				context2D.save();
+				context2D.globalAlpha = damageEffect.opacity;
 
+				context2D.font = `400 ${TEXT_DAMAGE_FONT_SIZE}px "Montserrat", sans-serif`;
+				context2D.textAlign = 'center';
+
+				context2D.strokeStyle = 'black';
+				context2D.lineWidth = TEXT_DAMAGE_FONT_SIZE / 35; // Điều chỉnh độ dày viền theo font size
+				context2D.fillStyle = damageEffect.color;
+
+				for (let i = 0; i < 3; i++) {
 					// Vẽ viền đen
-					context2D.font = `540 ${TEXT_DAMAGE_FONT_SIZE}px "Montserrat", sans-serif`;
-					context2D.textAlign = 'center';
-					context2D.strokeStyle = 'black';
-					context2D.lineWidth = TEXT_DAMAGE_FONT_SIZE / 28; // Điều chỉnh độ dày viền theo font size
 					context2D.strokeText(damageEffect.value, damageEffect.x, damageEffect.y);
-
 					// Vẽ chữ màu
-					context2D.fillStyle = damageEffect.color;
 					context2D.fillText(damageEffect.value, damageEffect.x, damageEffect.y);
-					context2D.restore();
 				}
+
+				context2D.restore();
 			});
 		}
 	})

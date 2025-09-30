@@ -2,11 +2,14 @@
 import defineSystemFactory from '../../../factory/factory_builders/defineSystemFactory.js';
 
 // Components
-import ReceivedDamageComponent from '../../../components/combat/state/com.ReceiveDamage.js';
+import AttackPowerComponent from '../../../components/combat/stats/com.AttackPower.js';
 import SurvivalComponent from '../../../components/combat/stats/com.Survival.js';
+import ReceivedDamageComponent from '../../../components/combat/state/com.ReceiveDamage.js';
 import DamagesDisplayComponent from '../../../components/combat/state/com.DamagesDisplay.js';
-import TextEffect from '../../../../../../models/public/TextEffect.js';
 import PositionComponent from '../../../components/physics/com.Position.js';
+
+// Constants / Models
+import TextEffect from '../../../../../../models/public/TextEffect.js';
 import { STATUS_BAR_COLORS } from '../../../../../configs/constants/domain_constants/sys.constants.js';
 
 const ReceiveDamageSystem = defineSystemFactory([ReceivedDamageComponent])
@@ -15,29 +18,33 @@ const ReceiveDamageSystem = defineSystemFactory([ReceivedDamageComponent])
 		if (!survival) return (damageQueue.length = 0);
 		const pos = context.getComponent(eID, PositionComponent);
 
-		damageQueue.forEach(({ damageValue, damageType, displayType }) => {
-			const defVal = (() => {
+		damageQueue.forEach(({ damageValue, damageType, displayType, sourceEID }) => {
+			const calcDef = () => {
+				const pen = context.getComponent(sourceEID, AttackPowerComponent).penetration;
 				switch (damageType) {
 					case 'energy':
-						return survival.shield;
+						return survival.shield - pen;
 					case 'true':
 						return 0;
 					case 'physical':
-						return survival.armor;
+						return survival.armor - pen;
 					default:
 						throw new Error('Invalid damage type');
 				}
-			})();
+			};
 
 			// Tối thiểu gây 1 ST
 			const calulatedDamage = Math.round(
-				Math.max(1, (1 + survival.dmgReduction / 100) * damage(damageValue, defVal))
+				Math.max(1, (1 + survival.dmgReduction / 100) * damage(damageValue, calcDef()))
 			);
+			// Lượng ST thực sự gây ra
 			const damageDealt = survival.setCurrentHP(survival.currentHP - calulatedDamage);
 
-			context
-				.getComponent(eID, DamagesDisplayComponent)
-				.damageEffects.push(new TextEffect(pos, damageDealt, STATUS_BAR_COLORS.damage, displayType));
+			if (damageDealt)
+				// TODO: Triển khai sau: Nếu nguồn hoặc đích là EID của mình thì mới hiện, không thì thôi
+				context
+					.getComponent(eID, DamagesDisplayComponent)
+					.damageEffects.push(new TextEffect(pos, damageDealt, STATUS_BAR_COLORS.damage, displayType));
 		});
 
 		// Xóa ST đã xử lý

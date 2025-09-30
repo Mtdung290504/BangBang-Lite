@@ -19,7 +19,7 @@ export const STATUS_BAR_COLORS = {
 	enemy: 'rgb(240, 0, 0)',
 	neutral: '',
 	self: 'rgb(0, 180, 0)',
-	damage: 'rgb(255, 0, 0)',
+	damage: 'rgba(230, 20, 20, 1)',
 };
 
 export const TEXT_DAMAGE_FONT_SIZE = 140 * 0.157;

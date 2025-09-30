@@ -21,8 +21,8 @@ export const stats = {
 		},
 		'attack-power': {
 			'damage-type': 'physical',
-			'attack-power': 247,
-			penetration: 26,
+			'attack-power': 217,
+			penetration: 50,
 			'crit-damage': 200,
 		},
 		'movement-speed': 180,
@@ -45,6 +45,19 @@ export const skills = {
 				action: '@create:projectile',
 				type: 'default',
 				collider: { type: 'rectangle', size: { width: 25 * 1.07 * 5, height: 25 * 1.07 } },
+
+				// Gây thêm ST bằng 5% HP đã mất
+				'on-hit': {
+					enemy: [
+						{
+							action: '@apply:damage',
+							'damage-type': 'true',
+							'display-type': 'bonus',
+							value: { amount: 5, unit: '%' },
+							source: { attribute: 'lost-HP', of: 'self' },
+						},
+					],
+				},
 			},
 		],
 	},

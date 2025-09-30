@@ -17,14 +17,14 @@ export const stats = {
 		},
 
 		survival: {
-			'limit-HP': 2840,
+			'limit-HP': 3240,
 			'physical-armor': 88,
 			'energy-shield': 68,
 		},
 
 		'attack-power': {
 			'damage-type': 'physical',
-			'attack-power': 324,
+			'attack-power': 351,
 			penetration: 36,
 			'crit-damage': 200,
 		},
@@ -38,6 +38,8 @@ export const stats = {
 
 		'movement-speed': 160,
 	},
+
+	'render-size': 54,
 };
 
 /**@type {Types['SkillManifest']} */
@@ -68,6 +70,16 @@ export const skills = {
 				collider: { type: 'rectangle', size: { width: 41.53 * 1.07, height: 30.04 * 1.07 } },
 				enhancements: [{ name: 'bouncing', 'hit-limit': 3, 'damage-reduction': { amount: 50 } }],
 				'on-dealt-damage': { self: [{ action: '@recover:energy', amount: 5 }] },
+				'on-hit': {
+					enemy: [
+						{
+							action: '@apply:damage',
+							source: { attribute: 'attack-power', of: 'self' },
+							value: { amount: 50, unit: '%' },
+							'display-type': 'bonus',
+						},
+					],
+				},
 			},
 		],
 	},
@@ -98,7 +110,7 @@ export const skills = {
 						{
 							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
-							value: { amount: 145, unit: '%' },
+							value: { amount: 150, unit: '%' },
 						},
 						'implement-later: Bóng quay về, nhặt được hồi năng lượng, tạo giáp',
 					],
@@ -108,7 +120,7 @@ export const skills = {
 				},
 
 				// Hitbox
-				collider: { type: 'circle', size: { radius: 42 } },
+				collider: { type: 'circle', size: { radius: 45 } },
 
 				// Sprite
 				'sprite-key': 's1',

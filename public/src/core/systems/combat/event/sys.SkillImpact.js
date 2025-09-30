@@ -13,11 +13,19 @@ const SkillImpactSystem = defineSystemFactory([SkillImpactComponent])
 			const { ownerEID: sourceEID } = context.getComponent(impactEID, OwnerEIDComponent);
 			const { onHitManifest } = context.getComponent(impactEID, OnSkillHitManifest);
 			const handlers = onHitManifest[role];
+			const selfHandler = onHitManifest['self'];
 
 			if (!handlers) return;
 			handlers.forEach((action) => {
 				if (typeof action === 'string') return;
 				if (action.action === '@apply:damage') new DealtDamageExecutor(context, action).exec(sourceEID, eID);
+			});
+
+			if (!selfHandler) return;
+			selfHandler.forEach((action) => {
+				if (typeof action === 'string') return;
+				if (action.action === '@apply:damage')
+					new DealtDamageExecutor(context, action).exec(sourceEID, sourceEID);
 			});
 		});
 
