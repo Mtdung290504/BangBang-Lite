@@ -20,7 +20,7 @@ export default class LogicSystemsManager {
 		/**
 		 * Danh sách systems đã đăng ký theo thứ tự.
 		 *
-		 * @type {Array<{system: _AbstractSystem, primaryComponents?: any[], componentsKey: string}>}
+		 * @type {Array<{system: _AbstractSystem, name: string, primaryComponents?: any[], componentsKey: string}>}
 		 * @private
 		 */
 		this._systems = [];
@@ -38,7 +38,7 @@ export default class LogicSystemsManager {
 		 * Pre-computed consecutive system groups để tránh tính toán mỗi frame.
 		 * Được tính khi finalize() hoặc lần đầu updateAll().
 		 *
-		 * @type {Array<{systems: Array<{system: any, index: number}>, primaryComponents?: any[], startIndex: number, componentsKey: string}> | null}
+		 * @type {Array<{systems: Array<{system: any, index: number, name: string}>, primaryComponents?: any[], startIndex: number, componentsKey: string}> | null}
 		 * @private
 		 */
 		this._precomputedGroups = null;
@@ -58,7 +58,7 @@ export default class LogicSystemsManager {
 	 * @template {(new (...args: any) => any)[]} T
 	 * @param {_AbstractSystem<T>} system - Kết quả từ factory.create()
 	 */
-	registry(system) {
+	registry(system, name = '') {
 		// Validation
 		if (!system || typeof system !== 'object') {
 			throw new Error('System must be a valid object');
@@ -88,6 +88,7 @@ export default class LogicSystemsManager {
 
 		this._systems.push({
 			system,
+			name,
 			primaryComponents: system.primaryComponents,
 			componentsKey,
 		});
@@ -138,12 +139,12 @@ export default class LogicSystemsManager {
 
 		for (let i = 0; i < this._systems.length; i++) {
 			const systemData = this._systems[i];
-			const { system, componentsKey } = systemData;
+			const { system, componentsKey, name } = systemData;
 
 			if (!currentGroup || currentGroup.componentsKey !== componentsKey) {
 				// Tạo group mới
 				currentGroup = {
-					systems: [{ system, index: i }],
+					systems: [{ system, index: i, name }],
 					primaryComponents: systemData.primaryComponents,
 					startIndex: i,
 					componentsKey,
@@ -151,7 +152,7 @@ export default class LogicSystemsManager {
 				groups.push(currentGroup);
 			} else {
 				// Thêm vào group hiện tại
-				currentGroup.systems.push({ system, index: i });
+				currentGroup.systems.push({ system, index: i, name });
 			}
 		}
 
@@ -220,7 +221,7 @@ export default class LogicSystemsManager {
 	/**
 	 * Xử lý một nhóm systems.
 	 *
-	 * @param {{systems: Array<{system: any, index: number}>, primaryComponents?: any[], startIndex: number, componentsKey: string}} group
+	 * @param {{systems: Array<{system: any, index: number, name: string }>, primaryComponents?: any[], startIndex: number, componentsKey: string}} group
 	 * @private
 	 */
 	_processSystemGroup(group) {
@@ -229,6 +230,7 @@ export default class LogicSystemsManager {
 		// Systems không có primaryComponents - chỉ gọi process trực tiếp
 		if (!primaryComponents || primaryComponents.length === 0) {
 			for (const { system, index } of systems) {
+				console.log(index);
 				try {
 					system.process();
 				} catch (error) {
@@ -246,8 +248,7 @@ export default class LogicSystemsManager {
 			this._frameCache.set(componentsKey, entitiesWithComponents);
 		}
 
-		// ✅ FIX: Chạy từng system trước, rồi mới iterate entities
-		for (const { system, index } of systems) {
+		for (const { system, index, name } of systems) {
 			for (const [eID, components] of entitiesWithComponents) {
 				try {
 					system.process(eID, components);

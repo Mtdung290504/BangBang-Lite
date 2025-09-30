@@ -13,7 +13,7 @@ import SurvivalComponent from '../../components/combat/stats/com.Survival.js';
 
 // Combat stats
 import ReceivedDamageComponent from '../../components/combat/state/com.ReceiveDamage.js';
-import SkillHitComponent from '../../components/combat/state/com.SkillHit.js';
+import SkillImpactComponent from '../../components/combat/state/com.SkillImpact.js';
 
 // Display components
 import ShadowComponent from '../../components/graphic/com.Shadow.js';
@@ -92,7 +92,7 @@ export default function createTank(context, mapID, player, faction, inputManager
 		AttackPowerComponent.fromDSL(stats['attack-power']),
 
 		// Combat stat components
-		new SkillHitComponent(),
+		new SkillImpactComponent(),
 		new ReceivedDamageComponent(),
 	]);
 	stats.additional && context.addComponent(tankEID, AdditionalAttributesComponent.fromDSL(stats.additional));

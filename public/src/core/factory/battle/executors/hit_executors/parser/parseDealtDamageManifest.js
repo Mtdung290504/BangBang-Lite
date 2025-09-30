@@ -1,4 +1,4 @@
-import { INHERIT_DECLARATION } from '../../../../../../../configs/constants/domain_constants/fac.constants.js';
+import { INHERIT_DECLARATION } from '../../../../../../../configs/constants/domain_constants/parser.constants.js';
 
 /**
  * @typedef {import('.types-system/dsl/skills/actions/apply_effect/dealt-damage').DealtDamage} DealtDamageManifest

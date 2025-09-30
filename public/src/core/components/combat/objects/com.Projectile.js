@@ -3,11 +3,9 @@ export default class ProjectileComponent {
 	cleanable = false;
 
 	/**
-	 * @param {number} ownerEID
 	 * @param {number} flightRange
 	 */
-	constructor(ownerEID, flightRange) {
-		this.ownerEID = ownerEID;
+	constructor(flightRange) {
 		this.flightRange = flightRange;
 	}
 

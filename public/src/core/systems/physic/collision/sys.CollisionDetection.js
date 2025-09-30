@@ -7,7 +7,9 @@ import ColliderComponent from '../../../components/physics/com.Collider.js';
 import MovementComponent from '../../../components/physics/com.Movement.js';
 
 // Fomulars
-import { circleCollisionRectangle } from '../../../fomulars/collision.js';
+import { circleCollisionCircle, circleCollisionRectangle } from '../../../fomulars/collision.js';
+
+const DEBUG = false;
 
 /** Chỉ query ColliderComponent nhằm tối ưu số vòng lặp */
 const CollisionDetectionSystem = defineSystemFactory([ColliderComponent])
@@ -29,7 +31,7 @@ const CollisionDetectionSystem = defineSystemFactory([ColliderComponent])
 						rectAngle
 					)
 				) {
-					// console.log('Collision:', collider, checkCollider);
+					DEBUG && console.log('Collision:', collider, checkCollider);
 					collider.collisionTargets.add(checkEID);
 					checkCollider.collisionTargets.add(eID);
 				}
@@ -44,7 +46,20 @@ const CollisionDetectionSystem = defineSystemFactory([ColliderComponent])
 						rectAngle
 					)
 				) {
-					// console.log('Collision:', collider, checkCollider);
+					DEBUG && console.log('Collision:', collider, checkCollider);
+					collider.collisionTargets.add(checkEID);
+					checkCollider.collisionTargets.add(eID);
+				}
+			} else if (collider.type === 'circle' && checkCollider.type === 'circle') {
+				if (
+					circleCollisionCircle(
+						checkPos,
+						/** @type {ColliderComponent<'circle'>} */ (checkCollider),
+						pos,
+						/** @type {ColliderComponent<'circle'>} */ (collider)
+					)
+				) {
+					DEBUG && console.log('Collision:', collider, checkCollider);
 					collider.collisionTargets.add(checkEID);
 					checkCollider.collisionTargets.add(eID);
 				}

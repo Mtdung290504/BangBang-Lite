@@ -5,6 +5,7 @@ import defineSystemFactory from '../../../factory/factory_builders/defineSystemF
 import SkillComponent from '../../../components/combat/state/skill/com.SkillComponent.js';
 import SkillCooldownComponent from '../../../components/combat/state/skill/com.Cooldown.js';
 
+const DEBUG = false;
 const SkillRequirementSystem = defineSystemFactory([SkillComponent])
 	.withProcessor((context, eID, [skill]) => {
 		if (!skill.usable) return;
@@ -12,15 +13,14 @@ const SkillRequirementSystem = defineSystemFactory([SkillComponent])
 		const cooldownComponent = context.getComponent(eID, SkillCooldownComponent, false);
 		if (!cooldownComponent) return;
 
-		if (cooldownComponent.remainingCD === 0) {
+		const remainingCD = cooldownComponent.remainingCD;
+		if (remainingCD === 0) {
 			cooldownComponent.activateCD();
 			return;
 		}
 
 		// Lock skill if cooldown !== 0
-		console.log(
-			`> [sys.SkillCooldown] Skill::[${eID}] is on cooldown (${cooldownComponent.remainingCD.toFixed(2)})`
-		);
+		DEBUG && console.log(`> [sys.SkillCooldown] Skill::[${eID}] is on cooldown (${remainingCD.toFixed(2)})`);
 		skill.usable = false;
 	})
 	.build();

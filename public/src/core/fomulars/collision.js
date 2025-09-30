@@ -39,6 +39,20 @@ export function circleCollisionRectangle(circlePos, circle, rectPos, rect, rectA
 	return distX * distX + distY * distY < cr * cr;
 }
 
+/**
+ * @param {PositionComponent} circlePos1
+ * @param {ColliderComponent<'circle'>} circle1
+ * @param {PositionComponent} circlePos2
+ * @param {ColliderComponent<'circle'>} circle2
+ */
+export function circleCollisionCircle(circlePos1, circle1, circlePos2, circle2) {
+	const dx = circlePos1.x - circlePos2.x;
+	const dy = circlePos1.y - circlePos2.y;
+
+	const rSum = circle1.radius + circle2.radius;
+	return dx * dx + dy * dy <= rSum * rSum;
+}
+
 // import { Point, Circle, Line, RotableRectangle, Polygon } from '../bases/bases.mjs';
 
 // export default class CollisionsChecker {

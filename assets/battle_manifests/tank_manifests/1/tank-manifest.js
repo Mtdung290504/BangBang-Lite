@@ -89,6 +89,7 @@ export const skills = {
 				action: '@create:projectile',
 				type: 'custom',
 				'flight-speed': 15,
+				'flight-range': 528,
 
 				// Event
 				'on-hit': {
@@ -97,7 +98,7 @@ export const skills = {
 						{
 							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
-							value: { amount: 135 },
+							value: { amount: 145 },
 						},
 						'implement-later: Bóng quay về, nhặt được hồi năng lượng, tạo giáp',
 					],
@@ -143,6 +144,7 @@ export const skills = {
 				action: '@create:projectile',
 				type: 'custom',
 				'flight-speed': 12,
+				'flight-range': 480,
 
 				// Event
 				'on-hit': {
@@ -151,7 +153,7 @@ export const skills = {
 						{
 							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
-							value: { amount: 295 },
+							value: { amount: 384 },
 						},
 						'implement-later: Đẩy lui',
 					],

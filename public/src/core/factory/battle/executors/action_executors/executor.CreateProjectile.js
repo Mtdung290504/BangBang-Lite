@@ -25,6 +25,7 @@ import {
 } from '../../../../../../configs/constants/domain_constants/com.constants.js';
 import MovementComponent from '../../../../components/physics/com.Movement.js';
 import TargetFilterComponent from '../../../../components/combat/state/skill/com.TargetFilter.js';
+import OwnerEIDComponent from '../../../../components/combat/state/com.OwnerEID.js';
 
 export default class CreateProjectileExecutor extends BaseActionExecutor {
 	/**
@@ -83,11 +84,12 @@ export default class CreateProjectileExecutor extends BaseActionExecutor {
 
 		// Tạo projectile
 		const projEID = context.createEntity();
-		const proj = new ProjectileComponent(selfTankEID, flightRange);
+		const proj = new ProjectileComponent(flightRange);
 		context.addComponents(projEID, [proj, projVel, projMov, projPos, projCollider, projSprite]);
 
 		// Lưu event handler và target filter vào projectile
 		context.addComponents(projEID, [
+			new OwnerEIDComponent(selfTankEID),
 			new OnSkillHitManifest(onHit),
 			new OnSkillDealtDamageManifest(onDealtDamage),
 			new TargetFilterComponent(targets),
