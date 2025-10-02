@@ -23,6 +23,8 @@ import setupBattle from '../battle/setupBattle.js';
 import { LOGIC_FPS } from '../../core/managers/system/mgr.game-loop.js';
 
 import PositionComponent from '../../core/components/physics/com.Position.js';
+import SurvivalComponent from '../../core/components/combat/stats/com.Survival.js';
+import AdditionalAttributesComponent from '../../core/components/combat/stats/com.AdditionalAttributes.js';
 
 const DEBUG_MODE = true;
 
@@ -107,6 +109,7 @@ function setupSyncSystem(socket, battle) {
 
 	function startSync() {
 		dispatchSyncPositionState();
+		dispatchSyncStatState();
 		setTimeout(startSync, (1000 / LOGIC_FPS) * 2);
 	}
 
@@ -117,6 +120,20 @@ function setupSyncSystem(socket, battle) {
 			positionStates[socketID] = context.getComponent(tankEID, PositionComponent);
 
 		battleHandlers.syncPositionState(socket, positionStates);
+	}
+
+	function dispatchSyncStatState() {
+		/**@type {{[socketID: string]: { currentHP: number, currentEnergy?: number } }} */
+		const statStates = {};
+		for (const [socketID, { tankEID }] of playerRegistry) {
+			const additionalAttributes = context.getComponent(tankEID, AdditionalAttributesComponent, false);
+			statStates[socketID] = {
+				currentHP: context.getComponent(tankEID, SurvivalComponent).currentHP,
+				currentEnergy: additionalAttributes?.currentEnergyPoint,
+			};
+		}
+
+		battleHandlers.syncStatState(socket, statStates);
 	}
 }
 

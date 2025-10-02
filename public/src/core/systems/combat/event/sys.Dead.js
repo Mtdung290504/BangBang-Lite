@@ -3,13 +3,18 @@ import defineSystemFactory from '../../../factory/factory_builders/defineSystemF
 
 // Components
 import SurvivalComponent from '../../../components/combat/stats/com.Survival.js';
+import PositionComponent from '../../../components/physics/com.Position.js';
 
 const DeadSystem = defineSystemFactory([SurvivalComponent])
-	.withProcessor((_context, eID, [survival]) => {
+	.withProcessor((context, eID, [survival]) => {
 		if (survival.currentHP < 1) {
 			console.log(`Entity::[${eID}] dead`);
+
 			// Giả định hồi sinh
-			survival.setCurrentHP(100000000);
+			const pos = context.getComponent(eID, PositionComponent);
+			pos.x = pos.initX;
+			pos.y = pos.initY;
+			survival.setCurrentHP(survival.limitHP);
 		}
 	})
 	.build();

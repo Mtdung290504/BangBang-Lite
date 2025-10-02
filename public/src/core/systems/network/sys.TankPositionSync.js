@@ -16,6 +16,9 @@ const TankPositionSyncSystem = defineSystemFactory([TankComponent])
 		const networkPos = context.getComponent(eID, NetworkPositionComponent);
 		const history = context.getComponent(eID, VelocityHistoryComponent);
 
+		// Ngưỡng giãn cách tối đa trước khi snap
+		const MAX_DISTANCE_THRESHOLD = 100; // Điều chỉnh giá trị này theo nhu cầu
+
 		// Xử lý sync từ network (new handler)
 		if (networkPos.x !== null && networkPos.y !== null && networkPos.timestamp !== null) {
 			// Tìm timestamp gần nhất trong history
@@ -41,19 +44,75 @@ const TankPositionSyncSystem = defineSystemFactory([TankComponent])
 
 		// Smooth lerp cho trường hợp fallback (old handler)
 		if (networkPos.targetX !== null && networkPos.targetY !== null) {
-			const LERP_SPEED = 0.3;
+			const distance = Math.hypot(networkPos.targetX - pos.x, networkPos.targetY - pos.y);
 
-			pos.x += (networkPos.targetX - pos.x) * LERP_SPEED;
-			pos.y += (networkPos.targetY - pos.y) * LERP_SPEED;
-
-			// Dừng lerp khi đủ gần
-			if (Math.hypot(networkPos.targetX - pos.x, networkPos.targetY - pos.y) < 1) {
+			// Kiểm tra nếu giãn cách quá lớn -> snap ngay lập tức
+			if (distance > MAX_DISTANCE_THRESHOLD) {
 				pos.x = networkPos.targetX;
 				pos.y = networkPos.targetY;
 				networkPos.resetTarget();
+			} else {
+				// Lerp bình thường
+				const LERP_SPEED = 0.3;
+
+				pos.x += (networkPos.targetX - pos.x) * LERP_SPEED;
+				pos.y += (networkPos.targetY - pos.y) * LERP_SPEED;
+
+				// Dừng lerp khi đủ gần
+				if (distance < 1) {
+					pos.x = networkPos.targetX;
+					pos.y = networkPos.targetY;
+					networkPos.resetTarget();
+				}
 			}
 		}
 	})
 	.build();
+
+// const TankPositionSyncSystem = defineSystemFactory([TankComponent])
+// 	.withProcessor((context, eID, [_tank]) => {
+// 		const pos = context.getComponent(eID, PositionComponent);
+// 		const networkPos = context.getComponent(eID, NetworkPositionComponent);
+// 		const history = context.getComponent(eID, VelocityHistoryComponent);
+
+// 		// Xử lý sync từ network (new handler)
+// 		if (networkPos.x !== null && networkPos.y !== null && networkPos.timestamp !== null) {
+// 			// Tìm timestamp gần nhất trong history
+// 			const nearestTimestamp = history.findNearestTimestamp(networkPos.timestamp);
+
+// 			if (nearestTimestamp !== null) {
+// 				// Replay: Cộng tất cả delta sau timestamp sync
+// 				const replayDelta = history.getDeltaFromTimestamp(networkPos.timestamp);
+// 				networkPos.targetX = networkPos.x + replayDelta.dx;
+// 				networkPos.targetY = networkPos.y + replayDelta.dy;
+
+// 				// Cập nhật lastSyncTimestamp
+// 				history.lastSyncTimestamp = networkPos.timestamp;
+// 			} else {
+// 				// Fallback: Nếu không có history, dùng lerp như cũ
+// 				networkPos.targetX = networkPos.x;
+// 				networkPos.targetY = networkPos.y;
+// 			}
+
+// 			// Reset network data
+// 			networkPos.reset();
+// 		}
+
+// 		// Smooth lerp cho trường hợp fallback (old handler)
+// 		if (networkPos.targetX !== null && networkPos.targetY !== null) {
+// 			const LERP_SPEED = 0.3;
+
+// 			pos.x += (networkPos.targetX - pos.x) * LERP_SPEED;
+// 			pos.y += (networkPos.targetY - pos.y) * LERP_SPEED;
+
+// 			// Dừng lerp khi đủ gần
+// 			if (Math.hypot(networkPos.targetX - pos.x, networkPos.targetY - pos.y) < 1) {
+// 				pos.x = networkPos.targetX;
+// 				pos.y = networkPos.targetY;
+// 				networkPos.resetTarget();
+// 			}
+// 		}
+// 	})
+// 	.build();
 
 export default TankPositionSyncSystem;

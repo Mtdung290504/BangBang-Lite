@@ -39,6 +39,7 @@ import AttackPowerComponent from '../../components/combat/stats/com.AttackPower.
 // Use type only
 import EntityManager from '../../managers/combat/mgr.Entity.js';
 import { SANDBOX_SOCKET_ID } from '../../../../configs/constants/game-system-configs.js';
+import NetworkStatsComponent from '../../components/network/com.NetworkStats.js';
 
 /**
  * @type {ReturnType<typeof createAppearPositionGetter> | undefined}
@@ -114,7 +115,8 @@ export default function createTank(context, mapID, player, faction, inputManager
 
 	// Network sync components
 	const networkPosition = new NetworkPositionComponent();
-	context.addComponents(tankEID, [networkPosition, new VelocityHistoryComponent()]);
+	const networkStats = new NetworkStatsComponent();
+	context.addComponents(tankEID, [networkPosition, new VelocityHistoryComponent(), networkStats]);
 
 	// Lưu headID vào tank, lưu tankID vào head, tạo skill context
 	const tankHeadEID = createTankHead(context, tankEID, renderSize);
@@ -130,6 +132,7 @@ export default function createTank(context, mapID, player, faction, inputManager
 		//  tankHeadEID,
 		inputManager,
 		networkPosition,
+		networkStats,
 	};
 }
 

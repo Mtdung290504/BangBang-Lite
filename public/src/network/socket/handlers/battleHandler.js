@@ -1,9 +1,16 @@
 /**
  * @typedef {import('socket.io-client').Socket} _Socket
  * @typedef {import('../../../core/components/network/com.NetworkPosition.js').default} _NetworkPosition
+ * @typedef {import('../../../core/components/network/com.NetworkStats.js').default} _NetworkStats
  * @typedef {import('../../../core/managers/input/mgr.BattleInput.js').default} _BattleInputManager
- * @typedef {Map<string, { tankEID: number, inputManager: _BattleInputManager, networkPosition: _NetworkPosition }>} _PlayerRegistry
+ * @typedef {Map<string, {
+ * 		tankEID: number
+ * 		inputManager: _BattleInputManager
+ * 		networkPosition: _NetworkPosition
+ * 		networkStats: _NetworkStats
+ * }>} _PlayerRegistry
  * @typedef {{ [socketID: string]: { x: number, y: number } }} _PositionStates
+ * @typedef {{ [socketID: string]: { currentHP: number, currentEnergy?: number } }} _StatStates
  */
 
 /**
@@ -17,9 +24,10 @@ export function setup(socket, playerRegistry) {
 	 * @type {[event: string, handler: (...args: any[]) => void][]}
 	 */
 	const socketEvents = [
-		['dispatch:sync-mouse-state', syncMouseState],
-		['dispatch:sync-action-state', syncActionState],
-		['dispatch:sync-position-state', syncPositionState],
+		['dispatch:sync-mouse-state', syncMouseStateHandler],
+		['dispatch:sync-action-state', syncActionStateHandler],
+		['dispatch:sync-position-state', syncPositionStateHandler],
+		['dispatch:sync-stats-state', syncStatStateHandler],
 	];
 
 	socketEvents.forEach(([event, handler]) => socket.on(event, handler));
@@ -29,7 +37,7 @@ export function setup(socket, playerRegistry) {
 	 * @param {string} data.socketID
 	 * @param {_BattleInputManager['mouseState']} data.mouseState
 	 */
-	function syncMouseState({ socketID, mouseState }) {
+	function syncMouseStateHandler({ socketID, mouseState }) {
 		const playerState = playerRegistry.get(socketID);
 
 		if (playerState) {
@@ -48,7 +56,7 @@ export function setup(socket, playerRegistry) {
 	 * @param {string} data.socketID
 	 * @param {_BattleInputManager['actionState']} data.actionState
 	 */
-	function syncActionState({ socketID, actionState }) {
+	function syncActionStateHandler({ socketID, actionState }) {
 		const playerState = playerRegistry.get(socketID);
 
 		if (playerState) {
@@ -66,7 +74,7 @@ export function setup(socket, playerRegistry) {
 	 * @param {_PositionStates} positionStates
 	 * @param {number} timestamp
 	 */
-	function syncPositionState(positionStates, timestamp) {
+	function syncPositionStateHandler(positionStates, timestamp) {
 		for (const socketID in positionStates) {
 			const playerState = playerRegistry.get(socketID);
 
@@ -87,6 +95,32 @@ export function setup(socket, playerRegistry) {
 		}
 	}
 
+	/**
+	 * @param {_StatStates} statStates
+	 * @param {number} timestamp
+	 */
+	function syncStatStateHandler(statStates, timestamp) {
+		for (const socketID in statStates) {
+			const playerState = playerRegistry.get(socketID);
+
+			if (playerState) {
+				const { networkStats } = playerState;
+				const { currentHP, currentEnergy } = statStates[socketID];
+
+				networkStats.timestamp = timestamp;
+				networkStats.currentHP = currentHP;
+				if (currentEnergy) networkStats.currentEnergy = currentEnergy;
+
+				continue;
+			}
+
+			console.warn(
+				`> [BattleHandler] Network data problem, playerState with socketID:[${socketID}] does not exist in registry:`,
+				playerRegistry
+			);
+		}
+	}
+
 	return () => socketEvents.forEach(([event, handler]) => socket.off(event, handler));
 }
 
@@ -97,6 +131,14 @@ export function setup(socket, playerRegistry) {
 export function syncPositionState(socket, positionStates) {
 	// Bổ sung timestamp
 	socket.emit('request-sync:position-state', positionStates, Date.now());
+}
+
+/**
+ * @param {_Socket} socket
+ * @param {_StatStates} states
+ */
+export function syncStatState(socket, states) {
+	socket.emit('request-sync:stat-state', states, Date.now());
 }
 
 /**

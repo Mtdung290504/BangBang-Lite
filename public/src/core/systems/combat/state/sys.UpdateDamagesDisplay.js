@@ -18,11 +18,11 @@ const UpdateDamagesDisplaySystem = defineSystemFactory([DamagesDisplayComponent]
 						damageEffect.y -= damageEffect.speed;
 						break;
 					case 'bonus':
-						damageEffect.x += damageEffect.speed;
+						damageEffect.x -= damageEffect.speed;
 						damageEffect.y -= damageEffect.speed;
 						break;
 					default:
-						damageEffect.x -= damageEffect.speed;
+						damageEffect.x += damageEffect.speed;
 						damageEffect.y -= damageEffect.speed;
 						break;
 				}

@@ -2,6 +2,7 @@
  * @typedef {import('../../network/assets_managers/assets-storage.js')} _Storage
  * @typedef {{ id: string | undefined, emit: (...args: any[]) => void }} _AbstractSocket
  * @typedef {import('../../core/components/network/com.NetworkPosition.js').default} _NetworkPosition
+ * @typedef {import('../../core/components/network/com.NetworkStats.js').default} _NetworkStats
  */
 
 // Models
@@ -36,7 +37,14 @@ import PositionComponent from '../../core/components/physics/com.Position.js';
 const LOG_PREFIX = '> [initializer.Battle]';
 const DEBUG_MODE = false;
 
-/** @type {Map<string, { tankEID: number, inputManager: BattleInputManager, networkPosition: _NetworkPosition }>} */
+/**
+ * @type {Map<string, {
+ * 		tankEID: number
+ * 		inputManager: BattleInputManager
+ * 		networkPosition: _NetworkPosition
+ * 		networkStats: _NetworkStats
+ * }>}
+ */
 const playerRegistry = new Map();
 
 /**
@@ -177,8 +185,19 @@ function setupTanks(context, mapID, players, { selfSocketID, selfInputManager })
 
 	// Khởi tạo tank cho mình
 	// Khởi tạo cho bản thân sau là có lý do, render tank của bản thân sẽ luôn hiện trên các tank khác (trừ khi nó bay)
-	const { tankEID, networkPosition } = createTank(context, mapID, players[selfSocketID], 'self', selfInputManager);
-	playerRegistry.set(selfSocketID, { tankEID, inputManager: selfInputManager, networkPosition });
+	const { tankEID, networkPosition, networkStats } = createTank(
+		context,
+		mapID,
+		players[selfSocketID],
+		'self',
+		selfInputManager
+	);
+	playerRegistry.set(selfSocketID, {
+		tankEID,
+		inputManager: selfInputManager,
+		networkPosition,
+		networkStats,
+	});
 
 	return [tankEID, ...tankEIDs];
 }

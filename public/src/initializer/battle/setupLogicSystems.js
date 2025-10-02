@@ -24,6 +24,7 @@ import ProjectileCollisionSystem from '../../core/systems/combat/projectile/sys.
 import SkillImpactSystem from '../../core/systems/combat/event/sys.SkillImpact.js';
 import ReceiveDamageSystem from '../../core/systems/combat/event/sys.ReceiveDamage.js';
 import DeadSystem from '../../core/systems/combat/event/sys.Dead.js';
+import TankStatsSyncSystem from '../../core/systems/network/sys.StatesSync.js';
 
 /**
  * @typedef {import('../../core/managers/combat/mgr.Entity.js').default} EntityManager
@@ -37,6 +38,7 @@ export default function setupLogicSystems(context) {
 
 	// Tank
 	logicSystemsManager.registry(TankPositionSyncSystem.create(context));
+	logicSystemsManager.registry(TankStatsSyncSystem.create(context));
 	logicSystemsManager.registry(TankMovementSystem.create(context));
 	logicSystemsManager.registry(TankHeadRotateSystem.create(context));
 

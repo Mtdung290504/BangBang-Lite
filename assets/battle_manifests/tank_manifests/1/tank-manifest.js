@@ -13,7 +13,7 @@ export const stats = {
 		shooting: {
 			'fire-rate': 90,
 			'fire-range': 552,
-			'flight-speed': 17.5,
+			'flight-speed': 15 * 1.5,
 		},
 
 		survival: {
@@ -87,7 +87,7 @@ export const skills = {
 	s1: {
 		type: 'normal',
 		property: 'skill',
-		cooldown: 0.2,
+		cooldown: 3,
 
 		// Cách dùng chiêu: chọn hướng
 		'casting-method': { type: 'in-direction', range: 480, display: { size: 60 } },
@@ -100,7 +100,7 @@ export const skills = {
 				// Bắn đạn
 				action: '@create:projectile',
 				type: 'custom',
-				'flight-speed': 15,
+				'flight-speed': 12 * 1.5,
 				'flight-range': 528,
 
 				// Event
@@ -146,7 +146,7 @@ export const skills = {
 	ultimate: {
 		type: 'normal',
 		property: 'skill',
-		cooldown: 0.2,
+		cooldown: 10,
 
 		'casting-method': { type: 'in-direction', range: 528, display: { size: 80 } },
 
@@ -155,7 +155,7 @@ export const skills = {
 				// Bắn đạn
 				action: '@create:projectile',
 				type: 'custom',
-				'flight-speed': 12,
+				'flight-speed': 14,
 				'flight-range': 480,
 
 				// Event
@@ -165,7 +165,7 @@ export const skills = {
 						{
 							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
-							value: { amount: 384, unit: '%' },
+							value: { amount: 484, unit: '%' },
 						},
 						'implement-later: Đẩy lui',
 					],
