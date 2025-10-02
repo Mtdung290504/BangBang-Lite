@@ -27,11 +27,12 @@ function setup(io, playerSocket) {
 	playerSocket.on('request-sync:position-state', (positionState, timestamp) => {
 		const roomID = roomManager.getSocketRoomID(playerSocket);
 		// playerSocket.to(roomID).emit('dispatch:sync-position-state', positionState, timestamp);
-		playerSocket.to(roomID).emit('dispatch:sync-position-state', positionState, timestamp);
+		io.to(roomID).emit('dispatch:sync-position-state', positionState, timestamp);
 	});
 
 	playerSocket.on('request-sync:stat-state', (statState, timestamp) => {
 		const roomID = roomManager.getSocketRoomID(playerSocket);
 		playerSocket.to(roomID).emit('dispatch:sync-stats-state', statState, timestamp);
+		// io.to(roomID).emit('dispatch:sync-stats-state', statState, timestamp);
 	});
 }

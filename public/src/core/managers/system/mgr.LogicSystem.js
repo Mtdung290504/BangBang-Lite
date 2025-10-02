@@ -173,49 +173,7 @@ export default class LogicSystemsManager {
 		}
 
 		// Tính toán key - chỉ chạy 1 lần khi registry
-		return components.map((comp) => comp.name).join(',');
-	}
-
-	/**
-	 * Xử lý một nhóm systems.
-	 *
-	 * @param {{systems: Array<{system: any, index: number}>, primaryComponents?: any[], startIndex: number, componentsKey: string}} group
-	 * @private
-	 */
-	_processSystemGroupOld(group) {
-		const { systems, primaryComponents, componentsKey } = group;
-
-		// Systems không có primaryComponents - chỉ gọi process trực tiếp
-		if (!primaryComponents || primaryComponents.length === 0) {
-			for (const { system, index } of systems) {
-				try {
-					system.process();
-				} catch (error) {
-					console.error(`Error in System at index:[${index}]:`, error);
-					throw error;
-				}
-			}
-			return;
-		}
-
-		// Lấy entities từ cache hoặc tính toán mới
-		let entitiesWithComponents = this._frameCache.get(componentsKey);
-		if (!entitiesWithComponents) {
-			entitiesWithComponents = this.context.getEntitiesWithComponents(primaryComponents);
-			this._frameCache.set(componentsKey, entitiesWithComponents);
-		}
-
-		// Chạy tất cả systems trong group với cùng entities
-		for (const [eID, components] of entitiesWithComponents) {
-			for (const { system, index } of systems) {
-				try {
-					system.process(eID, components);
-				} catch (error) {
-					console.error(`Error in System at index:[${index}] processing Entity:[${eID}]:`, error);
-					throw error;
-				}
-			}
-		}
+		return components.map((comp) => comp.toString()).join(',');
 	}
 
 	/**

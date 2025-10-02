@@ -73,9 +73,10 @@ export default function setupBattle(socket, mapID, players, sandbox) {
 	console.log(msg('Camera setup complete, waiting for target to track'), camera);
 
 	// Setup emitter và player input
-	// const bufferedEmitter = new BufferedEmitter(socket, () => gameLoopManager.LOGIC_FPS);
+	const bufferedEmitter = new BufferedEmitter(socket, () => gameLoopManager.LOGIC_FPS);
 	// const selfLocalInputManager = new BattleInputManager(bufferedEmitter, camera);
-	const selfLocalInputManager = new BattleInputManager(socket, camera).listen();
+	// const selfLocalInputManager = new BattleInputManager(socket, camera).listen();
+	const selfLocalInputManager = new BattleInputManager(bufferedEmitter, camera).listen();
 	const selfInputManager = new BattleInputManager();
 	const usingInputManager = sandbox ? selfLocalInputManager : selfInputManager;
 	console.log(msg('Player input setup complete'), usingInputManager);

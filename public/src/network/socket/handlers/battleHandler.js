@@ -70,11 +70,15 @@ export function setup(socket, playerRegistry) {
 		);
 	}
 
+	let lastPosSyncTime = 0;
 	/**
 	 * @param {_PositionStates} positionStates
 	 * @param {number} timestamp
 	 */
 	function syncPositionStateHandler(positionStates, timestamp) {
+		if (lastPosSyncTime > timestamp) return;
+
+		lastPosSyncTime = timestamp;
 		for (const socketID in positionStates) {
 			const playerState = playerRegistry.get(socketID);
 

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Skill Bar Demo</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				overflow: hidden;
+				background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+			}
+
+			canvas {
+				display: block;
+				background: #0a0a0a;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="gameCanvas"></canvas>
+
+		<script src="index.js"></script>
+		<script>
+			const canvas = document.getElementById('gameCanvas');
+			const ctx = canvas.getContext('2d');
+
+			// Auto resize canvas
+			function resizeCanvas() {
+				canvas.width = window.innerWidth;
+				canvas.height = window.innerHeight;
+			}
+
+			resizeCanvas();
+			window.addEventListener('resize', resizeCanvas);
+
+			// Fake data để test
+			let cooldownTimers = {
+				sp: 0,
+				s1: 0,
+				s2: 0,
+				ultimate: 0,
+			};
+
+			const fakeSkillData = {
+				sp: {
+					image: null,
+					cooldown: { current: 0, max: 10 },
+				},
+				s1: {
+					image: null,
+					cooldown: { current: 0, max: 8 },
+				},
+				s2: {
+					image: null,
+					cooldown: { current: 0, max: 12 },
+				},
+				ultimate: {
+					image: null,
+					cooldown: { current: 0, max: 60 },
+				},
+			};
+
+			let currentHP = 750;
+			const maxHP = 1000;
+
+			const fakeHPData = {
+				current: currentHP,
+				max: maxHP,
+			};
+
+			// Simulate skill usage
+			let lastSkillUse = Date.now();
+
+			function useRandomSkill() {
+				const skills = ['sp', 's1', 's2', 'ultimate'];
+				const randomSkill = skills[Math.floor(Math.random() * skills.length)];
+
+				if (fakeSkillData[randomSkill].cooldown.current === 0) {
+					fakeSkillData[randomSkill].cooldown.current = fakeSkillData[randomSkill].cooldown.max;
+					console.log(`Used skill: ${randomSkill}`);
+				}
+			}
+
+			// Game loop
+			let lastTime = Date.now();
+
+			function gameLoop() {
+				const currentTime = Date.now();
+				const deltaTime = (currentTime - lastTime) / 1000; // Convert to seconds
+				lastTime = currentTime;
+
+				// Clear canvas
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+				// Draw background pattern
+				ctx.fillStyle = '#1a1a1a';
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+				// Update cooldowns
+				for (let skillKey in fakeSkillData) {
+					if (fakeSkillData[skillKey].cooldown.current > 0) {
+						fakeSkillData[skillKey].cooldown.current -= deltaTime;
+						if (fakeSkillData[skillKey].cooldown.current < 0) {
+							fakeSkillData[skillKey].cooldown.current = 0;
+						}
+					}
+				}
+
+				// Randomly use skills every 3 seconds
+				if (currentTime - lastSkillUse > 3000) {
+					useRandomSkill();
+					lastSkillUse = currentTime;
+				}
+
+				// Simulate HP changes
+				fakeHPData.current = currentHP;
+
+				// Draw skill bar
+				drawSkillBar(ctx, canvas, fakeSkillData, fakeHPData);
+
+				// Draw instructions
+				ctx.fillStyle = '#ffffff';
+				ctx.font = '16px Arial';
+				ctx.textAlign = 'center';
+				ctx.fillText('Skills tự động được sử dụng mỗi 3 giây', canvas.width / 2, 50);
+				ctx.fillText('Nhấn Q, R, E, Space để test thủ công', canvas.width / 2, 75);
+				ctx.fillText('Nhấn H để giảm máu, J để hồi máu', canvas.width / 2, 100);
+
+				requestAnimationFrame(gameLoop);
+			}
+
+			// Keyboard controls
+			document.addEventListener('keydown', (e) => {
+				const keyMap = {
+					q: 'sp',
+					r: 's1',
+					e: 's2',
+					' ': 'ultimate',
+				};
+
+				const skillKey = keyMap[e.key.toLowerCase()];
+				if (skillKey && fakeSkillData[skillKey].cooldown.current === 0) {
+					fakeSkillData[skillKey].cooldown.current = fakeSkillData[skillKey].cooldown.max;
+					console.log(`Used skill: ${skillKey}`);
+				}
+
+				// HP controls
+				if (e.key.toLowerCase() === 'h') {
+					currentHP = Math.max(0, currentHP - 100);
+				}
+				if (e.key.toLowerCase() === 'j') {
+					currentHP = Math.min(maxHP, currentHP + 150);
+				}
+			});
+
+			// Start game loop
+			gameLoop();
+		</script>
+	</body>
+</html>

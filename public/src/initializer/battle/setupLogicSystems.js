@@ -23,7 +23,7 @@ import CleanProjectileSystem from '../../core/systems/combat/projectile/sys.Clea
 import ProjectileCollisionSystem from '../../core/systems/combat/projectile/sys.ProjectileCollision.js';
 import SkillImpactSystem from '../../core/systems/combat/event/sys.SkillImpact.js';
 import ReceiveDamageSystem from '../../core/systems/combat/event/sys.ReceiveDamage.js';
-import DeadSystem from '../../core/systems/combat/event/sys.Dead.js';
+import DeadHandleSystem from '../../core/systems/combat/event/sys.Dead.js';
 import TankStatsSyncSystem from '../../core/systems/network/sys.StatesSync.js';
 
 /**
@@ -67,7 +67,7 @@ export default function setupLogicSystems(context) {
 	logicSystemsManager.registry(CleanProjectileSystem.create(context), 'Clean_Projectile');
 
 	// Dead
-	logicSystemsManager.registry(DeadSystem.create(context), 'Dead_System');
+	logicSystemsManager.registry(DeadHandleSystem.create(context), 'Dead_System');
 
 	// Graphic
 	logicSystemsManager.registry(SpriteNextFrameSystem.create(context));

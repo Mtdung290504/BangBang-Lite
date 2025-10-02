@@ -5,7 +5,7 @@ import defineSystemFactory from '../../../factory/factory_builders/defineSystemF
 import SurvivalComponent from '../../../components/combat/stats/com.Survival.js';
 import PositionComponent from '../../../components/physics/com.Position.js';
 
-const DeadSystem = defineSystemFactory([SurvivalComponent])
+const DeadHandleSystem = defineSystemFactory([SurvivalComponent])
 	.withProcessor((context, eID, [survival]) => {
 		if (survival.currentHP < 1) {
 			console.log(`Entity::[${eID}] dead`);
@@ -19,4 +19,4 @@ const DeadSystem = defineSystemFactory([SurvivalComponent])
 	})
 	.build();
 
-export default DeadSystem;
+export default DeadHandleSystem;
