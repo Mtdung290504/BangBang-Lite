@@ -3,6 +3,9 @@
  * @typedef {import('.types-system/dsl/map-manifest').MapManifest} _MapManifest
  */
 
+// Use type only
+import CameraManager from '../../managers/graphic/mgr.Camera.js';
+
 export class RenderContext {
 	/**
 	 * Render context bổ sung cho các render system
@@ -54,5 +57,19 @@ export class MapRenderContext extends RenderContext {
 		this.mapManifest = mapManifest;
 		this.backgroundImage = backgroundImage;
 		this.scenesImage = scenesImage;
+	}
+}
+
+export class SelfOnlyRenderContext extends RenderContext {
+	/**
+	 * @param {number} selfEID
+	 * @param {CameraManager} camera
+	 * @param {CanvasRenderingContext2D} context2D
+	 * @param {() => boolean} getDebugState
+	 */
+	constructor(selfEID, camera, context2D, getDebugState) {
+		super(context2D, getDebugState);
+		this.selfEID = selfEID;
+		this.camera = camera;
 	}
 }

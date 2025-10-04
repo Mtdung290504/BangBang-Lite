@@ -3,6 +3,7 @@ export default class SkillCooldownComponent {
 	 * @param {number} cooldownValue - Thời gian CD (đơn vị: s)
 	 */
 	constructor(cooldownValue) {
+		this.msCD = cooldownValue;
 		this.CD = cooldownValue * 1000;
 
 		/** Timestamp của lần cuối tung chiêu, chỉ bằng 0 khi reset */

@@ -50,7 +50,7 @@ function drawSkillBar(ctx, canvas, skillData, hpData) {
 	const hpBarY = canvas.height - config.hpBarHeight - 10;
 
 	// Vẽ thanh máu
-	drawHPBar(ctx, hpBarX, hpBarY, config.hpBarWidth, config.hpBarHeight, hpData.current, hpData.max, 2);
+	renderHPBarUI(ctx, hpBarX, hpBarY, config.hpBarWidth, config.hpBarHeight, hpData.current, hpData.max, 2);
 
 	// Vẽ các skill
 	const skills = /**@type {const}*/ (['s1', 's2', 'ultimate', 'sp']);
@@ -75,23 +75,32 @@ function drawSkillBar(ctx, canvas, skillData, hpData) {
  * @param {number} max - HP tối đa
  * @param {number} radius - Bán kính bo góc
  */
-function drawHPBar(ctx, x, y, width, height, current, max, radius) {
+function renderHPBarUI(ctx, x, y, width, height, current, max, radius) {
 	// Tính toán % máu
 	const hpPercent = Math.max(0, Math.min(1, current / max));
 	const hpWidth = width * hpPercent;
 
-	// Vẽ nền thanh máu (màu đỏ đậm)
-	ctx.fillStyle = '#5c5c5cff';
+	// Vẽ nền thanh máu
+	ctx.fillStyle = 'black';
 	roundRect(ctx, x, y, width, height, radius, true, false);
 
 	// Vẽ thanh máu với gradient giống hình
 	if (hpWidth > 0) {
 		const gradient = ctx.createLinearGradient(x, y, x + width, y);
-		gradient.addColorStop(0, '#2cd5ffff'); // Xanh lá
-		gradient.addColorStop(0.25, '#aaff00ff'); // Xanh lá
-		gradient.addColorStop(0.5, '#FFFF00'); // Vàng
-		gradient.addColorStop(0.75, '#ff7519ff'); // Đỏ
-		gradient.addColorStop(1, '#FF0000'); // Đỏ
+		// gradient.addColorStop(0, '#3aceffff'); // cyan đậm
+		// gradient.addColorStop(0.125, '#2ff1caff'); // xanh ngọc đậm
+		// gradient.addColorStop(0.375, '#ddff53ff'); // vàng-lục gắt
+		// gradient.addColorStop(0.5, '#ffff00'); // vàng thuần
+		// gradient.addColorStop(0.625, '#ffb300'); // vàng-cam đậm
+		// gradient.addColorStop(0.75, '#ff6600'); // cam đậm
+		// gradient.addColorStop(0.875, '#ff3300'); // đỏ-cam gắt
+		// gradient.addColorStop(1, '#ff0000'); // đỏ thuần
+		gradient.addColorStop(0, '#2b6bff'); // xanh lam đậm
+		gradient.addColorStop(0.25, '#379dff'); // xanh lam sáng hơn
+		gradient.addColorStop(0.5, '#44d9ff'); // xanh cyan
+		gradient.addColorStop(0.75, '#3dffd9'); // xanh ngọc sáng
+		gradient.addColorStop(1, '#3dffe3'); // xanh ngọc sáng hơn / aqua
+		ctx.fillStyle = gradient;
 
 		ctx.save();
 		ctx.beginPath();
@@ -107,9 +116,8 @@ function drawHPBar(ctx, x, y, width, height, current, max, radius) {
 	ctx.font = '14px Arial';
 	ctx.textAlign = 'center';
 	ctx.textBaseline = 'middle';
-	ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-	ctx.shadowBlur = 3;
-	ctx.fillText(`${Math.floor(current)}/${Math.floor(max)}`, x + width / 2, y + height / 2 + 14 / 7);
+	for (let i = 0; i < 3; i++)
+		ctx.fillText(`${Math.floor(current)}/${Math.floor(max)}`, x + width / 2, y + height / 2 + 2);
 	ctx.shadowBlur = 0;
 }
 

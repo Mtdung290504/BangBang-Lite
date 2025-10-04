@@ -26,3 +26,5 @@ export const DEFAULT_DODGE_RATE = 0;
 
 // Shooting configs
 export const RANGE_CALCULATION_CONSTANT = 1;
+
+export const UI_DELTA_LAYER = 100;

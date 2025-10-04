@@ -25,7 +25,7 @@ export default class TankActiveSkillsComponent {
 		 * @private
 		 * @type {Record<Types['SkillSlot'], Record<number, number>>}
 		 */
-		this._skills = { 'normal-attack': {}, s1: {}, s2: {}, ultimate: {} };
+		this._skills = { 'normal-attack': {}, s1: {}, s2: {}, ultimate: {}, sp: {} };
 	}
 
 	/**

@@ -1,6 +1,6 @@
 // Manager/contexts
 import RenderSystemsManager from '../../core/managers/graphic/mgr.RenderSystem.js';
-import { MapRenderContext, RenderContext } from '../../core/systems/graphic/contexts.js';
+import { MapRenderContext, RenderContext, SelfOnlyRenderContext } from '../../core/systems/graphic/contexts.js';
 
 // Storage
 import { storage } from '../../network/assets_managers/index.js';
@@ -13,14 +13,18 @@ import RenderDamagesDisplaySystem from '../../core/systems/graphic/sys.RenderDam
 
 // Use type only
 import EntityManager from '../../core/managers/combat/mgr.Entity.js';
+import RenderSkillUISystem from '../../core/systems/graphic/sys.renderSkillUI.js';
+import CameraManager from '../../core/managers/graphic/mgr.Camera.js';
 
 /**
  * @param {EntityManager} context
  * @param {CanvasRenderingContext2D} context2D
+ * @param {CameraManager} camera
+ * @param {number} selfTankEID
  * @param {number} mapID
  * @param {() => boolean} getDebugState
  */
-export default function setupRenderSystems(context, context2D, mapID, getDebugState) {
+export default function setupRenderSystems(context, context2D, camera, selfTankEID, mapID, getDebugState) {
 	const renderSysMgr = new RenderSystemsManager(context);
 
 	const mapManifest = storage.getMapManifest(mapID);
@@ -38,6 +42,9 @@ export default function setupRenderSystems(context, context2D, mapID, getDebugSt
 				scenesImage: mapAssets.scenes ?? undefined,
 			})
 		)
+	);
+	renderSysMgr.register(
+		RenderSkillUISystem.create(context, new SelfOnlyRenderContext(selfTankEID, camera, context2D, getDebugState))
 	);
 
 	// Note: RenderContext chứa render callbacks nên phải tạo riêng cho mỗi system.
