@@ -25,6 +25,7 @@ import SkillImpactSystem from '../../core/systems/combat/event/sys.SkillImpact.j
 import ReceiveDamageSystem from '../../core/systems/combat/event/sys.ReceiveDamage.js';
 import DeadHandleSystem from '../../core/systems/combat/event/sys.Dead.js';
 import TankStatsSyncSystem from '../../core/systems/network/sys.StatesSync.js';
+import UpdateDamagesDisplaySystem from '../../core/systems/combat/state/sys.UpdateDamagesDisplay.js';
 
 /**
  * @typedef {import('../../core/managers/combat/mgr.Entity.js').default} EntityManager
@@ -37,40 +38,41 @@ export default function setupLogicSystems(context) {
 	const logicSystemsManager = new LogicSystemsManager(context);
 
 	// Tank
-	logicSystemsManager.registry(TankPositionSyncSystem.create(context));
-	logicSystemsManager.registry(TankStatsSyncSystem.create(context));
-	logicSystemsManager.registry(TankMovementSystem.create(context));
-	logicSystemsManager.registry(TankHeadRotateSystem.create(context));
+	logicSystemsManager.register(TankPositionSyncSystem.create(context));
+	logicSystemsManager.register(TankStatsSyncSystem.create(context));
+	logicSystemsManager.register(TankMovementSystem.create(context));
+	logicSystemsManager.register(TankHeadRotateSystem.create(context));
 
 	// Skill
-	logicSystemsManager.registry(SkillActivateSystem.create(context));
-	logicSystemsManager.registry(SkillRequirementSystem.create(context));
-	logicSystemsManager.registry(SkillExecutionSystem.create(context));
+	logicSystemsManager.register(SkillActivateSystem.create(context));
+	logicSystemsManager.register(SkillRequirementSystem.create(context));
+	logicSystemsManager.register(SkillExecutionSystem.create(context));
 
 	// Common
-	logicSystemsManager.registry(ApplyMovementSystem.create(context));
-	logicSystemsManager.registry(CollisionResetSystem.create(context));
-	logicSystemsManager.registry(CollisionDetectionSystem.create(context));
+	logicSystemsManager.register(ApplyMovementSystem.create(context));
+	logicSystemsManager.register(CollisionResetSystem.create(context));
+	logicSystemsManager.register(CollisionDetectionSystem.create(context));
 
 	// Tank
-	logicSystemsManager.registry(TankStopMovementSystem.create(context));
+	logicSystemsManager.register(TankStopMovementSystem.create(context));
 
 	// Projectile
-	logicSystemsManager.registry(ProjectileDistanceChecker.create(context));
-	logicSystemsManager.registry(ProjectileCollisionSystem.create(context));
+	logicSystemsManager.register(ProjectileDistanceChecker.create(context));
+	logicSystemsManager.register(ProjectileCollisionSystem.create(context));
 
 	// Skill impact
-	logicSystemsManager.registry(SkillImpactSystem.create(context), 'Skill_Impact');
-	logicSystemsManager.registry(ReceiveDamageSystem.create(context), 'Receive_Damage');
+	logicSystemsManager.register(SkillImpactSystem.create(context), 'Skill_Impact');
+	logicSystemsManager.register(ReceiveDamageSystem.create(context), 'Receive_Damage');
 
 	// Clean projectile sau
-	logicSystemsManager.registry(CleanProjectileSystem.create(context), 'Clean_Projectile');
+	logicSystemsManager.register(CleanProjectileSystem.create(context), 'Clean_Projectile');
 
 	// Dead
-	logicSystemsManager.registry(DeadHandleSystem.create(context), 'Dead_System');
+	logicSystemsManager.register(DeadHandleSystem.create(context), 'Dead_System');
 
 	// Graphic
-	logicSystemsManager.registry(SpriteNextFrameSystem.create(context));
+	logicSystemsManager.register(UpdateDamagesDisplaySystem.create(context));
+	logicSystemsManager.register(SpriteNextFrameSystem.create(context));
 
 	logicSystemsManager.finalize();
 	logicSystemsManager.initAll();

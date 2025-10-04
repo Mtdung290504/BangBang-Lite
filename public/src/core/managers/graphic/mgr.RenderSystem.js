@@ -194,7 +194,7 @@ export default class RenderSystemsManager {
 		}
 
 		// Tính toán key - chỉ chạy 1 lần khi register
-		return components.map((comp) => comp.name).join(',');
+		return components.map((comp) => comp.toString()).join(',');
 	}
 
 	/**
@@ -210,7 +210,7 @@ export default class RenderSystemsManager {
 		if (!primaryComponents || primaryComponents.length === 0) {
 			for (const { system, index } of systems) {
 				try {
-					system.process();
+					system.process(-1, []);
 				} catch (error) {
 					console.error(`Error in Render System at index:[${index}]:`, error);
 					throw error;
@@ -328,6 +328,7 @@ export default class RenderSystemsManager {
 			count: group.systems.length,
 			componentsKey: group.componentsKey,
 			systemIndices: group.systems.map((s) => s.index),
+			systems: group.systems,
 		}));
 	}
 

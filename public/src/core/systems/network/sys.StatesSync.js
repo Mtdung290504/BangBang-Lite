@@ -15,7 +15,7 @@ const TankStatsSyncSystem = defineSystemFactory([TankComponent])
 		const netStat = context.getComponent(eID, NetworkStatsComponent);
 		const { currentHP, currentEnergy, timestamp } = netStat;
 
-		if (Date.now() - timestamp <= 1000 / 60) {
+		if (Date.now() - timestamp <= (3 * 1000) / 60) {
 			if (currentHP !== null) context.getComponent(eID, SurvivalComponent).setCurrentHP(currentHP);
 			if (currentEnergy !== null)
 				context.getComponent(eID, AdditionalAttributesComponent).currentEnergyPoint = currentEnergy;

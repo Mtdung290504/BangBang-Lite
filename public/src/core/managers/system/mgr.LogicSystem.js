@@ -58,7 +58,7 @@ export default class LogicSystemsManager {
 	 * @template {(new (...args: any) => any)[]} T
 	 * @param {_AbstractSystem<T>} system - Kết quả từ factory.create()
 	 */
-	registry(system, name = '') {
+	register(system, name = '') {
 		// Validation
 		if (!system || typeof system !== 'object') {
 			throw new Error('System must be a valid object');

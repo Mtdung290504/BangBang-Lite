@@ -22,4 +22,4 @@ export const STATUS_BAR_COLORS = {
 	damage: 'rgba(230, 20, 20, 1)',
 };
 
-export const TEXT_DAMAGE_FONT_SIZE = 140 * 0.157;
+export const TEXT_DAMAGE_FONT_SIZE = 140 * 0.152;

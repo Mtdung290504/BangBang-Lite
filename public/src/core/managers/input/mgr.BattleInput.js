@@ -114,6 +114,7 @@ export default class BattleInputManager {
 			this.mouseState.rightMouseDown = true;
 			this.actionState[ACTIONS_KEYS['TOGGLE_AUTO_ATK']] = !this.actionState[ACTIONS_KEYS['TOGGLE_AUTO_ATK']];
 			this._emitMouseState();
+			this._emitActionState();
 		}
 	}
 

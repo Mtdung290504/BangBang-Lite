@@ -21,17 +21,25 @@ const TankPositionSyncSystem = defineSystemFactory([TankComponent])
 
 		// Xử lý sync từ network (new handler)
 		if (networkPos.x !== null && networkPos.y !== null && networkPos.timestamp !== null) {
-			// Tìm timestamp gần nhất trong history
-			const nearestTimestamp = history.findNearestTimestamp(networkPos.timestamp);
-
-			if (nearestTimestamp !== null) {
+			if (history.deltaHistory.length !== 0) {
 				// Replay: Cộng tất cả delta sau timestamp sync
-				const replayDelta = history.getDeltaFromTimestamp(networkPos.timestamp);
-				networkPos.targetX = networkPos.x + replayDelta.dx;
-				networkPos.targetY = networkPos.y + replayDelta.dy;
+				{
+					let currentDelta;
+					let historyDeltaX = 0,
+						historyDeltaY = 0;
 
-				// Cập nhật lastSyncTimestamp
-				history.lastSyncTimestamp = networkPos.timestamp;
+					while ((currentDelta = history.deltaHistory.pop())) {
+						if (currentDelta.timestamp > networkPos.timestamp) {
+							historyDeltaX += currentDelta.dx;
+							historyDeltaY += currentDelta.dy;
+						}
+					}
+
+					networkPos.targetX = networkPos.x + historyDeltaX;
+					networkPos.targetY = networkPos.y + historyDeltaY;
+				}
+				// networkPos.targetX = networkPos.x;
+				// networkPos.targetY = networkPos.y;
 			} else {
 				// Fallback: Nếu không có history, dùng lerp như cũ
 				networkPos.targetX = networkPos.x;

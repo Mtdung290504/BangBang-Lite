@@ -17,6 +17,11 @@ export default class NetworkPositionComponent {
 
 		/**@type {number | null} */
 		this.targetY = null;
+
+		/**
+		 * Timestamp của lần sync cuối cùng
+		 */
+		this.lastSyncTimestamp = 0;
 	}
 
 	/**

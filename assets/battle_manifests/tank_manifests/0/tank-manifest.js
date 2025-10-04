@@ -15,9 +15,9 @@ export const stats = {
 			'flight-speed': 17.5,
 		},
 		survival: {
-			'limit-HP': 6840,
-			'physical-armor': 138,
-			'energy-shield': 108,
+			'limit-HP': 7568,
+			'physical-armor': 108,
+			'energy-shield': 94,
 		},
 		'attack-power': {
 			'damage-type': 'physical',

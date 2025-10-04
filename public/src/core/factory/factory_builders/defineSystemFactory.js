@@ -72,15 +72,17 @@ class SystemFactoryBuilder {
 		const teardown = this._teardown;
 
 		/**
-		 * @param {ContextClass extends undefined ? [context: EntityManager] : [context: EntityManager, ...ConstructorParameters<NonNullable<ContextClass>>]} args
+		 * @param {ContextClass extends undefined
+		 * 	? [context: EntityManager]
+		 * 	: [context: EntityManager, sysContext: InstanceType<NonNullable<ContextClass>>]
+		 * } args
 		 */
 		function create(...args) {
 			const context = args[0];
-			args.shift();
 
 			/** @type {any} */
 			let sysContext = null;
-			if (CtxClass) sysContext = new CtxClass(...args);
+			if (CtxClass && args[1]) sysContext = args[1];
 
 			return {
 				primaryComponents,

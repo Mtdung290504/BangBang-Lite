@@ -71,6 +71,7 @@ export function setup(socket, playerRegistry) {
 	}
 
 	let lastPosSyncTime = 0;
+
 	/**
 	 * @param {_PositionStates} positionStates
 	 * @param {number} timestamp
@@ -82,20 +83,19 @@ export function setup(socket, playerRegistry) {
 		for (const socketID in positionStates) {
 			const playerState = playerRegistry.get(socketID);
 
-			if (playerState) {
-				const { x, y } = positionStates[socketID];
-				// playerState.networkPosition.x = x;
-				// playerState.networkPosition.y = y;
-
-				// New handler
-				playerState.networkPosition.setNetworkPosition(x, y, timestamp);
+			if (!playerState) {
+				console.warn(
+					`> [BattleHandler] Network data problem, playerState with socketID:[${socketID}] does not exist in registry:`,
+					playerRegistry
+				);
 				continue;
 			}
 
-			console.warn(
-				`> [BattleHandler] Network data problem, playerState with socketID:[${socketID}] does not exist in registry:`,
-				playerRegistry
-			);
+			const { lastSyncTimestamp, timestamp: netPosTimestamp } = playerState.networkPosition;
+			if (netPosTimestamp !== null || lastSyncTimestamp > timestamp) continue;
+
+			const { x, y } = positionStates[socketID];
+			playerState.networkPosition.setNetworkPosition(x, y, timestamp);
 		}
 	}
 
@@ -163,7 +163,7 @@ function shallowMerge(target, source) {
 			if (source[key] === undefined)
 				console.warn(`> [BattleHandler.shallowMerge] Source at key:[${key}] is undefined???`);
 
-			// @ts-expect-error: source[key] đã được check hasOwnProperty nên không thể undefined
+			// @ts-ignore: source[key] đã được check hasOwnProperty nên không thể undefined
 			target[key] = source[key];
 		}
 	}
