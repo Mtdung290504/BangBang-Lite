@@ -65,7 +65,7 @@ type CreateProjectileAction = CreateProjectileBased &
 		| (Partial<SkillEventHandler> & Partial<SpriteDeclaration> & { type: 'default' })
 	);
 
-export type { CreateProjectileAction };
+export type { CreateProjectileAction, Tracking, Piercing, Bouncing };
 
 // Usages
 

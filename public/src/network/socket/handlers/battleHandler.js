@@ -71,6 +71,7 @@ export function setup(socket, playerRegistry) {
 	}
 
 	let lastPosSyncTime = 0;
+	let lastStatSyncTime = 0;
 
 	/**
 	 * @param {_PositionStates} positionStates
@@ -91,8 +92,8 @@ export function setup(socket, playerRegistry) {
 				continue;
 			}
 
-			const { lastSyncTimestamp, timestamp: netPosTimestamp } = playerState.networkPosition;
-			if (netPosTimestamp !== null || lastSyncTimestamp > timestamp) continue;
+			const { timestamp: netPosTimestamp } = playerState.networkPosition;
+			if (netPosTimestamp !== null) continue;
 
 			const { x, y } = positionStates[socketID];
 			playerState.networkPosition.setNetworkPosition(x, y, timestamp);
@@ -104,24 +105,27 @@ export function setup(socket, playerRegistry) {
 	 * @param {number} timestamp
 	 */
 	function syncStatStateHandler(statStates, timestamp) {
+		if (lastStatSyncTime > timestamp) return;
+
+		lastStatSyncTime = timestamp;
 		for (const socketID in statStates) {
 			const playerState = playerRegistry.get(socketID);
 
-			if (playerState) {
-				const { networkStats } = playerState;
-				const { currentHP, currentEnergy } = statStates[socketID];
-
-				networkStats.timestamp = timestamp;
-				networkStats.currentHP = currentHP;
-				if (currentEnergy) networkStats.currentEnergy = currentEnergy;
-
+			if (!playerState) {
+				console.warn(
+					`> [BattleHandler] Network data problem, playerState with socketID:[${socketID}] does not exist in registry:`,
+					playerRegistry
+				);
 				continue;
 			}
 
-			console.warn(
-				`> [BattleHandler] Network data problem, playerState with socketID:[${socketID}] does not exist in registry:`,
-				playerRegistry
-			);
+			const { networkStats } = playerState;
+			const { currentHP, currentEnergy } = statStates[socketID];
+			if (!networkStats.timestamp) continue;
+
+			networkStats.timestamp = timestamp;
+			networkStats.currentHP = currentHP;
+			if (currentEnergy) networkStats.currentEnergy = currentEnergy;
 		}
 	}
 
@@ -163,7 +167,7 @@ function shallowMerge(target, source) {
 			if (source[key] === undefined)
 				console.warn(`> [BattleHandler.shallowMerge] Source at key:[${key}] is undefined???`);
 
-			// @ts-ignore: source[key] đã được check hasOwnProperty nên không thể undefined
+			// @ts-expect-error: source[key] đã được check hasOwnProperty nên không thể undefined
 			target[key] = source[key];
 		}
 	}

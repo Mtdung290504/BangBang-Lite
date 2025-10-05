@@ -23,7 +23,7 @@ const SERVER_CONFIG = await StoredDataObject.from({
 		PUBLIC_PATH: 'public',
 		ASSETS_PATH: 'assets',
 		TOOLS_PATH: 'tools',
-		MODELS_PATH: 'models',
+		MODELS_PATH: 'models/public',
 	},
 });
 

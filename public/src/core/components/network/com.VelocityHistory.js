@@ -21,8 +21,8 @@ export default class VelocityHistoryComponent {
 		if (dx === 0 && dy === 0) return;
 		this.deltaHistory.push({ timestamp, dx, dy });
 
-		// Giữ lại chỉ 300ms lịch sử để tránh memory leak
-		// const cutoff = timestamp - 300;
-		// this.deltaHistory = this.deltaHistory.filter((delta) => delta.timestamp > cutoff);
+		// Giữ lại tối đa 500ms lịch sử để tránh memory leak
+		const cutoff = timestamp - 500;
+		this.deltaHistory = this.deltaHistory.filter((delta) => delta.timestamp > cutoff);
 	}
 }

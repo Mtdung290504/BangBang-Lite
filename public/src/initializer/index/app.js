@@ -110,7 +110,7 @@ function setupSyncSystem(socket, battle) {
 	function startSync() {
 		dispatchSyncPositionState();
 		dispatchSyncStatState();
-		setTimeout(startSync, (1000 / LOGIC_FPS) * 2);
+		setTimeout(startSync, (1000 / LOGIC_FPS) * 3);
 	}
 
 	function dispatchSyncPositionState() {

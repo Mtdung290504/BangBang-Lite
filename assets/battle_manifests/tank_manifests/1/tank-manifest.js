@@ -65,7 +65,7 @@ export const skills = {
 				description: `Bắn đạn tâng, tối đa 3 lần, mỗi lần giảm 50% ST, gây ST hồi 5 năng lượng`,
 
 				action: '@create:projectile',
-				type: 'default',
+				type: 'custom',
 
 				collider: { type: 'rectangle', size: { width: 41.53 * 1.07, height: 30.04 * 1.07 } },
 				enhancements: [{ name: 'bouncing', 'hit-limit': 3, 'damage-reduction': { amount: 50 } }],
@@ -75,11 +75,19 @@ export const skills = {
 						{
 							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
-							value: { amount: 50, unit: '%' },
-							'display-type': 'bonus',
+							value: { amount: 150, unit: '%' },
+							'display-type': 'main',
+						},
+						{
+							action: '@apply:damage',
+							source: { attribute: 'current-HP', of: 'target' },
+							value: { amount: 5, unit: '%' },
+							'display-type': '???',
 						},
 					],
 				},
+
+				'sprite-key': 'normal-attack',
 			},
 		],
 	},
@@ -90,7 +98,7 @@ export const skills = {
 		cooldown: 3,
 
 		// Cách dùng chiêu: chọn hướng
-		'casting-method': { type: 'in-direction', range: 480, display: { size: 60 } },
+		'casting-method': { type: 'in-direction', range: 528, display: { size: 60 } },
 
 		// Tiêu hao 25đ năng lượng
 		'resource-consumption': { energy: { amount: 25 } },
@@ -110,7 +118,13 @@ export const skills = {
 						{
 							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
+							value: { amount: 105, unit: '%' },
+						},
+						{
+							action: '@apply:damage',
+							source: { attribute: 'attack-power', of: 'target' },
 							value: { amount: 150, unit: '%' },
+							'display-type': 'bonus',
 						},
 						'implement-later: Bóng quay về, nhặt được hồi năng lượng, tạo giáp',
 					],
@@ -146,16 +160,16 @@ export const skills = {
 	ultimate: {
 		type: 'normal',
 		property: 'skill',
-		cooldown: 10,
+		cooldown: 8,
 
-		'casting-method': { type: 'in-direction', range: 528, display: { size: 80 } },
+		'casting-method': { type: 'in-direction', range: 480, display: { size: 80 } },
 
 		actions: [
 			{
 				// Bắn đạn
 				action: '@create:projectile',
 				type: 'custom',
-				'flight-speed': 14,
+				'flight-speed': 12,
 				'flight-range': 480,
 
 				// Event
@@ -165,7 +179,7 @@ export const skills = {
 						{
 							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
-							value: { amount: 484, unit: '%' },
+							value: { amount: 381, unit: '%' },
 						},
 						'implement-later: Đẩy lui',
 					],

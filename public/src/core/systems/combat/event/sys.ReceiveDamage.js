@@ -7,6 +7,7 @@ import SurvivalComponent from '../../../components/combat/stats/com.Survival.js'
 import ReceivedDamageComponent from '../../../components/combat/state/com.ReceiveDamage.js';
 import DamagesDisplayComponent from '../../../components/combat/state/com.DamagesDisplay.js';
 import PositionComponent from '../../../components/physics/com.Position.js';
+import StatsHistoryComponent from '../../../components/network/com.StatsHistory.js';
 
 // Constants / Models
 import TextEffect from '../../../../../../models/public/TextEffect.js';
@@ -35,16 +36,20 @@ const ReceiveDamageSystem = defineSystemFactory([ReceivedDamageComponent])
 
 			// Tối thiểu gây 1 ST
 			const calulatedDamage = Math.round(
-				Math.max(1, (1 + survival.dmgReduction / 100) * damage(damageValue, calcDef()))
+				Math.max(1, (1 + survival.dmgReduction * 0.01) * damage(damageValue, calcDef()))
 			);
-			// Lượng ST thực sự gây ra
-			const damageDealt = survival.setCurrentHP(survival.currentHP - calulatedDamage);
 
+			// Lượng ST thực sự gây ra, nếu > 0, hiển thị
+			const damageDealt = survival.setCurrentHP(survival.currentHP - calulatedDamage);
 			if (damageDealt)
 				// TODO: Triển khai sau: Nếu nguồn hoặc đích là EID của mình thì mới hiện, không thì thôi
 				context
 					.getComponent(eID, DamagesDisplayComponent)
 					.damageEffects.push(new TextEffect(pos, damageDealt, STATUS_BAR_COLORS.damage, displayType));
+
+			// Lưu damage vào stats history
+			const statsHistory = context.getComponent(eID, StatsHistoryComponent, false);
+			if (statsHistory) statsHistory.saveDeltaHP(-damageDealt, Date.now());
 		});
 
 		// Xóa ST đã xử lý

@@ -175,7 +175,7 @@ function renderStatusBar(context2D, x, y, width, height, currentValue, limitValu
  * @param {number} radius - Bán kính bo góc
  */
 function renderSkillSlot(ctx, x, y, size, skill, keyLabel, radius) {
-	const borderWidth = 2.5;
+	const borderWidth = 3;
 
 	// Vẽ hình ảnh skill hoặc vùng xám
 	if (skill.image && skill.image instanceof HTMLImageElement) {

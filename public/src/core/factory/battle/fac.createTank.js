@@ -11,14 +11,16 @@ import MovementComponent from '../../components/physics/com.Movement.js';
 import ShootingComponent from '../../components/combat/stats/com.Shooting.js';
 import SurvivalComponent from '../../components/combat/stats/com.Survival.js';
 
-// Combat stats
+// Combat stats/states
 import ReceivedDamageComponent from '../../components/combat/state/com.ReceiveDamage.js';
 import SkillImpactComponent from '../../components/combat/state/com.SkillImpact.js';
+import AttackPowerComponent from '../../components/combat/stats/com.AttackPower.js';
 import DamagesDisplayComponent from '../../components/combat/state/com.DamagesDisplay.js';
 
 // Display components
 import ShadowComponent from '../../components/graphic/com.Shadow.js';
 import SpriteComponent from '../../components/graphic/com.Sprite.js';
+import StatusBarComponent from '../../components/graphic/com.Status.js';
 
 // Physics components
 import ColliderComponent from '../../components/physics/com.Collider.js';
@@ -29,17 +31,18 @@ import VelocityComponent from '../../components/physics/com.Velocity.js';
 import InputComponent from '../../components/input/com.Input.js';
 import BattleInputManager from '../../managers/input/mgr.BattleInput.js';
 
-// Constants
-import { TANK_DEFAULT_SIZE } from '../../../../configs/constants/domain_constants/com.constants.js';
+// Network components
 import NetworkPositionComponent from '../../components/network/com.NetworkPosition.js';
 import VelocityHistoryComponent from '../../components/network/com.VelocityHistory.js';
-import StatusBarComponent from '../../components/graphic/com.Status.js';
-import AttackPowerComponent from '../../components/combat/stats/com.AttackPower.js';
+import NetworkStatsComponent from '../../components/network/com.NetworkStats.js';
+import StatsHistoryComponent from '../../components/network/com.StatsHistory.js';
+
+// Constants
+import { TANK_DEFAULT_SIZE } from '../../../../configs/constants/domain_constants/com.constants.js';
+import { SANDBOX_SOCKET_ID } from '../../../../configs/constants/game-system-configs.js';
 
 // Use type only
 import EntityManager from '../../managers/combat/mgr.Entity.js';
-import { SANDBOX_SOCKET_ID } from '../../../../configs/constants/game-system-configs.js';
-import NetworkStatsComponent from '../../components/network/com.NetworkStats.js';
 
 /**
  * @type {ReturnType<typeof createAppearPositionGetter> | undefined}
@@ -99,6 +102,7 @@ export default function createTank(context, mapID, player, faction, inputManager
 		new SkillImpactComponent(),
 		new ReceivedDamageComponent(),
 		new DamagesDisplayComponent(),
+		new StatsHistoryComponent(),
 	]);
 	stats.additional && context.addComponent(tankEID, AdditionalAttributesComponent.fromDSL(stats.additional));
 

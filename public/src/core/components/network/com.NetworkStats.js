@@ -6,6 +6,7 @@ export default class NetworkStatsComponent {
 		/**@type {number | null} */
 		this.currentEnergy = null;
 
-		this.timestamp = 0;
+		/**@type {number | null} */
+		this.timestamp = null;
 	}
 }

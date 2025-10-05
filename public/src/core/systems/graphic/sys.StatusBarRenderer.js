@@ -36,7 +36,7 @@ const StatusBarRenderer = defineSystemFactory([StatusBarComponent, PositionCompo
 		function render() {
 			const { context2D } = sysContext;
 
-			// @ts-ignore: render-size luôn tồn tại
+			// @ts-expect-error: render-size luôn tồn tại
 			let [xPos, yPos] = renderHealthBar(context2D, survival, pos, resource.manifest['render-size'], color);
 			// Nếu có năng lượng mới render
 			if (additional) yPos = renderEnergyBar(context2D, additional, xPos, yPos);
@@ -312,7 +312,7 @@ function renderName(context2D, name, position, yPos, color) {
  * @param {number} amount
  */
 function darkenColor(color, amount) {
-	// @ts-ignore
+	// @ts-ignore: Luôn match, không bao giờ null nếu color truyền vào không bị lỗi type
 	const [r, g, b] = color.match(/\d+/g).map(Number);
 	return `rgb(${Math.max(r - amount * 255, 0)}, ${Math.max(g - amount * 255, 0)}, ${Math.max(b - amount * 255, 0)})`;
 }

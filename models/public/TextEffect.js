@@ -11,7 +11,7 @@ export default class TextEffect {
 		this.x = startPos.x;
 		this.y = startPos.y;
 		this.displayType = displayType;
-		this.speed = 2.5;
+		this.speed = 2;
 		this.duration = 500; // Tổng thời gian effect tồn tại
 		this.startTime = Date.now();
 		this.opacity = 1; // Khởi tạo độ mờ ban đầu là 1

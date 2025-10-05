@@ -17,15 +17,11 @@ export default class NetworkPositionComponent {
 
 		/**@type {number | null} */
 		this.targetY = null;
-
-		/**
-		 * Timestamp của lần sync cuối cùng
-		 */
-		this.lastSyncTimestamp = 0;
 	}
 
 	/**
 	 * Set vị trí và timestamp từ network
+	 *
 	 * @param {number} x - Vị trí X từ network
 	 * @param {number} y - Vị trí Y từ network
 	 * @param {number} timestamp - Timestamp của network data
