@@ -11,7 +11,7 @@ export const stats = {
 
 	'stat-components': {
 		shooting: {
-			'fire-rate': 90,
+			'fire-rate': 90 * 1.5,
 			'fire-range': 552,
 			'flight-speed': 15 * 1.5,
 		},
@@ -75,13 +75,13 @@ export const skills = {
 						{
 							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
-							value: { amount: 150, unit: '%' },
+							value: { amount: 100, unit: '%' },
 							'display-type': 'main',
 						},
 						{
 							action: '@apply:damage',
 							source: { attribute: 'current-HP', of: 'target' },
-							value: { amount: 5, unit: '%' },
+							value: { amount: 8, unit: '%' },
 							'display-type': '???',
 						},
 					],

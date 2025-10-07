@@ -14,24 +14,29 @@ import AdditionalAttributesComponent from '../../components/combat/stats/com.Add
 const TankStatsSyncSystem = defineSystemFactory([TankComponent])
 	.withProcessor((context, eID, [_tank]) => {
 		const netStat = context.getComponent(eID, NetworkStatsComponent);
-		if (!netStat.timestamp) return;
+		if (netStat.timestamp === null) return;
 
 		const { currentHP, currentEnergy } = netStat;
 		const history = context.getComponent(eID, StatsHistoryComponent);
 
 		// Replay: Cộng tất cả delta HP sau timestamp sync
 		if (currentHP !== null) {
-			let currentDelta;
-			let historyDeltaHP = 0;
+			const survival = context.getComponent(eID, SurvivalComponent);
+			if (survival.currentHP !== netStat.currentHP) {
+				let currentDelta;
+				let historyDeltaHP = 0;
 
-			while ((currentDelta = history.deltaHPs.pop())) {
-				if (currentDelta.timestamp > netStat.timestamp) {
-					historyDeltaHP += currentDelta.deltaHP;
+				while ((currentDelta = history.deltaHPs.pop())) {
+					console.log(netStat.timestamp - currentDelta.timestamp);
+					if (currentDelta.timestamp >= netStat.timestamp) {
+						console.log(currentDelta);
+						historyDeltaHP += currentDelta.deltaHP;
+					}
 				}
-			}
 
-			context.getComponent(eID, SurvivalComponent).setCurrentHP(currentHP + historyDeltaHP);
-			netStat.currentHP = null;
+				if (historyDeltaHP !== 0) console.log(survival.currentHP, currentHP + historyDeltaHP);
+				survival.setCurrentHP(currentHP + historyDeltaHP);
+			}
 		}
 
 		// if (Date.now() - timestamp <= (3 * 1000) / 60) {
@@ -40,6 +45,7 @@ const TankStatsSyncSystem = defineSystemFactory([TankComponent])
 		// 		context.getComponent(eID, AdditionalAttributesComponent).currentEnergyPoint = currentEnergy;
 		// }
 
+		netStat.currentHP = null;
 		netStat.currentEnergy = null;
 		netStat.timestamp = null;
 	})

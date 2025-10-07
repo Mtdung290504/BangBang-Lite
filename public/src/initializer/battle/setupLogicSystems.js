@@ -24,7 +24,7 @@ import ProjectileCollisionSystem from '../../core/systems/combat/projectile/sys.
 import SkillImpactSystem from '../../core/systems/combat/event/sys.SkillImpact.js';
 import ReceiveDamageSystem from '../../core/systems/combat/event/sys.ReceiveDamage.js';
 import DeadHandleSystem from '../../core/systems/combat/event/sys.Dead.js';
-import TankStatsSyncSystem from '../../core/systems/network/sys.StatesSync.js';
+import TankStatsSyncSystem from '../../core/systems/network/sys.StatsSync.js';
 import UpdateDamagesDisplaySystem from '../../core/systems/combat/state/sys.UpdateDamagesDisplay.js';
 
 /**
@@ -39,7 +39,6 @@ export default function setupLogicSystems(context) {
 
 	// Tank
 	logicSystemsManager.register(TankPositionSyncSystem.create(context));
-	logicSystemsManager.register(TankStatsSyncSystem.create(context));
 	logicSystemsManager.register(TankMovementSystem.create(context));
 	logicSystemsManager.register(TankHeadRotateSystem.create(context));
 
@@ -63,6 +62,7 @@ export default function setupLogicSystems(context) {
 	// Skill impact
 	logicSystemsManager.register(SkillImpactSystem.create(context), 'Skill_Impact');
 	logicSystemsManager.register(ReceiveDamageSystem.create(context), 'Receive_Damage');
+	logicSystemsManager.register(TankStatsSyncSystem.create(context));
 
 	// Clean projectile sau
 	logicSystemsManager.register(CleanProjectileSystem.create(context), 'Clean_Projectile');

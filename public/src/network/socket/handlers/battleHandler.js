@@ -121,7 +121,7 @@ export function setup(socket, playerRegistry) {
 
 			const { networkStats } = playerState;
 			const { currentHP, currentEnergy } = statStates[socketID];
-			if (!networkStats.timestamp) continue;
+			if (networkStats.timestamp !== null) continue;
 
 			networkStats.timestamp = timestamp;
 			networkStats.currentHP = currentHP;
