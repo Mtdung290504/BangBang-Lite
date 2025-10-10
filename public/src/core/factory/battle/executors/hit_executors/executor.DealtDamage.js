@@ -1,14 +1,19 @@
+// Base/parser
+import BaseSkillHitExecutor from '../base/executor.BaseSkillHit.js';
+import parseDealtDamageManifest from './parser/parseDealtDamageManifest.js';
+
+// Components
 import ReceivedDamageComponent from '../../../../components/combat/state/com.ReceiveDamage.js';
 import AdditionalAttributesComponent from '../../../../components/combat/stats/com.AdditionalAttributes.js';
 import AttackPowerComponent from '../../../../components/combat/stats/com.AttackPower.js';
 import SurvivalComponent from '../../../../components/combat/stats/com.Survival.js';
+
+// Use type only
 import EntityManager from '../../../../managers/combat/mgr.Entity.js';
-import BaseSkillHitExecutor from '../base/executor.BaseSkillHit.js';
-import parseDealtDamageManifest from './parser/parseDealtDamageManifest.js';
+import DamageModifierComponent from '../../../../components/combat/state/skill/com.DamageModifier.js';
 
 export default class DealtDamageExecutor extends BaseSkillHitExecutor {
 	/**
-	 *
 	 * @param {EntityManager} context
 	 * @param {import('./parser/parseDealtDamageManifest.js').DealtDamageManifest} manifest
 	 */
@@ -20,9 +25,10 @@ export default class DealtDamageExecutor extends BaseSkillHitExecutor {
 	/**
 	 * @override
 	 * @param {number} sourceEID
+	 * @param {number} impactorEID
 	 * @param {number} targetEID
 	 */
-	exec(sourceEID, targetEID) {
+	exec(sourceEID, impactorEID, targetEID) {
 		const { context, parsedManifest } = this;
 		const { source, value, displayType } = parsedManifest;
 
@@ -45,7 +51,7 @@ export default class DealtDamageExecutor extends BaseSkillHitExecutor {
 				: context.getComponent(sourceEID, AttackPowerComponent).dmgType;
 
 		/** Giá trị ST */
-		const damageValue = (() => {
+		let damageValue = (() => {
 			switch (source.attribute) {
 				case 'attack-power':
 					return toValue(context.getComponent(calcFromEID, AttackPowerComponent).value);
@@ -79,6 +85,12 @@ export default class DealtDamageExecutor extends BaseSkillHitExecutor {
 				throw new Error(`> [executor.DealtDamage] Invalid unit type::[${unit}]??`);
 			}
 		})();
+
+		// Thay đổi main damage theo modifier
+		if (parsedManifest.isMainDamage) {
+			const modifier = context.getComponent(impactorEID, DamageModifierComponent, false);
+			if (modifier) damageValue += modifier.value;
+		}
 
 		context
 			.getComponent(targetEID, ReceivedDamageComponent)

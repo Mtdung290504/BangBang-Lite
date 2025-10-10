@@ -26,6 +26,7 @@ import {
 import MovementComponent from '../../../../components/physics/com.Movement.js';
 import TargetFilterComponent from '../../../../components/combat/state/skill/com.TargetFilter.js';
 import OwnerEIDComponent from '../../../../components/combat/state/com.OwnerEID.js';
+import PierceComponent from '../../../../components/combat/state/skill/projectile/com.Pierce.js';
 
 export default class CreateProjectileExecutor extends BaseActionExecutor {
 	/**
@@ -94,5 +95,20 @@ export default class CreateProjectileExecutor extends BaseActionExecutor {
 			new OnSkillDealtDamageManifest(onDealtDamage),
 			new TargetFilterComponent(targets),
 		]);
+
+		enhancements.forEach((enhancement) => {
+			switch (enhancement.name) {
+				case 'piercing':
+					context.addComponent(projEID, PierceComponent.fromDSL(enhancement));
+					break;
+				case 'tracking':
+					break;
+				case 'bouncing':
+					break;
+				default:
+					console.warn('Invalid enhancement, ignore');
+					break;
+			}
+		});
 	}
 }

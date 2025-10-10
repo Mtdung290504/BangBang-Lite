@@ -19,7 +19,7 @@ interface Piercing {
 	'hit-limit'?: number;
 
 	/** Default: 0 */
-	'damage-reduction'?: ValueWithUnit;
+	'damage-modifier'?: ValueWithUnit;
 }
 
 /** Projectile enhancement: can bounce between targets */
@@ -28,7 +28,7 @@ interface Bouncing {
 	'hit-limit': number;
 
 	/** Default: 0 */
-	'damage-reduction'?: ValueWithUnit;
+	'damage-modifier'?: ValueWithUnit;
 }
 
 /** Projectile enhancements union type */
@@ -99,7 +99,7 @@ const customShoot: CreateProjectileAction = {
 		{
 			name: 'bouncing',
 			'hit-limit': 3,
-			'damage-reduction': { amount: 25 },
+			'damage-modifier': { amount: 25 },
 		},
 	],
 };

@@ -23,10 +23,18 @@ interface DealtDamage extends ActionDeclaration {
 	 * Quyết định sát thương bay lên thẳng hay chéo.
 	 * Mặc định: `main` (bay thẳng lên)
 	 */
-	'display-type'?: 'main' | 'bonus';
+	'display-type'?:
+		| 'main'
+		| 'bonus'
+
+		// fallback, bay về hướng kia so với `bonus`
+		| (string & {});
 
 	/** Mặc định kế thừa từ tank */
 	'damage-type'?: DamageType;
+
+	/** Cờ để trừ damage trong một số trường hợp, ví dụ khi đạn nảy hay xuyên */
+	'is-main-damage'?: boolean;
 }
 
 export type { DealtDamage };

@@ -68,7 +68,7 @@ export const skills = {
 				type: 'custom',
 
 				collider: { type: 'rectangle', size: { width: 41.53 * 1.07, height: 30.04 * 1.07 } },
-				enhancements: [{ name: 'bouncing', 'hit-limit': 3, 'damage-reduction': { amount: 50 } }],
+				enhancements: [{ name: 'bouncing', 'hit-limit': 3, 'damage-modifier': { amount: 50, unit: '%' } }],
 				'on-dealt-damage': { self: [{ action: '@recover:energy', amount: 5 }] },
 				'on-hit': {
 					enemy: [
@@ -76,6 +76,7 @@ export const skills = {
 							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
 							value: { amount: 100, unit: '%' },
+							'is-main-damage': true,
 							'display-type': 'main',
 						},
 						{
@@ -118,7 +119,7 @@ export const skills = {
 						{
 							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
-							value: { amount: 105, unit: '%' },
+							value: { amount: 50, unit: '%' },
 						},
 						{
 							action: '@apply:damage',
@@ -153,7 +154,7 @@ export const skills = {
 		cooldown: 1.5,
 
 		'casting-method': { type: 'in-direction', range: 480, display: { size: 60 } },
-		'resource-consumption': { energy: { amount: 50, unit: 'unit' } },
+		'resource-consumption': { energy: { amount: 50 } },
 		actions: ['implement-later: Lướt'],
 	},
 
@@ -166,8 +167,9 @@ export const skills = {
 
 		actions: [
 			{
-				// Bắn đạn
 				action: '@create:projectile',
+				description: 'Bắn đạn xuyên + đẩy lui, gây ST',
+
 				type: 'custom',
 				'flight-speed': 12,
 				'flight-range': 480,
@@ -175,7 +177,6 @@ export const skills = {
 				// Event
 				'on-hit': {
 					enemy: [
-						// Gây 135% tấn công
 						{
 							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
@@ -184,16 +185,16 @@ export const skills = {
 						'implement-later: Đẩy lui',
 					],
 				},
-				'on-dealt-damage': {
-					self: [{ action: '@recover:energy', amount: 20 }],
-				},
+				'on-dealt-damage': { self: [{ action: '@recover:energy', amount: 20 }] },
 
 				// Hitbox
-				// collider: { type: 'rectangle', size: { width: 307.58, height: 172 } },
 				collider: { type: 'rectangle', size: { width: 286.12, height: 160 } },
 
 				// Sprite
 				'sprite-key': 's3',
+
+				// Enhances
+				enhancements: [{ name: 'piercing' }],
 			},
 		],
 	},

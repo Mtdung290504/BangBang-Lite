@@ -21,11 +21,12 @@ import SkillRequirementSystem from '../../core/systems/combat/skill/sys.SkillReq
 import ProjectileDistanceChecker from '../../core/systems/combat/projectile/sys.ProjectileDistanceChecker.js';
 import CleanProjectileSystem from '../../core/systems/combat/projectile/sys.CleanProjectile.js';
 import ProjectileCollisionSystem from '../../core/systems/combat/projectile/sys.ProjectileCollision.js';
-import SkillImpactSystem from '../../core/systems/combat/event/sys.SkillImpact.js';
+import { SkillImpactSystem, CleanImpactorsSystem } from '../../core/systems/combat/event/sys.SkillImpact.js';
 import ReceiveDamageSystem from '../../core/systems/combat/event/sys.ReceiveDamage.js';
 import DeadHandleSystem from '../../core/systems/combat/event/sys.Dead.js';
 import TankStatsSyncSystem from '../../core/systems/network/sys.StatsSync.js';
 import UpdateDamagesDisplaySystem from '../../core/systems/combat/state/sys.UpdateDamagesDisplay.js';
+import ProjectilePierceSystem from '../../core/systems/combat/projectile/sys.ProjectilePierce.js';
 
 /**
  * @typedef {import('../../core/managers/combat/mgr.Entity.js').default} EntityManager
@@ -56,8 +57,9 @@ export default function setupLogicSystems(context) {
 	logicSystemsManager.register(TankStopMovementSystem.create(context));
 
 	// Projectile
-	logicSystemsManager.register(ProjectileDistanceChecker.create(context));
 	logicSystemsManager.register(ProjectileCollisionSystem.create(context));
+	logicSystemsManager.register(ProjectilePierceSystem.create(context), 'Piercing_System');
+	logicSystemsManager.register(ProjectileDistanceChecker.create(context));
 
 	// Skill impact
 	logicSystemsManager.register(SkillImpactSystem.create(context), 'Skill_Impact');
@@ -66,6 +68,7 @@ export default function setupLogicSystems(context) {
 
 	// Clean projectile sau
 	logicSystemsManager.register(CleanProjectileSystem.create(context), 'Clean_Projectile');
+	logicSystemsManager.register(CleanImpactorsSystem.create(context), 'Clean_Impactors_System');
 
 	// Dead
 	logicSystemsManager.register(DeadHandleSystem.create(context), 'Dead_System');
