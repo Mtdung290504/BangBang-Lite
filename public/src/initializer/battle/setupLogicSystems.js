@@ -27,6 +27,7 @@ import DeadHandleSystem from '../../core/systems/combat/event/sys.Dead.js';
 import TankStatsSyncSystem from '../../core/systems/network/sys.StatsSync.js';
 import UpdateDamagesDisplaySystem from '../../core/systems/combat/state/sys.UpdateDamagesDisplay.js';
 import ProjectilePierceSystem from '../../core/systems/combat/projectile/sys.ProjectilePierce.js';
+import ProjectileBounceSystem from '../../core/systems/combat/projectile/sys.ProjectileBounce.js';
 
 /**
  * @typedef {import('../../core/managers/combat/mgr.Entity.js').default} EntityManager
@@ -58,13 +59,15 @@ export default function setupLogicSystems(context) {
 
 	// Projectile
 	logicSystemsManager.register(ProjectileCollisionSystem.create(context));
-	logicSystemsManager.register(ProjectilePierceSystem.create(context), 'Piercing_System');
-	logicSystemsManager.register(ProjectileDistanceChecker.create(context));
 
 	// Skill impact
 	logicSystemsManager.register(SkillImpactSystem.create(context), 'Skill_Impact');
 	logicSystemsManager.register(ReceiveDamageSystem.create(context), 'Receive_Damage');
 	logicSystemsManager.register(TankStatsSyncSystem.create(context));
+
+	logicSystemsManager.register(ProjectilePierceSystem.create(context), 'Piercing_System');
+	logicSystemsManager.register(ProjectileBounceSystem.create(context), 'Bouncing_System');
+	logicSystemsManager.register(ProjectileDistanceChecker.create(context));
 
 	// Clean projectile sau
 	logicSystemsManager.register(CleanProjectileSystem.create(context), 'Clean_Projectile');

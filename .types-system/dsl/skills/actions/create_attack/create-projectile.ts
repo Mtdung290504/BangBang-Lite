@@ -26,6 +26,7 @@ interface Piercing {
 interface Bouncing {
 	name: 'bouncing';
 	'hit-limit': number;
+	'bounce-range': number;
 
 	/** Default: 0 */
 	'damage-modifier'?: ValueWithUnit;
@@ -99,6 +100,7 @@ const customShoot: CreateProjectileAction = {
 		{
 			name: 'bouncing',
 			'hit-limit': 3,
+			'bounce-range': 300,
 			'damage-modifier': { amount: 25 },
 		},
 	],

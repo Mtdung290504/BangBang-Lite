@@ -11,14 +11,22 @@ import DealtDamageExecutor from '../../../factory/battle/executors/hit_executors
 
 // Use type only
 import EntityManager from '../../../managers/combat/mgr.Entity.js';
+import ImpactTargetsComponent from '../../../components/combat/state/skill/com.ImpactTargets.js';
 
 const SkillImpactSystem = defineSystemFactory([SkillImpactComponent])
 	.withProcessor((context, eID, [skillImpact]) => {
 		skillImpact.impactors.forEach(({ eID: impactorEID, role }) => {
+			// Đạn đã đánh trúng mục tiêu rồi thì bỏ qua mục tiêu đó
+			const impactedTargets = context.getComponent(impactorEID, ImpactTargetsComponent);
+			if (impactedTargets.has(eID)) return;
+
 			const { ownerEID: sourceEID } = context.getComponent(impactorEID, OwnerEIDComponent);
 			const { onHitManifest } = context.getComponent(impactorEID, OnSkillHitManifest);
 			const handlers = onHitManifest[role];
 			const selfHandler = onHitManifest['self'];
+
+			// Lưu eID của bản thân vào registry của đạn
+			impactedTargets.add(eID);
 
 			if (!handlers) return;
 			executeActions(context, handlers, sourceEID, impactorEID, eID);

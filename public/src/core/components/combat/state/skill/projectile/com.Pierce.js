@@ -16,8 +16,6 @@ export default class PierceComponent {
 		return new PierceComponent(
 			// Default is Infinity
 			dsl['hit-limit'] ?? Infinity,
-
-			// Clone to avoid editing references
 			dsl['damage-modifier'] ?? { amount: 0 }
 		);
 	}

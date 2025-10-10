@@ -21,6 +21,7 @@ export default class SkillImpactComponent {
 	}
 
 	clearImpacts() {
+		this.skillImpactEIDs.clear();
 		this.impactors.length = 0;
 	}
 }

@@ -68,7 +68,14 @@ export const skills = {
 				type: 'custom',
 
 				collider: { type: 'rectangle', size: { width: 41.53 * 1.07, height: 30.04 * 1.07 } },
-				enhancements: [{ name: 'bouncing', 'hit-limit': 3, 'damage-modifier': { amount: 50, unit: '%' } }],
+				enhancements: [
+					{
+						name: 'bouncing',
+						'hit-limit': 3,
+						'bounce-range': 336,
+						'damage-modifier': { amount: 50, unit: '%' },
+					},
+				],
 				'on-dealt-damage': { self: [{ action: '@recover:energy', amount: 5 }] },
 				'on-hit': {
 					enemy: [
@@ -161,7 +168,7 @@ export const skills = {
 	ultimate: {
 		type: 'normal',
 		property: 'skill',
-		cooldown: 8,
+		cooldown: 1,
 
 		'casting-method': { type: 'in-direction', range: 480, display: { size: 80 } },
 

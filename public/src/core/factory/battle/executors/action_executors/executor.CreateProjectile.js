@@ -1,14 +1,26 @@
 import EntityManager from '../../../../managers/combat/mgr.Entity.js';
 
-// Components
+// Tank components
 import TankComponent from '../../../../components/combat/objects/com.Tank.js';
-import ProjectileComponent from '../../../../components/combat/objects/com.Projectile.js';
-import ShootingComponent from '../../../../components/combat/stats/com.Shooting.js';
 import SkillContextComponent from '../../../../components/combat/state/skill/com.SkillContext.js';
+import ShootingComponent from '../../../../components/combat/stats/com.Shooting.js';
+
+// Projectile components
+import ProjectileComponent from '../../../../components/combat/objects/com.Projectile.js';
+
+import OwnerEIDComponent from '../../../../components/combat/state/com.OwnerEID.js';
+import TargetFilterComponent from '../../../../components/combat/state/skill/com.TargetFilter.js';
+import ImpactTargetsComponent from '../../../../components/combat/state/skill/com.ImpactTargets.js';
+import PierceComponent from '../../../../components/combat/state/skill/projectile/com.Pierce.js';
+import BounceComponent from '../../../../components/combat/state/skill/projectile/com.Bounce.js';
+
 import VelocityComponent from '../../../../components/physics/com.Velocity.js';
 import ColliderComponent from '../../../../components/physics/com.Collider.js';
 import PositionComponent from '../../../../components/physics/com.Position.js';
+import MovementComponent from '../../../../components/physics/com.Movement.js';
+
 import SpriteComponent from '../../../../components/graphic/com.Sprite.js';
+
 import OnSkillHitManifest from '../../../../components/combat/event_container/skill/com.OnSkillHitManifest.js';
 import OnSkillDealtDamageManifest from '../../../../components/combat/event_container/skill/com.OnSkillDealtDamageManifest.js';
 
@@ -23,10 +35,6 @@ import {
 	RANGE_CALCULATION_CONSTANT,
 	SKILL_EFFECT_LAYER,
 } from '../../../../../../configs/constants/domain_constants/com.constants.js';
-import MovementComponent from '../../../../components/physics/com.Movement.js';
-import TargetFilterComponent from '../../../../components/combat/state/skill/com.TargetFilter.js';
-import OwnerEIDComponent from '../../../../components/combat/state/com.OwnerEID.js';
-import PierceComponent from '../../../../components/combat/state/skill/projectile/com.Pierce.js';
 
 export default class CreateProjectileExecutor extends BaseActionExecutor {
 	/**
@@ -62,7 +70,7 @@ export default class CreateProjectileExecutor extends BaseActionExecutor {
 		const deltaX = Math.cos(angleFs.degToRad(angle)) * flightSpeed * PROJECTILE_SPEED_CALCULATION_CONSTANT;
 		const deltaY = Math.sin(angleFs.degToRad(angle)) * flightSpeed * PROJECTILE_SPEED_CALCULATION_CONSTANT;
 		const projVel = new VelocityComponent(deltaX, deltaY);
-		const projMov = new MovementComponent(0, angle);
+		const projMov = new MovementComponent(flightSpeed * PROJECTILE_SPEED_CALCULATION_CONSTANT, angle);
 
 		// Tính vị trí xuất hiện của đạn (Vị trí tương đối của mũi tank)
 		const { x: selfX, y: selfY } = skillContext.selfPosRef;
@@ -94,21 +102,31 @@ export default class CreateProjectileExecutor extends BaseActionExecutor {
 			new OnSkillHitManifest(onHit),
 			new OnSkillDealtDamageManifest(onDealtDamage),
 			new TargetFilterComponent(targets),
+
+			// Trạng thái
+			new ImpactTargetsComponent(),
 		]);
 
-		enhancements.forEach((enhancement) => {
-			switch (enhancement.name) {
-				case 'piercing':
-					context.addComponent(projEID, PierceComponent.fromDSL(enhancement));
-					break;
-				case 'tracking':
-					break;
-				case 'bouncing':
-					break;
-				default:
-					console.warn('Invalid enhancement, ignore');
-					break;
-			}
-		});
+		// Thêm cường hóa
+		context.addComponents(
+			projEID,
+			enhancements.reduce((acc, enhancement) => {
+				switch (enhancement.name) {
+					case 'piercing':
+						acc.push(PierceComponent.fromDSL(enhancement));
+						break;
+					case 'tracking':
+						// acc.push(TrackingComponent.fromDSL(enhancement));
+						break;
+					case 'bouncing':
+						acc.push(BounceComponent.fromDSL(enhancement));
+						break;
+					default:
+						console.warn('Invalid enhancement, ignore');
+						break;
+				}
+				return acc;
+			}, /**@type {object[]} */ ([]))
+		);
 	}
 }
