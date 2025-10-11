@@ -8,7 +8,7 @@ export const SANDBOX_TANK_PARAM_KEY = 'tank';
 
 // Sanbox config constants
 export const SANDBOX_PLAYER_NAME_PARAM_KEY = 'name';
-export const SANDBOX_PLAYER_NAME = 'ChuaDu16KyTu';
+export const SANDBOX_PLAYER_NAME = 'Dungx';
 export const SANDBOX_SOCKET_ID = 'sandbox-socketID';
 
 // View keys

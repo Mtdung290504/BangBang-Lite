@@ -5,7 +5,7 @@ import defineSystemFactory from '../../../factory/factory_builders/defineSystemF
 import AttackPowerComponent from '../../../components/combat/stats/com.AttackPower.js';
 import SurvivalComponent from '../../../components/combat/stats/com.Survival.js';
 import ReceivedDamageComponent from '../../../components/combat/state/com.ReceiveDamage.js';
-import DamagesDisplayComponent from '../../../components/combat/state/com.DamagesDisplay.js';
+import TextEffectDisplayComponent from '../../../components/combat/state/com.DamagesDisplay.js';
 import PositionComponent from '../../../components/physics/com.Position.js';
 import StatsHistoryComponent from '../../../components/network/com.StatsHistory.js';
 
@@ -13,6 +13,9 @@ import StatsHistoryComponent from '../../../components/network/com.StatsHistory.
 import TextEffect from '../../../../../../models/public/TextEffect.js';
 import { STATUS_BAR_COLORS } from '../../../../../configs/constants/domain_constants/sys.constants.js';
 
+/**
+ * System xử lý trừ HP và thêm hiển thị damage khi chịu ST
+ */
 const ReceiveDamageSystem = defineSystemFactory([ReceivedDamageComponent])
 	.withProcessor((context, eID, [{ damageQueue }]) => {
 		const survival = context.getComponent(eID, SurvivalComponent, false);
@@ -44,8 +47,8 @@ const ReceiveDamageSystem = defineSystemFactory([ReceivedDamageComponent])
 			if (damageDealt)
 				// TODO: Triển khai sau: Nếu nguồn hoặc đích là EID của mình thì mới hiện, không thì thôi
 				context
-					.getComponent(eID, DamagesDisplayComponent)
-					.damageEffects.push(new TextEffect(pos, damageDealt, STATUS_BAR_COLORS.damage, displayType));
+					.getComponent(eID, TextEffectDisplayComponent)
+					.textEffects.push(new TextEffect(pos, damageDealt, STATUS_BAR_COLORS.damage, displayType));
 
 			// Lưu damage vào stats history
 			const statsHistory = context.getComponent(eID, StatsHistoryComponent, false);

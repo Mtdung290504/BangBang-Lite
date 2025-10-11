@@ -38,16 +38,16 @@ const ProjectileBounceSystem = defineSystemFactory([ProjectileComponent])
 		impactTarget.targetEIDs = impactTarget.targetEIDs.slice(-1);
 
 		// Target tank
-		const targetEID = impactTarget.targetEIDs.at(-1);
-		if (!targetEID) return;
+		const lastTargetEID = impactTarget.targetEIDs.at(-1);
+		if (!lastTargetEID) return;
 
 		// Nếu đạn đánh trúng mục tiêu target, xóa target để cập nhật target
-		if (targetEID === bouncing.currentTargetEID) bouncing.currentTargetEID = null;
+		if (lastTargetEID === bouncing.currentTargetEID) bouncing.currentTargetEID = null;
 
 		// Đang hướng đến target, không xử lý nữa nhưng chặn xóa đạn
 		if (bouncing.currentTargetEID !== null) return (projectile.cleanable = false);
 
-		const lastTargetPos = context.getComponent(targetEID, PositionComponent);
+		const lastTargetPos = context.getComponent(lastTargetEID, PositionComponent);
 		let nearestTargetPos = null;
 		let nearestTarget = null;
 		let minDistSq = Infinity;
@@ -55,7 +55,7 @@ const ProjectileBounceSystem = defineSystemFactory([ProjectileComponent])
 		// TODO: Xử lý hit limit & modifier trong tương lai
 		for (const [checkTargetEID, checkTargetPos] of context.getEntitiesWithComponent(PositionComponent)) {
 			// Ignore the target that was just hit
-			if (checkTargetEID === targetEID) continue;
+			if (checkTargetEID === lastTargetEID) continue;
 
 			// Make sure Position is of a valid target.
 			// *Currently only Tank is the only valid target

@@ -13,6 +13,9 @@ import DealtDamageExecutor from '../../../factory/battle/executors/hit_executors
 import EntityManager from '../../../managers/combat/mgr.Entity.js';
 import ImpactTargetsComponent from '../../../components/combat/state/skill/com.ImpactTargets.js';
 
+/**
+ * System xử lý các skill đã đánh trúng đối tượng
+ */
 const SkillImpactSystem = defineSystemFactory([SkillImpactComponent])
 	.withProcessor((context, eID, [skillImpact]) => {
 		skillImpact.impactors.forEach(({ eID: impactorEID, role }) => {
@@ -39,6 +42,9 @@ const SkillImpactSystem = defineSystemFactory([SkillImpactComponent])
 	})
 	.build();
 
+/**
+ * System clean các impactor không còn tồn tại (đã bị xóa)
+ */
 const CleanImpactorsSystem = defineSystemFactory([SkillImpactComponent])
 	.withProcessor((context, _eID, [skillImpact]) => {
 		for (const impactorEID of skillImpact.skillImpactEIDs) {

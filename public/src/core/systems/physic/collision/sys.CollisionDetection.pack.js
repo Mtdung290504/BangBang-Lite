@@ -11,8 +11,11 @@ import { circleCollisionCircle, circleCollisionRectangle } from '../../../fomula
 
 const DEBUG = false;
 
-/** Chỉ query ColliderComponent nhằm tối ưu số vòng lặp */
-const CollisionDetectionSystem = defineSystemFactory([ColliderComponent])
+/**
+ * System nhận diện va chạm\
+ * *Note: Chỉ query ColliderComponent nhằm tối ưu số vòng lặp*
+ */
+export const CollisionDetectionSystem = defineSystemFactory([ColliderComponent])
 	.withProcessor((context, eID, [collider]) => {
 		const pos = context.getComponent(eID, PositionComponent);
 
@@ -68,4 +71,11 @@ const CollisionDetectionSystem = defineSystemFactory([ColliderComponent])
 	})
 	.build();
 
-export default CollisionDetectionSystem;
+/**
+ * System clean trạng thái collision sau khi đã xử lý
+ */
+export const CollisionResetSystem = defineSystemFactory([ColliderComponent])
+	.withProcessor((_context, _eID, [collider]) => {
+		collider.collisionTargets.clear();
+	})
+	.build();

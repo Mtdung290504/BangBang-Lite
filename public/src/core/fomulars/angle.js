@@ -4,7 +4,7 @@
  * @param {number} degreeValue
  * @returns {number}
  */
-const degToRad = (degreeValue) => (degreeValue * Math.PI) / 180;
+export const degToRad = (degreeValue) => (degreeValue * Math.PI) / 180;
 
 /**
  * Convert radians to degrees
@@ -12,7 +12,7 @@ const degToRad = (degreeValue) => (degreeValue * Math.PI) / 180;
  * @param {number} radianValue
  * @returns {number}
  */
-const radToDeg = (radianValue) => (radianValue / Math.PI) * 180;
+export const radToDeg = (radianValue) => (radianValue / Math.PI) * 180;
 
 /**
  * Convert an angle outside [0, 360] to an angle within [0, 360] ****Unit: degree***
@@ -21,6 +21,4 @@ const radToDeg = (radianValue) => (radianValue / Math.PI) * 180;
  * @param {number} degreeValue
  * @returns {number}
  */
-const normalize = (degreeValue) => ((degreeValue % 360) + 360) % 360;
-
-export { degToRad, radToDeg, normalize };
+export const normalize = (degreeValue) => ((degreeValue % 360) + 360) % 360;

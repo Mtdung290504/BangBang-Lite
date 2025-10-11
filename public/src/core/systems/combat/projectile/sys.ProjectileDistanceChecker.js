@@ -5,7 +5,7 @@ import defineSystemFactory from '../../../factory/factory_builders/defineSystemF
 import ProjectileComponent from '../../../components/combat/objects/com.Projectile.js';
 import VelocityComponent from '../../../components/physics/com.Velocity.js';
 
-const ProjectileDistanceChecker = defineSystemFactory([ProjectileComponent])
+const CheckProjectileDistanceSystem = defineSystemFactory([ProjectileComponent])
 	.withProcessor((context, eID, [projectile]) => {
 		const { dx, dy } = context.getComponent(eID, VelocityComponent);
 
@@ -14,4 +14,4 @@ const ProjectileDistanceChecker = defineSystemFactory([ProjectileComponent])
 	})
 	.build();
 
-export default ProjectileDistanceChecker;
+export default CheckProjectileDistanceSystem;

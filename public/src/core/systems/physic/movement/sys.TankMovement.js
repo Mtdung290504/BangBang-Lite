@@ -4,8 +4,8 @@ import defineSystemFactory from '../../../factory/factory_builders/defineSystemF
 // Components
 import TankComponent from '../../../components/combat/objects/com.Tank.js';
 import MovementComponent from '../../../components/physics/com.Movement.js';
-import InputComponent from '../../../components/input/com.Input.js';
 import VelocityComponent from '../../../components/physics/com.Velocity.js';
+import InputComponent from '../../../components/input/com.Input.js';
 
 // Constants
 import {
@@ -17,7 +17,10 @@ import { ACTIONS_KEYS } from '../../../../../configs/action-keys.js';
 // Utils
 import * as angleFs from '../../../fomulars/angle.js';
 
-const TankMovementSystem = defineSystemFactory([TankComponent])
+/**
+ * System cập nhật lại velocity cho tank cho chuẩn với hành vi phím của player
+ */
+export const TankMovementSystem = defineSystemFactory([TankComponent])
 	.withProcessor((context, eID, [_tank]) => {
 		// Lấy input manager để đọc trạng thái các phím điều khiển
 		const { inputManager } = context.getComponent(eID, InputComponent);
@@ -70,4 +73,8 @@ const TankMovementSystem = defineSystemFactory([TankComponent])
 	})
 	.build();
 
-export default TankMovementSystem;
+export const TankStopMovementSystem = defineSystemFactory([TankComponent])
+	.withProcessor((context, eID, [_tank]) => {
+		context.getComponent(eID, VelocityComponent).reset();
+	})
+	.build();

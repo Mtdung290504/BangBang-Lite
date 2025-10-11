@@ -2,8 +2,12 @@ import defineSystemFactory from '../../factory/factory_builders/defineSystemFact
 import { SelfOnlyRenderContext } from './contexts.js';
 
 // Components
+// Skill state
 import TankActiveSkillsComponent from '../../components/combat/state/skill/com.TankActiveSkillsComponent.js';
+import SkillCooldownComponent from '../../components/combat/state/skill/com.Cooldown.js';
+// Status
 import AdditionalAttributesComponent from '../../components/combat/stats/com.AdditionalAttributes.js';
+import SurvivalComponent from '../../components/combat/stats/com.Survival.js';
 
 // Constants
 import {
@@ -18,8 +22,6 @@ import {
 	SKILL_SLOT_LABEL,
 } from '../../../../configs/constants/domain_constants/sys.constants.js';
 import { UI_DELTA_LAYER } from '../../../../configs/constants/domain_constants/com.constants.js';
-import SurvivalComponent from '../../components/combat/stats/com.Survival.js';
-import SkillCooldownComponent from '../../components/combat/state/skill/com.Cooldown.js';
 
 // Cấu hình kích thước
 const CONFIG = {

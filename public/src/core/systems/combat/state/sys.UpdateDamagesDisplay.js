@@ -1,13 +1,15 @@
 import defineSystemFactory from '../../../factory/factory_builders/defineSystemFactory.js';
-import DamagesDisplayComponent from '../../../components/combat/state/com.DamagesDisplay.js';
+import TextEffectDisplayComponent from '../../../components/combat/state/com.DamagesDisplay.js';
+import { easeOut } from '../../../fomulars/anim.js';
 
-const easeOut = (t = 0) => t * (2 - t);
-
-const UpdateDamagesDisplaySystem = defineSystemFactory([DamagesDisplayComponent])
+/**
+ * Cập nhật tọa độ text hiển thị (damage hiển thị bay lên)
+ */
+const UpdateDamagesDisplaySystem = defineSystemFactory([TextEffectDisplayComponent])
 	.withProcessor((_context, _eID, [damageDisplayer]) => {
 		const now = Date.now();
 
-		damageDisplayer.damageEffects = damageDisplayer.damageEffects.filter((damageEffect) => {
+		damageDisplayer.textEffects = damageDisplayer.textEffects.filter((damageEffect) => {
 			const timePassed = now - damageEffect.startTime;
 			const progress = timePassed / damageEffect.duration;
 

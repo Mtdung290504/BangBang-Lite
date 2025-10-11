@@ -4,6 +4,9 @@ import defineSystemFactory from '../../factory/factory_builders/defineSystemFact
 // Components
 import SpriteComponent from '../../components/graphic/com.Sprite.js';
 
+/**
+ * Di chuyển đến frame tiếp theo của sprite
+ */
 const SpriteNextFrameSystem = defineSystemFactory([SpriteComponent])
 	.withProcessor((_context, _eID, [sprite]) => {
 		sprite.currentFrameIdx++;

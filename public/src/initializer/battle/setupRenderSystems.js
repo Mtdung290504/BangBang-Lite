@@ -13,7 +13,7 @@ import RenderDamagesDisplaySystem from '../../core/systems/graphic/sys.RenderDam
 
 // Use type only
 import EntityManager from '../../core/managers/combat/mgr.Entity.js';
-import RenderSkillUISystem from '../../core/systems/graphic/sys.renderSkillUI.js';
+import RenderSkillUISystem from '../../core/systems/graphic/sys.RenderSkillUI.js';
 import CameraManager from '../../core/managers/graphic/mgr.Camera.js';
 
 /**

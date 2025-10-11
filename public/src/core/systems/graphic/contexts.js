@@ -1,6 +1,6 @@
 /**
- * @typedef {import('.types-system/src/graphic/graphics').Renderable} _Renderable
- * @typedef {import('.types-system/dsl/map-manifest').MapManifest} _MapManifest
+ * @typedef {import('.types-system/src/graphic/graphics').Renderable} Renderable
+ * @typedef {import('.types-system/dsl/map-manifest').MapManifest} MapManifest
  */
 
 // Use type only
@@ -17,13 +17,13 @@ export class RenderContext {
 		this.context2D = context2D;
 		this.getDebugState = getDebugState;
 
-		/**@type {Array<_Renderable>} */
+		/**@type {Array<Renderable>} */
 		this.renderCallbacks = [];
 	}
 
 	/**
 	 * Thêm callback render vào queue
-	 * @param {_Renderable} renderable
+	 * @param {Renderable} renderable
 	 */
 	addRenderCallback(renderable) {
 		this.renderCallbacks.push(renderable);
@@ -47,7 +47,7 @@ export class MapRenderContext extends RenderContext {
 	 * @param {() => boolean} getDebugState
 	 *
 	 * @param {Object} resource
-	 * @param {_MapManifest} resource.mapManifest
+	 * @param {MapManifest} resource.mapManifest
 	 * @param {HTMLImageElement} [resource.backgroundImage]
 	 * @param {HTMLImageElement} [resource.scenesImage]
 	 */

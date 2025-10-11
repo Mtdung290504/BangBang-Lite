@@ -1,4 +1,4 @@
-export default class DamagesDisplayComponent {
+export default class TextEffectDisplayComponent {
 	/** @type {import('models/public/TextEffect.js').default[]} */
-	damageEffects = [];
+	textEffects = [];
 }

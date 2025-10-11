@@ -1,10 +1,9 @@
-/**
- * @template {Array<new (...args: any) => any>} [T=any]
- * @typedef {import('.types-system/src/core/systems.js').AbstractSystem<T>} _AbstractSystem
- */
+// Use type only
+import EntityManager from '../combat/mgr.Entity.js';
 
 /**
- * @typedef {import('../combat/mgr.Entity.js').default} _EntityManager
+ * @template {Array<new (...args: any) => any>} [T=any]
+ * @typedef {import('.types-system/src/core/systems.js').AbstractSystem<T>} AbstractSystem
  */
 
 /**
@@ -12,7 +11,7 @@
  */
 export default class LogicSystemsManager {
 	/**
-	 * @param {_EntityManager} context
+	 * @param {EntityManager} context
 	 */
 	constructor(context) {
 		this.context = context;
@@ -20,7 +19,7 @@ export default class LogicSystemsManager {
 		/**
 		 * Danh sách systems đã đăng ký theo thứ tự.
 		 *
-		 * @type {Array<{system: _AbstractSystem, name: string, primaryComponents?: any[], componentsKey: string}>}
+		 * @type {Array<{system: AbstractSystem, name: string, primaryComponents?: any[], componentsKey: string}>}
 		 * @private
 		 */
 		this._systems = [];
@@ -56,7 +55,7 @@ export default class LogicSystemsManager {
 	 * Đăng ký một system.
 	 *
 	 * @template {(new (...args: any) => any)[]} T
-	 * @param {_AbstractSystem<T>} system - Kết quả từ factory.create()
+	 * @param {AbstractSystem<T>} system - Kết quả từ factory.create()
 	 */
 	register(system, name = '') {
 		// Validation

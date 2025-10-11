@@ -1,11 +1,11 @@
 import { SKILL_EFFECT_LAYER } from '../../../../configs/constants/domain_constants/com.constants.js';
 import { TEXT_DAMAGE_FONT_SIZE } from '../../../../configs/constants/domain_constants/sys.constants.js';
-import DamagesDisplayComponent from '../../components/combat/state/com.DamagesDisplay.js';
+import TextEffectDisplayComponent from '../../components/combat/state/com.DamagesDisplay.js';
 import defineSystemFactory from '../../factory/factory_builders/defineSystemFactory.js';
 import { RenderContext } from './contexts.js';
 
-const RenderDamagesDisplaySystem = defineSystemFactory([DamagesDisplayComponent], RenderContext)
-	.withProcessor((_context, _eID, [{ damageEffects }], sysContext) => {
+const RenderDamagesDisplaySystem = defineSystemFactory([TextEffectDisplayComponent], RenderContext)
+	.withProcessor((_context, _eID, [{ textEffects: damageEffects }], sysContext) => {
 		sysContext.addRenderCallback({ layer: SKILL_EFFECT_LAYER, render });
 
 		function render() {
