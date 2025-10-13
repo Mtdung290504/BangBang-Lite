@@ -29,7 +29,11 @@ import ProjectileBounceSystem from '../../core/systems/combat/projectile/sys.Pro
 import CheckProjectileDistanceSystem from '../../core/systems/combat/projectile/sys.ProjectileDistanceChecker.js';
 import CleanProjectileSystem from '../../core/systems/combat/projectile/sys.CleanProjectile.js';
 // Event
-import { SkillImpactSystem, CleanImpactorsSystem } from '../../core/systems/combat/event/sys.SkillImpact.pack.js';
+import {
+	SkillImpactHandleSystem,
+	CleanImpactorsSystem,
+	SkillImpactDetectionSystem,
+} from '../../core/systems/combat/event/sys.SkillImpact.pack.js';
 import ReceiveDamageSystem from '../../core/systems/combat/event/sys.ReceiveDamage.js';
 import DeadHandleSystem from '../../core/systems/combat/event/sys.Dead.js';
 import UpdateDamagesDisplaySystem from '../../core/systems/combat/state/sys.UpdateDamagesDisplay.js';
@@ -65,6 +69,7 @@ export default function setupLogicSystems(context) {
 	logicSystemsManager.register(ApplyMovementSystem.create(context));
 	logicSystemsManager.register(CollisionResetSystem.create(context)); // Reset chạy trước để clean dữ liệu từ frame trước
 	logicSystemsManager.register(CollisionDetectionSystem.create(context)); // Chạy sau thì các system phía sau mới xử lý được
+	logicSystemsManager.register(SkillImpactDetectionSystem.create(context));
 
 	// Tank
 	logicSystemsManager.register(TankStopMovementSystem.create(context));
@@ -73,7 +78,7 @@ export default function setupLogicSystems(context) {
 	logicSystemsManager.register(ProjectileCollisionSystem.create(context));
 
 	// Skill impact
-	logicSystemsManager.register(SkillImpactSystem.create(context), 'Skill_Impact');
+	logicSystemsManager.register(SkillImpactHandleSystem.create(context), 'Skill_Impact');
 	logicSystemsManager.register(ReceiveDamageSystem.create(context), 'Receive_Damage');
 	logicSystemsManager.register(TankStatsSyncSystem.create(context));
 

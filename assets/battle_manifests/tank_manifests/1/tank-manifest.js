@@ -118,7 +118,6 @@ export const skills = {
 				type: 'custom',
 				'flight-speed': 12 * 1.5,
 				'flight-range': 528,
-
 				// Event
 				'on-hit': {
 					enemy: [
@@ -168,7 +167,7 @@ export const skills = {
 	ultimate: {
 		type: 'normal',
 		property: 'skill',
-		cooldown: 1,
+		cooldown: 8,
 
 		'casting-method': { type: 'in-direction', range: 480, display: { size: 80 } },
 

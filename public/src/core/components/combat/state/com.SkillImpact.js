@@ -15,9 +15,10 @@ export default class SkillImpactComponent {
 	 * @param {keyof import('.types-system/dsl/events/event-manifest').SkillEventHandler['on-hit']} role
 	 */
 	addImpact(eID, role) {
-		if (this.skillImpactEIDs.has(eID)) return;
+		if (this.skillImpactEIDs.has(eID)) return false;
 		this.skillImpactEIDs.add(eID);
 		this.impactors.push({ eID, role });
+		return true;
 	}
 
 	clearImpacts() {

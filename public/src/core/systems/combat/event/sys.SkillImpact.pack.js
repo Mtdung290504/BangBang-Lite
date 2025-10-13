@@ -11,12 +11,71 @@ import DealtDamageExecutor from '../../../factory/battle/executors/hit_executors
 
 // Use type only
 import EntityManager from '../../../managers/combat/mgr.Entity.js';
+
+// Components
 import ImpactTargetsComponent from '../../../components/combat/state/skill/com.ImpactTargets.js';
+import ColliderComponent from '../../../components/physics/com.Collider.js';
+import SkillContextComponent from '../../../components/combat/state/skill/com.SkillContext.js';
+import TargetFilterComponent from '../../../components/combat/state/skill/com.TargetFilter.js';
+
+const DEBUG = false;
+/**
+ * - System nhận diện skill ảnh hưởng lên mục tiêu
+ * - Xóa các collision target khỏi collider nếu chúng không trong diện bị ảnh hưởng
+ */
+export const SkillImpactDetectionSystem = defineSystemFactory([ColliderComponent])
+	.withProcessor((context, eID, [collider]) => {
+		// Nếu collider có on hit manifest, nó là skill cần xác định ảnh hưởng
+		if (!context.hasComponent(eID, OnSkillHitManifest)) return;
+
+		// Lấy owner, team và targets của nguồn skill để xử lý impact
+		const { ownerEID: projOwnerEID } = context.getComponent(eID, OwnerEIDComponent);
+		const { team: selfTeam } = context.getComponent(projOwnerEID, SkillContextComponent);
+		const targetFilter = context.getComponent(eID, TargetFilterComponent);
+
+		// Duyệt qua các target đã va chạm với skill
+		for (const targetEID of collider.collisionTargets) {
+			// Nếu target có khả năng nhận skill mới tính, còn nếu là tường hay kiến trúc thì bỏ qua
+			const skillImpactContainer = context.getComponent(targetEID, SkillImpactComponent, false);
+			if (!skillImpactContainer) {
+				DEBUG && console.log(`SkillImpactor::[${eID}] ignore target::[${targetEID}]`);
+				collider.collisionTargets.delete(targetEID);
+				continue;
+			}
+
+			const { team: targetTeam } = context.getComponent(targetEID, SkillContextComponent);
+			const isEnemy = selfTeam !== targetTeam;
+			const isSelf = projOwnerEID === targetEID;
+			const isAlly = !isEnemy && !isSelf;
+
+			// Nếu có thể đánh trúng kẻ địch
+			if (targetFilter.enemy && isEnemy && skillImpactContainer.addImpact(eID, 'enemy')) {
+				DEBUG && console.log(`SkillImpactor::[${eID}] impact enemy::[${targetEID}]`);
+			}
+
+			// Nếu có đánh trúng đồng minh
+			else if (targetFilter.ally && isAlly && skillImpactContainer.addImpact(eID, 'ally')) {
+				DEBUG && console.log(`SkillImpactor::[${eID}] impact ally::[${targetEID}]`);
+			}
+
+			// Nếu có thể đánh trúng bản thân
+			else if (targetFilter.self && isSelf && skillImpactContainer.addImpact(eID, 'self')) {
+				DEBUG && console.log(`SkillImpactor::[${eID}] impact owner::[${targetEID}]`);
+			}
+
+			// Nếu mục tiêu không trong diện có thể đánh trúng, xóa khỏi targets
+			else {
+				DEBUG && console.log(`SkillImpactor::[${eID}] ignore target::[${targetEID}]`);
+				collider.collisionTargets.delete(targetEID);
+			}
+		}
+	})
+	.build();
 
 /**
  * System xử lý các skill đã đánh trúng đối tượng
  */
-const SkillImpactSystem = defineSystemFactory([SkillImpactComponent])
+const SkillImpactHandleSystem = defineSystemFactory([SkillImpactComponent])
 	.withProcessor((context, eID, [skillImpact]) => {
 		skillImpact.impactors.forEach(({ eID: impactorEID, role }) => {
 			// Đạn đã đánh trúng mục tiêu rồi thì bỏ qua mục tiêu đó
@@ -57,11 +116,11 @@ const CleanImpactorsSystem = defineSystemFactory([SkillImpactComponent])
 	})
 	.build();
 
-export { SkillImpactSystem, CleanImpactorsSystem };
+export { SkillImpactHandleSystem, CleanImpactorsSystem };
 
 /**
  * @param {EntityManager} context
- * @param {import('.types-system/dsl/skills/actions/skill-actions').SkillHitAction[]} actions
+ * @param {import('.types-system/dsl/skills/actions/skill-actions').SkillHitAction[]} actions - Manifest của các action
  * @param {number} sourceEID - Nguồn tạo ra đạn hoặc area damage
  * @param {number} impactorEID - Nguồn gây sát thương, ví dụ: đạn, area damage để tính giảm hoặc damage theo điều kiện
  * @param {number} [targetEID] - Mục tiêu áp dụng, nếu không có thì mặc định áp dụng lên chính mình
@@ -75,6 +134,7 @@ function executeActions(context, actions, sourceEID, impactorEID, targetEID) {
 				new DealtDamageExecutor(context, action).exec(sourceEID, impactorEID, targetEID ?? sourceEID);
 				break;
 			// TODO: Bổ sung executor
+
 			default:
 				break;
 		}
