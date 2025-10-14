@@ -91,6 +91,7 @@ async function preloadPhase1() {
  * - Tải toàn bộ normal-attack sprite của tank
  * - Tải tank stats manifest, tank skill manifest của từng tank
  * - Từ skill manifest của từng tank, duyệt sâu hết `skills` và đọc mọi key `sprite` và tải các sprite đó theo tankID với skinID
+ * - Tải toàn bộ skill sp manifest (không cần tối ưu tải từng cái vì các skill sp rất nhẹ)
  *
  * - *Note for future:* Tải manifest của map (gồm 10 tọa độ hồi sinh, mảng polygons, lines, ...)
  * - *Note for future:* Tải icon skill cho tank sử dụng skin !== 0
@@ -180,7 +181,10 @@ async function preloadPhase2(mapID, players) {
 			}
 		}
 
-		// 5. Load skill sprites based on skill manifests
+		// 5. Load skill sp manifests
+		tasks.push(async () => storage.setSkillSPManifest(await loader.loadSkillSPManifests()));
+
+		// 6. Load skill sprites based on skill manifests
 		// Wait for manifests to be loaded first
 		await runWithConcurrencyLimit(
 			tasks.filter(

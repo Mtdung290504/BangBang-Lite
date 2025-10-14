@@ -16,15 +16,15 @@ import EntityManager from '../../core/managers/combat/mgr.Entity.js';
 import RenderSkillUISystem from '../../core/systems/graphic/sys.RenderSkillUI.js';
 import CameraManager from '../../core/managers/graphic/mgr.Camera.js';
 
+// Type only
+import GameRenderContext from '../../../../models/public/game_contexts/GameRenderContext.js';
+
 /**
  * @param {EntityManager} context
- * @param {CanvasRenderingContext2D} context2D
- * @param {CameraManager} camera
- * @param {number} selfTankEID
- * @param {number} mapID
- * @param {() => boolean} getDebugState
+ * @param {GameRenderContext} gameRenderContext
  */
-export default function setupRenderSystems(context, context2D, camera, selfTankEID, mapID, getDebugState) {
+export default function setupRenderSystems(context, gameRenderContext) {
+	const { context2D, viewport, selfTankEID, mapID, getDebugState } = gameRenderContext;
 	const renderSysMgr = new RenderSystemsManager(context);
 
 	const mapManifest = storage.getMapManifest(mapID);
@@ -44,7 +44,7 @@ export default function setupRenderSystems(context, context2D, camera, selfTankE
 		)
 	);
 	renderSysMgr.register(
-		RenderSkillUISystem.create(context, new SelfOnlyRenderContext(selfTankEID, camera, context2D, getDebugState))
+		RenderSkillUISystem.create(context, new SelfOnlyRenderContext(selfTankEID, viewport, context2D, getDebugState))
 	);
 
 	// Note: RenderContext chứa render callbacks nên phải tạo riêng cho mỗi system.

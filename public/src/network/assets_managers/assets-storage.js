@@ -8,17 +8,18 @@
  */
 
 /**
- * @typedef {import('.types-system/src/graphic/graphics').SpriteManifest} _SpriteManifest
- * @typedef {import('.types-system/dsl/tank-manifest.js').TankManifest} _TankManifest
- * @typedef {import('.types-system/dsl/skill-manifest').SkillManifest} _SkillManifest
- * @typedef {import('.types-system/dsl/map-manifest.js').MapManifest} _MapManifest
+ * @typedef {import('.types-system/src/graphic/graphics').SpriteManifest} SpriteManifest
+ * @typedef {import('.types-system/dsl/tank-manifest.js').TankManifest} TankManifest
+ * @typedef {import('.types-system/dsl/skill-manifest').SkillManifest} SkillManifest
+ * @typedef {import('.types-system/dsl/map-manifest.js').MapManifest} MapManifest
+ * @typedef {import('assets/battle_manifests/skill_sp_manifests.js')['default']} SkillSPManifests
  */
 
 const LOG_PREFIX = '> [net.asset-storage]';
 
 /**
  * Lưu sprite, key dạng `${tankID}_${skinID}_${spriteKey}`
- * @type {Record<string, { sprite: HTMLImageElement, manifest: _SpriteManifest }>}
+ * @type {Record<string, { sprite: HTMLImageElement, manifest: SpriteManifest }>}
  */
 export const sprites = {};
 
@@ -37,8 +38,8 @@ export const mapAssets = new Map();
 /**
  * Lưu tank manifest như chỉ số, skills, key là tankID
  * @type {Map<number, {
- * 		stats?: _TankManifest
- * 		skills?: _SkillManifest
+ * 		stats?: TankManifest
+ * 		skills?: SkillManifest
  * 		skillDescription?: any
  * }>}
  */
@@ -46,7 +47,7 @@ export const tankManifests = new Map();
 
 /**
  * Lưu map manifest
- * @type {Map<number, _MapManifest>}
+ * @type {Map<number, MapManifest>}
  */
 export const mapManifests = new Map();
 
@@ -76,7 +77,7 @@ export function setAssetIDs(mapIDs, tankIDs) {
  * @param {number} tankID - ID của tank
  * @param {number} skinID - ID của skin
  * @param {string} spriteKey - Tên sprite
- * @param {{ sprite: HTMLImageElement, manifest: _SpriteManifest }} spriteData  Dữ liệu sprite và manifest
+ * @param {{ sprite: HTMLImageElement, manifest: SpriteManifest }} spriteData  Dữ liệu sprite và manifest
  */
 export function setSprite(tankID, skinID, spriteKey, spriteData) {
 	const key = `${tankID}_${skinID}_${spriteKey}`;
@@ -164,7 +165,7 @@ export function getMapAssets(mapID) {
 
 /**
  * @param {number} mapID
- * @param {_MapManifest} manifest
+ * @param {MapManifest} manifest
  */
 export function setMapManifest(mapID, manifest) {
 	mapManifests.set(mapID, manifest);
@@ -188,7 +189,7 @@ export function hasMapManifest(mapID) {
  * Thêm tank manifest (stats, skills)
  *
  * @param {number} tankID
- * @param {{ stats: _TankManifest, skills: _SkillManifest }} manifests
+ * @param {{ stats: TankManifest, skills: SkillManifest }} manifests
  */
 export function setTankManifests(tankID, manifests) {
 	const existing = tankManifests.get(tankID);
@@ -224,7 +225,7 @@ export function setSkillDescription(tankID, skillDescription) {
  * Lấy tank manifest
  *
  * @param {number} tankID
- * @returns {{ stats: _TankManifest, skills: _SkillManifest, skillDescription: any }}
+ * @returns {{ stats: TankManifest, skills: SkillManifest, skillDescription: any }}
  * @throws {Error} Khi manifest bị thiếu
  */
 export function getTankManifests(tankID) {
@@ -236,7 +237,7 @@ export function getTankManifests(tankID) {
 		throw new Error('Manifest missing element');
 	}
 
-	return /** @type {{ stats: _TankManifest, skills: _SkillManifest, skillDescription: any }} */ (result);
+	return /** @type {{ stats: TankManifest, skills: SkillManifest, skillDescription: any }} */ (result);
 }
 
 /**
@@ -254,4 +255,15 @@ export function hasTankManifests(tankID) {
  */
 function msg(text) {
 	return `${LOG_PREFIX} ${text}`;
+}
+
+/** @type {SkillSPManifests?} */
+export let skillSPManifests = null;
+
+/**
+ *
+ * @param {SkillSPManifests} manifests
+ */
+export function setSkillSPManifest(manifests) {
+	skillSPManifests = manifests;
 }

@@ -22,8 +22,11 @@ import BaseActionExecutor from '../../core/factory/battle/executors/base/executo
 /**
  * @param {EntityManager} context
  * @param {number} tankEID
+ * @param {number} spSkillID
  */
-export default function setupSkill(context, tankEID) {
+export default function setupSkill(context, tankEID, spSkillID) {
+	if (!storage.skillSPManifests) throw new Error('????');
+
 	const tank = context.getComponent(tankEID, TankComponent);
 	const tankManifest = storage.getTankManifests(tank.tankID);
 
@@ -43,6 +46,7 @@ export default function setupSkill(context, tankEID) {
 	parseSkill(context, skillContainer, 's1', s1_manifest);
 	parseSkill(context, skillContainer, 's2', s2_manifest);
 	parseSkill(context, skillContainer, 'ultimate', ultimateManifest);
+	parseSkill(context, skillContainer, 'sp', storage.skillSPManifests[spSkillID]);
 
 	context.addComponent(tankEID, skillContainer);
 }
@@ -69,10 +73,9 @@ function parseSkill(context, skillContainer, skillSlot, skillManifest) {
 			context.addComponent(skillEID, cooldownComponent);
 		}
 
-		// Skill không cần khóa mục tiêu
+		// Có casting method, có thể là bất kỳ action nào
 		if ('casting-method' in skillManifest) {
-			// Có casting method, có thể là bất kỳ action nào
-			if (!skillManifest['casting-method']) throw new Error('> [DSL Parser] Lỗi không bao giờ xảy ra');
+			if (!skillManifest['casting-method']) return console.warn('casting method exist but undefined');
 
 			// Action không khóa mục tiêu
 			if (Array.isArray(skillManifest.actions))

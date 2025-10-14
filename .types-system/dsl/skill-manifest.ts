@@ -93,7 +93,9 @@ const noPhaseSkillManifest: SkillManifest = {
 				action: '@create:projectile',
 				type: 'default',
 				collider: { type: 'rectangle', size: { width: 0, height: 0 } },
-				enhancements: [{ name: 'bouncing', 'hit-limit': 3, 'damage-modifier': { amount: 50 } }],
+				enhancements: [
+					{ name: 'bouncing', 'hit-limit': 3, 'bounce-range': 336, 'damage-modifier': { amount: 50 } },
+				],
 				'on-dealt-damage': { self: ['implement-later: Hồi 5 năng lượng'] },
 			},
 		],

@@ -6,6 +6,7 @@ export default class Player {
 	 * @param {{
 	 * 		tankID?: number
 	 * 		skinID?: number
+	 * 		skillSP?: number
 	 * 		avatarID?: number
 	 * }} using
 	 */
@@ -16,6 +17,7 @@ export default class Player {
 		this.using = {
 			tankID: (using.tankID ??= 0),
 			skinID: (using.skinID ??= 0),
+			skillSP: (using.skillSP ??= 0),
 			avatarID: (using.avatarID ??= 0),
 		};
 	}

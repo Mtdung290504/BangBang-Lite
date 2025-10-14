@@ -54,4 +54,4 @@ type SingleSkill = NormalSkill | StackedSkill | MultiStageSkill;
 /** Chuyển kiểu theo có phase hay skill */
 type SkillEntry<Phases extends number[]> = Phases extends [] ? SingleSkill : SingleSkill | PhasedSkill<Phases>;
 
-export type { SkillEntry };
+export type { SkillEntry, NormalSkill };

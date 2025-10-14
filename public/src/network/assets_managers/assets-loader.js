@@ -1,5 +1,5 @@
 import { SPRITE_MANIFEST_404_KEY } from '../../../configs/constants/game-system-configs.js';
-import { ASSETS_PATH } from '../../../configs/constants/paths.js';
+import { ASSETS_PATH, SKILL_SP_MANIFEST_PATH } from '../../../configs/constants/paths.js';
 
 const LOAD_SPRITE_LOG_PREFIX = '> [net.assets-loader.loadSprite]';
 const LOAD_MAP_LOG_PREFIX = '> [net.assets-loader.loadMapAssets]';
@@ -7,6 +7,7 @@ const LOAD_MAP_ICON_LOG_PREFIX = '> [net.assets-loader.loadMapIcon]';
 const LOAD_TANK_MANIFESTS_LOG_PREFIX = '> [net.assets-loader.loadTankManifests]';
 const LOAD_MAP_MANIFESTS_LOG_PREFIX = '> [net.assets-loader.loadMapManifests]';
 const LOAD_SKILL_DESCRIPTION_LOG_PREFIX = '> [net.assets-loader.loadSkillDescription]';
+const LOAD_SKILL_SP_MANIFEST_LOG_PREFIX = '> [net.assets-loader.loadSkillSPManifests]';
 
 export { loadSprite, loadTankManifests, loadSkillDescription, loadMapAssets, loadMapManifests, loadMapIcon };
 
@@ -263,6 +264,26 @@ async function loadMapIcon(mapID) {
 
 		console.log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
 		return img;
+	} catch (e) {
+		console.error(msg('Error:'), e);
+		throw e;
+	}
+}
+
+/**
+ * Load skill sp manifests
+ * @returns {Promise<import('assets/battle_manifests/skill_sp_manifests.js')['default']>}
+ * @throws {Error} Khi tải skill sp manifest lỗi
+ */
+export async function loadSkillSPManifests() {
+	const msg = (text = '...') => `${LOAD_SKILL_SP_MANIFEST_LOG_PREFIX} ${text}`;
+	console.log(msg('Start loading'));
+	const startTime = performance.now();
+
+	try {
+		const module = await import(SKILL_SP_MANIFEST_PATH);
+		console.log(msg(`Successfully loaded in ${(performance.now() - startTime).toFixed(2)}ms`));
+		return module['default'];
 	} catch (e) {
 		console.error(msg('Error:'), e);
 		throw e;

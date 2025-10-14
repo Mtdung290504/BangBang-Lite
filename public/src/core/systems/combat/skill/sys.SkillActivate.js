@@ -36,6 +36,7 @@ const SkillActivateSystem = defineSystemFactory([TankComponent])
 		if (actions[ACTIONS_KEYS['SKILL_1']]) getSkillActivator(skillContainer, 's1')?.(context);
 		if (actions[ACTIONS_KEYS['SKILL_2']]) getSkillActivator(skillContainer, 's2')?.(context);
 		if (actions[ACTIONS_KEYS['SKILL_ULTIMATE']]) getSkillActivator(skillContainer, 'ultimate')?.(context);
+		if (actions[ACTIONS_KEYS['SKILL_SP']]) getSkillActivator(skillContainer, 'sp')?.(context);
 	})
 	.build();
 

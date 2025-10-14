@@ -40,16 +40,17 @@ const CONFIG = {
  */
 const RenderSkillUISystem = defineSystemFactory([], SelfOnlyRenderContext)
 	.withProcessor((context, _eID, [], sysContext) => {
-		const { context2D, selfEID, camera } = sysContext;
+		const { context2D, selfEID, viewport } = sysContext;
 		const skills = context.getComponent(selfEID, TankActiveSkillsComponent);
 		const survival = context.getComponent(selfEID, SurvivalComponent);
 
-		const innerWidth = camera.viewportWidth + 2 * camera.viewportX;
-		const innerHeight = camera.viewportHeight + camera.viewportY;
+		const innerHeight = viewport.viewportHeight + viewport.viewportY;
 
 		const skillBoxY = innerHeight - SKILL_BOX_GAP_SIZE / 2 - SKILL_BOX_SIZE;
 		const totalSkillWidth = CONFIG.skillSize * 4 + CONFIG.skillGap * 3;
-		const skillStartX = (innerWidth - totalSkillWidth) / 2;
+
+		// Căn giữa skill UI theo vị trí camera trong world
+		const skillStartX = viewport.viewportX + (viewport.viewportWidth - totalSkillWidth) / 2;
 
 		// Vị trí thanh trạng thái (bên trái 4 ô skill, sát đáy)
 		const statusBarX = skillStartX - CONFIG.statusBarWidth - CONFIG.hpBarGap;

@@ -33,6 +33,7 @@ import setupRenderSystems from './setupRenderSystems.js';
 
 // Position component to camera follow
 import PositionComponent from '../../core/components/physics/com.Position.js';
+import GameRenderContext from '../../../../models/public/game_contexts/GameRenderContext.js';
 
 const LOG_PREFIX = '> [initializer.Battle]';
 const DEBUG_MODE = false;
@@ -85,7 +86,7 @@ export default function setupBattle(socket, mapID, players, sandbox) {
 	const tankEIDs = setupTanks(context, mapID, players, { selfSocketID, selfInputManager: usingInputManager });
 
 	// Setup skill cho toàn bộ tank
-	setupSkills(context, tankEIDs);
+	setupSkills(context, players);
 
 	// Camera theo dõi player theo mặc định
 	camera.follow(context.getComponent(tankEIDs[0], PositionComponent));
@@ -93,7 +94,10 @@ export default function setupBattle(socket, mapID, players, sandbox) {
 
 	// Setup các system
 	const logicSysManager = setupLogicSystems(context);
-	const renderSysManager = setupRenderSystems(context, context2D, camera, tankEIDs[0], mapID, () => DEBUG_MODE);
+	const renderSysManager = setupRenderSystems(
+		context,
+		new GameRenderContext(context2D, camera, { mapID, selfTankEID: tankEIDs[0] }, () => DEBUG_MODE)
+	);
 
 	/**
 	 * Start battle sau khi setup socket listener
@@ -205,10 +209,21 @@ function setupTanks(context, mapID, players, { selfSocketID, selfInputManager })
 
 /**
  * @param {EntityManager} context
- * @param {number[]} tankEIDs
+ * @param {{ [socketID: string]: Player }} players
  */
-function setupSkills(context, tankEIDs) {
-	tankEIDs.forEach((tankEID) => setupSkill(context, tankEID));
+function setupSkills(context, players) {
+	for (const playerSocketID in players) {
+		const player = players[playerSocketID];
+		const playerCtx = playerRegistry.get(playerSocketID);
+
+		if (!playerCtx) {
+			console.warn('???');
+			continue;
+		}
+
+		const { tankEID } = playerCtx;
+		setupSkill(context, tankEID, player.using.skillSP);
+	}
 }
 
 /**
