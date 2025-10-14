@@ -43,6 +43,7 @@ import EntityManager from '../../core/managers/combat/mgr.Entity.js';
 
 // Utils
 import { createPrefixer } from '../../../utils/utils.js';
+import DoTeleportSystem from '../../core/systems/combat/action/sys.DoTeleport.js';
 const prefixMsg = createPrefixer('> [initializer.setupLogicSystem]');
 
 /**
@@ -59,6 +60,7 @@ export default function setupLogicSystems(context) {
 	logicSystemsManager.register(TankPositionSyncSystem.create(context));
 	logicSystemsManager.register(TankMovementSystem.create(context));
 	logicSystemsManager.register(TankHeadRotateSystem.create(context));
+	logicSystemsManager.register(DoTeleportSystem.create(context));
 
 	// Skill
 	logicSystemsManager.register(SkillActivateSystem.create(context));

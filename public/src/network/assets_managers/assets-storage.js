@@ -12,7 +12,7 @@
  * @typedef {import('.types-system/dsl/tank-manifest.js').TankManifest} TankManifest
  * @typedef {import('.types-system/dsl/skill-manifest').SkillManifest} SkillManifest
  * @typedef {import('.types-system/dsl/map-manifest.js').MapManifest} MapManifest
- * @typedef {import('assets/battle_manifests/skill_sp_manifests.js')['default']} SkillSPManifests
+ * @typedef {import('assets/battle_manifests/sp_skill_manifests.js')['default']} SpSkillManifests
  */
 
 const LOG_PREFIX = '> [net.asset-storage]';
@@ -257,13 +257,13 @@ function msg(text) {
 	return `${LOG_PREFIX} ${text}`;
 }
 
-/** @type {SkillSPManifests?} */
-export let skillSPManifests = null;
+/** @type {SpSkillManifests?} */
+export let spSkillManifests = null;
 
 /**
  *
- * @param {SkillSPManifests} manifests
+ * @param {SpSkillManifests} manifests
  */
-export function setSkillSPManifest(manifests) {
-	skillSPManifests = manifests;
+export function setSpSkillManifest(manifests) {
+	spSkillManifests = manifests;
 }

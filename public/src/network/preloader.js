@@ -182,7 +182,7 @@ async function preloadPhase2(mapID, players) {
 		}
 
 		// 5. Load skill sp manifests
-		tasks.push(async () => storage.setSkillSPManifest(await loader.loadSkillSPManifests()));
+		tasks.push(async () => storage.setSpSkillManifest(await loader.loadSkillSPManifests()));
 
 		// 6. Load skill sprites based on skill manifests
 		// Wait for manifests to be loaded first

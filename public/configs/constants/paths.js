@@ -13,7 +13,7 @@ export const SKILL_MANIFEST_PATH = '/assets/battle_manifests/tank_manifests';
 const TANK_MANIFEST_FILE_NAME = 'tank-manifest.js';
 const SKILL_DESCRIPTION_FILE_NAME = 'skill-description.json';
 
-export const SKILL_SP_MANIFEST_PATH = '/assets/battle_manifests/skill_sp_manifests.js';
+export const SKILL_SP_MANIFEST_PATH = '/assets/battle_manifests/sp_skill_manifests.js';
 
 /**
  * Chứa các hàm builder lấy về các path cần thiết

@@ -272,7 +272,7 @@ async function loadMapIcon(mapID) {
 
 /**
  * Load skill sp manifests
- * @returns {Promise<import('assets/battle_manifests/skill_sp_manifests.js')['default']>}
+ * @returns {Promise<import('assets/battle_manifests/sp_skill_manifests.js')['default']>}
  * @throws {Error} Khi tải skill sp manifest lỗi
  */
 export async function loadSkillSPManifests() {

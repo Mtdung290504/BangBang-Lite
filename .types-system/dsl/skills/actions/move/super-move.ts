@@ -17,4 +17,6 @@ interface Teleport extends ActionDeclaration {
 	range: number;
 }
 
-export type SuperMoveAction = Dash | Teleport;
+type SuperMoveAction = Dash | Teleport;
+
+export type { SuperMoveAction, Dash, Teleport };

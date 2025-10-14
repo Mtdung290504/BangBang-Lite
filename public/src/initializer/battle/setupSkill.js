@@ -8,8 +8,9 @@ import SkillCooldownComponent from '../../core/components/combat/state/skill/com
 
 // Executor
 import CreateProjectileExecutor from '../../core/factory/battle/executors/action_executors/executor.CreateProjectile.js';
+import DoTeleportExecutor from '../../core/factory/battle/executors/action_executors/executor.DoTeleport.js';
 
-// Only use type
+// Type only
 import BaseActionExecutor from '../../core/factory/battle/executors/base/executor.BaseAction.js';
 
 /**
@@ -25,7 +26,7 @@ import BaseActionExecutor from '../../core/factory/battle/executors/base/executo
  * @param {number} spSkillID
  */
 export default function setupSkill(context, tankEID, spSkillID) {
-	if (!storage.skillSPManifests) throw new Error('????');
+	if (!storage.spSkillManifests) throw new Error('????');
 
 	const tank = context.getComponent(tankEID, TankComponent);
 	const tankManifest = storage.getTankManifests(tank.tankID);
@@ -46,7 +47,7 @@ export default function setupSkill(context, tankEID, spSkillID) {
 	parseSkill(context, skillContainer, 's1', s1_manifest);
 	parseSkill(context, skillContainer, 's2', s2_manifest);
 	parseSkill(context, skillContainer, 'ultimate', ultimateManifest);
-	parseSkill(context, skillContainer, 'sp', storage.skillSPManifests[spSkillID]);
+	parseSkill(context, skillContainer, 'sp', storage.spSkillManifests[spSkillID]);
 
 	context.addComponent(tankEID, skillContainer);
 }
@@ -116,6 +117,7 @@ function parseSkillCastAction(context, skillCastManifest) {
 		// Các case skill thực sự
 		const actionType = actionManifest.action;
 		if (actionType === '@create:projectile') result.push(new CreateProjectileExecutor(context, actionManifest));
+		if (actionType === '@do:teleport') result.push(new DoTeleportExecutor(context, actionManifest));
 
 		// Các case khác sau này
 	});

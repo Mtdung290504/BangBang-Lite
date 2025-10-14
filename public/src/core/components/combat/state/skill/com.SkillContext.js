@@ -15,6 +15,7 @@ export default class SkillContextComponent {
 	constructor(selfPosRef, mousePosRef, headAngleRef, team) {
 		this.selfPosRef = selfPosRef;
 		this.mousePosRef = mousePosRef;
+		/**Note: angle in deg */
 		this.headAngleRef = headAngleRef;
 		this.team = team;
 
