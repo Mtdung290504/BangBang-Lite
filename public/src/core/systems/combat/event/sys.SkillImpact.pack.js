@@ -17,6 +17,7 @@ import ImpactTargetsComponent from '../../../components/combat/state/skill/com.I
 import ColliderComponent from '../../../components/physics/com.Collider.js';
 import SkillContextComponent from '../../../components/combat/state/skill/com.SkillContext.js';
 import TargetFilterComponent from '../../../components/combat/state/skill/com.TargetFilter.js';
+import RecoverHPExecutor from '../../../factory/battle/executors/hit_executors/executor.RecoverHP.js';
 
 const DEBUG = false;
 /**
@@ -94,7 +95,7 @@ const SkillImpactHandleSystem = defineSystemFactory([SkillImpactComponent])
 			executeActions(context, handlers, sourceEID, impactorEID, eID);
 
 			if (!selfHandler) return;
-			executeActions(context, handlers, sourceEID, impactorEID);
+			executeActions(context, selfHandler, sourceEID, impactorEID);
 		});
 
 		skillImpact.clearImpacts();
@@ -132,6 +133,9 @@ function executeActions(context, actions, sourceEID, impactorEID, targetEID) {
 		switch (action.action) {
 			case '@apply:damage':
 				new DealtDamageExecutor(context, action).exec(sourceEID, impactorEID, targetEID ?? sourceEID);
+				break;
+			case '@apply:recover-hp':
+				new RecoverHPExecutor(context, action).exec(sourceEID, impactorEID, targetEID ?? sourceEID);
 				break;
 			// TODO: Bổ sung executor
 

@@ -15,25 +15,25 @@
 //     },
 // }
 {
-    "compilerOptions": {
-        "baseUrl": ".",
-        "checkJs": true,
-        "allowJs": true,
-        // Write DSL regulation
-        // "module": "nodenext",
-        // "moduleResolution": "nodenext",
-        // Write DSL
-        "module": "es2022",
-        "moduleResolution": "bundler",
-        "target": "es2022",
-        "strict": true, // Gợi ý thêm
-        // "noEmit": true // Không xuất file, chỉ dùng để kiểm tra
-    },
-    "include": [
-        "./**/*.js",
-        "./**/*.ts"
-    ],
-    "exclude": [
-        "node_modules"
-    ],
+	"compilerOptions": {
+		"baseUrl": ".",
+		"checkJs": true,
+		"allowJs": true,
+		// Write DSL regulation
+		// "module": "nodenext",
+		// "moduleResolution": "nodenext",
+		// Write DSL
+		"module": "es2022",
+		"moduleResolution": "bundler",
+		"target": "es2022",
+		"strict": true, // Gợi ý thêm
+		// "noEmit": true // Không xuất file, chỉ dùng để kiểm tra
+	},
+	"include": [
+		"./**/*.js",
+		"./**/*.ts"
+	],
+	"exclude": [
+		"node_modules"
+	],
 }

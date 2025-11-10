@@ -43,7 +43,8 @@ async function loadAllIDs() {
  * @returns {Promise<boolean>}
  */
 async function preloadPhase1() {
-	console.log('\n\n> [Net.preloader] Preload phase 1 staring...');
+	console.group('Preload phase 1');
+	console.log('> [Net.preloader] Preload phase 1 staring...');
 
 	const startTime = Date.now();
 	const { mapIDs, tankIDs } = await loadAllIDs();
@@ -75,10 +76,12 @@ async function preloadPhase1() {
 
 		await runWithConcurrencyLimit(tasks, MAX_PARALLEL_REQUESTS);
 
-		console.log(msg(`Preload Phase 1 completed successfully (${elapsedSeconds(startTime)}s).\n\n\n`));
+		console.log(msg(`Preload Phase 1 completed successfully (${elapsedSeconds(startTime)}s).`));
+		console.groupEnd();
 		return true;
 	} catch (error) {
 		console.error(msg(`Preload Phase 1 failed (${elapsedSeconds(startTime)}s):`), error);
+		console.groupEnd();
 		return false;
 	}
 }
@@ -102,7 +105,8 @@ async function preloadPhase1() {
  * @param {import('models/public/Player.js').default[]} players
  */
 async function preloadPhase2(mapID, players) {
-	console.log('\n\n> [Net.preloader] Preload phase 2 staring...');
+	console.group('Preload phase 2');
+	console.log('> [Net.preloader] Preload phase 2 staring...');
 	const startTime = Date.now();
 
 	try {
@@ -241,10 +245,12 @@ async function preloadPhase2(mapID, players) {
 
 		await runWithConcurrencyLimit([...remainingTasks, ...skillSpriteTasks], MAX_PARALLEL_REQUESTS);
 
-		console.log(msg(`Preload Phase 2 completed successfully (${elapsedSeconds(startTime)}s).\n\n\n`));
+		console.log(msg(`Preload Phase 2 completed successfully (${elapsedSeconds(startTime)}s).`));
+		console.groupEnd();
 		return true;
 	} catch (error) {
 		console.error(msg(`Preload Phase 2 failed (${elapsedSeconds(startTime)}s):`), error);
+		console.groupEnd();
 		return false;
 	}
 }

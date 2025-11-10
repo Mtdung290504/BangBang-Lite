@@ -6,18 +6,18 @@
 //     "files.autoSave": "onFocusChange",
 // }
 {
-    "editor.formatOnSave": true,
-    "files.autoSave": "onFocusChange",
-    "[javascript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "javascript.preferences.importModuleSpecifier": "relative",
-        "javascript.preferences.importModuleSpecifierEnding": "js",
-    },
-    "[typescript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "typescript.preferences.importModuleSpecifier": "relative",
-        "typescript.preferences.importModuleSpecifierEnding": "index"
-    },
-    "typescript.suggest.autoImports": true,
-    "javascript.suggest.autoImports": true,
+	"editor.formatOnSave": true,
+	"files.autoSave": "onFocusChange",
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"javascript.preferences.importModuleSpecifier": "relative",
+		"javascript.preferences.importModuleSpecifierEnding": "js"
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"typescript.preferences.importModuleSpecifier": "relative",
+		"typescript.preferences.importModuleSpecifierEnding": "index"
+	},
+	"typescript.suggest.autoImports": true,
+	"javascript.suggest.autoImports": true
 }

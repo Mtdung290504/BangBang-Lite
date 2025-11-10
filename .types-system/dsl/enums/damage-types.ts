@@ -1,4 +1,5 @@
-type TankDamageType = 'physical' | 'energy';
-type DamageType = 'true' | TankDamageType;
+/**Thuộc tính tank - Vật lý hay năng lượng */
+export type TankDamageType = 'physical' | 'energy';
 
-export type { TankDamageType, DamageType };
+/**Loại sát thương tạo ra - Vật lý, năng lượng hoặc chuẩn */
+export type DamageType = 'true' | TankDamageType;

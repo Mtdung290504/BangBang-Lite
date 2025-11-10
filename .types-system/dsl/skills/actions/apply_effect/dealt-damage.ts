@@ -20,7 +20,7 @@ interface DealtDamage extends ActionDeclaration {
 	value: ValueWithUnit;
 
 	/**
-	 * Quyết định sát thương bay lên thẳng hay chéo.
+	 * Quyết định hiển thị số bay lên thẳng hay chéo.
 	 * Mặc định: `main` (bay thẳng lên)
 	 */
 	'display-type'?:

@@ -53,8 +53,15 @@ export const skills = {
 							action: '@apply:damage',
 							'damage-type': 'true',
 							'display-type': 'bonus',
-							value: { amount: 5, unit: '%' },
+							value: { amount: 4, unit: '%' },
 							source: { attribute: 'lost-HP', of: 'self' },
+						},
+					],
+					self: [
+						{
+							action: '@apply:recover-hp',
+							source: { attribute: 'lost-HP', of: 'self' },
+							value: { amount: 4, unit: '%' },
 						},
 					],
 				},

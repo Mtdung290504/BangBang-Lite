@@ -43,6 +43,7 @@ import { SANDBOX_SOCKET_ID } from '../../../../configs/constants/game-system-con
 
 // Use type only
 import EntityManager from '../../managers/combat/mgr.Entity.js';
+import HealsComponent from '../../components/combat/state/com.Heals.js';
 
 /**
  * @type {ReturnType<typeof createAppearPositionGetter> | undefined}
@@ -101,6 +102,7 @@ export default function createTank(context, mapID, player, faction, inputManager
 		// Combat stat components
 		new SkillImpactComponent(),
 		new ReceivedDamageComponent(),
+		new HealsComponent(),
 		new TextEffectDisplayComponent(),
 		new StatsHistoryComponent(),
 	]);

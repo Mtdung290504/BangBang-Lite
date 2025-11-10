@@ -45,7 +45,7 @@ export default class SurvivalComponent {
 		const calculatedVal = Math.max(0, Math.min(value, this.limitHP));
 		const delta = this._currentHP - calculatedVal;
 		this._currentHP = calculatedVal;
-		return delta;
+		return Math.round(delta);
 	}
 
 	/** Máu hiện tại */

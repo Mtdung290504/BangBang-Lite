@@ -57,7 +57,8 @@ const playerRegistry = new Map();
  * @param {true} [sandbox]
  */
 export default function setupBattle(socket, mapID, players, sandbox) {
-	console.log('\n\n> [initializer.Battle] Battle initializing...');
+	console.group('Setup Battle');
+	console.log('> [initializer.Battle] Battle initializing...');
 	const context = new EntityManager();
 
 	const selfSocketID = socket.id;
@@ -90,7 +91,6 @@ export default function setupBattle(socket, mapID, players, sandbox) {
 
 	// Camera theo dõi player theo mặc định
 	camera.follow(context.getComponent(tankEIDs[0], PositionComponent));
-	console.log(msg('Battle initiated successfully\n\n\n'));
 
 	// Setup các system
 	const logicSysManager = setupLogicSystems(context);
@@ -98,6 +98,11 @@ export default function setupBattle(socket, mapID, players, sandbox) {
 		context,
 		new GameRenderContext(context2D, camera, { mapID, selfTankEID: tankEIDs[0] }, () => DEBUG_MODE)
 	);
+
+	console.log(msg('Battle initiated successfully'));
+	console.groupEnd();
+
+	return { context, start, playerRegistry };
 
 	/**
 	 * Start battle sau khi setup socket listener
@@ -127,8 +132,6 @@ export default function setupBattle(socket, mapID, players, sandbox) {
 			});
 		});
 	}
-
-	return { context, start, playerRegistry };
 }
 
 /**
