@@ -4,6 +4,7 @@ import defineSystemFactory from '../../../factory/factory_builders/defineSystemF
 // Components
 import SurvivalComponent from '../../../components/combat/stats/com.Survival.js';
 import PositionComponent from '../../../components/physics/com.Position.js';
+import AdditionalAttributesComponent from '../../../components/combat/stats/com.AdditionalAttributes.js';
 
 const DeadHandleSystem = defineSystemFactory([SurvivalComponent])
 	.withProcessor((context, eID, [survival]) => {
@@ -15,6 +16,9 @@ const DeadHandleSystem = defineSystemFactory([SurvivalComponent])
 			pos.x = pos.initX;
 			pos.y = pos.initY;
 			survival.setCurrentHP(survival.limitHP);
+
+			const additional = context.getComponent(eID, AdditionalAttributesComponent);
+			additional.currentEnergyPoint = Infinity;
 		}
 	})
 	.build();

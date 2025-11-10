@@ -24,12 +24,12 @@ const ReceiveDamageSystem = defineSystemFactory([ReceivedDamageComponent])
 
 		damageQueue.forEach(({ damageValue, damageType, displayType, sourceEID }) => {
 			const calcDef = () => {
-				const pen = context.getComponent(sourceEID, AttackPowerComponent).penetration;
+				if (damageType === 'true') return 0;
+
+				const { penetration: pen } = context.getComponent(sourceEID, AttackPowerComponent);
 				switch (damageType) {
 					case 'energy':
 						return survival.shield - pen;
-					case 'true':
-						return 0;
 					case 'physical':
 						return survival.armor - pen;
 					default:

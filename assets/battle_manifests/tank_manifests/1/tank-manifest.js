@@ -32,7 +32,7 @@ export const stats = {
 		additional: {
 			'energy-point': {
 				amount: 150,
-				recover: { every: 3, amount: 5 },
+				recover: { every: 3, value: { amount: 5 } },
 			},
 		},
 
@@ -76,7 +76,7 @@ export const skills = {
 						'damage-modifier': { amount: 50, unit: '%' },
 					},
 				],
-				'on-dealt-damage': { self: [{ action: '@recover:energy', amount: 5 }] },
+				'on-dealt-damage': { self: [{ action: '@apply:modify-energy', value: { amount: 5 } }] },
 				'on-hit': {
 					enemy: [
 						{
@@ -93,6 +93,7 @@ export const skills = {
 							'display-type': '???',
 						},
 					],
+					self: [{ action: '@apply:modify-energy', value: { amount: 5 } }],
 				},
 
 				'sprite-key': 'normal-attack',
@@ -109,7 +110,7 @@ export const skills = {
 		'casting-method': { type: 'in-direction', range: 528, display: { size: 60 } },
 
 		// Tiêu hao 25đ năng lượng
-		'resource-consumption': { energy: { amount: 25 } },
+		'resource-consumption': { energy: { amount: 35 } },
 
 		actions: [
 			{
@@ -186,12 +187,13 @@ export const skills = {
 						{
 							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
-							value: { amount: 381, unit: '%' },
+							value: { amount: 581, unit: '%' },
 						},
 						'implement-later: Đẩy lui',
 					],
+					self: [{ action: '@apply:modify-energy', value: { amount: 25 } }],
 				},
-				'on-dealt-damage': { self: [{ action: '@recover:energy', amount: 20 }] },
+				// 'on-dealt-damage': { self: [{ action: '@apply:modify-energy', value: { amount: 20 } }] },
 
 				// Hitbox
 				collider: { type: 'rectangle', size: { width: 286.12, height: 160 } },

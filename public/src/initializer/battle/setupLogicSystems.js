@@ -45,6 +45,8 @@ import EntityManager from '../../core/managers/combat/mgr.Entity.js';
 import { createPrefixer } from '../../../utils/utils.js';
 import DoTeleportSystem from '../../core/systems/combat/action/sys.DoTeleport.js';
 import RecoverHPSystem from '../../core/systems/combat/event/sys.RecoverHP.js';
+import PhaseBackSystem from '../../core/systems/combat/state/sys.PhaseBack.js';
+
 const prefixMsg = createPrefixer('> [initializer.setupLogicSystem]');
 
 /**
@@ -85,6 +87,7 @@ export default function setupLogicSystems(context) {
 	logicSystemsManager.register(ReceiveDamageSystem.create(context), 'Receive_Damage');
 	logicSystemsManager.register(RecoverHPSystem.create(context), 'Recover_HP');
 	logicSystemsManager.register(TankStatsSyncSystem.create(context));
+	logicSystemsManager.register(PhaseBackSystem.create(context), 'Phase_Back');
 
 	// Projectile
 	logicSystemsManager.register(ProjectilePierceSystem.create(context), 'Piercing');

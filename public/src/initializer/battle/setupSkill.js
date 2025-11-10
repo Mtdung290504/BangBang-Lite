@@ -12,6 +12,8 @@ import DoTeleportExecutor from '../../core/factory/battle/executors/action_execu
 
 // Type only
 import BaseActionExecutor from '../../core/factory/battle/executors/base/executor.BaseAction.js';
+import ChangePhaseExecutor from '../../core/factory/battle/executors/action_executors/executor.ChangePhase.js';
+import SkillRequirementComponent from '../../core/components/combat/state/skill/com.SkillRequirement.js';
 
 /**
  * @typedef {{
@@ -74,6 +76,9 @@ function parseSkill(context, skillContainer, skillSlot, skillManifest) {
 			context.addComponent(skillEID, cooldownComponent);
 		}
 
+		if (skillManifest['resource-consumption'])
+			context.addComponent(skillEID, new SkillRequirementComponent(skillManifest['resource-consumption']));
+
 		// Có casting method, có thể là bất kỳ action nào
 		if ('casting-method' in skillManifest) {
 			if (!skillManifest['casting-method']) return console.warn('casting method exist but undefined');
@@ -99,7 +104,49 @@ function parseSkill(context, skillContainer, skillSlot, skillManifest) {
 
 	// Parse multi phase skill
 	else if (skillManifest.type === 'phased') {
-		// TODO: Implement later
+		console.group('phase');
+		for (const phase in skillManifest['phases-definition']) {
+			console.log(phase);
+			if (!Object.hasOwn(skillManifest['phases-definition'], phase)) continue;
+			if (isNaN(parseInt(phase))) throw new Error('Định nghĩa cái phase đ gì vậy??? Sao không phải là number?');
+
+			const phaseManifest = skillManifest['phases-definition'][phase];
+
+			// Create skill and save to skill container
+			const skillEID = context.createEntity();
+			skillContainer.setSkill(skillEID, skillSlot, parseInt(phase));
+
+			// Create handlers for skill:
+			const skillComponent = new SkillComponent(skillContainer.ownerEID);
+			context.addComponent(skillEID, skillComponent);
+
+			if (phaseManifest.cooldown) {
+				const cooldownComponent = new SkillCooldownComponent(phaseManifest.cooldown);
+				context.addComponent(skillEID, cooldownComponent);
+			}
+
+			if (phaseManifest['resource-consumption'])
+				context.addComponent(skillEID, new SkillRequirementComponent(phaseManifest['resource-consumption']));
+
+			// Có casting method, có thể là bất kỳ action nào
+			if ('casting-method' in skillManifest) {
+				if (!skillManifest['casting-method']) return console.warn('casting method exist but undefined');
+
+				// Action không khóa mục tiêu
+				if (Array.isArray(phaseManifest.actions))
+					skillComponent.actions.push(...parseSkillCastAction(context, phaseManifest.actions));
+				// Action khóa mục tiêu
+				else {
+					// Tạm thời chưa xử lý
+					phaseManifest.actions;
+				}
+			}
+
+			// @ts-expect-error: Không có casting-method, chỉ có thể là các action không khóa mục tiêu,
+			// tuy nhiên không thể narrow type, chưa tìm ra nguyên nhân
+			else skillComponent.actions.push(...parseSkillCastAction(context, phaseManifest.actions));
+		}
+		console.groupEnd();
 	}
 }
 
@@ -118,6 +165,7 @@ function parseSkillCastAction(context, skillCastManifest) {
 		const actionType = actionManifest.action;
 		if (actionType === '@create:projectile') result.push(new CreateProjectileExecutor(context, actionManifest));
 		if (actionType === '@do:teleport') result.push(new DoTeleportExecutor(context, actionManifest));
+		if (actionType === '@do:change-phase') result.push(new ChangePhaseExecutor(context, actionManifest));
 
 		// Các case khác sau này
 	});

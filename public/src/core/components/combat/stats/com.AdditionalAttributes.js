@@ -9,7 +9,7 @@ export default class AdditionalAttributesComponent {
 	 * @param {number} limitEnergyPoint - Giới hạn năng lượng
 	 * @param {object} [recoverConfig] - Cấu hình hồi phục tự động
 	 * @param {number} recoverConfig.every - Khoảng thời gian (ms) giữa mỗi lần hồi
-	 * @param {import('.types-system/dsl/skills/value-with-unit').ValueWithUnit} recoverConfig.amount - Lượng hồi mỗi lần
+	 * @param {import('.types-system/dsl/skills/value-with-unit').ValueWithUnit} recoverConfig.value - Lượng hồi mỗi lần
 	 */
 	constructor(limitEnergyPoint, recoverConfig) {
 		/** @private */

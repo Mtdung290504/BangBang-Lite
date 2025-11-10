@@ -25,7 +25,8 @@ interface AdditionalStats {
 		amount: 100 | 150 | 200;
 		recover?: {
 			every: number;
-		} & ValueWithUnit;
+			value: ValueWithUnit;
+		};
 	};
 }
 

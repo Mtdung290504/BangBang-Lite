@@ -50,6 +50,9 @@ interface CreateProjectileBased extends ActionDeclaration {
 	collider: Collider;
 
 	enhancements?: ProjectileEnhancement[];
+
+	/** Độ lệch so với hướng bắn (Đơn vị: deg), mặc định là 0 */
+	'delta-angle'?: number;
 }
 
 /**

@@ -26,7 +26,6 @@ const phasedSkillManifest: SkillManifest<[1, 2, 3]> = {
 
 	'normal-attack': {
 		type: 'phased',
-		'default-phase': 1,
 		'phases-definition': {
 			'1': {
 				type: 'normal',

@@ -19,7 +19,15 @@ import {
  * - Nếu `type` là `default`, bổ sung hành vi gây (100% x Tấn Công) mặc định vào manifest
  */
 export default function parseProjectileManifest(manifest) {
-	const { collider, action, type, enhancements = [], 'on-hit': onHit, 'on-dealt-damage': onDealtDamage } = manifest;
+	const {
+		collider,
+		action,
+		type,
+		enhancements = [],
+		'on-hit': onHit,
+		'on-dealt-damage': onDealtDamage,
+		'delta-angle': deltaAngle = 0,
+	} = manifest;
 
 	const parseTarget = () => {
 		if (type === 'default') {
@@ -75,6 +83,7 @@ export default function parseProjectileManifest(manifest) {
 		collider,
 		enhancements,
 		targets,
+		deltaAngle,
 
 		onHit: parsedHitManifest,
 		onDealtDamage: parsedDealtDamageManifest,

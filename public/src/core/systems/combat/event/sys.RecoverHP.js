@@ -26,7 +26,6 @@ const RecoverHPSystem = defineSystemFactory([HealsComponent])
 		heals.forEach(({ value, displayType }) => {
 			// Lượng ST thực sự gây ra, nếu > 0, hiển thị
 			const healed = survival.setCurrentHP(survival.currentHP + value);
-			console.log(healed);
 			if (healed)
 				// TODO: Triển khai sau: Nếu nguồn hoặc đích là EID của mình thì mới hiện, không thì thôi
 				context

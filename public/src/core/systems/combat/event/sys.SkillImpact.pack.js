@@ -18,6 +18,7 @@ import ColliderComponent from '../../../components/physics/com.Collider.js';
 import SkillContextComponent from '../../../components/combat/state/skill/com.SkillContext.js';
 import TargetFilterComponent from '../../../components/combat/state/skill/com.TargetFilter.js';
 import RecoverHPExecutor from '../../../factory/battle/executors/hit_executors/executor.RecoverHP.js';
+import ModifyEnergyExecutor from '../../../factory/battle/executors/hit_executors/executor.ModifyEnergy.js';
 
 const DEBUG = false;
 /**
@@ -136,6 +137,9 @@ function executeActions(context, actions, sourceEID, impactorEID, targetEID) {
 				break;
 			case '@apply:recover-hp':
 				new RecoverHPExecutor(context, action).exec(sourceEID, impactorEID, targetEID ?? sourceEID);
+				break;
+			case '@apply:modify-energy':
+				new ModifyEnergyExecutor(context, action).exec(sourceEID, impactorEID, targetEID ?? sourceEID);
 				break;
 			// TODO: Bổ sung executor
 

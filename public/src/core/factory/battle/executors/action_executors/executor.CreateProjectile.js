@@ -57,7 +57,8 @@ export default class CreateProjectileExecutor extends BaseActionExecutor {
 		const tank = context.getComponent(selfTankEID, TankComponent);
 		const skillContext = context.getComponent(selfTankEID, SkillContextComponent);
 
-		let { targets, flightRange, flightSpeed, renderSize, enhancements, onDealtDamage, onHit } = parsedManifest;
+		let { targets, flightRange, flightSpeed, renderSize, enhancements, onDealtDamage, onHit, deltaAngle } =
+			parsedManifest;
 		const { collider, spriteKey, hitEffectSprite } = parsedManifest;
 
 		// Xác định tầm bắn và tốc độ đạn
@@ -66,7 +67,7 @@ export default class CreateProjectileExecutor extends BaseActionExecutor {
 		flightSpeed = flightSpeed !== 'inherit' ? flightSpeed : shootingStats.flightSpeed;
 
 		// Tính velocity cho đạn và xác định góc quay của đạn
-		const { angle } = skillContext.headAngleRef; // Góc xoay của đầu tank
+		const angle = skillContext.headAngleRef.angle + deltaAngle; // Góc xoay của đầu tank + góc lệch
 		const deltaX = Math.cos(angleFs.degToRad(angle)) * flightSpeed * PROJECTILE_SPEED_CALCULATION_CONSTANT;
 		const deltaY = Math.sin(angleFs.degToRad(angle)) * flightSpeed * PROJECTILE_SPEED_CALCULATION_CONSTANT;
 		const projVel = new VelocityComponent(deltaX, deltaY);

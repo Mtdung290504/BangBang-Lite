@@ -41,9 +41,6 @@ type MultiStageSkill = SkillTiming & {
 type PhasedSkill<Phases extends number[]> = {
 	type: 'phased';
 
-	/** Phase ban đầu được dùng */
-	'default-phase': Phases[number];
-
 	/** Định nghĩa từng phase như 1 skill đơn */
 	'phases-definition': Record<Phases[number], NormalSkill>;
 };

@@ -31,7 +31,7 @@ export default class RecoverHPExecutor extends BaseSkillHitExecutor {
 		const { context, parsedManifest } = this;
 		const { source, value, displayType } = parsedManifest;
 
-		/** Chọn xem tính sát thương từ chỉ số của ai */
+		/** Chọn xem tính từ chỉ số của ai */
 		const calcFromEID = (() => {
 			switch (source.of) {
 				case 'self':
