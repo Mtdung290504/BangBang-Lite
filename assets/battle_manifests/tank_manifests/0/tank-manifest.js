@@ -50,7 +50,7 @@ export const skills = {
 						action: '@create:projectile',
 						type: 'default',
 						collider: { type: 'rectangle', size: { width: 25 * 1.07 * 5, height: 25 * 1.07 } },
-						'flight-range': 480,
+						'flight-range': 408,
 						'on-hit': {
 							enemy: [
 								{
@@ -187,9 +187,10 @@ export const skills = {
 			1: {
 				type: 'normal',
 				property: 'skill',
-				'resource-consumption': { 'current-HP': { amount: 10, unit: '%' } },
-				cooldown: 3,
+				'resource-consumption': { 'current-HP': { amount: 15, unit: '%' } },
+				cooldown: 2,
 				actions: [
+					// Viên 1
 					{
 						action: '@create:projectile',
 						type: 'custom',
@@ -203,13 +204,13 @@ export const skills = {
 									action: '@apply:damage',
 									'display-type': 'main',
 									source: { attribute: 'attack-power', of: 'self' },
-									value: { amount: 150, unit: '%' },
+									value: { amount: 100, unit: '%' },
 								},
 								{
 									action: '@apply:damage',
 
 									'display-type': 'bonus',
-									value: { amount: 10, unit: '%' },
+									value: { amount: 8, unit: '%' },
 									source: { attribute: 'lost-HP', of: 'self' },
 								},
 							],
@@ -217,20 +218,58 @@ export const skills = {
 								{
 									action: '@apply:recover-hp',
 									source: { attribute: 'lost-HP', of: 'self' },
-									value: { amount: 10, unit: '%' },
+									value: { amount: 8, unit: '%' },
 									'display-type': 'main',
 								},
 								{ action: '@apply:modify-energy', value: { amount: 10 } },
 							],
 						},
+						'delta-angle': 4,
+					},
+					// Viên 2
+					{
+						action: '@create:projectile',
+						type: 'custom',
+						'sprite-key': 'normal-attack',
+						collider: { type: 'rectangle', size: { width: 25 * 1.07 * 5, height: 25 * 1.07 } },
+						'flight-speed': 15 * 1.5,
+						'flight-range': 650,
+						'on-hit': {
+							enemy: [
+								{
+									action: '@apply:damage',
+									'display-type': 'main',
+									source: { attribute: 'attack-power', of: 'self' },
+									value: { amount: 100, unit: '%' },
+								},
+								{
+									action: '@apply:damage',
+
+									'display-type': 'bonus',
+									value: { amount: 8, unit: '%' },
+									source: { attribute: 'lost-HP', of: 'self' },
+								},
+							],
+							self: [
+								{
+									action: '@apply:recover-hp',
+									source: { attribute: 'lost-HP', of: 'self' },
+									value: { amount: 8, unit: '%' },
+									'display-type': 'bonus',
+								},
+								{ action: '@apply:modify-energy', value: { amount: 10 } },
+							],
+						},
+						'delta-angle': -4,
 					},
 				],
 			},
 			2: {
 				type: 'normal',
 				property: 'skill',
-				cooldown: 8,
+				cooldown: 6,
 				actions: [
+					// Viên 1
 					{
 						action: '@create:projectile',
 						type: 'custom',
@@ -244,13 +283,11 @@ export const skills = {
 									action: '@apply:damage',
 									'display-type': 'main',
 									source: { attribute: 'attack-power', of: 'self' },
-									value: { amount: 100, unit: '%' },
+									value: { amount: 75, unit: '%' },
 								},
 								{
 									action: '@apply:damage',
-
-									'display-type': 'main',
-									value: { amount: 10, unit: '%' },
+									value: { amount: 8, unit: '%' },
 									source: { attribute: 'lost-HP', of: 'self' },
 								},
 							],
@@ -258,15 +295,14 @@ export const skills = {
 								{
 									action: '@apply:recover-hp',
 									source: { attribute: 'lost-HP', of: 'self' },
-									value: { amount: 10, unit: '%' },
-									'display-type': 'main',
+									value: { amount: 8, unit: '%' },
 								},
 								{ action: '@apply:modify-energy', value: { amount: 10 } },
 							],
 						},
-
 						enhancements: [{ name: 'piercing' }],
 					},
+					// Viên 2
 					{
 						action: '@create:projectile',
 						type: 'custom',
@@ -280,13 +316,12 @@ export const skills = {
 									action: '@apply:damage',
 									'display-type': 'bonus',
 									source: { attribute: 'attack-power', of: 'self' },
-									value: { amount: 100, unit: '%' },
+									value: { amount: 75, unit: '%' },
 								},
 								{
 									action: '@apply:damage',
-
 									'display-type': 'bonus',
-									value: { amount: 10, unit: '%' },
+									value: { amount: 8, unit: '%' },
 									source: { attribute: 'lost-HP', of: 'self' },
 								},
 							],
@@ -294,16 +329,16 @@ export const skills = {
 								{
 									action: '@apply:recover-hp',
 									source: { attribute: 'lost-HP', of: 'self' },
-									value: { amount: 10, unit: '%' },
+									value: { amount: 8, unit: '%' },
 									'display-type': 'bonus',
 								},
 								{ action: '@apply:modify-energy', value: { amount: 10 } },
 							],
 						},
-
+						'delta-angle': 7.5,
 						enhancements: [{ name: 'piercing' }],
-						'delta-angle': 8,
 					},
+					// Viên 3
 					{
 						action: '@create:projectile',
 						type: 'custom',
@@ -317,13 +352,13 @@ export const skills = {
 									action: '@apply:damage',
 									'display-type': 'fallback',
 									source: { attribute: 'attack-power', of: 'self' },
-									value: { amount: 100, unit: '%' },
+									value: { amount: 75, unit: '%' },
 								},
 								{
 									action: '@apply:damage',
 
 									'display-type': 'fallback',
-									value: { amount: 10, unit: '%' },
+									value: { amount: 8, unit: '%' },
 									source: { attribute: 'lost-HP', of: 'self' },
 								},
 							],
@@ -331,7 +366,82 @@ export const skills = {
 								{
 									action: '@apply:recover-hp',
 									source: { attribute: 'lost-HP', of: 'self' },
-									value: { amount: 10, unit: '%' },
+									value: { amount: 8, unit: '%' },
+									'display-type': 'fallback',
+								},
+								{ action: '@apply:modify-energy', value: { amount: 10 } },
+							],
+						},
+						'delta-angle': -7.5,
+						enhancements: [{ name: 'piercing' }],
+					},
+					// Viên 4
+					{
+						action: '@create:projectile',
+						type: 'custom',
+						'sprite-key': 'normal-attack',
+						collider: { type: 'rectangle', size: { width: 25 * 1.07 * 5, height: 25 * 1.07 } },
+						'flight-speed': 15 * 1.5,
+						'flight-range': 480,
+						'on-hit': {
+							enemy: [
+								{
+									action: '@apply:damage',
+									'display-type': 'bonus',
+									source: { attribute: 'attack-power', of: 'self' },
+									value: { amount: 75, unit: '%' },
+								},
+								{
+									action: '@apply:damage',
+
+									'display-type': 'bonus',
+									value: { amount: 8, unit: '%' },
+									source: { attribute: 'lost-HP', of: 'self' },
+								},
+							],
+							self: [
+								{
+									action: '@apply:recover-hp',
+									source: { attribute: 'lost-HP', of: 'self' },
+									value: { amount: 8, unit: '%' },
+									'display-type': 'bonus',
+								},
+								{ action: '@apply:modify-energy', value: { amount: 10 } },
+							],
+						},
+
+						enhancements: [{ name: 'piercing' }],
+						'delta-angle': 15,
+					},
+					// Viên 5
+					{
+						action: '@create:projectile',
+						type: 'custom',
+						'sprite-key': 'normal-attack',
+						collider: { type: 'rectangle', size: { width: 25 * 1.07 * 5, height: 25 * 1.07 } },
+						'flight-speed': 15 * 1.5,
+						'flight-range': 480,
+						'on-hit': {
+							enemy: [
+								{
+									action: '@apply:damage',
+									'display-type': 'fallback',
+									source: { attribute: 'attack-power', of: 'self' },
+									value: { amount: 75, unit: '%' },
+								},
+								{
+									action: '@apply:damage',
+
+									'display-type': 'fallback',
+									value: { amount: 8, unit: '%' },
+									source: { attribute: 'lost-HP', of: 'self' },
+								},
+							],
+							self: [
+								{
+									action: '@apply:recover-hp',
+									source: { attribute: 'lost-HP', of: 'self' },
+									value: { amount: 8, unit: '%' },
 									'display-type': 'fallback',
 								},
 								{ action: '@apply:modify-energy', value: { amount: 10 } },
@@ -339,10 +449,10 @@ export const skills = {
 						},
 
 						enhancements: [{ name: 'piercing' }],
-						'delta-angle': -8,
+						'delta-angle': -15,
 					},
 				],
-				'resource-consumption': { 'current-HP': { amount: 20, unit: '%' } },
+				'resource-consumption': { 'current-HP': { amount: 30, unit: '%' } },
 			},
 		},
 	},

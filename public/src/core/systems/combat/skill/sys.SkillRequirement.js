@@ -72,7 +72,7 @@ const SkillRequirementSystem = defineSystemFactory([SkillComponent])
 
 			// Check current-HP requirement
 			if (currentHP && pass) {
-				console.log('Debug, require currentHP:', currentHP);
+				DEBUG && console.log('Debug, require currentHP:', currentHP);
 				const survival = context.getComponent(skill.ownerEID, SurvivalComponent, false);
 				if (survival) {
 					if (!currentHP.unit || currentHP.unit === 'unit') {

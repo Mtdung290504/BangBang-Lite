@@ -42,8 +42,10 @@ export const stats = {
 	'render-size': 54,
 };
 
-/**@type {Types['SkillManifest']} */
+/**@type {import('.types-system/dsl/skill-manifest').SkillManifest<[1, 2]>} */
 export const skills = {
+	phases: [1, 2],
+
 	passive: [
 		{
 			type: 'permanent-buff',
@@ -57,48 +59,61 @@ export const skills = {
 	],
 
 	'normal-attack': {
-		type: 'normal',
-		property: 'normal-attack',
+		type: 'phased',
+		'phases-definition': {
+			1: {
+				type: 'normal',
+				property: 'normal-attack',
 
-		actions: [
-			{
-				description: `Bắn đạn tâng, tối đa 3 lần, mỗi lần giảm 50% ST, gây ST hồi 5 năng lượng`,
-
-				action: '@create:projectile',
-				type: 'custom',
-
-				collider: { type: 'rectangle', size: { width: 41.53 * 1.07, height: 30.04 * 1.07 } },
-				enhancements: [
+				actions: [
 					{
-						name: 'bouncing',
-						'hit-limit': 3,
-						'bounce-range': 336,
-						'damage-modifier': { amount: 50, unit: '%' },
+						description: `Bắn đạn tâng, tối đa 3 lần, mỗi lần giảm 50% ST, gây ST hồi 5 năng lượng`,
+
+						action: '@create:projectile',
+						type: 'custom',
+
+						collider: { type: 'rectangle', size: { width: 41.53 * 1.07, height: 30.04 * 1.07 } },
+						enhancements: [
+							{
+								name: 'bouncing',
+								'hit-limit': 3,
+								'bounce-range': 336,
+								'damage-modifier': { amount: 50, unit: '%' },
+							},
+						],
+						// 'on-dealt-damage': { self: [{ action: '@apply:modify-energy', value: { amount: 5 } }] },
+						'on-hit': {
+							enemy: [
+								{
+									action: '@apply:damage',
+									source: { attribute: 'attack-power', of: 'self' },
+									value: { amount: 100, unit: '%' },
+									'is-main-damage': true,
+									'display-type': 'main',
+								},
+								{
+									action: '@apply:damage',
+									source: { attribute: 'current-HP', of: 'target' },
+									value: { amount: 8, unit: '%' },
+									'display-type': 'fallback',
+								},
+							],
+							self: [{ action: '@apply:modify-energy', value: { amount: 5 } }],
+						},
+
+						'sprite-key': 'normal-attack',
 					},
 				],
-				// 'on-dealt-damage': { self: [{ action: '@apply:modify-energy', value: { amount: 5 } }] },
-				'on-hit': {
-					enemy: [
-						{
-							action: '@apply:damage',
-							source: { attribute: 'attack-power', of: 'self' },
-							value: { amount: 100, unit: '%' },
-							'is-main-damage': true,
-							'display-type': 'main',
-						},
-						{
-							action: '@apply:damage',
-							source: { attribute: 'current-HP', of: 'target' },
-							value: { amount: 8, unit: '%' },
-							'display-type': 'fallback',
-						},
-					],
-					self: [{ action: '@apply:modify-energy', value: { amount: 5 } }],
-				},
-
-				'sprite-key': 'normal-attack',
 			},
-		],
+			2: {
+				type: 'normal',
+				property: 'skill',
+				actions: [
+					{ action: '@do:teleport', range: 160 },
+					{ action: '@do:change-phase', method: 'to-phase:1' },
+				],
+			},
+		},
 	},
 
 	s1: {
@@ -123,11 +138,10 @@ export const skills = {
 				// Event
 				'on-hit': {
 					enemy: [
-						// Gây 135% tấn công
 						{
 							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
-							value: { amount: 150, unit: '%' },
+							value: { amount: 221, unit: '%' },
 						},
 						{
 							action: '@apply:damage',
@@ -175,7 +189,6 @@ export const skills = {
 		'resource-consumption': { energy: { amount: 50 } },
 
 		actions: [
-			{ action: '@do:teleport', range: 150 },
 			{
 				action: '@create:projectile',
 				type: 'custom',
@@ -189,7 +202,7 @@ export const skills = {
 						{
 							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
-							value: { amount: 201, unit: '%' },
+							value: { amount: 181, unit: '%' },
 							'is-main-damage': true,
 							'display-type': 'main',
 						},
@@ -207,13 +220,13 @@ export const skills = {
 							source: { attribute: 'attack-power', of: 'self' },
 							description: 'Hồi 100% Tấn công HP',
 						},
-						{ action: '@apply:modify-energy', value: { amount: 45 } },
+						{ action: '@apply:modify-energy', value: { amount: 40 } },
 					],
 				},
 
 				'sprite-key': 's0',
 			},
-
+			{ action: '@do:change-phase', method: 'to-phase:2', duration: 1.5 },
 			'implement-later:Lướt',
 		],
 	},
