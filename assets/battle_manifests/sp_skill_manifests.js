@@ -7,7 +7,7 @@ export default [
 		type: 'normal',
 		property: 'skill',
 		actions: [{ action: '@do:teleport', range: 280 }],
-		cooldown: 2,
+		cooldown: 10,
 		'casting-method': { type: 'in-direction', display: { size: 40 }, range: 280 },
 	},
 ];

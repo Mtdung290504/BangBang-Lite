@@ -16,8 +16,8 @@ export const stats = {
 		},
 		survival: {
 			'limit-HP': 7868,
-			'physical-armor': 128,
-			'energy-shield': 114,
+			'physical-armor': 138,
+			'energy-shield': 124,
 		},
 		'attack-power': {
 			'damage-type': 'physical',
@@ -26,7 +26,7 @@ export const stats = {
 			'crit-damage': 200,
 		},
 		'movement-speed': 180,
-		additional: { 'energy-point': { amount: 100 } },
+		additional: { 'energy-point': { amount: 150 } },
 	},
 	'render-size': 62.5,
 	'hitbox-size': 55,
@@ -69,7 +69,7 @@ export const skills = {
 								},
 								{
 									action: '@apply:modify-energy',
-									value: { amount: +10 },
+									value: { amount: +30 },
 								},
 							],
 						},
@@ -79,7 +79,7 @@ export const skills = {
 			2: {
 				type: 'normal',
 				property: 'normal-attack',
-				'resource-consumption': { energy: { amount: 10 }, 'current-HP': { amount: 10, unit: '%' } },
+				'resource-consumption': { energy: { amount: 30 }, 'current-HP': { amount: 10, unit: '%' } },
 
 				actions: [
 					{
@@ -109,6 +109,10 @@ export const skills = {
 									source: { attribute: 'lost-HP', of: 'self' },
 									value: { amount: 3, unit: '%' },
 									'display-type': 'main',
+								},
+								{
+									action: '@apply:modify-energy',
+									value: { amount: 5 },
 								},
 							],
 						},
@@ -142,6 +146,10 @@ export const skills = {
 									value: { amount: 3, unit: '%' },
 									'display-type': 'bonus',
 								},
+								{
+									action: '@apply:modify-energy',
+									value: { amount: 5 },
+								},
 							],
 						},
 					},
@@ -173,6 +181,10 @@ export const skills = {
 									source: { attribute: 'lost-HP', of: 'self' },
 									value: { amount: 3, unit: '%' },
 									'display-type': 'fallback',
+								},
+								{
+									action: '@apply:modify-energy',
+									value: { amount: 5 },
 								},
 							],
 						},
@@ -217,17 +229,182 @@ export const skills = {
 	// },
 
 	s1: {
-		type: 'normal',
-		property: 'skill',
-		cooldown: 8,
-		actions: [`implement-later:`],
+		type: 'phased',
+		'phases-definition': {
+			1: {
+				type: 'normal',
+				property: 'skill',
+				'resource-consumption': { 'current-HP': { amount: 10, unit: '%' } },
+				cooldown: 3,
+				actions: [
+					{
+						action: '@create:projectile',
+						type: 'custom',
+						'sprite-key': 'normal-attack',
+						collider: { type: 'rectangle', size: { width: 25 * 1.07 * 5, height: 25 * 1.07 } },
+						'flight-speed': 15 * 1.5,
+						'flight-range': 650,
+						'on-hit': {
+							enemy: [
+								{
+									action: '@apply:damage',
+									'display-type': 'main',
+									source: { attribute: 'attack-power', of: 'self' },
+									value: { amount: 150, unit: '%' },
+								},
+								{
+									action: '@apply:damage',
+									'damage-type': 'true',
+									'display-type': 'bonus',
+									value: { amount: 10, unit: '%' },
+									source: { attribute: 'lost-HP', of: 'self' },
+								},
+							],
+							self: [
+								{
+									action: '@apply:recover-hp',
+									source: { attribute: 'lost-HP', of: 'self' },
+									value: { amount: 10, unit: '%' },
+									'display-type': 'main',
+								},
+								{ action: '@apply:modify-energy', value: { amount: 10 } },
+							],
+						},
+					},
+				],
+			},
+			2: {
+				type: 'normal',
+				property: 'skill',
+				cooldown: 8,
+				actions: [
+					{
+						action: '@create:projectile',
+						type: 'custom',
+						'sprite-key': 'normal-attack',
+						collider: { type: 'rectangle', size: { width: 25 * 1.07 * 5, height: 25 * 1.07 } },
+						'flight-speed': 15 * 1.5,
+						'flight-range': 650,
+						'on-hit': {
+							enemy: [
+								{
+									action: '@apply:damage',
+									'display-type': 'main',
+									source: { attribute: 'attack-power', of: 'self' },
+									value: { amount: 100, unit: '%' },
+								},
+								{
+									action: '@apply:damage',
+									'damage-type': 'true',
+									'display-type': 'main',
+									value: { amount: 10, unit: '%' },
+									source: { attribute: 'lost-HP', of: 'self' },
+								},
+							],
+							self: [
+								{
+									action: '@apply:recover-hp',
+									source: { attribute: 'lost-HP', of: 'self' },
+									value: { amount: 10, unit: '%' },
+									'display-type': 'main',
+								},
+								{ action: '@apply:modify-energy', value: { amount: 10 } },
+							],
+						},
+
+						enhancements: [{ name: 'piercing' }],
+					},
+					{
+						action: '@create:projectile',
+						type: 'custom',
+						'sprite-key': 'normal-attack',
+						collider: { type: 'rectangle', size: { width: 25 * 1.07 * 5, height: 25 * 1.07 } },
+						'flight-speed': 15 * 1.5,
+						'flight-range': 650,
+						'on-hit': {
+							enemy: [
+								{
+									action: '@apply:damage',
+									'display-type': 'bonus',
+									source: { attribute: 'attack-power', of: 'self' },
+									value: { amount: 100, unit: '%' },
+								},
+								{
+									action: '@apply:damage',
+									'damage-type': 'true',
+									'display-type': 'bonus',
+									value: { amount: 10, unit: '%' },
+									source: { attribute: 'lost-HP', of: 'self' },
+								},
+							],
+							self: [
+								{
+									action: '@apply:recover-hp',
+									source: { attribute: 'lost-HP', of: 'self' },
+									value: { amount: 10, unit: '%' },
+									'display-type': 'bonus',
+								},
+								{ action: '@apply:modify-energy', value: { amount: 10 } },
+							],
+						},
+
+						enhancements: [{ name: 'piercing' }],
+						'delta-angle': 8,
+					},
+					{
+						action: '@create:projectile',
+						type: 'custom',
+						'sprite-key': 'normal-attack',
+						collider: { type: 'rectangle', size: { width: 25 * 1.07 * 5, height: 25 * 1.07 } },
+						'flight-speed': 15 * 1.5,
+						'flight-range': 650,
+						'on-hit': {
+							enemy: [
+								{
+									action: '@apply:damage',
+									'display-type': 'fallback',
+									source: { attribute: 'attack-power', of: 'self' },
+									value: { amount: 100, unit: '%' },
+								},
+								{
+									action: '@apply:damage',
+									'damage-type': 'true',
+									'display-type': 'fallback',
+									value: { amount: 10, unit: '%' },
+									source: { attribute: 'lost-HP', of: 'self' },
+								},
+							],
+							self: [
+								{
+									action: '@apply:recover-hp',
+									source: { attribute: 'lost-HP', of: 'self' },
+									value: { amount: 10, unit: '%' },
+									'display-type': 'fallback',
+								},
+								{ action: '@apply:modify-energy', value: { amount: 10 } },
+							],
+						},
+
+						enhancements: [{ name: 'piercing' }],
+						'delta-angle': -8,
+					},
+				],
+				'resource-consumption': { 'current-HP': { amount: 20, unit: '%' } },
+			},
+		},
 	},
 
 	s2: {
 		type: 'normal',
 		property: 'skill',
-		cooldown: 8,
-		actions: [`implement-later:`],
+		cooldown: 24,
+		actions: [
+			{
+				action: '@do:teleport',
+				range: 800,
+			},
+			`implement-later:`,
+		],
 	},
 
 	ultimate: {

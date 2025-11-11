@@ -17,7 +17,7 @@ export const stats = {
 		},
 
 		survival: {
-			'limit-HP': 3240,
+			'limit-HP': 3672,
 			'physical-armor': 88,
 			'energy-shield': 68,
 		},
@@ -76,7 +76,7 @@ export const skills = {
 						'damage-modifier': { amount: 50, unit: '%' },
 					},
 				],
-				'on-dealt-damage': { self: [{ action: '@apply:modify-energy', value: { amount: 5 } }] },
+				// 'on-dealt-damage': { self: [{ action: '@apply:modify-energy', value: { amount: 5 } }] },
 				'on-hit': {
 					enemy: [
 						{
@@ -90,7 +90,7 @@ export const skills = {
 							action: '@apply:damage',
 							source: { attribute: 'current-HP', of: 'target' },
 							value: { amount: 8, unit: '%' },
-							'display-type': '???',
+							'display-type': 'fallback',
 						},
 					],
 					self: [{ action: '@apply:modify-energy', value: { amount: 5 } }],
@@ -110,7 +110,7 @@ export const skills = {
 		'casting-method': { type: 'in-direction', range: 528, display: { size: 60 } },
 
 		// Tiêu hao 25đ năng lượng
-		'resource-consumption': { energy: { amount: 35 } },
+		'resource-consumption': { energy: { amount: 25 } },
 
 		actions: [
 			{
@@ -119,6 +119,7 @@ export const skills = {
 				type: 'custom',
 				'flight-speed': 12 * 1.5,
 				'flight-range': 528,
+
 				// Event
 				'on-hit': {
 					enemy: [
@@ -126,15 +127,25 @@ export const skills = {
 						{
 							action: '@apply:damage',
 							source: { attribute: 'attack-power', of: 'self' },
-							value: { amount: 50, unit: '%' },
+							value: { amount: 150, unit: '%' },
 						},
 						{
 							action: '@apply:damage',
-							source: { attribute: 'attack-power', of: 'target' },
-							value: { amount: 150, unit: '%' },
+							source: { attribute: 'lost-HP', of: 'target' },
+							value: { amount: 10, unit: '%' },
+							'damage-type': 'true',
 							'display-type': 'bonus',
 						},
 						'implement-later: Bóng quay về, nhặt được hồi năng lượng, tạo giáp',
+					],
+					self: [
+						{
+							action: '@apply:recover-hp',
+							value: { amount: 150, unit: '%' },
+							source: { attribute: 'attack-power', of: 'self' },
+							description: 'Hồi 150% Tấn công HP',
+						},
+						{ action: '@apply:modify-energy', value: { amount: 50 } },
 					],
 				},
 				'on-dealt-damage': {
@@ -160,9 +171,45 @@ export const skills = {
 		'stack-time': 8,
 		cooldown: 1.5,
 
-		'casting-method': { type: 'in-direction', range: 480, display: { size: 60 } },
+		'casting-method': { type: 'in-direction', range: 780, display: { size: 60 } },
 		'resource-consumption': { energy: { amount: 50 } },
-		actions: ['implement-later: Lướt'],
+		actions: [
+			{ action: '@do:teleport', range: 150 },
+
+			{
+				description: `Bắn đạn tâng, tối đa 3 lần, mỗi lần giảm 50% ST, gây ST hồi 5 năng lượng`,
+
+				action: '@create:projectile',
+				type: 'custom',
+				'flight-range': 720,
+				'flight-speed': 15 * 1.5,
+				collider: { type: 'rectangle', size: { width: 274 * 0.5, height: 151 * 0.5 } },
+
+				// 'on-dealt-damage': { self: [{ action: '@apply:modify-energy', value: { amount: 5 } }] },
+				'on-hit': {
+					enemy: [
+						{
+							action: '@apply:damage',
+							source: { attribute: 'attack-power', of: 'self' },
+							value: { amount: 201, unit: '%' },
+							'is-main-damage': true,
+							'display-type': 'main',
+						},
+						{
+							action: '@apply:damage',
+							source: { attribute: 'current-HP', of: 'target' },
+							value: { amount: 16, unit: '%' },
+							'display-type': '???',
+						},
+					],
+					self: [{ action: '@apply:modify-energy', value: { amount: 40 } }],
+				},
+
+				'sprite-key': 's0',
+			},
+
+			'implement-later:Lướt',
+		],
 	},
 
 	ultimate: {
@@ -178,8 +225,8 @@ export const skills = {
 				description: 'Bắn đạn xuyên + đẩy lui, gây ST',
 
 				type: 'custom',
-				'flight-speed': 12,
-				'flight-range': 480,
+				'flight-speed': 15,
+				'flight-range': 720,
 
 				// Event
 				'on-hit': {
@@ -191,7 +238,7 @@ export const skills = {
 						},
 						'implement-later: Đẩy lui',
 					],
-					self: [{ action: '@apply:modify-energy', value: { amount: 25 } }],
+					self: [{ action: '@apply:modify-energy', value: { amount: 30 } }],
 				},
 				// 'on-dealt-damage': { self: [{ action: '@apply:modify-energy', value: { amount: 20 } }] },
 

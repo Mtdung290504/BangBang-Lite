@@ -7,6 +7,7 @@ export default class SkillComponent {
 	 */
 	actions = [];
 	usable = false;
+	available = true;
 
 	/**
 	 * @param {number} ownerEID

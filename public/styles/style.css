@@ -87,16 +87,19 @@ canvas {
 	display: flex;
 	justify-content: space-between;
 }
+
 .room-id {
 	display: block;
 	color: white;
 }
+
 .room-id::before {
 	font-size: 13px;
 	font-weight: bold;
 	content: 'Mã room: ';
 	text-shadow: 0 0 5px rgba(0, 0, 0, 0.75), 0 0 5px #1a6ebd;
 }
+
 .room-id::after {
 	font-size: 13px;
 	font-weight: bold;
@@ -120,23 +123,22 @@ canvas {
 .player-slot-wrapper {
 	position: relative;
 }
+
 .player-slot-wrapper::before {
 	/* Đổ bóng dưới player slot */
 	content: '';
-	clip-path: polygon(
-		0% 0%,
-		24% 0%,
-		30% 2%,
-		70% 2%,
-		76% 0%,
-		100% 0%,
-		100% 100%,
-		76% 100%,
-		70% 98%,
-		30% 98%,
-		24% 100%,
-		0% 100%
-	);
+	clip-path: polygon(0% 0%,
+			24% 0%,
+			30% 2%,
+			70% 2%,
+			76% 0%,
+			100% 0%,
+			100% 100%,
+			76% 100%,
+			70% 98%,
+			30% 98%,
+			24% 100%,
+			0% 100%);
 	position: absolute;
 	left: 0;
 	top: 2px;
@@ -146,6 +148,7 @@ canvas {
 	border-radius: 0px 5px 5px 5px;
 	opacity: 0.8;
 }
+
 .player-slot-wrapper::after {
 	/* Đổ bóng phải player slot */
 	width: 3px;
@@ -164,20 +167,18 @@ canvas {
 .player-slot {
 	background: linear-gradient(to bottom, #2dacec, #0e73b8);
 	color: white;
-	clip-path: polygon(
-		0% 0%,
-		24% 0%,
-		30% 2%,
-		70% 2%,
-		76% 0%,
-		100% 0%,
-		100% 100%,
-		76% 100%,
-		70% 98%,
-		30% 98%,
-		24% 100%,
-		0% 100%
-	);
+	clip-path: polygon(0% 0%,
+			24% 0%,
+			30% 2%,
+			70% 2%,
+			76% 0%,
+			100% 0%,
+			100% 100%,
+			76% 100%,
+			70% 98%,
+			30% 98%,
+			24% 100%,
+			0% 100%);
 	height: 275px;
 	padding: 10px;
 	padding-top: 20px;
@@ -185,6 +186,7 @@ canvas {
 	z-index: 1;
 	border-radius: 5px;
 }
+
 .player-slot::before {
 	content: '';
 	position: absolute;
@@ -197,9 +199,11 @@ canvas {
 	z-index: -1;
 	border-radius: 5px;
 }
+
 .player-slot:empty {
 	cursor: pointer;
 }
+
 .player-slot:empty::after {
 	content: '';
 	position: absolute;
@@ -222,10 +226,38 @@ canvas {
 	background-size: cover;
 	background-position: center;
 	margin-bottom: 5px;
+}
+
+.player-slot .avatar[data-id='0'] {
 	background-image: url('./image-resource/default-avatars/0.png');
 }
-.player-slot .avatar[data-id='2'] {
+
+.player-slot .avatar[data-id='1'] {
 	background-image: url('./image-resource/default-avatars/1.png');
+}
+
+.player-slot .avatar[data-id='2'] {
+	background-image: url('./image-resource/default-avatars/2.png');
+}
+
+.player-slot .avatar[data-id='3'] {
+	background-image: url('./image-resource/default-avatars/3.png');
+}
+
+.player-slot .avatar[data-id='3'] {
+	background-image: url('./image-resource/default-avatars/3.png');
+}
+
+.player-slot .avatar[data-id='4'] {
+	background-image: url('./image-resource/default-avatars/4.png');
+}
+
+.player-slot .avatar[data-id='5'] {
+	background-image: url('./image-resource/default-avatars/5.png');
+}
+
+.player-slot .avatar[data-id='6'] {
+	background-image: url('./image-resource/default-avatars/6.png');
 }
 
 .player-slot .name {
@@ -261,12 +293,15 @@ canvas {
 	text-transform: uppercase;
 	font-weight: 900;
 }
+
 .player-slot .status::after {
 	content: 'Đợi...';
 }
+
 .player-slot .status.ready {
 	background-color: var(--ready);
 }
+
 .player-slot .status.ready::after {
 	content: 'Sẵn Sàng';
 }
@@ -300,6 +335,7 @@ canvas {
 	position: relative;
 	cursor: pointer;
 }
+
 .map-display img {
 	width: 100%;
 	height: 100%;
@@ -318,6 +354,7 @@ canvas {
 	position: relative;
 	cursor: pointer;
 }
+
 .tank-display img {
 	width: 85%;
 	height: 85%;
@@ -341,14 +378,17 @@ canvas {
 	box-shadow: 0 0 7px var(--darkest-blue);
 	border: 2px solid var(--darkest-blue);
 }
+
 #ready-btn.cancel {
 	background-color: var(--not-ready);
 	box-shadow: 0 0 7px #222;
 	border: 2px solid #555;
 }
+
 #ready-btn::before {
 	content: 'Sẵn sàng';
 }
+
 #ready-btn.cancel::before {
 	content: 'Hủy';
 }
@@ -407,7 +447,8 @@ canvas {
 /* Item chung */
 .grid-item {
 	background-color: #2c2640;
-	aspect-ratio: 4 / 3; /* default là 4/3 */
+	aspect-ratio: 4 / 3;
+	/* default là 4/3 */
 	overflow: hidden;
 	border-radius: 8px;
 	cursor: pointer;
@@ -417,7 +458,8 @@ canvas {
 }
 
 .modal-tank .grid-item {
-	aspect-ratio: 1 / 1; /* override cho modal tank */
+	aspect-ratio: 1 / 1;
+	/* override cho modal tank */
 	transform: rotate(90deg);
 	display: grid;
 	position: relative;
@@ -443,10 +485,10 @@ canvas {
 }
 
 /* Checkbox mở modal (toggle) */
-#modal-map-toggle:checked ~ .modal-overlay:nth-of-type(1),
-#modal-map-toggle:checked ~ .modal-map,
-#modal-tank-toggle:checked ~ .modal-overlay:nth-of-type(2),
-#modal-tank-toggle:checked ~ .modal-tank {
+#modal-map-toggle:checked~.modal-overlay:nth-of-type(1),
+#modal-map-toggle:checked~.modal-map,
+#modal-tank-toggle:checked~.modal-overlay:nth-of-type(2),
+#modal-tank-toggle:checked~.modal-tank {
 	/* display: block; */
 	opacity: 1;
 	pointer-events: all;

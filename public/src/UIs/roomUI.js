@@ -15,6 +15,12 @@ const { viewBinding } = createViewBinding({
 	tankImageContainer: '#current-tank = label',
 });
 
+const AVATAR_ID_LIMIT = 7;
+function AvatarIDStream(limit = AVATAR_ID_LIMIT) {
+	let current = 0;
+	return () => current++ % limit;
+}
+
 /**
  * @type {{
  * 		mapClickEvent: undefined | AbortController
@@ -88,6 +94,7 @@ export function setTankImageView(tankID) {
  * @returns {void}
  */
 export function renderPlayersView(players, readyPlayers) {
+	const nextAvatarID = AvatarIDStream();
 	const teamViews = ['.team-0', '.team-1'].map((selector) => document.querySelectorAll(`${selector} .player-slot`));
 	teamViews.forEach((views) => views.forEach((view) => (view.innerHTML = '')));
 
@@ -101,7 +108,7 @@ export function renderPlayersView(players, readyPlayers) {
 
 			teamViews[team][slotIndex].innerHTML = /*html*/ `
 				<div class="player-info-wrapper">
-					<div class="avatar" data-id="2"></div>
+					<div class="avatar" data-id="${nextAvatarID()}"></div>
 					<div class="name" title="${name}">${name}</div>
 				</div>
 				<div class="status ${readyPlayers.includes(playerID) ? 'ready' : ''}"></div>

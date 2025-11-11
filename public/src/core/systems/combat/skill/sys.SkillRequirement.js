@@ -12,7 +12,6 @@ import ReceivedDamageComponent from '../../../components/combat/state/com.Receiv
 const DEBUG = false;
 const SkillRequirementSystem = defineSystemFactory([SkillComponent])
 	.withProcessor((context, eID, [skill]) => {
-		if (!skill.usable) return;
 		const cooldownComponent = context.getComponent(eID, SkillCooldownComponent, false);
 		// Check cooldown nếu có component
 		if (cooldownComponent) {
@@ -21,6 +20,7 @@ const SkillRequirementSystem = defineSystemFactory([SkillComponent])
 				// Lock skill if cooldown !== 0
 				DEBUG &&
 					console.log(`> [sys.SkillCooldown] Skill::[${eID}] is on cooldown (${remainingCD.toFixed(2)})`);
+				skill.available = false;
 				return (skill.usable = false);
 			}
 		}
@@ -135,7 +135,13 @@ const SkillRequirementSystem = defineSystemFactory([SkillComponent])
 		}
 
 		// Nếu không pass, lock skill
-		if (!pass) return (skill.usable = false);
+		if (!pass) {
+			skill.available = false;
+			return (skill.usable = false);
+		}
+
+		skill.available = true;
+		if (!skill.usable) return;
 
 		// Sau khi lọc bỏ các điều kiện, tiến hành hồi chiêu
 		if (cooldownComponent) cooldownComponent.activateCD();

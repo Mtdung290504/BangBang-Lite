@@ -22,6 +22,7 @@ import {
 	SKILL_SLOT_LABEL,
 } from '../../../../configs/constants/domain_constants/sys.constants.js';
 import { UI_DELTA_LAYER } from '../../../../configs/constants/domain_constants/com.constants.js';
+import SkillComponent from '../../components/combat/state/skill/com.SkillComponent.js';
 
 // Cấu hình kích thước
 const CONFIG = {
@@ -92,6 +93,7 @@ const RenderSkillUISystem = defineSystemFactory([], SelfOnlyRenderContext)
 				const skill = skills.getSkill(slot);
 				if (!skill) return;
 
+				const { available } = context.getComponent(skill, SkillComponent);
 				const cooldown = context.getComponent(skill, SkillCooldownComponent);
 
 				renderSkillSlot(
@@ -101,6 +103,7 @@ const RenderSkillUISystem = defineSystemFactory([], SelfOnlyRenderContext)
 					CONFIG.skillSize,
 					{
 						image: null,
+						available,
 						cooldown: {
 							current: cooldown.remainingCD,
 							CD: cooldown.msCD,
@@ -174,6 +177,7 @@ function renderStatusBar(context2D, x, y, width, height, currentValue, limitValu
  * @param {Object} skill.cooldown - Thông tin cooldown
  * @param {number} skill.cooldown.current - Thời gian cooldown hiện tại (giây)
  * @param {number} skill.cooldown.CD - Thời gian cooldown tối đa (giây)
+ * @param {boolean} skill.available - Skill có đủ điều kiện dùng không
  * @param {string} keyLabel - Label phím (Q, R, E, SPACE)
  * @param {number} radius - Bán kính bo góc
  */
@@ -249,7 +253,7 @@ function renderSkillSlot(ctx, x, y, size, skill, keyLabel, radius) {
 
 	// Vẽ viền ô skill
 	const isReady = !skill.cooldown || skill.cooldown.current === 0;
-	ctx.strokeStyle = isReady ? 'gold' : '#ffffffff';
+	ctx.strokeStyle = isReady ? (skill.available ? 'gold' : '#909090ff') : '#ffffffff';
 	ctx.lineWidth = borderWidth;
 	roundRect(ctx, x, y, size, size, radius, false, true);
 
