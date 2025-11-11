@@ -50,12 +50,12 @@ export const skills = {
 						action: '@create:projectile',
 						type: 'default',
 						collider: { type: 'rectangle', size: { width: 25 * 1.07 * 5, height: 25 * 1.07 } },
-
+						'flight-range': 480,
 						'on-hit': {
 							enemy: [
 								{
 									action: '@apply:damage',
-									'damage-type': 'true',
+
 									'display-type': 'bonus',
 									value: { amount: 4.5, unit: '%' },
 									source: { attribute: 'lost-HP', of: 'self' },
@@ -97,7 +97,6 @@ export const skills = {
 								},
 								{
 									action: '@apply:damage',
-									'damage-type': 'true',
 									'display-type': 'main',
 									value: { amount: 3, unit: '%' },
 									source: { attribute: 'lost-HP', of: 'self' },
@@ -109,10 +108,6 @@ export const skills = {
 									source: { attribute: 'lost-HP', of: 'self' },
 									value: { amount: 3, unit: '%' },
 									'display-type': 'main',
-								},
-								{
-									action: '@apply:modify-energy',
-									value: { amount: 5 },
 								},
 							],
 						},
@@ -133,7 +128,7 @@ export const skills = {
 								},
 								{
 									action: '@apply:damage',
-									'damage-type': 'true',
+
 									'display-type': 'bonus',
 									value: { amount: 3, unit: '%' },
 									source: { attribute: 'lost-HP', of: 'self' },
@@ -145,10 +140,6 @@ export const skills = {
 									source: { attribute: 'lost-HP', of: 'self' },
 									value: { amount: 3, unit: '%' },
 									'display-type': 'bonus',
-								},
-								{
-									action: '@apply:modify-energy',
-									value: { amount: 5 },
 								},
 							],
 						},
@@ -169,7 +160,7 @@ export const skills = {
 								},
 								{
 									action: '@apply:damage',
-									'damage-type': 'true',
+
 									'display-type': 'fallback',
 									value: { amount: 3, unit: '%' },
 									source: { attribute: 'lost-HP', of: 'self' },
@@ -182,10 +173,6 @@ export const skills = {
 									value: { amount: 3, unit: '%' },
 									'display-type': 'fallback',
 								},
-								{
-									action: '@apply:modify-energy',
-									value: { amount: 5 },
-								},
 							],
 						},
 					},
@@ -193,40 +180,6 @@ export const skills = {
 			},
 		},
 	},
-
-	// 'normal-attack': {
-	// 	type: 'normal',
-	// 	property: 'normal-attack',
-
-	// 	actions: [
-	// 		{
-	// 			description: `Bắn đạn`,
-	// 			action: '@create:projectile',
-	// 			type: 'default',
-	// 			collider: { type: 'rectangle', size: { width: 25 * 1.07 * 5, height: 25 * 1.07 } },
-
-	// 			// Gây thêm ST bằng 5% HP đã mất
-	// 			'on-hit': {
-	// 				enemy: [
-	// 					{
-	// 						action: '@apply:damage',
-	// 						'damage-type': 'true',
-	// 						'display-type': 'bonus',
-	// 						value: { amount: 4, unit: '%' },
-	// 						source: { attribute: 'lost-HP', of: 'self' },
-	// 					},
-	// 				],
-	// 				self: [
-	// 					{
-	// 						action: '@apply:recover-hp',
-	// 						source: { attribute: 'lost-HP', of: 'self' },
-	// 						value: { amount: 4, unit: '%' },
-	// 					},
-	// 				],
-	// 			},
-	// 		},
-	// 	],
-	// },
 
 	s1: {
 		type: 'phased',
@@ -254,7 +207,7 @@ export const skills = {
 								},
 								{
 									action: '@apply:damage',
-									'damage-type': 'true',
+
 									'display-type': 'bonus',
 									value: { amount: 10, unit: '%' },
 									source: { attribute: 'lost-HP', of: 'self' },
@@ -284,7 +237,7 @@ export const skills = {
 						'sprite-key': 'normal-attack',
 						collider: { type: 'rectangle', size: { width: 25 * 1.07 * 5, height: 25 * 1.07 } },
 						'flight-speed': 15 * 1.5,
-						'flight-range': 650,
+						'flight-range': 480,
 						'on-hit': {
 							enemy: [
 								{
@@ -295,7 +248,7 @@ export const skills = {
 								},
 								{
 									action: '@apply:damage',
-									'damage-type': 'true',
+
 									'display-type': 'main',
 									value: { amount: 10, unit: '%' },
 									source: { attribute: 'lost-HP', of: 'self' },
@@ -320,7 +273,7 @@ export const skills = {
 						'sprite-key': 'normal-attack',
 						collider: { type: 'rectangle', size: { width: 25 * 1.07 * 5, height: 25 * 1.07 } },
 						'flight-speed': 15 * 1.5,
-						'flight-range': 650,
+						'flight-range': 480,
 						'on-hit': {
 							enemy: [
 								{
@@ -331,7 +284,7 @@ export const skills = {
 								},
 								{
 									action: '@apply:damage',
-									'damage-type': 'true',
+
 									'display-type': 'bonus',
 									value: { amount: 10, unit: '%' },
 									source: { attribute: 'lost-HP', of: 'self' },
@@ -357,7 +310,7 @@ export const skills = {
 						'sprite-key': 'normal-attack',
 						collider: { type: 'rectangle', size: { width: 25 * 1.07 * 5, height: 25 * 1.07 } },
 						'flight-speed': 15 * 1.5,
-						'flight-range': 650,
+						'flight-range': 480,
 						'on-hit': {
 							enemy: [
 								{
@@ -368,7 +321,7 @@ export const skills = {
 								},
 								{
 									action: '@apply:damage',
-									'damage-type': 'true',
+
 									'display-type': 'fallback',
 									value: { amount: 10, unit: '%' },
 									source: { attribute: 'lost-HP', of: 'self' },

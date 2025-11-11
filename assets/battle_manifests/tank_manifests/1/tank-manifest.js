@@ -171,17 +171,15 @@ export const skills = {
 		'stack-time': 8,
 		cooldown: 1.5,
 
-		'casting-method': { type: 'in-direction', range: 780, display: { size: 60 } },
+		'casting-method': { type: 'in-direction', range: 820, display: { size: 60 } },
 		'resource-consumption': { energy: { amount: 50 } },
+
 		actions: [
 			{ action: '@do:teleport', range: 150 },
-
 			{
-				description: `Bắn đạn tâng, tối đa 3 lần, mỗi lần giảm 50% ST, gây ST hồi 5 năng lượng`,
-
 				action: '@create:projectile',
 				type: 'custom',
-				'flight-range': 720,
+				'flight-range': 750,
 				'flight-speed': 15 * 1.5,
 				collider: { type: 'rectangle', size: { width: 274 * 0.5, height: 151 * 0.5 } },
 
@@ -202,7 +200,15 @@ export const skills = {
 							'display-type': '???',
 						},
 					],
-					self: [{ action: '@apply:modify-energy', value: { amount: 40 } }],
+					self: [
+						{
+							action: '@apply:recover-hp',
+							value: { amount: 100, unit: '%' },
+							source: { attribute: 'attack-power', of: 'self' },
+							description: 'Hồi 100% Tấn công HP',
+						},
+						{ action: '@apply:modify-energy', value: { amount: 45 } },
+					],
 				},
 
 				'sprite-key': 's0',
@@ -238,7 +244,7 @@ export const skills = {
 						},
 						'implement-later: Đẩy lui',
 					],
-					self: [{ action: '@apply:modify-energy', value: { amount: 30 } }],
+					self: [{ action: '@apply:modify-energy', value: { amount: 50 } }],
 				},
 				// 'on-dealt-damage': { self: [{ action: '@apply:modify-energy', value: { amount: 20 } }] },
 

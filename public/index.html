@@ -1,132 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Game Room</title>
+		<link rel="stylesheet" href="./styles/style.css" />
+		<script type="module" src="index.js"></script>
+	</head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Room</title>
-    <link rel="stylesheet" href="./styles/style.css">
-    <script type="module" src="index.js"></script>
-</head>
+	<body>
+		<div class="ui-wrapper">
+			<div class="room-wrapper">
+				<!-- Room left layout -->
+				<div class="room-left">
+					<div class="room-info">
+						<p id="room-id" class="room-id" room-id="_"></p>
+					</div>
 
-<body>
-    <div class="ui-wrapper">
-        <div class="room-wrapper">
-            <!-- Room left layout -->
-            <div class="room-left">
-                <div class="room-info">
-                    <p id="room-id" class="room-id" room-id="_"></p>
-                </div>
+					<div class="team team-0" data-team="0">
+						<div class="player-slot-wrapper">
+							<div class="player-slot">
+								<div class="player-info-wrapper">
+									<div class="avatar" data-id="2"></div>
+									<div class="name">Created by</div>
+								</div>
+								<div class="status ready"></div>
+							</div>
+						</div>
+						<div class="player-slot-wrapper">
+							<div class="player-slot">
+								<div class="player-info-wrapper">
+									<div class="avatar" data-id="1"></div>
+									<div class="name">Meeeeee</div>
+								</div>
+								<div class="status"></div>
+							</div>
+						</div>
+						<div class="player-slot-wrapper">
+							<div class="player-slot"></div>
+						</div>
+						<div class="player-slot-wrapper">
+							<div class="player-slot"></div>
+						</div>
+						<div class="player-slot-wrapper">
+							<div class="player-slot"></div>
+						</div>
+					</div>
 
-                <div class="team team-0" data-team="0">
-                    <div class="player-slot-wrapper">
-                        <div class="player-slot">
-                            <div class="player-info-wrapper">
-                                <div class="avatar" data-id="2"></div>
-                                <div class="name">Created by</div>
-                            </div>
-                            <div class="status ready"></div>
-                        </div>
-                    </div>
-                    <div class="player-slot-wrapper">
-                        <div class="player-slot">
-                            <div class="player-info-wrapper">
-                                <div class="avatar"></div>
-                                <div class="name">Meeeeee</div>
-                            </div>
-                            <div class="status"></div>
-                        </div>
-                    </div>
-                    <div class="player-slot-wrapper">
-                        <div class="player-slot"></div>
-                    </div>
-                    <div class="player-slot-wrapper">
-                        <div class="player-slot"></div>
-                    </div>
-                    <div class="player-slot-wrapper">
-                        <div class="player-slot"></div>
-                    </div>
-                </div>
+					<div class="team team-1" data-team="1">
+						<div class="player-slot-wrapper">
+							<div class="player-slot"></div>
+						</div>
+						<div class="player-slot-wrapper">
+							<div class="player-slot"></div>
+						</div>
+						<div class="player-slot-wrapper">
+							<div class="player-slot"></div>
+						</div>
+						<div class="player-slot-wrapper">
+							<div class="player-slot"></div>
+						</div>
+						<div class="player-slot-wrapper">
+							<div class="player-slot"></div>
+						</div>
+					</div>
+				</div>
 
-                <div class="team team-1" data-team="1">
-                    <div class="player-slot-wrapper">
-                        <div class="player-slot"></div>
-                    </div>
-                    <div class="player-slot-wrapper">
-                        <div class="player-slot"></div>
-                    </div>
-                    <div class="player-slot-wrapper">
-                        <div class="player-slot"></div>
-                    </div>
-                    <div class="player-slot-wrapper">
-                        <div class="player-slot"></div>
-                    </div>
-                    <div class="player-slot-wrapper">
-                        <div class="player-slot"></div>
-                    </div>
-                </div>
-            </div>
+				<!-- Room right layout -->
+				<div class="room-right">
+					<div class="choose-wrapper">
+						<!-- Display current map -->
+						<label for="modal-map-toggle" class="map-display" id="current-map" title="Đổi map">
+							<img
+								id="current-map-image"
+								src="./styles/image-resource/place-holder.png"
+								alt="Selected Map"
+							/>
+						</label>
 
-            <!-- Room right layout -->
-            <div class="room-right">
-                <div class="choose-wrapper">
-                    <!-- Display current map -->
-                    <label for="modal-map-toggle" class="map-display" id="current-map" title="Đổi map">
-                        <img id="current-map-image" src="./styles/image-resource/place-holder.png" alt="Selected Map">
-                    </label>
+						<!-- Display current tank -->
+						<label for="modal-tank-toggle" class="tank-display" id="current-tank" title="Đổi tank">
+							<img id="current-tank-body" src="./styles/image-resource/place-holder.png" />
+							<img id="current-tank-head" src="./styles/image-resource/place-holder.png" />
+						</label>
+					</div>
 
-                    <!-- Display current tank -->
-                    <label for="modal-tank-toggle" class="tank-display" id="current-tank" title="Đổi tank">
-                        <img id="current-tank-body" src="./styles/image-resource/place-holder.png">
-                        <img id="current-tank-head" src="./styles/image-resource/place-holder.png">
-                    </label>
-                </div>
+					<!-- Toggle class: cancel -->
+					<button id="ready-btn" class="cancel"></button>
+				</div>
+			</div>
 
-                <!-- Toggle class: cancel -->
-                <button id="ready-btn" class="cancel"></button>
-            </div>
-        </div>
+			<!-- Checkboxes ẩn -->
+			<input type="checkbox" id="modal-map-toggle" hidden />
+			<input type="checkbox" id="modal-tank-toggle" hidden />
 
-        <!-- Checkboxes ẩn -->
-        <input type="checkbox" id="modal-map-toggle" hidden>
-        <input type="checkbox" id="modal-tank-toggle" hidden>
+			<!-- Modal overlay & modal MAP -->
+			<label for="modal-map-toggle" class="modal-overlay"></label>
+			<div class="modal modal-map">
+				<div class="modal-content">
+					<!-- Grid 3 items/row, aspect 4/3 -->
+					<div class="grid grid-3">
+						<!-- Map items -->
+						<label class="grid-item" for="modal-map-toggle">
+							<img src="./styles/image-resource/place-holder.png" alt="" />
+						</label>
 
-        <!-- Modal overlay & modal MAP -->
-        <label for="modal-map-toggle" class="modal-overlay"></label>
-        <div class="modal modal-map">
-            <div class="modal-content">
-                <!-- Grid 3 items/row, aspect 4/3 -->
-                <div class="grid grid-3">
-                    <!-- Map items -->
-                    <label class="grid-item" for="modal-map-toggle">
-                        <img src="./styles/image-resource/place-holder.png" alt="">
-                    </label>
+						<!-- Next items... -->
+					</div>
+				</div>
+			</div>
 
-                    <!-- Next items... -->
-                </div>
-            </div>
-        </div>
+			<!-- Modal overlay & modal TANK -->
+			<label for="modal-tank-toggle" class="modal-overlay"></label>
+			<div class="modal modal-tank">
+				<div class="modal-content">
+					<!-- Grid 5 items/row, aspect 1 -->
+					<div class="grid grid-5">
+						<!-- Tank items -->
+						<label class="grid-item" for="modal-tank-toggle">
+							<img src="./styles/image-resource/place-holder.png" alt="" />
+							<img src="./styles/image-resource/place-holder.png" alt="" />
+						</label>
 
-        <!-- Modal overlay & modal TANK -->
-        <label for="modal-tank-toggle" class="modal-overlay"></label>
-        <div class="modal modal-tank">
-            <div class="modal-content">
-                <!-- Grid 5 items/row, aspect 1 -->
-                <div class="grid grid-5">
-                    <!-- Tank items -->
-                    <label class="grid-item" for="modal-tank-toggle">
-                        <img src="./styles/image-resource/place-holder.png" alt="">
-                        <img src="./styles/image-resource/place-holder.png" alt="">
-                    </label>
+						<!-- Next items... -->
+					</div>
+				</div>
+			</div>
+		</div>
 
-                    <!-- Next items... -->
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <canvas id="battle-canvas" style="display: none;"></canvas>
-</body>
-
+		<canvas id="battle-canvas" style="display: none"></canvas>
+	</body>
 </html>
