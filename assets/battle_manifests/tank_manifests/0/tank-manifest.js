@@ -50,7 +50,7 @@ export const skills = {
 						action: '@create:projectile',
 						type: 'default',
 						collider: { type: 'rectangle', size: { width: 25 * 1.07 * 5, height: 25 * 1.07 } },
-						'flight-range': 408,
+						'flight-range': 480,
 						'on-hit': {
 							enemy: [
 								{
@@ -181,7 +181,7 @@ export const skills = {
 		},
 	},
 
-	s1: {
+	ultimate: {
 		type: 'phased',
 		'phases-definition': {
 			1: {
@@ -197,7 +197,7 @@ export const skills = {
 						'sprite-key': 'normal-attack',
 						collider: { type: 'rectangle', size: { width: 25 * 1.07 * 5, height: 25 * 1.07 } },
 						'flight-speed': 15 * 1.5,
-						'flight-range': 650,
+						'flight-range': 552,
 						'on-hit': {
 							enemy: [
 								{
@@ -233,7 +233,7 @@ export const skills = {
 						'sprite-key': 'normal-attack',
 						collider: { type: 'rectangle', size: { width: 25 * 1.07 * 5, height: 25 * 1.07 } },
 						'flight-speed': 15 * 1.5,
-						'flight-range': 650,
+						'flight-range': 552,
 						'on-hit': {
 							enemy: [
 								{
@@ -452,7 +452,7 @@ export const skills = {
 						'delta-angle': -15,
 					},
 				],
-				'resource-consumption': { 'current-HP': { amount: 30, unit: '%' } },
+				'resource-consumption': { 'current-HP': { amount: 25, unit: '%' } },
 			},
 		},
 	},
@@ -464,13 +464,13 @@ export const skills = {
 		actions: [
 			{
 				action: '@do:teleport',
-				range: 800,
+				range: 720,
 			},
 			`implement-later:`,
 		],
 	},
 
-	ultimate: {
+	s1: {
 		type: 'normal',
 		property: 'skill',
 		cooldown: 1,

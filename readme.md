@@ -7,33 +7,33 @@ _Quá phiền toái khi làm UI để hiển thị nên dùng tạm_
 ### Bị động:
 
 -   Tank sử dụng năng lượng, giới hạn 150 điểm, **_không tự hồi theo thời gian_**
--   Có 2 dạng đánh xa & gần, chuyển đổi qua lại bằng skill **_Space_**
+-   Có 2 dạng đánh xa & gần, chuyển đổi qua lại bằng skill **_S1_**
 
 ### Đánh thường:
 
--   Đánh xa: Tầm bắn 408, đánh thường gây thêm **_(4.5% HP đã mất) STVL_**, đánh trúng hồi **_(4.5% HP đã mất) HP_** và **_30 năng lượng_**
+-   Đánh xa: Tầm bắn 480, đánh thường gây thêm **_(4.5% HP đã mất) STVL_**, đánh trúng hồi **_(4.5% HP đã mất) HP_** và **_30 năng lượng_**
 -   Đánh gần:
     -   Tầm bắn 336, mỗi lần bắn tiêu tốn **_30 năng lượng_** và **_10% HP hiện tại_**
     -   Bắn tản đạn, mỗi viên có hiệu quả ST thêm và hồi máu bằng 2/3 lần đánh xa
 
 ### S1:
 
--   Đánh xa:
-    -   [CD: 2s], Tiêu tốn **_10% HP hiện tại_**
-    -   Bắn chùm 2 viên đạn cực xa và nhanh, gây **_(100% Tấn công) STVL_** kèm **_(8% HP đã mất) STVL_**, đánh trúng hồi **_(8% HP đã mất) HP_** và **_10 năng lượng_**
--   Đánh gần:
-    -   [CD: 6s], Tiêu tốn **_20% HP hiện tại_**
-    -   Bắn chùm 5 viên đạn bay xuyên thấu, mỗi viên gây **_(75% Tấn công) STVL_** hiệu quả ST thêm và hồi máu tương tự phiên bản đánh xa.
+-   [CD: 1s]
+-   Chuyển đổi giữa đánh xa và đánh gần
 
 ### S2:
 
 -   [CD: 24s]
--   Tốc biến đến vị trí chuột, tối đa một khoảng **_800 cự li_**
+-   Tốc biến đến vị trí chuột, tối đa một khoảng **_720 cự li_**
 
 ### S3:
 
--   [CD: 1s]
--   Chuyển đổi giữa đánh xa và đánh gần
+-   Đánh xa:
+    -   [CD: 2s], Tiêu tốn **_15% HP hiện tại_**
+    -   Bắn chùm 2 viên đạn bay xa và nhanh, gây **_(100% Tấn công) STVL_** kèm **_(8% HP đã mất) STVL_**, đánh trúng hồi **_(8% HP đã mất) HP_** và **_10 năng lượng_**
+-   Đánh gần:
+    -   [CD: 6s], Tiêu tốn **_25% HP hiện tại_**
+    -   Bắn chùm 5 viên đạn bay nhanh và xuyên thấu, mỗi viên gây **_(75% Tấn công) STVL_** hiệu quả ST thêm và hồi máu tương tự phiên bản đánh xa.
 
 ---
 

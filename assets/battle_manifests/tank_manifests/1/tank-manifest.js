@@ -192,8 +192,7 @@ export const skills = {
 			{
 				action: '@create:projectile',
 				type: 'custom',
-				'flight-range': 750,
-				'flight-speed': 15 * 1.5,
+				'flight-speed': 17.5 * 1.5,
 				collider: { type: 'rectangle', size: { width: 274 * 0.5, height: 151 * 0.5 } },
 
 				// 'on-dealt-damage': { self: [{ action: '@apply:modify-energy', value: { amount: 5 } }] },
