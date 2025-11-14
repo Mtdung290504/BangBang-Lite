@@ -16,13 +16,13 @@ class SystemFactoryBuilder {
 		this.CtxClass = CtxClass;
 
 		/** @type {Function | null} */
-		this._processor = null;
+		this.processor = null;
 
 		/** @type {Function | null} */
-		this._init = null;
+		this.init = null;
 
 		/** @type {Function | null} */
-		this._teardown = null;
+		this.teardown = null;
 	}
 
 	/**
@@ -33,7 +33,7 @@ class SystemFactoryBuilder {
 	 * } fn
 	 */
 	withProcessor(fn) {
-		this._processor = fn;
+		this.processor = fn;
 		return this;
 	}
 
@@ -45,7 +45,7 @@ class SystemFactoryBuilder {
 	 * } fn
 	 */
 	withInit(fn) {
-		this._init = fn;
+		this.init = fn;
 		return this;
 	}
 
@@ -57,7 +57,7 @@ class SystemFactoryBuilder {
 	 * } fn
 	 */
 	withTeardown(fn) {
-		this._teardown = fn;
+		this.teardown = fn;
 		return this;
 	}
 
@@ -65,11 +65,12 @@ class SystemFactoryBuilder {
 	 * Hoàn thành tạo ra factory
 	 */
 	build() {
-		const primaryComponents = this.primaryComponents;
-		const CtxClass = this.CtxClass;
-		const processor = this._processor;
-		const init = this._init;
-		const teardown = this._teardown;
+		// const primaryComponents = this.primaryComponents;
+		// const CtxClass = this.CtxClass;
+		// const processor = this.processor;
+		// const init = this.init;
+		// const teardown = this.teardown;
+		const { primaryComponents, CtxClass, processor, init, teardown } = this;
 
 		/**
 		 * @param {ContextClass extends undefined
