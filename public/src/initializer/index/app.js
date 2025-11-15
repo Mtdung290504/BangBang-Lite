@@ -25,6 +25,7 @@ import { LOGIC_FPS } from '../../core/managers/system/mgr.game-loop.js';
 import PositionComponent from '../../core/components/physics/com.Position.js';
 import SurvivalComponent from '../../core/components/combat/stats/com.Survival.js';
 import AdditionalAttributesComponent from '../../core/components/combat/stats/com.AdditionalAttributes.js';
+import defineSystemFactory from '../../core/factory/factory_builders/defineSystemFactory.new.js';
 
 const DEBUG_MODE = true;
 
@@ -104,37 +105,41 @@ export async function init(roomID, playerName, role) {
  * @param {ReturnType<typeof setupBattle>} battle
  */
 function setupSyncSystem(socket, battle) {
-	const { context, playerRegistry } = battle;
-	startSync();
+	const { context, playerRegistry, logicSysManager } = battle;
 
-	function startSync() {
-		dispatchSyncPositionState();
-		dispatchSyncStatState();
-		setTimeout(startSync, (1000 / LOGIC_FPS) * 3);
-	}
+	const dispatchSyncPositionStateSystem = defineSystemFactory([], [])
+		.withConfig({ throttleRate: 2 })
+		.withProcessor((_context, _eID, _components, _sysContext) => {
+			/**@type {{[socketID: string]: PositionComponent }} */
+			const positionStates = {};
+			for (const [socketID, { tankEID }] of playerRegistry)
+				positionStates[socketID] = context.getComponent(tankEID, PositionComponent);
 
-	function dispatchSyncPositionState() {
-		/**@type {{[socketID: string]: PositionComponent }} */
-		const positionStates = {};
-		for (const [socketID, { tankEID }] of playerRegistry)
-			positionStates[socketID] = context.getComponent(tankEID, PositionComponent);
+			battleHandlers.syncPositionState(socket, positionStates);
+		})
+		.build()
+		.create(context);
 
-		battleHandlers.syncPositionState(socket, positionStates);
-	}
+	const dispatchSyncStatStateSystem = defineSystemFactory([], [])
+		.withConfig({ throttleRate: 3 })
+		.withProcessor((_context, _eID, _components, _sysContext) => {
+			/**@type {{[socketID: string]: { currentHP: number, currentEnergy?: number } }} */
+			const statStates = {};
+			for (const [socketID, { tankEID }] of playerRegistry) {
+				const additionalAttributes = context.getComponent(tankEID, AdditionalAttributesComponent, false);
+				statStates[socketID] = {
+					currentHP: context.getComponent(tankEID, SurvivalComponent).currentHP,
+					currentEnergy: additionalAttributes?.currentEnergyPoint,
+				};
+			}
 
-	function dispatchSyncStatState() {
-		/**@type {{[socketID: string]: { currentHP: number, currentEnergy?: number } }} */
-		const statStates = {};
-		for (const [socketID, { tankEID }] of playerRegistry) {
-			const additionalAttributes = context.getComponent(tankEID, AdditionalAttributesComponent, false);
-			statStates[socketID] = {
-				currentHP: context.getComponent(tankEID, SurvivalComponent).currentHP,
-				currentEnergy: additionalAttributes?.currentEnergyPoint,
-			};
-		}
+			battleHandlers.syncStatState(socket, statStates);
+		})
+		.build()
+		.create(context);
 
-		battleHandlers.syncStatState(socket, statStates);
-	}
+	logicSysManager.register(dispatchSyncPositionStateSystem);
+	logicSysManager.register(dispatchSyncStatStateSystem);
 }
 
 /**

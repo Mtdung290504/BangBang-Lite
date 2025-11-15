@@ -53,9 +53,10 @@ export function setup(roomID, emitter) {
 }
 
 export function destroy() {
-	views.container.remove();
-	abortControllers.mapClickEvent?.abort();
-	abortControllers.tankClickEvent?.abort();
+	// views.container.remove();
+	// abortControllers.mapClickEvent?.abort();
+	// abortControllers.tankClickEvent?.abort();
+	views.container.style.display = 'none';
 }
 
 /**

@@ -183,7 +183,7 @@ export const skills = {
 		property: 'skill',
 		'max-stack': 2,
 		'stack-time': 8,
-		cooldown: 1.5,
+		cooldown: 2,
 
 		'casting-method': { type: 'in-direction', range: 820, display: { size: 60 } },
 		'resource-consumption': { energy: { amount: 50 } },

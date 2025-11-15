@@ -105,13 +105,5 @@ export default function setupLogicSystems(context) {
 	logicSystemsManager.register(UpdateDamagesDisplaySystem.create(context));
 	logicSystemsManager.register(SpriteNextFrameSystem.create(context));
 
-	logicSystemsManager.finalize();
-	logicSystemsManager.initAll();
-
-	console.log(
-		prefixMsg('Logic system manager initiated successfully, using system groups:', 'INFO'),
-		logicSystemsManager.getSystemGroups()
-	);
-
 	return logicSystemsManager;
 }

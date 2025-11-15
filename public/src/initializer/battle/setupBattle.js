@@ -102,7 +102,7 @@ export default function setupBattle(socket, mapID, players, sandbox) {
 	console.log(msg('Battle initiated successfully'));
 	console.groupEnd();
 
-	return { context, start, playerRegistry };
+	return { context, start, playerRegistry, logicSysManager };
 
 	/**
 	 * Start battle sau khi setup socket listener
@@ -111,6 +111,14 @@ export default function setupBattle(socket, mapID, players, sandbox) {
 		gameLoopManager.setProgressLog(DEBUG_MODE);
 		gameLoopManager.start(() => {
 			console.log('\n\n', msg('Battle started, using context:'), context);
+
+			logicSysManager.finalize();
+			logicSysManager.initAll();
+
+			console.log(
+				msg('Logic system manager initiated successfully, using system groups:'),
+				logicSysManager.getSystemGroups()
+			);
 
 			gameLoopManager.startLogicLoop(() => {
 				// Update toàn bộ logic và di chuyển camera

@@ -109,4 +109,9 @@ export default class TankActiveSkillsComponent {
 			}
 		}
 	}
+
+	resetPhase() {
+		this.timers.length = 0;
+		this._phase = this.phases[0];
+	}
 }

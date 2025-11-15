@@ -8,9 +8,9 @@ import TankComponent from '../../components/combat/objects/com.Tank.js';
 import SurvivalComponent from '../../components/combat/stats/com.Survival.js';
 import AdditionalAttributesComponent from '../../components/combat/stats/com.AdditionalAttributes.js';
 
-/**
- * System đồng bộ trạng thái chỉ số từ mạng
- */
+const DEBUG_MODE = false;
+
+/** System đồng bộ trạng thái chỉ số từ mạng */
 const TankStatsSyncSystem = defineSystemFactory([TankComponent])
 	.withProcessor((context, eID, [_tank]) => {
 		const netStat = context.getComponent(eID, NetworkStatsComponent);
@@ -23,26 +23,30 @@ const TankStatsSyncSystem = defineSystemFactory([TankComponent])
 		if (currentHP !== null) {
 			const survival = context.getComponent(eID, SurvivalComponent);
 			if (survival.currentHP !== netStat.currentHP) {
+				if (DEBUG_MODE) console.group('Sync-HP');
 				let currentDelta;
 				let historyDeltaHP = 0;
 
 				while ((currentDelta = history.deltaHPs.pop())) {
-					console.log(netStat.timestamp - currentDelta.timestamp);
-					if (currentDelta.timestamp >= netStat.timestamp) {
-						console.log(currentDelta);
+					if (currentDelta.timestamp > netStat.timestamp) {
+						if (DEBUG_MODE) console.log('Sub delta history:', currentDelta);
 						historyDeltaHP += currentDelta.deltaHP;
 					}
 				}
 
-				if (historyDeltaHP !== 0) console.log(survival.currentHP, currentHP + historyDeltaHP);
-				survival.setCurrentHP(currentHP + historyDeltaHP);
+				const syncHP = currentHP + historyDeltaHP;
+				if (historyDeltaHP !== 0 && DEBUG_MODE)
+					console.log(`Current-HP:${survival.currentHP} Sync-HP:${syncHP} History-Delta:${historyDeltaHP}`);
+				survival.setCurrentHP(syncHP);
+				if (DEBUG_MODE) console.groupEnd();
 			}
 		}
 
 		// if (Date.now() - timestamp <= (3 * 1000) / 60) {
 		// 	if (currentHP !== null) context.getComponent(eID, SurvivalComponent).setCurrentHP(currentHP);
-		// 	if (currentEnergy !== null)
-		// 		context.getComponent(eID, AdditionalAttributesComponent).currentEnergyPoint = currentEnergy;
+		// TODO: Bổ sung cơ chế replay sau
+		if (currentEnergy !== null)
+			context.getComponent(eID, AdditionalAttributesComponent).currentEnergyPoint = currentEnergy;
 		// }
 
 		netStat.currentHP = null;

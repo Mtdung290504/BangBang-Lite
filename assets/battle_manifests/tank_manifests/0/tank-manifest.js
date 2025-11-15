@@ -10,7 +10,7 @@ export const stats = {
 	name: '???',
 	'stat-components': {
 		shooting: {
-			'fire-rate': 120,
+			'fire-rate': 90,
 			'fire-range': 336,
 			'flight-speed': 17.5,
 		},
@@ -181,7 +181,7 @@ export const skills = {
 		},
 	},
 
-	ultimate: {
+	s1: {
 		type: 'phased',
 		'phases-definition': {
 			1: {
@@ -470,7 +470,7 @@ export const skills = {
 		],
 	},
 
-	s1: {
+	ultimate: {
 		type: 'normal',
 		property: 'skill',
 		cooldown: 1,
