@@ -1,8 +1,8 @@
 /**
- * @typedef {import('../../network/assets_managers/assets-storage.js')} _Storage
- * @typedef {{ id: string | undefined, emit: (...args: any[]) => void }} _AbstractSocket
- * @typedef {import('../../core/components/network/com.NetworkPosition.js').default} _NetworkPosition
- * @typedef {import('../../core/components/network/com.NetworkStats.js').default} _NetworkStats
+ * @typedef {import('../../network/assets_managers/assets-storage.js')} Storage
+ * @typedef {{ id: string | undefined, emit: (...args: any[]) => void }} AbstractSocket
+ * @typedef {import('../../core/components/network/com.NetworkPosition.js').default} NetworkPosition
+ * @typedef {import('../../core/components/network/com.NetworkStats.js').default} NetworkStats
  */
 
 // Models
@@ -42,8 +42,8 @@ const DEBUG_MODE = false;
  * @type {Map<string, {
  * 		tankEID: number
  * 		inputManager: BattleInputManager
- * 		networkPosition: _NetworkPosition
- * 		networkStats: _NetworkStats
+ * 		networkPosition: NetworkPosition
+ * 		networkStats: NetworkStats
  * }>}
  */
 const playerRegistry = new Map();
@@ -51,7 +51,7 @@ const playerRegistry = new Map();
 /**
  * Khởi tạo game, lưu ý nó không giải phóng view, phải thực hiện việc đó bên ngoài
  *
- * @param {_AbstractSocket} socket
+ * @param {AbstractSocket} socket
  * @param {number} mapID
  * @param {{ [socketID: string]: Player }} players
  * @param {true} [sandbox]
@@ -114,7 +114,6 @@ export default function setupBattle(socket, mapID, players, sandbox) {
 
 			logicSysManager.finalize();
 			logicSysManager.initAll();
-
 			console.log(
 				msg('Logic system manager initiated successfully, using system groups:'),
 				logicSysManager.getSystemGroups()

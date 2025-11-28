@@ -109,7 +109,7 @@ export const skills = {
 				type: 'normal',
 				property: 'skill',
 				actions: [
-					{ action: '@do:teleport', range: 160 },
+					{ action: '@do:teleport', range: 180 },
 					{ action: '@do:change-phase', method: 'to-phase:1' },
 				],
 			},
@@ -225,7 +225,7 @@ export const skills = {
 
 				'sprite-key': 's0',
 			},
-			{ action: '@do:change-phase', method: 'to-phase:2', duration: 1.5 },
+			{ action: '@do:change-phase', method: 'to-phase:2', duration: 2 },
 			'implement-later:Lướt',
 		],
 	},

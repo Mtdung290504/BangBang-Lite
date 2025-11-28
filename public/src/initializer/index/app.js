@@ -14,18 +14,10 @@ import * as battleView from '../../UIs/battleUI.js';
 
 // Config & debugs
 import __debugger from '../../../utils/debugger.js';
-__debugger.listen();
+// __debugger.listen();
 
 // Initializer
 import setupBattle from '../battle/setupBattle.js';
-
-// Constants
-import { LOGIC_FPS } from '../../core/managers/system/mgr.game-loop.js';
-
-import PositionComponent from '../../core/components/physics/com.Position.js';
-import SurvivalComponent from '../../core/components/combat/stats/com.Survival.js';
-import AdditionalAttributesComponent from '../../core/components/combat/stats/com.AdditionalAttributes.js';
-import defineSystemFactory from '../../core/factory/factory_builders/defineSystemFactory.new.js';
 
 const DEBUG_MODE = true;
 
@@ -46,11 +38,8 @@ const DEBUG_MODE = true;
  */
 export async function init(roomID, playerName, role) {
 	// Preload phase 1 for lobby
-	const preloadPhase1Result = await preloadPhase1();
-	if (!preloadPhase1Result) {
-		alert('Lỗi khi tải tài nguyên, cần tải lại trang hoặc thử vào lại sau!');
-		return;
-	}
+	const successPreloadPhase1 = await preloadPhase1();
+	if (!successPreloadPhase1) return alert('Lỗi khi tải tài nguyên, cần tải lại trang hoặc thử vào lại sau!');
 
 	// Setup socket & join room
 	const socket = await setupSocket(DEBUG_MODE);
@@ -62,7 +51,8 @@ export async function init(roomID, playerName, role) {
 		roomView.destroy();
 
 		const { playingMapID: mapID, players } = roomHandlers;
-		await preloadPhase2(mapID, Object.values(players));
+		const successPreloadPhase2 = await preloadPhase2(mapID, Object.values(players));
+		if (!successPreloadPhase2) return alert('Lỗi khi tải tài nguyên, cần tải lại trang hoặc thử vào lại sau!');
 
 		console.log('> [App] Setup view and Start battle initializer...');
 		battleView.setup();
@@ -100,6 +90,12 @@ export async function init(roomID, playerName, role) {
 	roomView.setup(roomID, socket);
 }
 
+// Sync stats
+import defineSystemFactory from '../../core/factory/factory_builders/defineSystemFactory.new.js';
+import PositionComponent from '../../core/components/physics/com.Position.js';
+import SurvivalComponent from '../../core/components/combat/stats/com.Survival.js';
+import AdditionalAttributesComponent from '../../core/components/combat/stats/com.AdditionalAttributes.js';
+
 /**
  * @param {Awaited<ReturnType<typeof setupSocket>>} socket
  * @param {ReturnType<typeof setupBattle>} battle
@@ -107,7 +103,7 @@ export async function init(roomID, playerName, role) {
 function setupSyncSystem(socket, battle) {
 	const { context, playerRegistry, logicSysManager } = battle;
 
-	const dispatchSyncPositionStateSystem = defineSystemFactory([], [])
+	const dispatchSyncPositionStateSystem = defineSystemFactory([])
 		.withConfig({ throttleRate: 2 })
 		.withProcessor((_context, _eID, _components, _sysContext) => {
 			/**@type {{[socketID: string]: PositionComponent }} */
@@ -119,8 +115,9 @@ function setupSyncSystem(socket, battle) {
 		})
 		.build()
 		.create(context);
+	logicSysManager.register(dispatchSyncPositionStateSystem);
 
-	const dispatchSyncStatStateSystem = defineSystemFactory([], [])
+	const dispatchSyncStatStateSystem = defineSystemFactory([])
 		.withConfig({ throttleRate: 3 })
 		.withProcessor((_context, _eID, _components, _sysContext) => {
 			/**@type {{[socketID: string]: { currentHP: number, currentEnergy?: number } }} */
@@ -137,8 +134,6 @@ function setupSyncSystem(socket, battle) {
 		})
 		.build()
 		.create(context);
-
-	logicSysManager.register(dispatchSyncPositionStateSystem);
 	logicSysManager.register(dispatchSyncStatStateSystem);
 }
 

@@ -17,5 +17,8 @@ export interface ValueWithUnit {
 
 export type InheritDeclaration<T extends string> = `inherit:${T}`;
 
-/** Đảm bảo T là Record có key và value thỏa mãn K, V */
-export type EnsureRecordType<K extends PropertyKey, V, T extends Record<K, V>> = T;
+/**
+ * Định nghĩa T là Record phải có key thỏa mãn K và value thỏa mãn V
+ * @example type Account = PredefinedKeysRecord<'id' | 'password', string, { id: string, password: string }>
+ */
+export type TypedRecord<K extends PropertyKey, V, T extends Record<K, V>> = T;

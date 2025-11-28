@@ -25,7 +25,8 @@ const DeadHandleSystem = defineSystemFactory([SurvivalComponent])
 			if (additional) additional.currentEnergyPoint = additional.limitEnergyPoint;
 
 			// Đặt lại phase skill về phase gốc
-			context.getComponent(eID, TankActiveSkillsComponent, false)?.resetPhase();
+			// Đang bug do đồng bộ
+			// context.getComponent(eID, TankActiveSkillsComponent, false)?.resetPhase();
 		}
 	})
 	.build();

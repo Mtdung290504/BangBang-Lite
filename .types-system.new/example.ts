@@ -1,8 +1,9 @@
-import { ActionDeclaration, TargetingConfig } from './dsl/combat/action/action.type-component';
+import { ActionType, TargetingConfig } from './dsl/combat/action/action.type-component';
 import { Collidable } from './dsl/physic/collider/collider.type-conponents';
 import { Renderable } from './dsl/combat/visual/visual.type-components';
-import { LimitedRange, StraightMovement } from './dsl/physic/movement/movement.type-components';
+import { Movement } from './dsl/physic/movement/movement.type-components';
 import { PositionConfig } from './dsl/physic/position/position.type-components';
+import { LimitedRange } from './dsl/physic/range/range.type-components';
 
 /**
  * Kỹ năng tạo đạn (projectile)
@@ -10,13 +11,13 @@ import { PositionConfig } from './dsl/physic/position/position.type-components';
  * - Va chạm với địch
  */
 interface CreateProjectileAction
-	extends ActionDeclaration<'create', 'projectile'>,
+	extends ActionType<'create'>,
 		PositionConfig<'self-pos' | 'mouse-pos'>,
 		TargetingConfig<'direction'>,
-		StraightMovement,
 		LimitedRange,
 		Renderable,
-		Collidable {
+		Collidable,
+		Movement {
 	/** Cấu hình đặc biệt cho projectile, cập nhật sau... */
 	'projectile-config'?: {
 		// enhancements: any[];
@@ -30,7 +31,7 @@ interface CreateProjectileAction
  * - Gây damage liên tục cho kẻ địch trong vùng
  */
 interface CreateAreaEffectAction
-	extends ActionDeclaration<'create', 'area-effect'>,
+	extends ActionType<'create'>,
 		PositionConfig<'self-pos' | 'mouse-pos'>,
 		TargetingConfig<'position'>,
 		LimitedRange,
@@ -49,32 +50,28 @@ interface CreateAreaEffectAction
 // Examples
 
 const skill_1: CreateProjectileAction = {
-	action: '@create:projectile',
-	targeting: { mode: 'direction' },
+	action: '@create',
+	targeting: { require: 'direction', strategy: null },
 
 	// Tầm, hướng bay, xuất phát từ đâu
 	'limit-range': 'inherit:fire-range',
-	'straight-movement': {},
+	movement: { type: 'straight', speed: 17.5 },
 	from: 'self-pos',
 
-	collision: {
-		hitbox: { shape: 'circle', size: { radius: 20 } },
-	},
+	collider: { shape: 'circle', size: { radius: 20 } },
+
 	'projectile-config': {
 		'pierce-count': 3,
 	},
 };
 
 const skill_2: CreateAreaEffectAction = {
-	action: '@create:area-effect',
+	action: '@create',
 
 	'limit-range': 528,
-	targeting: {
-		mode: 'position',
-	},
-	collision: {
-		hitbox: { shape: 'circle', size: { radius: 30 } },
-	},
+	targeting: { require: 'position', strategy: null },
+	collider: { shape: 'circle', size: { radius: 30 } },
+
 	from: 'mouse-pos',
 
 	'area-effect-config': {

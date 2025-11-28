@@ -1,42 +1,27 @@
-import { ActionPrefix } from './action.enums';
-import { ActionTargetMap } from './action.types';
+import { ActionPrefix, ActionTargetingRequire, TargetingStrategyMap } from './action.enums';
 
 /** Khai báo action thực hiện */
-export interface ActionDeclaration<Action extends ActionPrefix, Name extends ActionTargetMap[Action]> {
-	/** Format: @{action}:{target} */
-	action: `@${Action}:${Name}`;
+export interface ActionType<Action extends ActionPrefix> {
+	/** Format: `@{action}` */
+	action: `@${Action}`;
 }
 
 /**
  * Cấu hình cách chọn mục tiêu của kỹ năng
  * @template T - Chế độ nhắm mục tiêu
  */
-export interface TargetingConfig<T extends 'self' | 'direction' | 'position' | 'target' | 'auto'> {
+export interface TargetingConfig<T extends ActionTargetingRequire> {
 	targeting: {
 		/**
 		 * Chế độ chọn mục tiêu:
-		 * - `self`: Tác động lên bản thân
-		 * - `direction`: Chọn hướng chuột
-		 * - `position`: Chọn vị trí trên bản đồ
-		 * - `target`: Click chọn mục tiêu cụ thể
-		 * - `auto`: Hệ thống tự chọn theo strategy
+		 * - `none`: Skill có thể dùng từ bản thân mà không yêu cầu gì cả
+		 * - `direction`: Cần chọn hướng chuột
+		 * - `position`: Cần chọn vị trí trên bản đồ
+		 * - `target`: Cần chọn mục tiêu cụ thể
 		 */
-		mode: T;
+		require: T;
 
-		/**
-		 * Chiến lược tự động (chỉ khi mode='auto'):
-		 * - `nearest`: Chọn mục tiêu gần nhất
-		 * - `random`: Chọn ngẫu nhiên trong phạm vi
-		 */
-		strategy?: T extends 'auto'
-			? 'nearest' | 'random'
-			: T extends 'direction'
-			?
-					| {
-							/**Độ lệch so với hướng đã định, nếu không chỉ định, mặc định là 0 */
-							'delta-angle': number;
-					  }
-					| undefined
-			: never;
+		/** Cấu hình bổ sung, tùy vào mode, truy cập sâu vào type để xem chi tiết */
+		strategy: TargetingStrategyMap[T];
 	};
 }

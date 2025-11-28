@@ -1,13 +1,18 @@
-import { ActionPrefix } from './action.enums';
-import { EnsureRecordType } from '../../common.types';
+import { ActionTargetingRequire } from './action.enums';
 
-export type ActionTargetMap = EnsureRecordType<
-	ActionPrefix,
-	string | number,
-	{
-		create: 'projectile' | 'area-effect';
-		do: 'dash' | 'teleport' | 'change-phase';
-		apply: 'damage';
-		hahahaha: '';
-	}
->;
+export interface BaseTargetingMethod<Name extends ActionTargetingRequire> {
+	mode: Name;
+	strategy?: unknown;
+}
+
+export interface DirectionTargeting extends BaseTargetingMethod<'direction'> {
+	/**
+	 * Mặc định nếu không khai báo: { 'delta-angle': 0 }
+	 * @override
+	 */
+	strategy?: { 'delta-angle': number };
+}
+
+export interface LockTargeting extends BaseTargetingMethod<'target'> {
+	strategy: '';
+}

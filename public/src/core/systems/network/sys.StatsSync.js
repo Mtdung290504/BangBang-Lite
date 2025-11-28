@@ -22,24 +22,25 @@ const TankStatsSyncSystem = defineSystemFactory([TankComponent])
 		// Replay: Cộng tất cả delta HP sau timestamp sync
 		if (currentHP !== null) {
 			const survival = context.getComponent(eID, SurvivalComponent);
-			if (survival.currentHP !== netStat.currentHP) {
-				if (DEBUG_MODE) console.group('Sync-HP');
-				let currentDelta;
-				let historyDeltaHP = 0;
+			// Note: Đang có vấn đề khi đồng bộ HP, tạm thời bỏ kiểm tra khác biệt,
+			// Thực chất kiểm tra này vô lý, giả sử có giống thì cũng nên thử cộng delta
+			// if (survival.currentHP !== netStat.currentHP) {
+			if (DEBUG_MODE) console.group('Sync-HP');
+			let currentDelta;
+			let historyDeltaHP = 0;
 
-				while ((currentDelta = history.deltaHPs.pop())) {
-					if (currentDelta.timestamp > netStat.timestamp) {
-						if (DEBUG_MODE) console.log('Sub delta history:', currentDelta);
-						historyDeltaHP += currentDelta.deltaHP;
-					}
+			while ((currentDelta = history.deltaHPs.pop()))
+				if (currentDelta.timestamp > netStat.timestamp) {
+					if (DEBUG_MODE) console.log('Sub delta history:', currentDelta);
+					historyDeltaHP += currentDelta.deltaHP;
 				}
 
-				const syncHP = currentHP + historyDeltaHP;
-				if (historyDeltaHP !== 0 && DEBUG_MODE)
-					console.log(`Current-HP:${survival.currentHP} Sync-HP:${syncHP} History-Delta:${historyDeltaHP}`);
-				survival.setCurrentHP(syncHP);
-				if (DEBUG_MODE) console.groupEnd();
-			}
+			const syncHP = currentHP + historyDeltaHP;
+			if (historyDeltaHP !== 0 && DEBUG_MODE)
+				console.log(`Current-HP:${survival.currentHP} Sync-HP:${syncHP} History-Delta:${historyDeltaHP}`);
+			survival.setCurrentHP(syncHP);
+			if (DEBUG_MODE) console.groupEnd();
+			// }
 		}
 
 		// if (Date.now() - timestamp <= (3 * 1000) / 60) {

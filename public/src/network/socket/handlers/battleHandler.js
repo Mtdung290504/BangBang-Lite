@@ -92,11 +92,16 @@ export function setup(socket, playerRegistry) {
 				continue;
 			}
 
-			const { timestamp: netPosTimestamp } = playerState.networkPosition;
-			if (netPosTimestamp !== null) continue;
+			// const { timestamp: netPosTimestamp } = playerState.networkPosition;
+			// if (netPosTimestamp !== null) continue;
 
+			// const { x, y } = positionStates[socketID];
+			// playerState.networkPosition.setNetworkPosition(x, y, timestamp);
+
+			// Try to fix problem 1 in bug-queue.md
 			const { x, y } = positionStates[socketID];
 			playerState.networkPosition.setNetworkPosition(x, y, timestamp);
+			playerState.networkPosition.resetTarget();
 		}
 	}
 
@@ -121,8 +126,13 @@ export function setup(socket, playerRegistry) {
 
 			const { networkStats } = playerState;
 			const { currentHP, currentEnergy } = statStates[socketID];
-			if (networkStats.timestamp !== null) continue;
+			// if (networkStats.timestamp !== null) continue;
 
+			// networkStats.timestamp = timestamp;
+			// networkStats.currentHP = currentHP;
+			// if (currentEnergy) networkStats.currentEnergy = currentEnergy;
+
+			// Try to fix problem 1 in bug-queue.md
 			networkStats.timestamp = timestamp;
 			networkStats.currentHP = currentHP;
 			if (currentEnergy) networkStats.currentEnergy = currentEnergy;

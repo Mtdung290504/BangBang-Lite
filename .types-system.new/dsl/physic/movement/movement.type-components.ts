@@ -1,13 +1,30 @@
-import { RangeInheritAttribute } from './movement.enums';
+import { TestKey } from '../../common.enums';
+import { FlightSpeedEnum, MovementSpeedEnum } from './movement.enums';
 
-export interface StraightMovement {
-	'straight-movement': {
-		/** Tốc độ bay (pixels/second), mặc định kế thừa từ tốc độ đạn bay của tank */
-		speed?: number;
-	};
+// 1. Define base movement types
+type MovementType = 'straight' | TestKey;
+
+interface BaseMovement<T extends MovementType> {
+	type: T;
 }
 
-/** Tính chất có giới hạn phạm vi */
-export interface LimitedRange {
-	'limit-range': number | RangeInheritAttribute;
+// 2. Specific movement configs
+interface StraightMovement extends BaseMovement<'straight'> {
+	speed: FlightSpeedEnum | MovementSpeedEnum;
 }
+
+interface TestMovement extends BaseMovement<'*for-test:do-not-use-this-key'> {
+	speed: FlightSpeedEnum | MovementSpeedEnum;
+}
+
+// 3. Union type
+export interface Movement {
+	movement: StraightMovement | TestMovement;
+}
+
+// 4. Skill interface
+// interface CreateProjectileAction
+//   extends ActionDeclaration<'create', 'projectile'>,
+//           ... {
+//   movement: Movement;  // ← Single field, nhiều options
+// }
