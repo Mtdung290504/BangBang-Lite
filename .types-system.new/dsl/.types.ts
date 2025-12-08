@@ -22,3 +22,8 @@ export type InheritDeclaration<T extends string> = `inherit:${T}`;
  * @example type Account = PredefinedKeysRecord<'id' | 'password', string, { id: string, password: string }>
  */
 export type TypedRecord<K extends PropertyKey, V, T extends Record<K, V>> = T;
+
+/** Chuyển object thành Partial kể cả các object lồng */
+export type DeepPartial<T> = T extends any[] ? T : T extends object ? { [K in keyof T]?: DeepPartial<T[K]> } : T;
+
+export type KeyOfMany<T extends readonly object[]> = keyof T[number];

@@ -1,9 +1,3 @@
-/** Thuộc tính tank - Vật lý hay năng lượng */
-export type TankDamageType = 'physical' | 'energy';
-
-/** Loại sát thương tạo ra - Vật lý, năng lượng hoặc chuẩn */
-export type DamageType = 'true' | TankDamageType;
-
 /**
  * Đại diện cho phe (faction) của một entity trong game.
  * Dùng để xác định quan hệ giữa caster và target trong các hành động (action) hoặc hiệu ứng (effect).

@@ -1,4 +1,4 @@
-import { TestKey } from '../../common.enums';
+import { TestKey } from '../.enums';
 import { FlightSpeedEnum, MovementSpeedEnum } from './movement.enums';
 
 // 1. Define base movement types
@@ -13,12 +13,12 @@ interface StraightMovement extends BaseMovement<'straight'> {
 	speed: FlightSpeedEnum | MovementSpeedEnum;
 }
 
-interface TestMovement extends BaseMovement<'*for-test:do-not-use-this-key'> {
+interface TestMovement extends BaseMovement<TestKey> {
 	speed: FlightSpeedEnum | MovementSpeedEnum;
 }
 
 // 3. Union type
-export interface Movement {
+export interface Movable {
 	movement: StraightMovement | TestMovement;
 }
 

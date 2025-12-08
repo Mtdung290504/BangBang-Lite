@@ -1,23 +1,23 @@
-import { ActionType, TargetingConfig } from './dsl/combat/action/action.type-component';
-import { Collidable } from './dsl/physic/collider/collider.type-conponents';
-import { Renderable } from './dsl/combat/visual/visual.type-components';
-import { Movement } from './dsl/physic/movement/movement.type-components';
-import { PositionConfig } from './dsl/physic/position/position.type-components';
-import { LimitedRange } from './dsl/physic/range/range.type-components';
+import { ActionType, TargetingConfig } from './combat/action.type-components';
+import { Collidable } from './physic/collider.type-conponents';
+import { Renderable } from './combat/visual.type-components';
+import { Movable } from './physic/movement.type-components';
+import { RequireInitPositionMethod } from './physic/position.type-components';
+import { LimitedDistance } from './physic/range.type-components';
 
 /**
  * Kỹ năng tạo đạn (projectile)
  * - Bay theo hướng với tốc độ và tầm bay xác định
  * - Va chạm với địch
  */
-interface CreateProjectileAction
+interface CreateProjectile
 	extends ActionType<'create'>,
-		PositionConfig<'self-pos' | 'mouse-pos'>,
+		RequireInitPositionMethod<'self-pos' | 'mouse-pos'>,
 		TargetingConfig<'direction'>,
-		LimitedRange,
+		LimitedDistance,
 		Renderable,
 		Collidable,
-		Movement {
+		Movable {
 	/** Cấu hình đặc biệt cho projectile, cập nhật sau... */
 	'projectile-config'?: {
 		// enhancements: any[];
@@ -30,11 +30,11 @@ interface CreateProjectileAction
  * - Tồn tại một khoảng thời gian
  * - Gây damage liên tục cho kẻ địch trong vùng
  */
-interface CreateAreaEffectAction
+interface CreateAreaEffect
 	extends ActionType<'create'>,
-		PositionConfig<'self-pos' | 'mouse-pos'>,
+		RequireInitPositionMethod<'self-pos' | 'mouse-pos'>,
 		TargetingConfig<'position'>,
-		LimitedRange,
+		LimitedDistance,
 		Renderable,
 		Collidable {
 	/** Cấu hình đặc biệt cho area effect */
@@ -49,7 +49,7 @@ interface CreateAreaEffectAction
 
 // Examples
 
-const skill_1: CreateProjectileAction = {
+const skill_1: CreateProjectile = {
 	action: '@create',
 	targeting: { require: 'direction', strategy: null },
 
@@ -65,7 +65,7 @@ const skill_1: CreateProjectileAction = {
 	},
 };
 
-const skill_2: CreateAreaEffectAction = {
+const skill_2: CreateAreaEffect = {
 	action: '@create',
 
 	'limit-range': 528,

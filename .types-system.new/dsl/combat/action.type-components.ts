@@ -1,6 +1,11 @@
 import { ActionPrefix, ActionTargetingRequire, TargetingStrategyMap } from './action.enums';
 
-/** Khai báo action thực hiện */
+/**
+ * Khai báo action mà system cần thực hiện, chẳng hạn như:
+ * - Gắn component vào mục tiêu nào đó (tạo effect/gây damage/...)
+ * - Tạo ra entity mới (tạo đạn/area-damage/...)
+ * - Hay hành vi đặc thù gì đó (lướt/nhảy/... dự phòng vì chưa biết tạo entity mới hay gắn component)
+ */
 export interface ActionType<Action extends ActionPrefix> {
 	/** Format: `@{action}` */
 	action: `@${Action}`;
