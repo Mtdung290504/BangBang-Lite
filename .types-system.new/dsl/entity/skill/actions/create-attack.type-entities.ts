@@ -1,5 +1,5 @@
 import { ActionType, TargetingConfig } from '../../../combat/action.type-components';
-import { Impactable } from '../../../combat/state.type-components';
+import { IgnoreArchitecture, Impactable } from '../../../combat/state.type-components';
 import { Renderable } from '../../../combat/visual.type-components';
 import { Collidable } from '../../../physic/collider.type-conponents';
 import { Movable } from '../../../physic/movement.type-components';
@@ -8,30 +8,41 @@ import { LimitedDistance } from '../../../physic/range.type-components';
 
 import { SkillCastAction, SkillHitAction } from './.type-pack';
 
-/** Kỹ năng tạo đạn (projectile) */
-export interface CreateProjectile
-	extends ActionType<'create'>,
-		RequireInitPositionMethod<'self-pos' | 'mouse-pos'>,
+export interface CreateImpactor
+	extends ActionType<'create-entity'>,
 		TargetingConfig<'direction'>,
+		RequireInitPositionMethod,
 		LimitedDistance,
 		Renderable,
-		Collidable,
 		Impactable<SkillHitAction, SkillCastAction>,
+		IgnoreArchitecture,
+		Collidable,
 		Movable {}
 
 // Example
-const skill_1: CreateProjectile = {
-	action: '@create',
+const skill_1: CreateImpactor = {
+	action: '@create-entity',
 	targeting: { require: 'direction', strategy: null },
 
 	// Tầm, hướng bay, xuất phát từ đâu
-	'limit-range': 'inherit:fire-range',
-	movement: { type: 'straight', speed: 17.5 },
+	'limit-range': { value: 'inherit:fire-range' },
+	movement: { 'move-type': 'straight', speed: 17.5 },
 	from: 'self-pos',
 
 	collider: { shape: 'circle', size: { radius: 20 } },
-	'dispose-on-impact': true,
+	'break-on-impact': true,
 
 	visual: { sprite: { key: 'normal-attack' } },
-	'on-impact': [{ 'target-effect': { action: '@apply:modify-energy', value: {} } }],
+	'on-impact': [
+		{
+			'target-effect': {
+				action: '@apply-effect:modify-stat',
+				'value-from': {
+					attribute: 'lost-energy-point',
+					of: 'self',
+					value: { amount: 10, unit: '%' },
+				},
+			},
+		},
+	],
 };

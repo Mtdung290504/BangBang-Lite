@@ -6,9 +6,9 @@ import { ActionPrefix, ActionTargetingRequire, TargetingStrategyMap } from './ac
  * - Tạo ra entity mới (tạo đạn/area-damage/...)
  * - Hay hành vi đặc thù gì đó (lướt/nhảy/... dự phòng vì chưa biết tạo entity mới hay gắn component)
  */
-export interface ActionType<Action extends ActionPrefix> {
+export interface ActionType<Action extends ActionPrefix, Type extends string = ''> {
 	/** Format: `@{action}` */
-	action: `@${Action}`;
+	action: `@${Action}${Type extends '' ? '' : `:${Type}`}`;
 }
 
 /**

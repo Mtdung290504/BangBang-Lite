@@ -2,10 +2,21 @@
 type ValueUnit = 'unit' | '%';
 
 /**
+ * Giá trị có thể được tính toán từ charge-time
+ */
+export interface ChargeScalableValue {
+	/**
+	 * Hệ số nhân với charge-time (giây)
+	 * Final = base + (charge-time * 'per-second')
+	 */
+	'charge-multiply'?: number;
+}
+
+/**
  * - Generic interface cho giá trị có đơn vị đo
  * - Có thể dùng cho: skill consumption, damage, healing, shield,...
  */
-export interface ValueWithUnit {
+export interface ValueWithUnit extends ChargeScalableValue {
 	amount: number;
 
 	/**

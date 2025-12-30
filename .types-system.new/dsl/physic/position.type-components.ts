@@ -1,5 +1,5 @@
 import { PositionDeclaration } from './position.enums';
 
-export interface RequireInitPositionMethod<T extends PositionDeclaration> {
+export interface RequireInitPositionMethod<T extends PositionDeclaration = PositionDeclaration> {
 	from: T;
 }

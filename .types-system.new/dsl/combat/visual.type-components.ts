@@ -11,3 +11,12 @@ export interface Renderable {
 		rotate?: number;
 	};
 }
+
+export interface TextVisual {
+	/**
+	 * Quyết định hiển thị số bay lên thẳng hay chéo.
+	 * Công thức tính góc dự kiến: 90 + `text-delta-angle` * 15
+	 * Mặc định: `0` (bay thẳng lên: 90 + 0 * 15)
+	 */
+	'text-delta-angle'?: -1 | 0 | 1;
+}

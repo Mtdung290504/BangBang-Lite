@@ -1,8 +1,13 @@
 import { ValueWithUnit } from '../.types';
-import { BonusStatStateEnum } from '../entity/tank/.enums';
-import { AdditionalStats, AttackPowerStats, ShootingStats, SurvivalStats } from '../entity/tank/.types';
+import { TankStatValueKey } from '../entity/tank/.enums';
 
-export interface ModifyStat {
-	stat: keyof (ShootingStats & SurvivalStats & AttackPowerStats & AdditionalStats) | BonusStatStateEnum;
-	value: ValueWithUnit;
+export interface StatValue<T extends TankStatValueKey = TankStatValueKey> {
+	'value-from': {
+		attribute: T;
+
+		/** Mặc định: `target` */
+		of?: 'self' | 'target';
+
+		value: ValueWithUnit;
+	};
 }

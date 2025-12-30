@@ -55,7 +55,7 @@ const skill_1: CreateProjectile = {
 
 	// Tầm, hướng bay, xuất phát từ đâu
 	'limit-range': 'inherit:fire-range',
-	movement: { type: 'straight', speed: 17.5 },
+	movement: { 'move-type': 'straight', speed: 17.5 },
 	from: 'self-pos',
 
 	collider: { shape: 'circle', size: { radius: 20 } },
