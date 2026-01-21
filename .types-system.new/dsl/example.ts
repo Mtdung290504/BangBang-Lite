@@ -11,7 +11,7 @@ import { LimitedDistance } from './physic/range.type-components';
  * - Va chạm với địch
  */
 interface CreateProjectile
-	extends ActionType<'create'>,
+	extends ActionType<'create-entity'>,
 		RequireInitPositionMethod<'self-pos' | 'mouse-pos'>,
 		TargetingConfig<'direction'>,
 		LimitedDistance,
@@ -31,7 +31,7 @@ interface CreateProjectile
  * - Gây damage liên tục cho kẻ địch trong vùng
  */
 interface CreateAreaEffect
-	extends ActionType<'create'>,
+	extends ActionType<'create-entity'>,
 		RequireInitPositionMethod<'self-pos' | 'mouse-pos'>,
 		TargetingConfig<'position'>,
 		LimitedDistance,
@@ -50,15 +50,15 @@ interface CreateAreaEffect
 // Examples
 
 const skill_1: CreateProjectile = {
-	action: '@create',
+	action: '@create-entity',
 	targeting: { require: 'direction', strategy: null },
 
 	// Tầm, hướng bay, xuất phát từ đâu
-	'limit-range': 'inherit:fire-range',
+	'limit-range': { amount: 100, unit: '%' },
 	movement: { 'move-type': 'straight', speed: 17.5 },
 	from: 'self-pos',
 
-	collider: { shape: 'circle', size: { radius: 20 } },
+	collider: { shape: { type: 'circle', size: { radius: 20 } } },
 
 	'projectile-config': {
 		'pierce-count': 3,
@@ -66,11 +66,11 @@ const skill_1: CreateProjectile = {
 };
 
 const skill_2: CreateAreaEffect = {
-	action: '@create',
+	action: '@create-entity',
 
-	'limit-range': 528,
+	'limit-range': { amount: 528 },
 	targeting: { require: 'position', strategy: null },
-	collider: { shape: 'circle', size: { radius: 30 } },
+	collider: { shape: { type: 'circle', size: { radius: 30 } } },
 
 	from: 'mouse-pos',
 

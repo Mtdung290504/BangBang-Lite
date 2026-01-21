@@ -16,12 +16,13 @@ export interface ChargeScalableValue {
  * - Generic interface cho giá trị có đơn vị đo
  * - Có thể dùng cho: skill consumption, damage, healing, shield,...
  */
-export interface ValueWithUnit extends ChargeScalableValue {
-	amount: number;
+export interface ValueWithUnit<Amount extends number = number> extends ChargeScalableValue {
+	amount: Amount;
 
 	/**
 	 * Default: `unit`
-	 * (Dùng unit khi muốn sử dụng đơn vị mặc định của ngữ cảnh, ví dụ điểm với năng lượng, giây với thời gian CD)
+	 * - `unit`: Sử dụng đơn vị mặc định của ngữ cảnh, ví dụ điểm với năng lượng/phạm vi/..., giây với thời gian CD
+	 * - `%`: Lấy giá trị `amount%` của thông số nào đó, thường dùng trong gây damage, hồi HP,...
 	 */
 	unit?: ValueUnit;
 }

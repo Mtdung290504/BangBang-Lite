@@ -1,7 +1,7 @@
 type ShapeName = 'rectangle' | 'circle';
 
 interface Shape<Name extends ShapeName> {
-	shape: Name;
+	type: Name;
 	size: Record<string, number>;
 }
 

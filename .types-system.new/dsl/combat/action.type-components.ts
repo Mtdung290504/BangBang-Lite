@@ -1,4 +1,5 @@
-import { ActionPrefix, ActionTargetingRequire, TargetingStrategyMap } from './action.enums';
+import { ActionPrefix, ActionTargetingRequire } from './action.enums';
+import { TargetingStrategyMap } from './action.types';
 
 /**
  * Khai báo action mà system cần thực hiện, chẳng hạn như:
@@ -15,7 +16,7 @@ export interface ActionType<Action extends ActionPrefix, Type extends string = '
  * Cấu hình cách chọn mục tiêu của kỹ năng
  * @template T - Chế độ nhắm mục tiêu
  */
-export interface TargetingConfig<T extends ActionTargetingRequire> {
+export interface TargetingConfig<T extends ActionTargetingRequire = ActionTargetingRequire> {
 	targeting: {
 		/**
 		 * Chế độ chọn mục tiêu:
@@ -27,6 +28,6 @@ export interface TargetingConfig<T extends ActionTargetingRequire> {
 		require: T;
 
 		/** Cấu hình bổ sung, tùy vào mode, truy cập sâu vào type để xem chi tiết */
-		strategy: TargetingStrategyMap[T];
+		strategy?: TargetingStrategyMap[T];
 	};
 }

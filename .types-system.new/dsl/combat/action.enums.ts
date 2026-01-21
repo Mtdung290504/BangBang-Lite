@@ -20,36 +20,4 @@ export type ActionPrefix = 'create-entity' | 'do-action' | 'apply-effect';
  */
 export type ActionTargetingRequire = 'none' | 'direction' | 'position' | 'target';
 
-/**
- * Map ActionTargetingRequire đến cấu hình chiến thuật phù hợp
- */
-export type TargetingStrategyMap = TypedRecord<
-	ActionTargetingRequire,
-	any,
-	{
-		/** Nếu không có, mặc định là 0 */
-		direction: {
-			/** Góc delta (đơn vị: deg) được cộng vào hướng đã chọn */
-			'delta-angle': number | RandomDefinition;
-		} | null;
-
-		/** Nếu không chỉ định chiến thuật này, mặc định đơn mục tiêu, chọn bằng trỏ chuột */
-		target: {
-			/**
-			 * - `lock`: Lấy (các) mục tiêu trong phạm vi bán kính 25px quanh trỏ chuột
-			 * - `nearest`: Lấy (các) mục tiêu gần nhất
-			 * - `random`: Lấy (các) mục tiêu ngẫu nhiên
-			 * - `weakest`: Lấy (các) mục tiêu thấp máu nhất
-			 *
-			 * **Mặc định**: `lock`
-			 */
-			method?: 'lock' | 'nearest' | 'weakest' | RandomDefinition;
-
-			/** Quy định số mục tiêu tối đa bị khóa, mặc định: 1 */
-			'limit-target'?: boolean;
-		} | null;
-
-		none: null;
-		position: null;
-	}
->;
+export type LockMethod = 'active-lock' | 'nearest' | 'weakest' | RandomDefinition;

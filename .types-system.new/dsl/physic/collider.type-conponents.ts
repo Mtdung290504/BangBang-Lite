@@ -1,3 +1,4 @@
+import { PierceableTarget } from './collider.enums';
 import { ColliderDeclaration } from './collider.type';
 
 /**
@@ -5,5 +6,10 @@ import { ColliderDeclaration } from './collider.type';
  */
 export interface Collidable {
 	/** Vùng va chạm để phát hiện đánh trúng */
-	collider: ColliderDeclaration;
+	collider: {
+		shape: ColliderDeclaration;
+
+		/** Khai báo các rule xuyên thấu (nếu cần) */
+		pierce?: Partial<Record<PierceableTarget, boolean>>;
+	};
 }

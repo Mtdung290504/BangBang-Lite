@@ -1,15 +1,19 @@
 import { SpriteDeclaration } from './visual.types';
 
-/** Component visual - Render sprite */
+export interface VisualManifest {
+	/**Khai báo sprite */
+	sprite: SpriteDeclaration;
+
+	/**Góc xoay hình (degrees) mặc định là 0 */
+	rotate?: number;
+
+	/**Thời gian tồn tại effect, mặc định: 0 - Tức hiệu ứng sẽ biến mất ngay khi entity biến mất */
+	duration?: number;
+}
+
 export interface Renderable {
 	/**Không khai báo = invisible (dùng cho skill ẩn hoặc chỉ logic) */
-	visual?: {
-		/**Khai báo sprite */
-		sprite: SpriteDeclaration;
-
-		/**Góc xoay hình (degrees) mặc định là 0 */
-		rotate?: number;
-	};
+	visual?: VisualManifest;
 }
 
 export interface TextVisual {

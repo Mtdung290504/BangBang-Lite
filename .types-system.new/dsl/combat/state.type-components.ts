@@ -1,4 +1,5 @@
 import { Faction } from './.enums';
+import { Renderable } from './visual.type-components';
 
 export interface LimitedDuration {
 	/** Thời gian kéo dài, mặc định: `Infinity` */
@@ -6,25 +7,22 @@ export interface LimitedDuration {
 }
 
 export interface Impactable<TargetHandler extends object, SelfHandler extends object> {
-	/** Skill entity có biến mất khi trúng mục tiêu hay không (mặc định: `true`) */
-	'break-on-impact'?: boolean;
+	'on-impact': {
+		/** Skill entity có biến mất khi trúng mục tiêu hay không (mặc định: `true`) */
+		// dispose?: boolean;
 
-	'on-impact': ({
-		/** Mặc định: `enemy` */
-		'affected-faction'?: Faction;
-	} & (
-		| {
-				'target-effect': TargetHandler;
-				'self-action'?: SelfHandler;
-		  }
-		| {
-				'target-effect'?: TargetHandler;
-				'self-action': SelfHandler;
-		  }
-	))[];
-}
-
-export interface IgnoreArchitecture {
-	/** Mặc định: false */
-	'ignore-architecture'?: boolean;
+		actions: ({
+			/** Mặc định: `enemy` */
+			'affected-faction'?: Faction;
+		} & (
+			| {
+					'target-effect': TargetHandler;
+					'self-action'?: SelfHandler;
+			  }
+			| {
+					'target-effect'?: TargetHandler;
+					'self-action': SelfHandler;
+			  }
+		))[];
+	} & Renderable; // Hiệu ứng khi va chạm
 }
