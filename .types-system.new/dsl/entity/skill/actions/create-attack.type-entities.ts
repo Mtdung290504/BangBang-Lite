@@ -30,30 +30,24 @@ const skill_1: CreateNonContextImpactor = {
 	targeting: { require: 'direction' },
 
 	// Tầm, hướng bay, xuất phát từ đâu
-	'limit-range': { amount: 100, unit: '%' },
+	'limit-range': '100%',
 	movement: { 'move-type': 'straight', speed: 17.5 },
 	from: 'self-pos',
 
 	collider: {
 		shape: { type: 'circle', size: { radius: 20 } },
-		pierce: { architecture: true },
+		pierce: ['architecture'],
 	},
 
-	visual: {
-		sprite: { key: 'normal-attack' },
-	},
+	visual: { sprite: { key: 'normal-attack' } },
 
-	'on-impact': {
+	impact: {
 		// dispose: true,
 		actions: [
 			{
 				'target-effect': {
 					action: '@apply-effect:modify-stat',
-					'value-from': {
-						attribute: 'lost-energy-point',
-						of: 'self',
-						value: { amount: 10, unit: '%' },
-					},
+					'value-from': { attribute: 'lost-energy-point', of: 'self', value: '10%' },
 				},
 			},
 		],

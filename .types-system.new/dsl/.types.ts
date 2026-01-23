@@ -1,31 +1,20 @@
 /** Unit đo lường chung cho các giá trị */
-type ValueUnit = 'unit' | '%';
-
-/**
- * Giá trị có thể được tính toán từ charge-time
- */
-export interface ChargeScalableValue {
-	/**
-	 * Hệ số nhân với charge-time (giây)
-	 * Final = base + (charge-time * 'per-second')
-	 */
-	'charge-multiply'?: number;
-}
+export type ValueUnit = 'u' | '%';
 
 /**
  * - Generic interface cho giá trị có đơn vị đo
  * - Có thể dùng cho: skill consumption, damage, healing, shield,...
+ *
+ * Ví dụ:
+ * - Amount không charge scalable: `100%` hay `25u` (với u viết tắt cho unit)
+ * - Amount charge scalable: `100% *0.5` hay `25u *1`
+ * 	- Sau dấu * là hệ số nhân với charge time hoặc có thể xem là `mức tăng/s`
+ * 	- Ví dụ `100% *0.5` và thời gian charge là `3s` thì Value = 100% * (1 + 0.5 * 3) = 250% (*Cộng thêm 1 để 0s charge không bị 0 value*)
  */
-export interface ValueWithUnit<Amount extends number = number> extends ChargeScalableValue {
-	amount: Amount;
-
-	/**
-	 * Default: `unit`
-	 * - `unit`: Sử dụng đơn vị mặc định của ngữ cảnh, ví dụ điểm với năng lượng/phạm vi/..., giây với thời gian CD
-	 * - `%`: Lấy giá trị `amount%` của thông số nào đó, thường dùng trong gây damage, hồi HP,...
-	 */
-	unit?: ValueUnit;
-}
+export type ValueWithUnit<
+	ChargeScalable extends boolean = false,
+	Amount extends number = number,
+> = `${Amount}${ValueUnit}${ChargeScalable extends true ? ` ${'+' | '-'}*${number}/s` | '' : ''}`;
 
 export type InheritDeclaration<T extends string> = `inherit:${T}`;
 
@@ -37,5 +26,3 @@ export type TypedRecord<K extends PropertyKey, V, T extends Record<K, V>> = T;
 
 /** Chuyển object thành Partial kể cả các object lồng */
 export type DeepPartial<T> = T extends any[] ? T : T extends object ? { [K in keyof T]?: DeepPartial<T[K]> } : T;
-
-export type KeyOfMany<T extends readonly object[]> = keyof T[number];

@@ -7,9 +7,13 @@ export interface LimitedDuration {
 }
 
 export interface Impactable<TargetHandler extends object, SelfHandler extends object> {
-	'on-impact': {
-		/** Skill entity có biến mất khi trúng mục tiêu hay không (mặc định: `true`) */
-		// dispose?: boolean;
+	impact: {
+		/**
+		 * Impact diễn ra nhiều lần theo interval, đơn vị: giây
+		 * - Nếu khai báo, skill impact nhiều lần theo interval đó
+		 * - Nếu không khai báo thì chỉ impact 1 lần
+		 */
+		interval?: number;
 
 		actions: ({
 			/** Mặc định: `enemy` */

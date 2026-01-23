@@ -10,6 +10,6 @@ export interface Collidable {
 		shape: ColliderDeclaration;
 
 		/** Khai báo các rule xuyên thấu (nếu cần) */
-		pierce?: Partial<Record<PierceableTarget, boolean>>;
+		pierce?: PierceableTarget[] | 'all';
 	};
 }
