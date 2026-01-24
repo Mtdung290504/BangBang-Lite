@@ -14,4 +14,5 @@ export type EnergyAmountEnum = 100 | 150 | 200;
 
 export type TankStatValueKey =
 	| keyof (ShootingStats & SurvivalStats & Omit<AttackPowerStats, 'damage-type'> & AdditionalStats)
-	| BonusStatStateEnum;
+	| BonusStatStateEnum
+	| 'movement-speed';

@@ -16,16 +16,16 @@ export interface Impactable<TargetHandler extends object, SelfHandler extends ob
 		interval?: number;
 
 		actions: ({
-			/** Mặc định: `enemy` */
-			'affected-faction'?: Faction;
+			/** Mặc định: `['enemy', 'neutral']` */
+			'affected-faction'?: Faction[];
 		} & (
 			| {
-					'target-effect': TargetHandler;
-					'self-action'?: SelfHandler;
+					'target-effect': TargetHandler[];
+					'self-action'?: SelfHandler[];
 			  }
 			| {
-					'target-effect'?: TargetHandler;
-					'self-action': SelfHandler;
+					'target-effect'?: TargetHandler[];
+					'self-action': SelfHandler[];
 			  }
 		))[];
 	} & Renderable; // Hiệu ứng khi va chạm

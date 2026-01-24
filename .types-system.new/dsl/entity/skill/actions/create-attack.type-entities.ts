@@ -11,7 +11,7 @@ import { SkillCastAction, SkillHitAction } from './.types';
 
 interface CreateImpactor
 	extends
-		Impactable<SkillHitAction, SkillCastAction>,
+		Impactable<SkillHitAction, SkillCastAction | SkillHitAction>,
 		ActionType<'create-entity'>,
 		TargetingConfig,
 		LimitedDistance,
@@ -23,34 +23,3 @@ export interface CreateNonContextImpactor
 	extends CreateImpactor, RequireInitPositionMethod<'mouse-pos' | 'self-pos' | 'target-pos'> {}
 
 export interface CreateContextImpactor extends CreateImpactor, RequireInitPositionMethod {}
-
-// Example
-const skill_1: CreateNonContextImpactor = {
-	action: '@create-entity',
-	targeting: { require: 'direction' },
-
-	// Tầm, hướng bay, xuất phát từ đâu
-	'limit-range': '100%',
-	movement: { 'move-type': 'straight', speed: 17.5 },
-	from: 'self-pos',
-
-	collider: {
-		shape: { type: 'circle', size: { radius: 20 } },
-		pierce: ['architecture'],
-	},
-
-	visual: { sprite: { key: 'normal-attack' } },
-
-	impact: {
-		// dispose: true,
-		actions: [
-			{
-				'target-effect': {
-					action: '@apply-effect:modify-stat',
-					'value-from': { attribute: 'lost-energy-point', of: 'self', value: '10%' },
-				},
-			},
-		],
-		visual: { sprite: { key: 'normal-attack-impact' } },
-	},
-};
