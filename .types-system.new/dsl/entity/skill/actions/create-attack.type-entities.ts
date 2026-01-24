@@ -7,7 +7,7 @@ import { RequireInitPositionMethod } from '../../../physic/position.type-compone
 import { LimitedDistance } from '../../../physic/range.type-components';
 
 // Cicular depend
-import { SkillCastAction, SkillHitAction } from './.type-pack';
+import { SkillCastAction, SkillHitAction } from './.types';
 
 interface CreateImpactor
 	extends
