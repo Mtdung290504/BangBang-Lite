@@ -1,6 +1,10 @@
 /**
+ * @typedef {import('../../.types-system.new/dsl/.types').ValueUnit} ValueUnit
+ */
+
+/**
  * @param {string} valueWithUnit
- * @returns {{ value: number, unit: import('../dsl/.types').ValueUnit, scaleRate: number}}
+ * @returns {{ value: number, unit: ValueUnit, scaleRate: number}}
  */
 function parseValueWithUnit(valueWithUnit) {
 	const splitIndex = valueWithUnit.indexOf('+*');
@@ -9,7 +13,9 @@ function parseValueWithUnit(valueWithUnit) {
 	const valueUnitPart = splitIndex === -1 ? valueWithUnit : valueWithUnit.substring(0, splitIndex);
 	const unitIndex = valueUnitPart.indexOf('u');
 
-	let unit, value;
+	/**@type {ValueUnit} */
+	let unit;
+	let value;
 	if (unitIndex !== -1) {
 		unit = 'u';
 		value = parseFloat(valueUnitPart);
@@ -20,17 +26,13 @@ function parseValueWithUnit(valueWithUnit) {
 		value = parseFloat(valueUnitPart);
 	}
 
-	if (isNaN(value)) {
-		throw new Error(`Invalid value: "${valueWithUnit}"`);
-	}
+	if (isNaN(value)) throw new Error(`Invalid value: "${valueWithUnit}"`);
 
 	// Parse scale rate (default 0 nếu không có)
 	let scaleRate = 0;
 	if (splitIndex !== -1) {
 		scaleRate = parseFloat(valueWithUnit.substring(splitIndex + 2));
-		if (isNaN(scaleRate)) {
-			throw new Error(`Invalid scale rate: "${valueWithUnit}"`);
-		}
+		if (isNaN(scaleRate)) throw new Error(`Invalid scale rate: "${valueWithUnit}"`);
 	}
 
 	return { value, unit, scaleRate };

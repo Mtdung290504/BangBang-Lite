@@ -1,5 +1,4 @@
 import { RandomDefinition } from '../.enums';
-import { TypedRecord } from '../.types';
 
 /**
  * Các action prefix:

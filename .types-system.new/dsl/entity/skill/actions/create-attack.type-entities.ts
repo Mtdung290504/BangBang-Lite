@@ -1,4 +1,5 @@
 import { ActionType, TargetingConfig } from '../../../combat/action.type-components';
+import { Bounceable, Pursuitable } from '../../../combat/props.type-components';
 import { Impactable } from '../../../combat/state.type-components';
 import { Renderable } from '../../../combat/visual.type-components';
 import { Collidable } from '../../../physic/collider.type-conponents';
@@ -17,9 +18,13 @@ interface CreateImpactor
 		LimitedDistance,
 		Renderable,
 		Collidable,
-		Movable {}
+		Movable,
+		Bounceable {}
 
+/**
+ * Note: Nếu muốn apply effect lên mình thì cần tạo hitbox mang effect lên mình tại chỗ
+ */
 export interface CreateNonContextImpactor
 	extends CreateImpactor, RequireInitPositionMethod<'mouse-pos' | 'self-pos' | 'target-pos'> {}
 
-export interface CreateContextImpactor extends CreateImpactor, RequireInitPositionMethod {}
+export interface CreateContextImpactor extends CreateImpactor, RequireInitPositionMethod, Pursuitable {}

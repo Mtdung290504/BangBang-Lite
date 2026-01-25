@@ -7,7 +7,7 @@ const skill_1: CreateNonContextImpactor = {
 
 	// Tầm, hướng bay, xuất phát từ đâu
 	'limit-range': '100%',
-	movement: { 'move-type': 'straight', speed: 17.5 },
+	movement: { 'move-type': 'straight', speed: { value: '17.5u' } },
 	from: 'self-pos',
 
 	collider: {
