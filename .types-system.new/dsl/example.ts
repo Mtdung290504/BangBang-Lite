@@ -1,9 +1,10 @@
-import { CreateNonContextImpactor } from './entity/skill/actions/create-attack.type-entities';
+import { CreateContextImpactor, CreateNonContextImpactor } from './entity/skill/actions/create-attack.type-entities';
 
 // Example
 const skill_1: CreateNonContextImpactor = {
 	action: '@create-entity',
-	targeting: { require: 'direction' },
+	// Có thể trống
+	// strategy: { type: 'direction', 'delta-angle': 0 },
 
 	// Tầm, hướng bay, xuất phát từ đâu
 	'limit-range': '100%',
@@ -59,4 +60,16 @@ const skill_1: CreateNonContextImpactor = {
 		],
 		visual: { sprite: { key: 'normal-attack-impact' } },
 	},
+};
+
+const skill_2: CreateContextImpactor = {
+	action: '@create-entity',
+
+	strategy: { type: 'targeting' },
+	// strategy: { type: 'targeting', method: 'weakest' },
+
+	from: 'mouse-pos',
+	movement: { 'move-type': 'straight', speed: { value: '100%' } },
+	impact: { actions: [] },
+	collider: { shape: { type: 'circle', size: { radius: 100 } } },
 };

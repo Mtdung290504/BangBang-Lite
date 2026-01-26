@@ -17,6 +17,6 @@ export type ActionPrefix = 'create-entity' | 'do-action' | 'apply-effect';
  * - `position`: Cần biết vị trí chuột (ví dụ: cast area, dịch chuyển,...)
  * - `target`: Cần khóa mục tiêu cụ thể (ví dụ: skill khóa mục tiêu)
  */
-export type ActionTargetingRequire = 'none' | 'direction' | 'position' | 'target';
+// export type ActionTargetingRequire = 'none' | 'direction' | 'position' | 'target';
 
 export type LockMethod = 'active-lock' | 'nearest' | 'weakest' | RandomDefinition;

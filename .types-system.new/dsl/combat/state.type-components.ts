@@ -6,7 +6,7 @@ export interface LimitedDuration {
 	duration?: number;
 }
 
-export interface Impactable<TargetHandler extends object, SelfHandler extends object> {
+export interface Impactable<TargetEffect extends object, SelfAction extends object> {
 	impact: {
 		/**
 		 * Impact diễn ra nhiều lần theo interval, đơn vị: giây
@@ -20,12 +20,12 @@ export interface Impactable<TargetHandler extends object, SelfHandler extends ob
 			'affected-faction'?: Faction[];
 		} & (
 			| {
-					'target-effect': TargetHandler[];
-					'self-action'?: SelfHandler[];
+					'target-effect': TargetEffect[];
+					'self-action'?: SelfAction[];
 			  }
 			| {
-					'target-effect'?: TargetHandler[];
-					'self-action': SelfHandler[];
+					'target-effect'?: TargetEffect[];
+					'self-action': SelfAction[];
 			  }
 		))[];
 	} & Renderable; // Hiệu ứng khi va chạm

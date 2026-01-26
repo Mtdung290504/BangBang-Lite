@@ -1,4 +1,4 @@
-import { ActionType, TargetingConfig } from '../../../combat/action.type-components';
+import { ActionType, UseDirectionStrategy, UseUseTargetingStrategy } from '../../../combat/action.type-components';
 import { Bounceable, Pursuitable } from '../../../combat/props.type-components';
 import { Impactable } from '../../../combat/state.type-components';
 import { Renderable } from '../../../combat/visual.type-components';
@@ -14,7 +14,6 @@ interface CreateImpactor
 	extends
 		Impactable<SkillHitAction, SkillCastAction | SkillHitAction>,
 		ActionType<'create-entity'>,
-		TargetingConfig,
 		LimitedDistance,
 		Renderable,
 		Collidable,
@@ -25,6 +24,7 @@ interface CreateImpactor
  * Note: Nếu muốn apply effect lên mình thì cần tạo hitbox mang effect lên mình tại chỗ
  */
 export interface CreateNonContextImpactor
-	extends CreateImpactor, RequireInitPositionMethod<'mouse-pos' | 'self-pos' | 'target-pos'> {}
+	extends CreateImpactor, UseDirectionStrategy, RequireInitPositionMethod<'mouse-pos' | 'self-pos' | 'target-pos'> {}
 
-export interface CreateContextImpactor extends CreateImpactor, RequireInitPositionMethod, Pursuitable {}
+export interface CreateContextImpactor
+	extends CreateImpactor, UseUseTargetingStrategy, RequireInitPositionMethod, Pursuitable {}

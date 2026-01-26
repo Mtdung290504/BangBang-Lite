@@ -7,7 +7,7 @@ type MovementType = 'straight' | TestKey;
 interface BaseMovement<T extends MovementType> {
 	'move-type': T;
 	speed: {
-		value: ValueWithUnit<true, FlightSpeedEnum | MovementSpeedEnum>;
+		value: ValueWithUnit<true, FlightSpeedEnum | MovementSpeedEnum | (number & {})>;
 
 		/**Mặc định: `flight-speed` */
 		of?: 'movement-speed' | 'flight-speed';

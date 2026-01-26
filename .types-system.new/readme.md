@@ -42,7 +42,7 @@
 - Vấn đề mâu thuẫn animation:
     - Với đạn, animation/sprite sẽ chạy đến khi đạn bị xóa (do trúng hay hết tầm)
     - Với skill kiểu laze, nếu biến mất ngay sẽ rất xấu
-      => Animation cần 2 điểm để xóa, entity liên kết với nó biến mất, và hết time (vấn đề triển khai, khai báo tĩnh không có gì đặc biệt cần khai báo, chỉ cần khai báo thời gian tồn tại)
+      => Animation cần 2 điểm để xóa, entity liên kết với nó biến mất, và hết time => vấn đề triển khai, khai báo tĩnh không có gì đặc biệt cần khai báo, chỉ cần khai báo thời gian tồn tại => cơ chế khai báo visual hiện tại đã ổn.
 
 - Vấn đề buff và debuff:
     - Làm thế nào để nhận diện một effect đến từ nguồn đó và bỏ qua
