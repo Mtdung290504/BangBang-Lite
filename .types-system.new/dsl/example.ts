@@ -26,7 +26,7 @@ const skill_1: CreateNonContextImpactor = {
 				'affected-faction': ['ally', 'self'],
 				'target-effect': [
 					{
-						action: '@apply-effect:modify-stat',
+						action: '@apply:modify-stat',
 						'value-from': { attribute: 'movement-speed', value: '50%' },
 						duration: 2,
 					},
@@ -37,20 +37,20 @@ const skill_1: CreateNonContextImpactor = {
 				'self-action': [
 					{
 						// Bản thân hồi HP
-						action: '@apply-effect:recover-hp',
+						action: '@apply:recover-hp',
 						'value-from': { attribute: 'attack-power', value: '150%', of: 'self' },
 					},
 				],
 				'target-effect': [
 					{
 						// Gây 150% tấn công
-						action: '@apply-effect:dealt-damage',
+						action: '@apply:dealt-damage',
 						'value-from': { attribute: 'attack-power', value: '175%', of: 'self' },
 						'is-main-damage': true,
 					},
 					{
 						// Kèm ST thực = 5% HP đã mất của mục tiêu
-						action: '@apply-effect:dealt-damage',
+						action: '@apply:dealt-damage',
 						'value-from': { attribute: 'lost-HP', of: 'target', value: '5%' },
 						'damage-type': 'true',
 						'text-delta-angle': 1,
@@ -70,6 +70,18 @@ const skill_2: CreateContextImpactor = {
 
 	from: 'mouse-pos',
 	movement: { 'move-type': 'straight', speed: { value: '100%' } },
-	impact: { actions: [] },
+	impact: {
+		actions: [
+			{
+				'self-action': [{ action: '@apply:change-phase', method: 'to-phase:3' }],
+				'target-effect': [
+					{
+						action: '@apply:dealt-damage',
+						'value-from': { attribute: 'attack-power', of: 'self', value: '150%' },
+					},
+				],
+			},
+		],
+	},
 	collider: { shape: { type: 'circle', size: { radius: 100 } } },
 };

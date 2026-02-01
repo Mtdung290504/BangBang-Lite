@@ -1,3 +1,4 @@
+import { Faction } from '../../../combat/.enums';
 import { LimitedDuration } from '../../../combat/state.type-components';
 import { Renderable, VisualManifest } from '../../../combat/visual.type-components';
 import { ChangePhase, DealtDamage, ModifyEnergy, ModifyStat, RecoverHP } from './apply-effect.type-entities';
@@ -53,3 +54,20 @@ export interface RequireCharge extends RequireDelayBase<'charge'> {
 	/** Thời gian cưỡng chế giữ gồng tối thiểu */
 	'min-duration': number;
 }
+
+export type ImpactAction<
+	TargetEffect extends object = SkillHitAction,
+	SelfAction extends object = SkillCastAction | SkillHitAction,
+> = {
+	/** Mặc định: `['enemy', 'neutral']` */
+	'affected-faction'?: Faction[];
+} & (
+	| {
+			'target-effect': TargetEffect[];
+			'self-action'?: SelfAction[];
+	  }
+	| {
+			'target-effect'?: TargetEffect[];
+			'self-action': SelfAction[];
+	  }
+);

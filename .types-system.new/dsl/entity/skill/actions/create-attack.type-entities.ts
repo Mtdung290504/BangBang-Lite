@@ -7,18 +7,8 @@ import { Movable } from '../../../physic/movement.type-components';
 import { RequireInitPositionMethod } from '../../../physic/position.type-components';
 import { LimitedDistance } from '../../../physic/range.type-components';
 
-// Cicular depend
-import { SkillCastAction, SkillHitAction } from './.types';
-
 interface CreateImpactor
-	extends
-		Impactable<SkillHitAction, SkillCastAction | SkillHitAction>,
-		ActionType<'create-entity'>,
-		LimitedDistance,
-		Renderable,
-		Collidable,
-		Movable,
-		Bounceable {}
+	extends Impactable, ActionType<'create-entity'>, LimitedDistance, Renderable, Collidable, Movable, Bounceable {}
 
 /**
  * Note: Nếu muốn apply effect lên mình thì cần tạo hitbox mang effect lên mình tại chỗ
