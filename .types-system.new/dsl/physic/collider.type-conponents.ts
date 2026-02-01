@@ -11,5 +11,13 @@ export interface Collidable {
 
 		/** Khai báo các rule xuyên thấu (nếu cần) */
 		pierce?: PierceableTarget[] | 'all';
+
+		/**
+		 * - Thời gian đợi đến khi collider thực sự hoạt động
+		 * - Đơn vị: s
+		 * - Mặc định: 0s
+		 * - Ví dụ: Space GCL hiện effect trước rồi mới giật
+		 */
+		'warm-up'?: number;
 	};
 }

@@ -9,7 +9,7 @@ export type ValueUnit = 'u' | '%';
  * - Amount không charge scalable: `100%` hay `25u` (với u viết tắt cho unit)
  * - Amount charge scalable: `100% *0.5` hay `25u *1`
  * 	- Sau dấu * là hệ số nhân với charge time hoặc có thể xem là `mức tăng/s`
- * 	- Ví dụ `100% *0.5` và thời gian charge là `3s` thì Value = 100% * (1 + 0.5 * 3) = 250% (*Cộng thêm 1 để 0s charge không bị 0 value*)
+ * 	- Ví dụ `100% +*0.5/s` và thời gian charge là `3s` thì Value = 100% * (1 + 0.5 * 3) = 250% (*Cộng thêm 1 để 0s charge không bị 0 value*)
  */
 export type ValueWithUnit<
 	ChargeScalable extends boolean = false,

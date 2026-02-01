@@ -1,4 +1,4 @@
-import { RandomDefinition } from '../.enums';
+import { RandomDefinition } from '../../../.enums';
 
 /**
  * Các action prefix:

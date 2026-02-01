@@ -1,4 +1,4 @@
-import { ActionType, UseDirectionStrategy, UseUseTargetingStrategy } from '../../../combat/action.type-components';
+import { ActionType, UseDirectionStrategy, UseUseTargetingStrategy } from './.type-components';
 import { Bounceable, Pursuitable } from '../../../combat/props.type-components';
 import { Impactable } from '../../../combat/state.type-components';
 import { Renderable } from '../../../combat/visual.type-components';

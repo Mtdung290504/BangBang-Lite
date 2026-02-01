@@ -1,4 +1,4 @@
-import { ActionType } from '../../../combat/action.type-components';
+import { ActionType } from './.type-components';
 import { StatValue } from '../../../combat/effect.type-components';
 import { LimitedDuration } from '../../../combat/state.type-components';
 import { TextVisual } from '../../../combat/visual.type-components';

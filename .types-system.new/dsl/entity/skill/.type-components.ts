@@ -1,4 +1,4 @@
-import { SkillCastAction, SkillHitAction } from './actions/.types';
+import { RequireCharge, RequireDelay, SkillCastAction, SkillHitAction } from './actions/.types';
 import { CastingMethod, TargetedCast } from './context/casting-methods.type-components';
 import { ValueWithUnit } from '../../.types';
 
@@ -18,23 +18,18 @@ export interface SkillTiming {
 	cooldown?: number;
 }
 
-/** Khai báo tiêu hao và thuộc tính của skill */
+/**
+ * Khai báo tiêu hao và các thuộc tính của skill
+ */
 export interface ActionProps {
+	/** Object do skill tạo ra mang tính chất là đánh thường hay skill */
+	property?: 'skill' | 'normal-attack';
+
+	/** Skill tiêu hao gì, nếu không đủ, không dùng được, mặc định không tiêu hao */
 	'resource-consumption'?: SkillConsumption;
-	property: 'skill' | 'normal-attack';
-}
 
-export interface ChargeRequirement {
-	'require-charge'?: {
-		/** Thời gian tối thiểu (Mặc định: 0) */
-		'min-duration'?: number;
-
-		/** Thời gian tối đa */
-		'max-duration': number;
-
-		/** Lúc đang tụ có thể bị phá không */
-		breakable?: boolean;
-	};
+	/** Khai báo cần khựng/gồng, mặc định không cần */
+	'activation-require'?: RequireCharge | RequireDelay;
 }
 
 export type ActionBased = (
@@ -47,5 +42,4 @@ export type ActionBased = (
 			actions: (SkillCastAction | SkillHitAction)[];
 	  }
 ) &
-	ChargeRequirement &
 	ActionProps;

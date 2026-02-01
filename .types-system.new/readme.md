@@ -45,7 +45,6 @@
       => Animation cần 2 điểm để xóa, entity liên kết với nó biến mất, và hết time => vấn đề triển khai, khai báo tĩnh không có gì đặc biệt cần khai báo, chỉ cần khai báo thời gian tồn tại => cơ chế khai báo visual hiện tại đã ổn.
 
 - Vấn đề buff và debuff:
-    - Làm thế nào để nhận diện một effect đến từ nguồn đó và bỏ qua
     - Làm thế nào để khai báo effect có thể cộng dồn? Ví dụ đốt gây damage mỗi giây và làm chậm 10% mỗi stack?
         - Có thể "ám" lên mục tiêu một collider có interval effect để đốt + làm chậm, nhưng làm sao để khai báo effect có thể cộng dồn?
         - Làm thế nào để khai báo effect không thể cộng dồn? Tức skill đó lại gây effect lại thì không bị dồn lên mà chỉ reset thời lượng???
