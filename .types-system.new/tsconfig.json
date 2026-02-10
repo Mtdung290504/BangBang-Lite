@@ -15,13 +15,6 @@
 		"checkJs": false,
 		"baseUrl": "."
 	},
-	"include": [
-		"**/*.ts",
-		"**/*.js",
-		"**/.*.ts",
-		"**/.*.js"
-	],
-	"exclude": [
-		"node_modules"
-	]
+	"include": ["**/*.ts", "**/*.js", "**/.*.ts", "**/.*.js", "dsl/.examples/base.ts"],
+	"exclude": ["node_modules"]
 }

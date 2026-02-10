@@ -8,7 +8,7 @@ export interface VisualManifest {
 	rotate?: number;
 
 	/**Thời gian tồn tại effect, mặc định: 0 - Tức hiệu ứng sẽ biến mất ngay khi entity biến mất */
-	duration?: number;
+	duration?: number | 'sprite-end';
 }
 
 export interface Renderable {

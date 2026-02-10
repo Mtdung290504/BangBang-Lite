@@ -6,10 +6,15 @@ type MovementType = 'straight' | TestKey;
 
 interface BaseMovement<T extends MovementType> {
 	'move-type': T;
-	speed: {
+
+	/**
+	 * Mặc định: `{ value: '100%', of: 'flight-speed' }`
+	 */
+	speed?: {
+		/**@default '100%' */
 		value: ValueWithUnit<true, FlightSpeedEnum | MovementSpeedEnum | (number & {})>;
 
-		/**Mặc định: `flight-speed` */
+		/**@default 'flight-speed' */
 		of?: 'movement-speed' | 'flight-speed';
 	};
 }

@@ -1,17 +1,28 @@
 import { ImpactAction } from '../entity/skill/actions/.types';
-import { Renderable } from './visual.type-components';
+import { Renderable, VisualManifest } from './visual.type-components';
 
 export interface LimitedDuration {
 	/**
-	 * Thời gian kéo dài
-	 * - Đơn vị: s
-	 * - Mặc định: `Infinity`
+	 * Thời gian kéo dài\
+	 * Đơn vị: s
 	 */
 	duration?: number;
 }
 
+interface ImpactVisual extends Renderable {
+	/**
+	 * @override
+	 * Hiệu ứng hiển thị khi impact (va chạm)
+	 * @default 'physic-hit'
+	 */
+	visual?: VisualManifest;
+}
+
 export interface Impactable {
 	impact: {
+		/**
+		 * Danh sách các xử lý khi trúng đích, mở rộng hết cỡ để cấu hình xử lý khác nhau tùy vào mục trúng đòn
+		 */
 		actions: ImpactAction[];
 
 		/**
@@ -20,5 +31,5 @@ export interface Impactable {
 		 * - Nếu không khai báo thì chỉ impact 1 lần
 		 */
 		interval?: number;
-	} & Renderable; // Hiệu ứng khi va chạm
+	} & ImpactVisual; // Hiệu ứng khi va chạm
 }

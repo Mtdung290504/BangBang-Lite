@@ -7,7 +7,7 @@ import { RandomDefinition } from '../../../.enums';
  * - `do`: Các hành vi cơ học như lướt, nhảy,...
  * - `apply`: Gây ST, hồi máu, gây hiệu ứng,... Nói chung là các effect gây ra khi skill trúng đích
  */
-export type ActionPrefix = 'create-entity' | 'do-action' | 'apply';
+export type ActionPrefix = 'create-entity' | 'do-act' | 'apply';
 
 /**
  * Khai báo action skill cần loại thông tin tổng quát gì:

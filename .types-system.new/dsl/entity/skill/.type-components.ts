@@ -1,6 +1,7 @@
-import { RequireCharge, RequireDelay, SkillCastAction, SkillHitAction } from './actions/.types';
+import { RequireCharge, RequireDelay, SkillCastAction } from './actions/.types';
 import { CastingMethod, TargetedCast } from './context/casting-methods.type-components';
 import { ValueWithUnit } from '../../.types';
+import { ApplyEffect } from './actions/apply-effect.type-entities';
 
 /** Tiêu hao cả năng lượng và máu */
 type SkillConsumptionBuilder<T extends string[] = []> = Partial<{ [K in T[number]]: ValueWithUnit }>;
@@ -39,7 +40,7 @@ export type ActionBased = (
 	  }
 	| {
 			'casting-method': TargetedCast;
-			actions: (SkillCastAction | SkillHitAction)[];
+			actions: (SkillCastAction | ApplyEffect)[];
 	  }
 ) &
 	ActionProps;

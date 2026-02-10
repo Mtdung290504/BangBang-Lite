@@ -1,11 +1,10 @@
 import { Faction } from '../../../combat/.enums';
 import { LimitedDuration } from '../../../combat/state.type-components';
 import { Renderable, VisualManifest } from '../../../combat/visual.type-components';
-import { ChangePhase, DealtDamage, ModifyEnergy, ModifyStat, RecoverHP } from './apply-effect.type-entities';
+import { ApplyEffect, ChangePhase } from './apply-effect.type-entities';
 import { CreateNonContextImpactor, CreateContextImpactor } from './create-attack.type-entities';
 
 export type SkillCastAction = CreateContextImpactor | CreateNonContextImpactor | ChangePhase;
-export type SkillHitAction = DealtDamage | ModifyStat | RecoverHP | ModifyEnergy;
 export type PassiveSkillAction = `implement-later:${string}`;
 
 interface RequireDelayBase<Type extends string> extends Renderable {
@@ -56,8 +55,8 @@ export interface RequireCharge extends RequireDelayBase<'charge'> {
 }
 
 export type ImpactAction<
-	TargetEffect extends object = SkillHitAction,
-	SelfAction extends object = SkillCastAction | SkillHitAction,
+	TargetEffect extends object = ApplyEffect,
+	SelfAction extends object = SkillCastAction | ApplyEffect,
 > = {
 	/** Mặc định: `['enemy', 'neutral']` */
 	'affected-faction'?: Faction[];
