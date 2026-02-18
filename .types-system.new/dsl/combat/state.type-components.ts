@@ -20,9 +20,10 @@ interface ImpactVisual extends Renderable {
 export interface Impactable {
 	impact: {
 		/**
-		 * Danh sách các xử lý khi trúng đích, mở rộng hết cỡ để cấu hình xử lý khác nhau tùy vào mục trúng đòn
+		 * Danh sách các xử lý khi trúng đích, mở rộng hết cỡ để cấu hình xử lý khác nhau tùy vào mục trúng đòn\
+		 * Cho phép khai báo đơn lẻ 1 cái khi chỉ có 1 impact action, parser sẽ tự bọc trong []
 		 */
-		actions: ImpactAction[];
+		actions: ImpactAction | ImpactAction[];
 
 		/**
 		 * Impact diễn ra nhiều lần theo interval, đơn vị: giây

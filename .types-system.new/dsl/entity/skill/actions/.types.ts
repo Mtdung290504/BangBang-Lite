@@ -2,9 +2,9 @@ import { Faction } from '../../../combat/.enums';
 import { LimitedDuration } from '../../../combat/state.type-components';
 import { Renderable, VisualManifest } from '../../../combat/visual.type-components';
 import { ApplyEffect, ChangePhase } from './apply-effect.type-entities';
-import { CreateNonContextImpactor, CreateContextImpactor } from './create-attack.type-entities';
+import { CreateImpactor, CreateTargetedImpactor } from './create-attack.type-entities';
 
-export type SkillCastAction = CreateContextImpactor | CreateNonContextImpactor | ChangePhase;
+export type SkillCastAction = CreateTargetedImpactor | CreateImpactor | ChangePhase;
 export type PassiveSkillAction = `implement-later:${string}`;
 
 interface RequireDelayBase<Type extends string> extends Renderable {
@@ -55,15 +55,15 @@ export type ImpactAction<
 	TargetEffect extends object = ApplyEffect,
 	SelfAction extends object = SkillCastAction | ApplyEffect,
 > = {
-	/** Mặc định: `['enemy', 'neutral']` */
+	/** Mặc định: `['enemy', 'tower']` */
 	'affected-faction'?: Faction[];
 } & (
 	| {
-			'target-effect': TargetEffect[];
-			'self-action'?: SelfAction[];
+			'target-effect': TargetEffect | TargetEffect[];
+			'self-action'?: SelfAction | SelfAction[];
 	  }
 	| {
-			'target-effect'?: TargetEffect[];
-			'self-action': SelfAction[];
+			'target-effect'?: TargetEffect | TargetEffect[];
+			'self-action': SelfAction | SelfAction[];
 	  }
 );

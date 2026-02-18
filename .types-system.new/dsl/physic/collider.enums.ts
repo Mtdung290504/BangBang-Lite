@@ -1,1 +1,1 @@
-export type PierceableTarget = 'architecture' | 'self' | 'enemy' | 'ally' | 'non-tank' | 'projectile';
+export type PierceableTarget = 'architecture' | 'self' | 'enemy' | 'ally' | 'non-tank';

@@ -7,7 +7,7 @@ import { Movable } from '../../../physic/movement.type-components';
 import { RequireInitPositionMethod } from '../../../physic/position.type-components';
 import { LimitedDistance } from '../../../physic/range.type-components';
 
-interface CreateImpactor
+interface CreateImpactorBase
 	extends Impactable, ActionType<'create-entity'>, LimitedDistance, Renderable, Collidable, Movable, Bounceable {
 	'is-fly-object'?: true;
 }
@@ -15,8 +15,11 @@ interface CreateImpactor
 /**
  * Note: Nếu muốn apply effect lên mình thì cần tạo hitbox mang effect lên mình tại chỗ
  */
-export interface CreateNonContextImpactor
-	extends CreateImpactor, UseDirectionStrategy, RequireInitPositionMethod<'mouse-pos' | 'self-pos' | 'target-pos'> {}
+export interface CreateImpactor
+	extends
+		CreateImpactorBase,
+		UseDirectionStrategy,
+		RequireInitPositionMethod<'mouse-pos' | 'self-pos' | 'target-pos'> {}
 
-export interface CreateContextImpactor
-	extends CreateImpactor, UseTargetingStrategy, RequireInitPositionMethod, Pursuitable {}
+export interface CreateTargetedImpactor
+	extends CreateImpactorBase, UseTargetingStrategy, RequireInitPositionMethod, Pursuitable {}

@@ -90,6 +90,8 @@ const IGNORE_FILES = [
 	'*.md',
 	'*.txt',
 	'.scan-output.md', // Bỏ qua file output của tool
+	'jsconfig.json',
+	'tsconfig.json',
 ];
 
 /**

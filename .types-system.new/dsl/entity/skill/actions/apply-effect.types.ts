@@ -35,33 +35,47 @@ export interface EffectManifest extends Renderable, LimitedDuration {
 
 	/**
 	 * Định nghĩa hành vi cho từng stack. Quy định luôn số stack tối đa\
-	 * Note: Vì effect đã có ngữ cảnh từ impactor nên chỉ cần khai báo effect lên target và action của bản thân trong này
-	 *
-	 * - Ví dụ [stack1, stack2, stack...]
-	 * - action: Khai báo hành động đốt, hoặc áp effect như làm chậm
-	 * - interval: tần suất kích hoạt action
-	 * - on-start: khi đạt đến stack này sẽ kích hoạt action gì đó
-	 * - on-end: khi effect này kết thúc sẽ kích hoạt action gì đó
-	 * - visual: hiệu ứng effect, ví dụ lửa tầng 1 khác tầng 2, 3, 4
-	 *
+	 * Note:
+	 * - Vì effect đã có ngữ cảnh từ impactor nên chỉ cần khai báo effect lên target và action của bản thân trong này
+	 * - Cho phép khai báo đơn lẻ 1 cái khi chỉ có 1 impact, parser sẽ tự bọc trong []
 	 */
-	impacts: {
-		/** Khai báo các trạng thái như tăng/giảm tốc/các chỉ số khác... của effect */
-		'modify-stats'?: StatValue[];
+	impacts: EffectImpactManifest | EffectImpactManifest[];
+}
 
-		/** Khi effect bắt đầu thì gây ra gì đó */
-		'on-start'?: (EffectAction | 'clear')[];
+interface EffectImpactManifest extends Renderable {
+	/**
+	 * Khai báo các trạng thái như tăng/giảm tốc/các chỉ số khác... của effect\
+	 * Note: Cho phép khai báo đơn nếu chỉ có 1 action
+	 */
+	'modify-stats'?: StatValue | StatValue[];
 
-		/** Khi đến interval thì làm gì đó */
-		'on-interval'?: EffectAction[];
+	/**
+	 * Khi effect bắt đầu thì gây ra gì đó\
+	 * Note:
+	 * - Trong ngữ cảnh này, nếu là skill cast action thì do mình tung ra
+	 * - Cho phép khai báo đơn nếu chỉ có 1 action
+	 */
+	'on-start'?: EffectAction | 'clear' | (EffectAction | 'clear')[];
 
-		/** Khi effect kết thúc thì gây ra gì đó */
-		'on-end'?: EffectAction[];
+	/**
+	 * Khi đến interval thì làm gì đó.\
+	 * Note:
+	 * - Trong ngữ cảnh này, nếu là skill cast action thì do mình tung ra
+	 * - Cho phép khai báo đơn nếu chỉ có 1 action
+	 */
+	'on-interval'?: EffectAction | EffectAction[];
 
-		/**
-		 * @override
-		 * Hiệu ứng của effect, ví dụ đốt hay độc
-		 */
-		visual?: VisualManifest;
-	}[];
+	/**
+	 * Khi effect kết thúc thì gây ra gì đó\
+	 * Note:
+	 * - Trong ngữ cảnh này, nếu là skill cast action thì do mình tung ra
+	 * - Cho phép khai báo đơn nếu chỉ có 1 action
+	 */
+	'on-end'?: EffectAction | EffectAction[];
+
+	/**
+	 * @override
+	 * Hiệu ứng của effect, ví dụ hiệu ứng đốt hay độc
+	 */
+	visual?: VisualManifest;
 }

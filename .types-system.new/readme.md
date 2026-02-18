@@ -46,8 +46,10 @@
     - Với đạn, animation/sprite sẽ chạy đến khi đạn bị xóa (do trúng hay hết tầm)
     - Với skill kiểu laze, nếu biến mất ngay sẽ rất xấu
       => Animation cần 2 điểm để xóa, entity liên kết với nó biến mất, và hết time => vấn đề triển khai, khai báo tĩnh không có gì đặc biệt cần khai báo, chỉ cần khai báo thời gian tồn tại => cơ chế khai báo visual hiện tại đã ổn.
+    - **_ĐÃ XONG: duration thêm `sprite-end`_**
 
 - Vấn đề buff và debuff:
     - Làm thế nào để khai báo effect có thể cộng dồn? Ví dụ đốt gây damage mỗi giây và làm chậm 10% mỗi stack?
         - Có thể "ám" lên mục tiêu một collider có interval effect để đốt + làm chậm, nhưng làm sao để khai báo effect có thể cộng dồn?
         - Làm thế nào để khai báo effect không thể cộng dồn? Tức skill đó lại gây effect lại thì không bị dồn lên mà chỉ reset thời lượng???
+    - **_ĐÃ XONG: effect_**
