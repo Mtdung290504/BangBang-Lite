@@ -37,7 +37,7 @@ export interface UseDirectionStrategy extends UseStrategy<'direction'> {
 /**
  * Loại skill cần ngữ cảnh dùng strategy này
  */
-export interface UseUseTargetingStrategy extends UseStrategy<'targeting'> {
+export interface UseTargetingStrategy extends UseStrategy<'targeting'> {
 	strategy: {
 		type: 'targeting';
 

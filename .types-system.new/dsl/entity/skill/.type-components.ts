@@ -33,14 +33,11 @@ export interface ActionProps {
 	'activation-require'?: RequireCharge | RequireDelay;
 }
 
-export type ActionBased = (
-	| {
-			'casting-method'?: Exclude<CastingMethod, TargetedCast>;
-			actions: SkillCastAction[];
-	  }
-	| {
-			'casting-method': TargetedCast;
-			actions: (SkillCastAction | ApplyEffect)[];
-	  }
-) &
-	ActionProps;
+export type ActionBased = {
+	/**
+	 * Khai báo indicator hiển thị cho người chơi, không ảnh hưởng logic.
+	 * Mặc định: không hiển thị indicator
+	 */
+	'casting-method'?: CastingMethod;
+	actions: SkillCastAction[];
+} & ActionProps;

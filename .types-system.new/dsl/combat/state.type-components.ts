@@ -13,7 +13,6 @@ interface ImpactVisual extends Renderable {
 	/**
 	 * @override
 	 * Hiệu ứng hiển thị khi impact (va chạm)
-	 * @default 'physic-hit'
 	 */
 	visual?: VisualManifest;
 }

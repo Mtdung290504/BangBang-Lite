@@ -2,6 +2,7 @@ import { CreateContextImpactor, CreateNonContextImpactor } from '../entity/skill
 
 export default {
 	action: '@create-entity',
+	'is-fly-object': true,
 
 	// Đã mặc định, không cần khai báo thêm
 	// visual: { sprite: { key: 'normal-attack' } },

@@ -1,5 +1,6 @@
 import { StraightMovement, TestMovement } from './movement.types';
 
 export interface Movable {
-	movement: StraightMovement | TestMovement;
+	/** Không khai báo thì đứng im */
+	movement?: StraightMovement | TestMovement;
 }

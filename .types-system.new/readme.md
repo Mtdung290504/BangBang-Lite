@@ -31,6 +31,9 @@
     - Đạn dí? Chắc xử lý tương tự follow như trên nhưng giới hạn tốc độ bay của nó thành tốc độ của viên đạn thường?
     - Tại mức DSL/implement thì phân mảnh để hệ thống dễ hiểu, còn cho designer thì viết sẵn template với tên rõ hình dung, cho phép ghi đè một số config, không cần biết cấu trúc "đập bẹp, dát mỏng" bên dưới, mình viết template có nhiều mảnh ghép như vậy cũng dễ mở rộng nhiều case, tránh phải viết đi viết lại mỗi hành vi.
 
+- Trúng đòn gây hiệu ứng và hiệu ứng của effect như độc là như nhau. Gom lại thành 1 type khai báo duy nhất có vẻ ổn
+- Chứ chia ra kiểu gây damage, hồi máu, áp effect thì trong effect cũng có gây damage, hồi máu. Phiền phức.
+
 - Summon thì coi là một skill đặc thù rồi, để sau.
 - Skill giữ phím, tích năng lượng sẽ cần, dồn chung thành 1 loại là tụ lực, sau thời gian delay thì bấm vào sẽ giải phóng skill, chủ yếu là tăng phạm vi và damage hoặc đơn giản là skill mạnh nên delay cho cân bằng.
     - Nhưng không định nghĩa nó là 1 action được.

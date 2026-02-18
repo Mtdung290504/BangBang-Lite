@@ -30,9 +30,6 @@ export interface RequireDelay extends RequireDelayBase<'delay'>, LimitedDuration
 	 */
 	duration: number;
 
-	/** Thời gian bị đơ người sau khi action kích hoạt */
-	recovery?: number;
-
 	/**
 	 * Có chặn các hành động khác như đang bị khống chế hay không?\
 	 * Nếu không khai báo thì là không, nếu khai báo thì bắt buộc là true

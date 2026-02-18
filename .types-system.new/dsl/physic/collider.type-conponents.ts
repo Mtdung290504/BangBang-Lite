@@ -5,8 +5,11 @@ import { ColliderDeclaration } from './collider.type';
  * Phát hiện va chạm
  */
 export interface Collidable {
-	/** Vùng va chạm để phát hiện đánh trúng */
-	collider: {
+	/**
+	 * Vùng va chạm để phát hiện đánh trúng
+	 * Mặc định lấy size tank circle r=80 (160x160)
+	 */
+	collider?: {
 		shape: ColliderDeclaration;
 
 		/** Khai báo các rule xuyên thấu (nếu cần) */
