@@ -3,7 +3,7 @@ import { StatValue } from '../../../combat/effect.type-components';
 import { LimitedDuration } from '../../../combat/state.type-components';
 import { TextVisual } from '../../../combat/visual.type-components';
 import { DamageType } from '../../tank/.enums';
-import { EffectManifest } from './apply-effect.types';
+import { EffectManifest, CleanEffectManifest } from './apply-effect.types';
 
 // Sửa HP và MP
 type ModifyPoints<ActionTypeName extends string> = ActionType<'apply', ActionTypeName> & StatValue & TextVisual;
@@ -35,9 +35,22 @@ export interface ChangePhase extends ActionType<'do-act', 'change-phase'>, Limit
 export interface ModifyCountdown {}
 export interface ApplyShield {}
 
-// Khống chế cứng
-// TODO: Implement later
+/**
+ * Note:
+ * - Choáng = Giảm tốc 100% + Silent
+ * - Hất tung để tính sau
+ */
+export interface ApplySilent extends ActionType<'apply', 'silent'> {
+	skill?: boolean;
+	'normal-attack'?: boolean;
+}
+
+export interface ApplyImmune extends ActionType<'apply', 'immune'> {}
+
+export interface CleanEffect extends ActionType<'apply', 'clean-effect'> {
+	filter: 'all' | 'all-adverse' | 'all-beneficial' | 'CC-only' | 'immune-only' | 'slow-only' | `id:${string}`;
+}
 
 export interface ApplyEffect extends ActionType<'apply', 'effect'> {
-	'effect-manifest': EffectManifest;
+	manifest: EffectManifest;
 }

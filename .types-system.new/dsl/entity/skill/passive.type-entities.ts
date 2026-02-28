@@ -32,6 +32,7 @@ type EventTriggeredPassive = SkillTiming &
 
 /**
  * Bị động kích hoạt định kỳ theo thời gian (countdown) - Ví dụ: Hồ lô, Khiên LLQ/Iron/Chop
+ * *Note:* Tạo một cơ chế trigger now, áp một effect vĩnh cửu
  */
 type PeriodicPassive = SkillTiming &
 	SkillTypeDef<
@@ -44,6 +45,7 @@ type PeriodicPassive = SkillTiming &
 			conditions?: [];
 
 			// Còn rắc rối khi cần kiểu "Khiên vỡ mới CD", có khi tách thành loại riêng cho lành
+			// => Khiên vỡ thì trigger full CD, quan tâm đếch gì CD gốc? XONG.
 		}
 	>;
 

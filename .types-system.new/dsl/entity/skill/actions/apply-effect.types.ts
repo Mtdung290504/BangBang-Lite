@@ -2,9 +2,9 @@ import { StatValue } from '../../../combat/effect.type-components';
 import { LimitedDuration } from '../../../combat/state.type-components';
 import { Renderable, VisualManifest } from '../../../combat/visual.type-components';
 import { SkillCastAction } from './.types';
-import { DealtDamage, ModifyEnergy, RecoverHP } from './apply-effect.type-entities';
+import { DealtDamage, ModifyEnergy, RecoverHP, ApplySilent } from './apply-effect.type-entities';
 
-export type EffectAction = DealtDamage | RecoverHP | ModifyEnergy | SkillCastAction;
+export type EffectAction = DealtDamage | RecoverHP | ModifyEnergy | ApplySilent | SkillCastAction;
 export interface EffectManifest extends Renderable, LimitedDuration {
 	/** Name để nhận diện effect dùng cho stack và hiển thị */
 	name?: string;
@@ -79,3 +79,5 @@ interface EffectImpactManifest extends Renderable {
 	 */
 	visual?: VisualManifest;
 }
+
+export interface CleanEffectManifest {}

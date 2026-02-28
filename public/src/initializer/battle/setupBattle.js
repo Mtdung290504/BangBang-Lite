@@ -96,7 +96,7 @@ export default function setupBattle(socket, mapID, players, sandbox) {
 	const logicSysManager = setupLogicSystems(context);
 	const renderSysManager = setupRenderSystems(
 		context,
-		new GameRenderContext(context2D, camera, { mapID, selfTankEID: tankEIDs[0] }, () => DEBUG_MODE)
+		new GameRenderContext(context2D, camera, { mapID, selfTankEID: tankEIDs[0] }, () => DEBUG_MODE),
 	);
 
 	console.log(msg('Battle initiated successfully'));
@@ -116,7 +116,7 @@ export default function setupBattle(socket, mapID, players, sandbox) {
 			logicSysManager.initAll();
 			console.log(
 				msg('Logic system manager initiated successfully, using system groups:'),
-				logicSysManager.getSystemGroups()
+				logicSysManager.getSystemGroups(),
 			);
 
 			gameLoopManager.startLogicLoop(() => {
@@ -205,7 +205,7 @@ function setupTanks(context, mapID, players, { selfSocketID, selfInputManager })
 		mapID,
 		players[selfSocketID],
 		'self',
-		selfInputManager
+		selfInputManager,
 	);
 	playerRegistry.set(selfSocketID, {
 		tankEID,

@@ -53,3 +53,8 @@
         - Có thể "ám" lên mục tiêu một collider có interval effect để đốt + làm chậm, nhưng làm sao để khai báo effect có thể cộng dồn?
         - Làm thế nào để khai báo effect không thể cộng dồn? Tức skill đó lại gây effect lại thì không bị dồn lên mà chỉ reset thời lượng???
     - **_ĐÃ XONG: effect_**
+
+- Vấn đề thời lượng:
+    - Làm thế nào để làm buff hết thời gian biến mất, và buff hết 5 đòn thì biến mất/cường hóa 5 đòn thì biến mất?
+    - Tận dụng buff stack? Nhưng buff stack chỉ có tăng?
+    - Chuyển phase, phase tồn tại x giây, và 1 buff tăng 50% tốc đánh, bắn ra đạn chạm mình là tăng stack, đủ 5 stack xóa buff và reset phase.

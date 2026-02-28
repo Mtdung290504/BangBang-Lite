@@ -1,4 +1,4 @@
-import { CreateNonContextImpactor } from '../entity/skill/actions/create-attack.type-entities';
+import { CreateImpactor } from '../entity/skill/actions/create-attack.type-entities';
 
 export default {
 	action: '@create-entity',
@@ -21,7 +21,7 @@ export default {
 			{
 				'self-action': {
 					action: '@apply:effect',
-					'effect-manifest': {
+					manifest: {
 						name: 'star-inc-fire-rate',
 						duration: 2,
 						description: 'Tăng tốc độ 5%, tốc công 10% trong 2s, tối đa cộng dồn 4 tầng',
@@ -36,7 +36,7 @@ export default {
 
 				'target-effect': {
 					action: '@apply:effect',
-					'effect-manifest': {
+					manifest: {
 						description: 'Gây 80% x tấn công ST',
 						impacts: {
 							'on-start': {
@@ -53,7 +53,7 @@ export default {
 				'affected-faction': ['enemy'],
 				'target-effect': {
 					action: '@apply:effect',
-					'effect-manifest': {
+					manifest: {
 						name: 'star-dec-mov-spd',
 						duration: 2,
 						description: 'Giảm tốc 10% và chịu ST đốt, tối đa cộng dồn 4 tầng',
@@ -83,4 +83,4 @@ export default {
 			},
 		],
 	},
-} satisfies CreateNonContextImpactor;
+} satisfies CreateImpactor;

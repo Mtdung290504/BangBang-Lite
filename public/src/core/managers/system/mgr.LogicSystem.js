@@ -114,17 +114,8 @@ export default class LogicSystemsManager {
 		this._frameCache.clear();
 
 		// Ensure groups được tính toán (lazy initialization)
-		if (!this._precomputedGroups) {
-			this._precomputedGroups = this._groupConsecutiveSystems();
-		}
-
-		for (const group of this._precomputedGroups) {
-			try {
-				this._processSystemGroup(group);
-			} catch (error) {
-				throw error;
-			}
-		}
+		if (!this._precomputedGroups) this._precomputedGroups = this._groupConsecutiveSystems();
+		for (const group of this._precomputedGroups) this._processSystemGroup(group);
 	}
 
 	/**

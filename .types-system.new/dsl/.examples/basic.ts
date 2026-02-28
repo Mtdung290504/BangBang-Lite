@@ -1,6 +1,6 @@
-import { CreateContextImpactor, CreateNonContextImpactor } from '../entity/skill/actions/create-attack.type-entities';
+import { CreateImpactor, CreateTargetedImpactor } from '../entity/skill/actions/create-attack.type-entities';
 
-const skill_1: CreateNonContextImpactor = {
+const skill_1: CreateImpactor = {
 	action: '@create-entity',
 	// Có thể trống
 	// strategy: { type: 'direction', 'delta-angle': 0 },
@@ -27,7 +27,7 @@ const skill_1: CreateNonContextImpactor = {
 				'target-effect': [
 					{
 						action: '@apply:effect',
-						'effect-manifest': {
+						manifest: {
 							duration: 2,
 							impacts: [
 								{
@@ -44,7 +44,7 @@ const skill_1: CreateNonContextImpactor = {
 					{
 						// Bản thân hồi HP
 						action: '@apply:effect',
-						'effect-manifest': {
+						manifest: {
 							impacts: [
 								{
 									'on-start': [
@@ -61,7 +61,7 @@ const skill_1: CreateNonContextImpactor = {
 				'target-effect': [
 					{
 						action: '@apply:effect',
-						'effect-manifest': {
+						manifest: {
 							impacts: [
 								{
 									'on-start': [
@@ -87,7 +87,7 @@ const skill_1: CreateNonContextImpactor = {
 	},
 };
 
-const skill_2: CreateContextImpactor = {
+const skill_2: CreateTargetedImpactor = {
 	action: '@create-entity',
 
 	strategy: { type: 'targeting' },
@@ -102,7 +102,7 @@ const skill_2: CreateContextImpactor = {
 				'target-effect': [
 					{
 						action: '@apply:effect',
-						'effect-manifest': {
+						manifest: {
 							impacts: [
 								{
 									'on-start': [

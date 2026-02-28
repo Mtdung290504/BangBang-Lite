@@ -4,9 +4,11 @@ import { Renderable, VisualManifest } from './visual.type-components';
 export interface LimitedDuration {
 	/**
 	 * Thời gian kéo dài\
-	 * Đơn vị: s
+	 * Đơn vị:
+	 * - giây (đối với number)
+	 * - `frame-time` sẽ được tự động nhận diện và chỉ áp dụng trong 1 frame. *Cần khôn khéo => Áp dụng effect trước các system khác
 	 */
-	duration?: number;
+	duration?: number | 'frame-time';
 }
 
 interface ImpactVisual extends Renderable {

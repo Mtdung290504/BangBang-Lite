@@ -54,6 +54,13 @@ const prefixMsg = createPrefixer('> [initializer.setupLogicSystem]');
  * - Hover vào các system để biết nó làm gì
  * - *Quan trọng:* Thứ tự register system là cực quan trọng, nó quyết định thứ tự chạy của system
  *
+ * - **Note review 23/2/2026**:
+ * 	- logicSystemsManager batch các system cùng primary gần kề lại và xử lý\
+ * 	- Chưa rõ ý đồ xử lý vì làm vậy tối ưu nhưng có nguy cơ sai lệch khi có thay đổi entity/component giữa chừng\
+ * 	- Có lẽ cần ràng buộc các system có khả năng clean phải chạy cuối nhóm?
+ * 	- Tại sao lại áp dụng lỏng lẻo vậy mà không có note? Hay là trace off gì??? Wtf tôi ơi???
+ * 	- Khả năng cao là chấp nhận phải check tồn tại/fix bug để system giảm tần suất query.
+ *
  * @param {EntityManager} context
  */
 export default function setupLogicSystems(context) {
