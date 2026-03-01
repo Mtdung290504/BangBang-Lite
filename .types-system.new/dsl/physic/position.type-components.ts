@@ -5,5 +5,5 @@ export interface RequireInitPositionMethod<T extends PositionDeclaration = Posit
 	 * Skill xuất phát từ đâu
 	 * @default "self-pos"
 	 */
-	from?: T;
+	from?: `${T}`;
 }

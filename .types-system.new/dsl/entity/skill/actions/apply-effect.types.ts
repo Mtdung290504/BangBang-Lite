@@ -1,11 +1,8 @@
 import { StatValue } from '../../../combat/effect.type-components';
 import { LimitedDuration } from '../../../combat/state.type-components';
 import { Renderable, VisualManifest } from '../../../combat/visual.type-components';
-import { SkillCastAction } from './.types';
-import { DealtDamage, ModifyEnergy, RecoverHP, ApplySilent } from './apply-effect.type-entities';
 
-export type EffectAction = DealtDamage | RecoverHP | ModifyEnergy | ApplySilent | SkillCastAction;
-export interface EffectManifest extends Renderable, LimitedDuration {
+export interface EffectManifest<EffectAction> extends Renderable, LimitedDuration {
 	/** Name để nhận diện effect dùng cho stack và hiển thị */
 	name?: string;
 
@@ -39,10 +36,10 @@ export interface EffectManifest extends Renderable, LimitedDuration {
 	 * - Vì effect đã có ngữ cảnh từ impactor nên chỉ cần khai báo effect lên target và action của bản thân trong này
 	 * - Cho phép khai báo đơn lẻ 1 cái khi chỉ có 1 impact, parser sẽ tự bọc trong []
 	 */
-	impacts: EffectImpactManifest | EffectImpactManifest[];
+	impacts: EffectImpactManifest<EffectAction> | EffectImpactManifest<EffectAction>[];
 }
 
-interface EffectImpactManifest extends Renderable {
+interface EffectImpactManifest<EffectAction> extends Renderable {
 	/**
 	 * Khai báo các trạng thái như tăng/giảm tốc/các chỉ số khác... của effect\
 	 * Note: Cho phép khai báo đơn nếu chỉ có 1 action
@@ -79,5 +76,3 @@ interface EffectImpactManifest extends Renderable {
 	 */
 	visual?: VisualManifest;
 }
-
-export interface CleanEffectManifest {}

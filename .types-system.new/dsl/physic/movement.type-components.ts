@@ -1,6 +1,7 @@
-import { StraightMovement, TestMovement } from './movement.types';
+import { StraightMovement, TrackingMovement } from './movement.types';
 
-export interface Movable {
+type MovementUnion = StraightMovement | TrackingMovement;
+export interface Movable<MovementType = MovementUnion> {
 	/** Không khai báo thì đứng im */
-	movement?: StraightMovement | TestMovement;
+	movement?: MovementType;
 }

@@ -1,11 +1,13 @@
-export interface Bounceable {
+export type FlyingObjectProps = {
+	/**
+	 * Nếu không khai báo key này, không phải flying object => Không thể bị cản bởi phản đạn hay xóa sổ
+	 */
+	'flying-object-props'?: Bounceable;
+};
+
+interface Bounceable {
 	bounce?: {
 		limit: number;
 		'bounce-range': number;
 	};
-}
-
-export interface Pursuitable {
-	/**Đạn có đuổi mục tiêu hay không */
-	pursuit?: true;
 }

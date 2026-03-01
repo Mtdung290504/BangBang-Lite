@@ -1,8 +1,7 @@
-import { TestKey } from '../.enums';
 import { ValueWithUnit } from '../.types';
 import { FlightSpeedEnum, MovementSpeedEnum } from './movement.enums';
 
-type MovementType = 'straight' | TestKey;
+type MovementType = 'straight' | 'tracking';
 
 interface BaseMovement<T extends MovementType> {
 	'move-type': T;
@@ -21,4 +20,6 @@ interface BaseMovement<T extends MovementType> {
 
 // 2. Specific movement configs
 export interface StraightMovement extends BaseMovement<'straight'> {}
-export interface TestMovement extends BaseMovement<TestKey> {}
+export interface TrackingMovement extends BaseMovement<'tracking'> {
+	tracking: 'target' | 'self';
+}

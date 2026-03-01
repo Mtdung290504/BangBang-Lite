@@ -20,6 +20,9 @@ export interface AttackPowerStats {
 	'attack-power': number;
 	penetration: number;
 	'crit-damage': CritDamageEnum;
+
+	/** @default 0 */
+	'crit-rate'?: number;
 }
 
 export interface AdditionalStats {

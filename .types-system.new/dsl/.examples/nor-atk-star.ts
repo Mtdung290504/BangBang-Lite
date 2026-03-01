@@ -2,7 +2,7 @@ import { CreateImpactor } from '../entity/skill/actions/create-attack.type-entit
 
 export default {
 	action: '@create-entity',
-	'is-fly-object': true,
+	'flying-object-props': {},
 
 	// Đã mặc định, không cần khai báo thêm
 	// visual: { sprite: { key: 'normal-attack' } },

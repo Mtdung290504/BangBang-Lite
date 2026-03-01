@@ -3,7 +3,9 @@ import { StatValue } from '../../../combat/effect.type-components';
 import { LimitedDuration } from '../../../combat/state.type-components';
 import { TextVisual } from '../../../combat/visual.type-components';
 import { DamageType } from '../../tank/.enums';
-import { EffectManifest, CleanEffectManifest } from './apply-effect.types';
+import { EffectManifest } from './apply-effect.types';
+import { ValueWithUnit } from '../../../.types';
+import { ImpactHandle, SkillCastAction } from './.types';
 
 // Sửa HP và MP
 type ModifyPoints<ActionTypeName extends string> = ActionType<'apply', ActionTypeName> & StatValue & TextVisual;
@@ -32,8 +34,14 @@ export interface ChangePhase extends ActionType<'do-act', 'change-phase'>, Limit
 }
 
 // Sửa các thứ khác
-export interface ModifyCountdown {}
-export interface ApplyShield {}
+export interface ModifyCountdown extends ActionType<'apply', 'modify-countdown'> {
+	value: ValueWithUnit;
+}
+
+export interface ApplyShield extends ActionType<'apply', 'shield'> {
+	value: ValueWithUnit;
+	'on-break'?: ImpactHandle;
+}
 
 /**
  * Note:
@@ -45,12 +53,24 @@ export interface ApplySilent extends ActionType<'apply', 'silent'> {
 	'normal-attack'?: boolean;
 }
 
-export interface ApplyImmune extends ActionType<'apply', 'immune'> {}
+export interface ApplyImmune extends ActionType<'apply', 'immune'> {
+	filter: 'slow-only' | 'CC-only' | 'all';
+}
 
 export interface CleanEffect extends ActionType<'apply', 'clean-effect'> {
 	filter: 'all' | 'all-adverse' | 'all-beneficial' | 'CC-only' | 'immune-only' | 'slow-only' | `id:${string}`;
 }
 
 export interface ApplyEffect extends ActionType<'apply', 'effect'> {
-	manifest: EffectManifest;
+	manifest: EffectManifest<
+		| DealtDamage
+		| RecoverHP
+		| ModifyEnergy
+		| ModifyCountdown
+		| ApplyShield
+		| ApplySilent
+		| ApplyImmune
+		| CleanEffect
+		| SkillCastAction
+	>;
 }

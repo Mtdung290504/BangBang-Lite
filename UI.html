@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Sci-Fi Tank Selection HUD</title>
+		<style>
+			:root {
+				--bg-base: #03070b;
+				--panel-bg: rgba(6, 15, 25, 0.85);
+				--neon-cyan: #00f3ff;
+				--neon-red: #ff2a2a;
+				--neon-purple: #b026ff;
+				--neon-gold: #ffcf00;
+				--text-main: #c7dfff;
+				--text-muted: #4a6c8c;
+				--hud-border: 1px solid rgba(0, 243, 255, 0.3);
+			}
+
+			body {
+				margin: 0;
+				padding: 0;
+				background: #000 url('https://images.unsplash.com/photo-1534224039826-c7a0eda0e6b3?q=80&w=2000')
+					center/cover;
+				font-family: 'Courier New', Courier, monospace; /* Tech font */
+				height: 100vh;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				overflow: hidden;
+				color: var(--text-main);
+			}
+
+			/* Scanline Overlay */
+			body::after {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100vw;
+				height: 100vh;
+				background:
+					linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+					linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+				background-size:
+					100% 4px,
+					3px 100%;
+				pointer-events: none;
+				z-index: 9999;
+			}
+
+			#openModalBtn {
+				padding: 15px 40px;
+				font-size: 18px;
+				font-family: inherit;
+				font-weight: bold;
+				color: var(--neon-cyan);
+				background: transparent;
+				border: 2px solid var(--neon-cyan);
+				cursor: pointer;
+				box-shadow:
+					0 0 10px rgba(0, 243, 255, 0.2),
+					inset 0 0 10px rgba(0, 243, 255, 0.1);
+				text-transform: uppercase;
+				letter-spacing: 2px;
+				clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+				transition: 0.3s;
+			}
+			#openModalBtn:hover {
+				background: rgba(0, 243, 255, 0.1);
+				box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+			}
+
+			.modal-overlay {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.85);
+				backdrop-filter: blur(8px);
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				z-index: 1000;
+				opacity: 0;
+				pointer-events: none;
+				transition: opacity 0.4s;
+			}
+			.modal-overlay.active {
+				opacity: 1;
+				pointer-events: auto;
+			}
+
+			/* --- Khung UI Chính --- */
+			.hud-container {
+				width: 1000px;
+				height: 620px;
+				background: var(--bg-base);
+				border: 2px solid #1a3a5a;
+				box-shadow:
+					0 0 30px rgba(0, 0, 0, 0.8),
+					inset 0 0 50px rgba(0, 243, 255, 0.05);
+				display: flex;
+				padding: 15px;
+				gap: 15px;
+				position: relative;
+				clip-path: polygon(
+					0 20px,
+					20px 0,
+					calc(100% - 20px) 0,
+					100% 20px,
+					100% calc(100% - 20px),
+					calc(100% - 20px) 100%,
+					20px 100%,
+					0 calc(100% - 20px)
+				);
+			}
+			.hud-container::before {
+				/* Viền sáng ảo */
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				border: 1px solid var(--neon-cyan);
+				pointer-events: none;
+				clip-path: polygon(
+					0 20px,
+					20px 0,
+					calc(100% - 20px) 0,
+					100% 20px,
+					100% calc(100% - 20px),
+					calc(100% - 20px) 100%,
+					20px 100%,
+					0 calc(100% - 20px)
+				);
+				z-index: 10;
+			}
+
+			/* --- Layout --- */
+			.side-panel {
+				width: 190px;
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+				z-index: 15;
+			}
+			.center-panel {
+				flex-grow: 1;
+				display: flex;
+				flex-direction: column;
+				background: var(--panel-bg);
+				border: var(--hud-border);
+				position: relative;
+				z-index: 15;
+			}
+
+			/* --- Headings --- */
+			.header-team {
+				text-align: center;
+				font-weight: bold;
+				padding: 8px;
+				letter-spacing: 2px;
+				text-transform: uppercase;
+				border-bottom: 2px solid;
+				background: rgba(255, 255, 255, 0.05);
+			}
+			.ta .header-team {
+				color: var(--neon-cyan);
+				border-color: var(--neon-cyan);
+				text-shadow: 0 0 5px var(--neon-cyan);
+			}
+			.dich .header-team {
+				color: var(--neon-red);
+				border-color: var(--neon-red);
+				text-shadow: 0 0 5px var(--neon-red);
+			}
+
+			/* --- Player Slots --- */
+			.player-slot {
+				height: 85px;
+				background: rgba(0, 15, 30, 0.6);
+				border: 1px solid #2a4a6a;
+				position: relative;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+				transition: 0.3s;
+			}
+			.ta .player-slot {
+				border-left: 3px solid var(--neon-cyan);
+			}
+			.dich .player-slot {
+				border-right: 3px solid var(--neon-red);
+			}
+
+			.unit-icon {
+				font-size: 24px;
+				font-weight: bold;
+				color: rgba(255, 255, 255, 0.2);
+			}
+			.player-name {
+				font-size: 11px;
+				margin-top: 5px;
+				letter-spacing: 1px;
+				color: #fff;
+			}
+
+			/* Đã xuất chiến - Phong cách máy móc ngắt kết nối */
+			.player-slot.deployed {
+				background: repeating-linear-gradient(45deg, #0a0a0a, #0a0a0a 10px, #111 10px, #111 20px);
+				border-color: #333;
+				filter: grayscale(1);
+				opacity: 0.7;
+			}
+			.player-slot.deployed::after {
+				content: 'LOCKED';
+				position: absolute;
+				font-size: 14px;
+				color: #ff3333;
+				font-weight: bold;
+				letter-spacing: 3px;
+				transform: rotate(-15deg);
+				border: 2px solid #ff3333;
+				padding: 2px 5px;
+			}
+
+			/* --- Center Panel: Top Info --- */
+			.center-top-bar {
+				border-bottom: var(--hud-border);
+				padding: 10px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				background: rgba(0, 243, 255, 0.05);
+				position: relative;
+				color: var(--neon-gold);
+				font-weight: bold;
+				letter-spacing: 1px;
+				font-size: 14px;
+			}
+			.turn-arrow {
+				width: 0;
+				height: 0;
+				border-top: 8px solid transparent;
+				border-bottom: 8px solid transparent;
+				position: absolute;
+			}
+			.turn-arrow.left {
+				left: 15px;
+				border-right: 12px solid var(--neon-cyan);
+				filter: drop-shadow(0 0 5px var(--neon-cyan));
+			}
+			.turn-arrow.right {
+				right: 15px;
+				border-left: 12px solid var(--neon-red);
+				filter: drop-shadow(0 0 5px var(--neon-red));
+			}
+
+			/* --- Tabs --- */
+			.tabs {
+				display: flex;
+				border-bottom: var(--hud-border);
+				background: #020810;
+			}
+			.tab {
+				padding: 8px 20px;
+				font-size: 12px;
+				cursor: pointer;
+				color: var(--text-muted);
+				border-right: var(--hud-border);
+				transition: 0.2s;
+				font-weight: bold;
+			}
+			.tab:hover {
+				color: #fff;
+				background: rgba(0, 243, 255, 0.1);
+			}
+			.tab.active {
+				color: var(--neon-cyan);
+				background: rgba(0, 243, 255, 0.15);
+				box-shadow: inset 0 -2px 0 var(--neon-cyan);
+			}
+
+			/* --- Tank Grid (Có Canvas Background) --- */
+			.tank-area-wrapper {
+				position: relative;
+				flex-grow: 1;
+				overflow: hidden;
+			}
+			canvas#radarCanvas {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				z-index: 0;
+				opacity: 0.4;
+				pointer-events: none;
+			}
+
+			.tank-grid {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				display: grid;
+				grid-template-columns: repeat(5, 1fr);
+				gap: 12px;
+				padding: 15px;
+				box-sizing: border-box;
+				z-index: 1;
+				align-content: start;
+			}
+
+			.tank-item {
+				height: 75px;
+				background: rgba(5, 15, 25, 0.8);
+				position: relative;
+				cursor: pointer;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				transition: 0.2s;
+				box-sizing: border-box;
+				/* Tạo grid mờ bên trong item để ra dáng tech */
+				background-image:
+					linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+					linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+				background-size: 10px 10px;
+			}
+			.tank-name {
+				font-size: 10px;
+				color: rgba(255, 255, 255, 0.5);
+				font-weight: bold;
+				position: absolute;
+				bottom: 5px;
+				letter-spacing: 1px;
+			}
+			.tank-model {
+				font-size: 18px;
+				color: #fff;
+				font-weight: bold;
+			}
+			.lvl {
+				position: absolute;
+				top: 2px;
+				left: 4px;
+				font-size: 10px;
+				color: var(--neon-gold);
+				font-weight: bold;
+			}
+
+			/* Các loại viền (Frames) */
+			.frame-none {
+				border: 1px solid #2a4a6a;
+			}
+			.frame-purple {
+				border: 1px solid var(--neon-purple);
+				box-shadow:
+					0 0 8px rgba(176, 38, 255, 0.3),
+					inset 0 0 10px rgba(176, 38, 255, 0.2);
+			}
+			.frame-gold {
+				border: 1px solid var(--neon-gold);
+				box-shadow:
+					0 0 8px rgba(255, 207, 0, 0.3),
+					inset 0 0 10px rgba(255, 207, 0, 0.2);
+			}
+
+			/* --- Hiệu ứng Targeting Reticle khi chọn --- */
+			.tank-item.selected {
+				background: rgba(0, 243, 255, 0.15);
+				border-color: transparent; /* Ẩn viền gốc để nhường chỗ cho reticle */
+				box-shadow: none;
+			}
+			.tank-item.selected .tank-model {
+				color: var(--neon-cyan);
+				text-shadow: 0 0 5px var(--neon-cyan);
+				transform: scale(1.1);
+				transition: 0.2s;
+			}
+
+			/* 4 góc của Reticle */
+			.tank-item.selected::before,
+			.tank-item.selected::after {
+				content: '';
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				pointer-events: none;
+			}
+			.tank-item.selected::before {
+				top: -2px;
+				left: -2px;
+				border-top: 2px solid var(--neon-cyan);
+				border-left: 2px solid var(--neon-cyan);
+				width: 15px;
+				height: 15px;
+				box-shadow: -2px -2px 5px rgba(0, 243, 255, 0.5);
+			}
+			.tank-item.selected::after {
+				bottom: -2px;
+				right: -2px;
+				border-bottom: 2px solid var(--neon-cyan);
+				border-right: 2px solid var(--neon-cyan);
+				width: 15px;
+				height: 15px;
+				box-shadow: 2px 2px 5px rgba(0, 243, 255, 0.5);
+			}
+			.reticle-tr {
+				position: absolute;
+				top: -2px;
+				right: -2px;
+				width: 15px;
+				height: 15px;
+				border-top: 2px solid var(--neon-cyan);
+				border-right: 2px solid var(--neon-cyan);
+			}
+			.reticle-bl {
+				position: absolute;
+				bottom: -2px;
+				left: -2px;
+				width: 15px;
+				height: 15px;
+				border-bottom: 2px solid var(--neon-cyan);
+				border-left: 2px solid var(--neon-cyan);
+			}
+
+			/* --- Bottom Section (Action & Chat) --- */
+			.bottom-section {
+				position: relative;
+				height: 120px;
+				background: #03080e;
+				border-top: var(--hud-border);
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-end;
+			}
+
+			.action-area {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 80px;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 0 20px;
+				box-sizing: border-box;
+				background: linear-gradient(to right, rgba(0, 243, 255, 0.05), transparent);
+				transition: opacity 0.3s;
+			}
+
+			.action-left {
+				display: flex;
+				align-items: center;
+				gap: 15px;
+			}
+			.module-box {
+				width: 40px;
+				height: 40px;
+				border: 1px solid #4a6c8c;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-size: 12px;
+				background: rgba(255, 255, 255, 0.05);
+				color: var(--text-muted);
+				clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+			}
+			.module-box.health {
+				border-color: #ff3333;
+				color: #ff3333;
+				box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
+			}
+
+			.pilot-select {
+				background: transparent;
+				color: var(--neon-cyan);
+				border: 1px solid #2a4a6a;
+				padding: 8px;
+				font-family: inherit;
+				font-size: 12px;
+				outline: none;
+			}
+
+			.btn-deploy {
+				background: rgba(0, 243, 255, 0.1);
+				color: var(--neon-cyan);
+				border: 1px solid var(--neon-cyan);
+				padding: 12px 30px;
+				font-size: 16px;
+				font-family: inherit;
+				font-weight: bold;
+				letter-spacing: 2px;
+				cursor: pointer;
+				text-transform: uppercase;
+				box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+				clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+				transition: 0.2s;
+			}
+			.btn-deploy:hover {
+				background: var(--neon-cyan);
+				color: #000;
+				box-shadow: 0 0 20px var(--neon-cyan);
+			}
+
+			/* --- Chat Area HUD --- */
+			.chat-area {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				height: 40px;
+				background: rgba(2, 6, 12, 0.95);
+				border-top: 1px solid #1a3a5a;
+				display: flex;
+				flex-direction: column;
+				transition: height 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+				z-index: 20;
+			}
+
+			.chat-history {
+				flex-grow: 1;
+				padding: 10px 15px;
+				font-size: 12px;
+				overflow-y: auto;
+				display: none;
+				color: #a0b4c8;
+			}
+			.chat-history .sys {
+				color: var(--neon-gold);
+			}
+			.chat-history .user {
+				color: var(--neon-cyan);
+			}
+
+			.chat-input-row {
+				display: flex;
+				height: 40px;
+				padding: 5px;
+				gap: 8px;
+				box-sizing: border-box;
+			}
+			.chat-input-row input {
+				flex-grow: 1;
+				background: transparent;
+				border: none;
+				border-bottom: 1px solid #2a4a6a;
+				color: var(--neon-cyan);
+				font-family: inherit;
+				font-size: 12px;
+				padding: 0 10px;
+				outline: none;
+			}
+			.chat-input-row input::placeholder {
+				color: #4a6c8c;
+			}
+			.chat-input-row input:focus {
+				border-bottom-color: var(--neon-cyan);
+			}
+			.chat-input-row button {
+				background: transparent;
+				border: 1px solid var(--text-muted);
+				color: var(--text-muted);
+				padding: 0 15px;
+				font-family: inherit;
+				font-size: 12px;
+				cursor: pointer;
+				transition: 0.2s;
+			}
+			.chat-input-row button:hover {
+				border-color: var(--neon-cyan);
+				color: var(--neon-cyan);
+			}
+
+			/* Focus-within thuật toán */
+			.chat-area:focus-within {
+				height: 120px;
+				border-top: 1px solid var(--neon-cyan);
+				box-shadow: 0 -5px 20px rgba(0, 243, 255, 0.1);
+			}
+			.chat-area:focus-within .chat-history {
+				display: block;
+			}
+			.bottom-section:focus-within .action-area {
+				opacity: 0;
+				pointer-events: none;
+			}
+
+			.close-btn {
+				position: absolute;
+				top: 10px;
+				right: 10px;
+				width: 30px;
+				height: 30px;
+				background: transparent;
+				border: 1px solid var(--neon-red);
+				color: var(--neon-red);
+				font-family: inherit;
+				font-weight: bold;
+				cursor: pointer;
+				z-index: 100;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				transition: 0.2s;
+			}
+			.close-btn:hover {
+				background: var(--neon-red);
+				color: #000;
+				box-shadow: 0 0 10px var(--neon-red);
+			}
+
+			/* Scrollbar custom */
+			::-webkit-scrollbar {
+				width: 5px;
+			}
+			::-webkit-scrollbar-track {
+				background: #000;
+			}
+			::-webkit-scrollbar-thumb {
+				background: #2a4a6a;
+			}
+		</style>
+	</head>
+	<body>
+		<button id="openModalBtn">INITIATE DEPLOYMENT HUD</button>
+
+		<div id="modalOverlay" class="modal-overlay">
+			<div class="hud-container">
+				<button class="close-btn" id="closeModalBtn">X</button>
+
+				<div class="side-panel ta">
+					<div class="header-team">ALLIED</div>
+					<div class="player-slot deployed">
+						<div class="unit-icon">T-01</div>
+						<span class="player-name">TOTITEE</span>
+					</div>
+					<div class="player-slot deployed">
+						<div class="unit-icon">H-99</div>
+						<span class="player-name">H.DUYET</span>
+					</div>
+					<div class="player-slot">
+						<div class="unit-icon">K-NG</div>
+						<span class="player-name">KING</span>
+					</div>
+					<div class="player-slot">
+						<div class="unit-icon">---</div>
+						<span class="player-name">UNKNOWN</span>
+					</div>
+					<div class="player-slot">
+						<div class="unit-icon">---</div>
+						<span class="player-name">UNKNOWN</span>
+					</div>
+				</div>
+
+				<div class="center-panel">
+					<div class="center-top-bar">
+						<div class="turn-arrow left"></div>
+						[ SYSTEM ]: SELECT 2 UNITS (1/2)
+					</div>
+
+					<div class="tabs">
+						<div class="tab active">ALL UNITS</div>
+						<div class="tab">ASSAULT (DPS)</div>
+						<div class="tab">HEAVY (TANK)</div>
+						<div class="tab">TACTICAL (SUPP)</div>
+					</div>
+
+					<div class="tank-area-wrapper">
+						<canvas id="radarCanvas"></canvas>
+						<div class="tank-grid" id="tankGrid"></div>
+					</div>
+
+					<div class="bottom-section">
+						<div class="action-area">
+							<div class="action-left">
+								<div class="module-box" title="Support Drone">DRN</div>
+								<div class="module-box health" title="Repair Kit">REP</div>
+								<select class="pilot-select">
+									<option>PILOT: Minh TT dankcm</option>
+								</select>
+							</div>
+							<button class="btn-deploy" id="btnDeploy">EXECUTE DEPLOY</button>
+						</div>
+
+						<div class="chat-area">
+							<div class="chat-history" id="chatHistory">
+								<div class="sys">[WARNING]: Formation lacks HEAVY/TANK units.</div>
+								<div class="user">[KING]: Need a frontliner, anyone?</div>
+							</div>
+							<div class="chat-input-row">
+								<input type="text" id="chatInput" placeholder="> Transmit message to squad..." />
+								<button onclick="sendChat()">TX</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="side-panel dich">
+					<div class="header-team">HOSTILE</div>
+					<div class="player-slot deployed">
+						<div class="unit-icon">E-01</div>
+						<span class="player-name">ENEMY 1</span>
+					</div>
+					<div class="player-slot">
+						<div class="unit-icon">???</div>
+						<span class="player-name">ENEMY 2</span>
+					</div>
+					<div class="player-slot">
+						<div class="unit-icon">???</div>
+						<span class="player-name">ENEMY 3</span>
+					</div>
+					<div class="player-slot">
+						<div class="unit-icon">???</div>
+						<span class="player-name">ENEMY 4</span>
+					</div>
+					<div class="player-slot">
+						<div class="unit-icon">???</div>
+						<span class="player-name">ENEMY 5</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			// --- 1. Sinh Data Tank (Mô phỏng 15 unit) ---
+			const tankData = [
+				{ id: 'M-X1', name: 'LOBSTER', frame: 'purple' },
+				{ id: 'P-K9', name: 'PUMPKIN', frame: 'purple' },
+				{ id: 'D-REX', name: 'DRAGON', frame: 'purple' },
+				{ id: 'B-BOT', name: 'MECHA-B', frame: 'purple', selected: true },
+				{ id: 'V-8', name: 'SPEEDSTER', frame: 'purple' },
+				{ id: 'F-1X', name: 'PHOENIX', frame: 'purple' },
+				{ id: 'R-4T', name: 'MICE', frame: 'purple' },
+				{ id: 'C-SR', name: 'CORSAIR', frame: 'purple' },
+				{ id: 'S-MR', name: 'SUMMER', frame: 'purple' },
+				{ id: 'T-00', name: 'IRONCLAD', frame: 'none' },
+				{ id: 'G-0X', name: 'AURELIUS', frame: 'gold' },
+				{ id: 'L-1T', name: 'LIGHTNING', frame: 'purple' },
+				{ id: 'W-0D', name: 'SILVANUS', frame: 'purple' },
+				{ id: 'T-RC', name: 'TRACTOR', frame: 'purple' },
+				{ id: 'C-KN', name: 'ROBO-C', frame: 'purple' },
+			];
+
+			const tankGrid = document.getElementById('tankGrid');
+			tankData.forEach((t) => {
+				const div = document.createElement('div');
+				// Thêm class tương ứng
+				div.className = `tank-item frame-${t.frame} ${t.selected ? 'selected' : ''}`;
+				// Inner HTML chứa Reticle 4 góc và text info
+				div.innerHTML = `
+                ${t.selected ? '<div class="reticle-tr"></div><div class="reticle-bl"></div>' : '<div class="reticle-tr" style="display:none;"></div><div class="reticle-bl" style="display:none;"></div>'}
+                <div class="lvl">L.5</div>
+                <div class="tank-model">${t.id}</div>
+                <div class="tank-name">${t.name}</div>
+            `;
+
+				// Xử lý click chọn
+				div.addEventListener('click', function () {
+					document.querySelectorAll('.tank-item').forEach((el) => {
+						el.classList.remove('selected');
+						el.querySelector('.reticle-tr').style.display = 'none';
+						el.querySelector('.reticle-bl').style.display = 'none';
+					});
+					this.classList.add('selected');
+					this.querySelector('.reticle-tr').style.display = 'block';
+					this.querySelector('.reticle-bl').style.display = 'block';
+				});
+				tankGrid.appendChild(div);
+			});
+
+			// --- 2. Xử lý Logic Modal & Nút Deploy ---
+			const modal = document.getElementById('modalOverlay');
+			document.getElementById('openModalBtn').addEventListener('click', () => modal.classList.add('active'));
+			document.getElementById('closeModalBtn').addEventListener('click', () => modal.classList.remove('active'));
+
+			document.getElementById('btnDeploy').addEventListener('click', function () {
+				this.innerText = 'AWAITING SQUAD...';
+				this.style.background = 'rgba(255, 51, 51, 0.1)';
+				this.style.borderColor = '#ff3333';
+				this.style.color = '#ff3333';
+				this.style.boxShadow = 'none';
+
+				const slots = document.querySelectorAll('.ta .player-slot:not(.deployed)');
+				if (slots.length > 0) slots[0].classList.add('deployed');
+			});
+
+			// --- 3. Logic Chat ---
+			const chatInput = document.getElementById('chatInput');
+			const chatHistory = document.getElementById('chatHistory');
+			function sendChat() {
+				const text = chatInput.value.trim();
+				if (text) {
+					const msg = document.createElement('div');
+					msg.innerHTML = `<span class="user">[YOU]:</span> ${text}`;
+					chatHistory.appendChild(msg);
+					chatInput.value = '';
+					chatHistory.scrollTop = chatHistory.scrollHeight;
+				}
+			}
+			chatInput.addEventListener('keypress', (e) => {
+				if (e.key === 'Enter') sendChat();
+			});
+
+			// --- 4. CANVAS RADAR BACKGROUND MANG ĐẬM CHẤT SCI-FI ---
+			const canvas = document.getElementById('radarCanvas');
+			const ctx = canvas.getContext('2d');
+			let width, height;
+			let angle = 0;
+
+			function resizeCanvas() {
+				const wrapper = document.querySelector('.tank-area-wrapper');
+				width = canvas.width = wrapper.clientWidth;
+				height = canvas.height = wrapper.clientHeight;
+			}
+
+			// Gọi resize ngay và khi resize window (phòng trường hợp responsive sau này)
+			window.addEventListener('resize', resizeCanvas);
+			// Cần setTimeout xíu để đợi CSS load xong kích thước
+			setTimeout(resizeCanvas, 100);
+
+			function drawRadar() {
+				if (!width || !height) return requestAnimationFrame(drawRadar);
+
+				ctx.clearRect(0, 0, width, height);
+				const cx = width / 2;
+				const cy = height / 2;
+				const radius = Math.max(width, height);
+
+				// Vẽ lưới Grid mờ
+				ctx.strokeStyle = 'rgba(0, 243, 255, 0.1)';
+				ctx.lineWidth = 1;
+				ctx.beginPath();
+				for (let i = 0; i < width; i += 40) {
+					ctx.moveTo(i, 0);
+					ctx.lineTo(i, height);
+				}
+				for (let i = 0; i < height; i += 40) {
+					ctx.moveTo(0, i);
+					ctx.lineTo(width, i);
+				}
+				ctx.stroke();
+
+				// Vẽ các vòng tròn Radar
+				ctx.beginPath();
+				ctx.arc(cx, cy, 100, 0, Math.PI * 2);
+				ctx.arc(cx, cy, 200, 0, Math.PI * 2);
+				ctx.arc(cx, cy, 300, 0, Math.PI * 2);
+				ctx.stroke();
+
+				// Vẽ Radar Sweep (Cung quét)
+				const sweepAngle = 0.2 * Math.PI; // Độ rộng vùng quét
+
+				// Gradient cho tia quét
+				const gradient = ctx.createConicGradient(angle - sweepAngle, cx, cy);
+				gradient.addColorStop(0, 'rgba(0, 243, 255, 0)');
+				gradient.addColorStop(1, 'rgba(0, 243, 255, 0.3)');
+
+				ctx.fillStyle = gradient;
+				ctx.beginPath();
+				ctx.moveTo(cx, cy);
+				ctx.arc(cx, cy, radius, angle - sweepAngle, angle);
+				ctx.closePath();
+				ctx.fill();
+
+				// Đường line chốt quét sáng nhất
+				ctx.beginPath();
+				ctx.moveTo(cx, cy);
+				ctx.lineTo(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius);
+				ctx.strokeStyle = 'rgba(0, 243, 255, 0.8)';
+				ctx.lineWidth = 2;
+				ctx.stroke();
+
+				// Xoay góc
+				angle += 0.02;
+				requestAnimationFrame(drawRadar);
+			}
+
+			// Chạy radar
+			drawRadar();
+		</script>
+	</body>
+</html>

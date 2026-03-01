@@ -51,13 +51,15 @@ export interface RequireCharge extends RequireDelayBase<'charge'> {
 	'min-duration': number;
 }
 
-export type ImpactAction<
-	TargetEffect extends object = ApplyEffect,
-	SelfAction extends object = SkillCastAction | ApplyEffect,
-> = {
+export type ImpactAction = {
 	/** Mặc định: `['enemy', 'tower']` */
 	'affected-faction'?: Faction[];
-} & (
+} & ImpactHandle;
+
+export type ImpactHandle<
+	TargetEffect extends object = ApplyEffect,
+	SelfAction extends object = SkillCastAction | ApplyEffect,
+> =
 	| {
 			'target-effect': TargetEffect | TargetEffect[];
 			'self-action'?: SelfAction | SelfAction[];
@@ -65,5 +67,4 @@ export type ImpactAction<
 	| {
 			'target-effect'?: TargetEffect | TargetEffect[];
 			'self-action': SelfAction | SelfAction[];
-	  }
-);
+	  };
