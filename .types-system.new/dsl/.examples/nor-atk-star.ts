@@ -15,24 +15,32 @@ export default {
 		shape: { type: 'rectangle', size: { width: 35, height: 15 } },
 	},
 	impact: {
-		visual: { sprite: { key: 'physic-hit' }, duration: 'sprite-end' },
 		actions: [
 			// Đánh trúng đích gây ST, cộng dồn tăng tốc độ, tốc công
 			{
-				'self-action': {
-					action: '@apply:effect',
-					manifest: {
-						name: 'star-inc-fire-rate',
-						duration: 2,
-						description: 'Tăng tốc độ 5%, tốc công 10% trong 2s, tối đa cộng dồn 4 tầng',
-						visual: { sprite: { key: 'star-inc-fire-rate-icon' } },
-						impacts: [1, 2, 3, 4].map((stack) => ({
-							'modify-stats': {
-								'value-from': { attribute: 'fire-rate', of: 'self', value: `${10 * stack}%` },
-							},
-						})),
+				'self-action': [
+					{
+						action: '@apply:effect',
+						manifest: {
+							name: 'star-inc-fire-rate',
+							duration: 2,
+							description: 'Tăng tốc độ 5%, tốc công 10% trong 2s, tối đa cộng dồn 4 tầng',
+							visual: { sprite: { key: 'star-inc-fire-rate-icon' } },
+							impacts: [1, 2, 3, 4].map((stack) => ({
+								'modify-stats': {
+									'value-from': { attribute: 'fire-rate', of: 'self', value: `${10 * stack}%` },
+								},
+							})),
+						},
 					},
-				},
+
+					// Hiệu ứng nổ khi bắn trúng
+					{
+						action: '@create-entity',
+						from: 'parent-head',
+						visual: { sprite: { key: 'physic-hit' }, duration: 'sprite-end' },
+					},
+				],
 
 				'target-effect': {
 					action: '@apply:effect',

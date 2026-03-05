@@ -24,5 +24,10 @@ export type InheritDeclaration<T extends string> = `inherit:${T}`;
  */
 export type TypedRecord<K extends PropertyKey, V, T extends Record<K, V>> = T;
 
+/**
+ * Định nghĩa object với các key K có cùng type value V
+ */
+export type RecordSameValueType<K extends PropertyKey, V> = { [P in K]: V };
+
 /** Chuyển object thành Partial kể cả các object lồng */
 export type DeepPartial<T> = T extends any[] ? T : T extends object ? { [K in keyof T]?: DeepPartial<T[K]> } : T;

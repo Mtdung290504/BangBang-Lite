@@ -20,6 +20,4 @@ interface BaseMovement<T extends MovementType> {
 
 // 2. Specific movement configs
 export interface StraightMovement extends BaseMovement<'straight'> {}
-export interface TrackingMovement extends BaseMovement<'tracking'> {
-	tracking: 'target' | 'self';
-}
+export interface TrackingMovement extends BaseMovement<'tracking'> {}

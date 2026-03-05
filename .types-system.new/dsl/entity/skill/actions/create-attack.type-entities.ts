@@ -25,8 +25,13 @@ export interface CreateImpactor
 			| PositionDeclaration.SELF_HEAD
 			| PositionDeclaration.TARGET_POS
 			| PositionDeclaration.PARENT_POS
+			| PositionDeclaration.PARENT_HEAD
 		>,
 		Movable<StraightMovement> {}
 
+/**
+ * - Nếu create impactor handle nằm trong action ngoài cùng của skill sẽ bắt chọn target
+ * - Nếu create trong ngữ cảnh con, dùng target đã khóa từ đầu? Không được.
+ */
 export interface CreateTargetedImpactor
 	extends CreateImpactorBase, UseTargetingStrategy, RequireInitPositionMethod, Movable {}

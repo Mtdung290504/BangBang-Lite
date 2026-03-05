@@ -1,17 +1,15 @@
 import { SkillEntry } from './active.type-entities';
+import { RecordSameValueType } from '../../.types';
 import { PassiveSkillEntry } from './passive.type-entities';
+import { SkillSlot } from './.enums';
 
 /**
  * Định nghĩa tổng cho manifest, có thể có phase hoặc skill
  * @todo Cần bổ sung thêm `passive` skill
  */
-export interface SkillManifest<Phases extends number[] = []> {
-	// Passive skills
-	passive: PassiveSkillEntry<Phases>[];
-
+export interface SkillManifest
 	// Active skills
-	'normal-attack': SkillEntry<Phases>;
-	s1: SkillEntry<Phases>;
-	s2: SkillEntry<Phases>;
-	ultimate: SkillEntry<Phases>;
+	extends RecordSameValueType<SkillSlot, SkillEntry> {
+	// Passive skills
+	passive: PassiveSkillEntry<[]>[];
 }

@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>High Fidelity UI Clone</title>
+		<style>
+			:root {
+				--bg-outer: #0088cc;
+				--bg-main: #00d5ff;
+				--bg-dark-panel: #0073a8;
+				--bg-grid: #00bfff;
+
+				--cyan-border: #00f6ff;
+				--purple-thick: #9d24ff;
+				--gold-thick: #ffcc00;
+
+				--text-yellow: #ffea00;
+				--text-red: #ff3333;
+			}
+
+			body {
+				margin: 0;
+				background: #111;
+				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+			}
+
+			/* --- VỎ BỌC UI NGOÀI CÙNG --- */
+			.game-ui-wrapper {
+				width: 1050px;
+				height: 620px;
+				background: linear-gradient(to bottom, #d4f8ff, #8ae0ff);
+				border-radius: 12px;
+				padding: 6px;
+				box-shadow: 0 0 30px rgba(0, 213, 255, 0.4);
+			}
+
+			.game-ui-inner {
+				background: var(--bg-main);
+				width: 100%;
+				height: 100%;
+				border-radius: 8px;
+				border: 1px solid #fff;
+				display: flex;
+				padding: 10px;
+				box-sizing: border-box;
+				gap: 40px;
+				position: relative;
+			}
+
+			/* --- MŨI TÊN XANH LÁ (Bên trái) --- */
+			.green-pointer {
+				position: absolute;
+				left: 195px;
+				top: 50%;
+				transform: translateY(-90%);
+				width: 30px;
+				height: 110px;
+				background: linear-gradient(to right, #00ff00, #00b500);
+				clip-path: polygon(100% 0, 100% 100%, 0 50%);
+				z-index: 10;
+				filter: drop-shadow(-2px 0 2px rgba(0, 0, 0, 0.5));
+			}
+
+			/* --- 2 CỘT NGƯỜI CHƠI (HÌNH CHỮ NHẬT ĐỨNG) --- */
+			.side-panel {
+				width: 185px;
+				display: flex;
+				flex-direction: column;
+				gap: 6px;
+				z-index: 5;
+			}
+
+			.team-header {
+				text-align: center;
+				color: white;
+				font-weight: 900;
+				font-size: 15px;
+				padding: 6px;
+				border-radius: 15px;
+				border: 2px solid white;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+				text-shadow: 1px 1px 2px #000;
+			}
+			.header-ta {
+				background: linear-gradient(to right, #0088ff, #00bfff);
+			}
+			.header-dich {
+				background: linear-gradient(to right, #ff3333, #ff7777);
+			}
+
+			.player-slot {
+				height: 105px; /* Chiều cao lớn hơn chiều rộng để thành HCN */
+				background: var(--bg-dark-panel);
+				border-radius: 8px;
+				position: relative;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			/* Kỹ thuật xếp chồng Box-Shadow để tạo viền 2 lớp cực chuẩn */
+			.frame-purple-rect {
+				border: 2px solid var(--cyan-border);
+				box-shadow:
+					inset 0 0 0 4px var(--purple-thick),
+					0 0 5px var(--purple-thick);
+			}
+			.frame-gold-rect {
+				border: 2px solid var(--cyan-border);
+				box-shadow:
+					inset 0 0 0 4px var(--gold-thick),
+					0 0 5px var(--gold-thick);
+			}
+			.frame-none-rect {
+				border: 2px solid var(--cyan-border);
+			}
+
+			.player-avatar-placeholder {
+				width: 80%;
+				height: 70%;
+				background: radial-gradient(circle, #555, #222);
+				border-radius: 5px;
+				box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+			}
+			.player-name-tag {
+				position: absolute;
+				bottom: -5px;
+				background: rgba(0, 0, 0, 0.8);
+				color: #fff;
+				font-size: 12px;
+				font-weight: bold;
+				padding: 2px 10px;
+				border-radius: 10px;
+				border: 1px solid #555;
+				white-space: nowrap;
+			}
+
+			/* Tối màu khi xuất chiến */
+			.player-slot.deployed {
+				filter: brightness(0.4) grayscale(0.2);
+			}
+
+			/* --- PANEL GIỮA (TANK GRID CẤU TRÚC PHỨC TẠP) --- */
+			.center-panel {
+				flex-grow: 1;
+				display: flex;
+				flex-direction: column;
+				overflow: hidden;
+			}
+
+			/* Top Bar */
+			.center-top-bar {
+				background: #0088cc;
+				padding: 8px;
+				text-align: center;
+				color: var(--text-yellow);
+				font-weight: bold;
+				font-size: 18px;
+				position: relative;
+				text-shadow: 1px 1px 2px #000;
+			}
+			.back-arrow {
+				position: absolute;
+				left: 15px;
+				top: 50%;
+				transform: translateY(-50%);
+				width: 0;
+				height: 0;
+				border-top: 10px solid transparent;
+				border-bottom: 10px solid transparent;
+				border-right: 15px solid var(--text-yellow);
+				cursor: pointer;
+			}
+
+			/* Tabs */
+			.tabs-container {
+				display: flex;
+				/* background: #00a8e8; */
+				padding: 6px 10px 0 10px;
+				gap: 4px;
+			}
+			.tab {
+				background: #0088cc;
+				color: white;
+				font-weight: bold;
+				font-size: 13px;
+				padding: 4px 25px;
+				border-radius: 8px 8px 0 0;
+				cursor: pointer;
+				border: 1px solid transparent;
+			}
+			.tab.active {
+				background: #d4f8ff;
+				color: #005580;
+				border-color: #fff;
+			}
+
+			/* Tank Grid - Chứa ô vuông tuyệt đối */
+			.tank-grid-wrapper {
+				background: var(--bg-dark-panel);
+				padding: 12px;
+				display: grid;
+				grid-template-columns: repeat(5, 1fr);
+				gap: 8px;
+				align-content: start;
+				/* border-bottom: 2px solid var(--cyan-border); */
+				border: 5px solid #d4f8ff;
+				border-radius: 8px;
+				box-shadow: 0 0 10px var(--bg-dark-panel);
+			}
+
+			.tank-item {
+				aspect-ratio: 1 / 1; /* ÉP BUỘC LÀ HÌNH VUÔNG CHUẨN MỰC */
+				background: radial-gradient(circle at center, #0088cc, #004477);
+				border-radius: 8px;
+				position: relative;
+				cursor: pointer;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			/* Viền ô vuông - Kỹ thuật tương tự */
+			.frame-purple-sq {
+				box-shadow:
+					inset 0 0 0 3px var(--purple-thick),
+					0 0 5px var(--purple-thick);
+			}
+			.frame-gold-sq {
+				border: 2px solid var(--cyan-border);
+				box-shadow:
+					inset 0 0 0 3px var(--gold-thick),
+					0 0 5px var(--gold-thick);
+			}
+			.frame-none-sq {
+				border: 2px solid var(--cyan-border);
+			}
+
+			.lvl-tag {
+				position: absolute;
+				top: 2px;
+				left: 50%;
+				transform: translateX(-50%);
+				color: var(--text-yellow);
+				font-size: 14px;
+				font-weight: 900;
+				z-index: 5;
+				text-shadow: 1px 1px 1px #000;
+			}
+
+			.tank-img-placeholder {
+				width: 85%;
+				height: 85%;
+				background: rgba(0, 0, 0, 0.3);
+			}
+
+			/* Trạng thái được chọn (Sáng bừng lên) */
+			.tank-item.selected {
+				background: #0bd9e0;
+				z-index: 10;
+			}
+
+			/* --- KHU VỰC BOTTOM (ACTION & CHAT THUẬT TOÁN) --- */
+			.bottom-control-area {
+				background: var(--bg-main);
+				padding: 5px 12px;
+				display: flex;
+				flex-direction: column;
+				flex-grow: 1;
+			}
+
+			.warning-txt {
+				text-align: center;
+				font-size: 15px;
+				font-weight: 900;
+				color: var(--text-yellow);
+				margin-bottom: 5px;
+				text-shadow: 1px 1px 2px #000;
+			}
+			.warning-txt span {
+				color: var(--text-red);
+			}
+
+			/* Vùng chứa chung cho Chat đè Nút */
+			.interactive-stack {
+				background-color: var(--bg-dark-panel);
+				position: relative;
+				height: 70px;
+				flex: 1;
+			}
+
+			/* Nút Xuất chiến (Layer dưới) */
+			.action-row {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 60px;
+				background: #005580;
+				border: 2px solid var(--cyan-border);
+				border-radius: 8px;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 0 15px;
+				box-sizing: border-box;
+				transition: opacity 0.3s;
+			}
+			.action-left {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
+
+			.box-icon {
+				width: 45px;
+				height: 45px;
+				border-radius: 6px;
+				box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+				border: 1px solid #aaa;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+			.pet-img {
+				background: url('https://placehold.co/45x45/333/FFF?text=PET') center/cover;
+			}
+			.heal-img {
+				background: linear-gradient(135deg, #ff0000, #990000);
+				color: white;
+				font-size: 24px;
+				font-weight: bold;
+				border-color: #fff;
+			}
+
+			.name-dropdown {
+				background: transparent;
+				color: var(--text-yellow);
+				font-weight: bold;
+				border: none;
+				font-size: 14px;
+				outline: none;
+			}
+
+			.btn-deploy {
+				background: linear-gradient(to bottom, #eeeeee, #888888);
+				border: 2px solid #333;
+				border-radius: 20px;
+				padding: 12px 25px;
+				font-size: 16px;
+				font-weight: 900;
+				color: #333;
+				text-shadow: 1px 1px 0 #fff;
+				cursor: pointer;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+			}
+
+			/* Khung Chat (Layer trên, tự giãn nở) */
+			.chat-row {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				width: 100%;
+				height: 30px; /* Bằng đúng thanh input */
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-end;
+				transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				z-index: 20;
+			}
+			.chat-history-box {
+				background: rgba(0, 85, 128, 0.95);
+				flex-grow: 1;
+				padding: 8px;
+				color: white;
+				font-size: 14px;
+				display: none;
+				overflow-y: auto;
+				border: 2px solid var(--cyan-border);
+				border-bottom: none;
+				border-radius: 8px 8px 0 0;
+				box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+			}
+			.chat-input-row {
+				display: flex;
+				height: 30px;
+				gap: 8px;
+				background: var(--bg-main);
+				border-radius: 15px;
+				padding: 0;
+			}
+			.chat-input-row input {
+				flex-grow: 1;
+				border: 2px solid var(--cyan-border);
+				background: #007bb5;
+				border-radius: 15px;
+				padding: 0 15px;
+				color: white;
+				font-size: 14px;
+				font-weight: bold;
+				outline: none;
+				box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+			}
+			.chat-input-row button {
+				background: linear-gradient(to bottom, #ffca28, #f57c00);
+				border: 2px solid #fff;
+				border-radius: 15px;
+				padding: 0 20px;
+				font-weight: 900;
+				color: #555;
+				cursor: pointer;
+			}
+
+			/* THUẬT TOÁN FOCUS */
+			.chat-row:focus-within {
+				height: 110px;
+			} /* Giãn cao lên che khuất action row */
+			.chat-row:focus-within .chat-history-box {
+				display: block;
+			}
+			.interactive-stack:focus-within .action-row {
+				opacity: 0;
+				pointer-events: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="game-ui-wrapper">
+			<div class="game-ui-inner">
+				<div class="green-pointer"></div>
+
+				<div class="side-panel">
+					<div class="team-header header-ta">Ta</div>
+					<div class="player-slot deployed frame-purple-rect">
+						<div class="player-avatar-placeholder"></div>
+						<div class="player-name-tag">ToTiTee</div>
+					</div>
+					<div class="player-slot deployed frame-gold-rect">
+						<div class="player-avatar-placeholder"></div>
+						<div class="player-name-tag">H.Duyệt</div>
+					</div>
+					<div class="player-slot frame-purple-rect">
+						<div class="player-avatar-placeholder"></div>
+						<div class="player-name-tag">KING</div>
+					</div>
+					<div class="player-slot frame-none-rect">
+						<div class="player-avatar-placeholder"></div>
+						<div class="player-name-tag">???</div>
+					</div>
+					<div class="player-slot frame-purple-rect">
+						<div class="player-avatar-placeholder"></div>
+						<div class="player-name-tag">???</div>
+					</div>
+				</div>
+
+				<div class="center-panel">
+					<div class="center-top-bar">
+						<div class="back-arrow"></div>
+						8 Bên ta chọn 2 tank (1/2)
+					</div>
+
+					<div class="tabs-container">
+						<div class="tab active">ALL</div>
+						<div class="tab">DPS</div>
+						<div class="tab">TANKER</div>
+						<div class="tab">SUPPORT</div>
+					</div>
+
+					<div class="tank-grid-wrapper" id="gridWrapper"></div>
+
+					<div class="bottom-control-area">
+						<div class="warning-txt">Nhắc nhở: Thiếu trận hình <span>Chống chịu</span></div>
+
+						<div class="interactive-stack">
+							<div class="action-row">
+								<div class="action-left">
+									<div class="box-icon pet-img"></div>
+									<div class="box-icon heal-img">+</div>
+									<select class="name-dropdown">
+										<option>Minh TT dankcm ▼</option>
+									</select>
+								</div>
+								<button class="btn-deploy" id="deployBtn">ĐÃ XUẤT CHIẾN</button>
+							</div>
+
+							<div class="chat-row">
+								<div class="chat-history-box" id="chatHistory">
+									<div style="color: var(--text-yellow)">[Hệ thống]: Thiếu trận hình Chống chịu.</div>
+								</div>
+								<div class="chat-input-row">
+									<input type="text" id="chatInput" placeholder="Nhập để chat..." />
+									<button onclick="sendMsg()">GỬI</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="side-panel">
+					<div class="team-header header-dich">Địch</div>
+					<div class="player-slot frame-none-rect">
+						<div class="player-avatar-placeholder"></div>
+						<div class="player-name-tag">Người chơi1</div>
+					</div>
+					<div class="player-slot frame-none-rect">
+						<div class="player-avatar-placeholder"></div>
+						<div class="player-name-tag">Người chơi2</div>
+					</div>
+					<div class="player-slot frame-none-rect">
+						<div class="player-avatar-placeholder"></div>
+						<div class="player-name-tag">Người chơi3</div>
+					</div>
+					<div class="player-slot frame-none-rect">
+						<div class="player-avatar-placeholder"></div>
+						<div class="player-name-tag">Người chơi4</div>
+					</div>
+					<div class="player-slot frame-purple-rect">
+						<div class="player-avatar-placeholder"></div>
+						<div class="player-name-tag">Người chơi5</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			// Data map chuẩn với hình ảnh
+			const frames = [
+				'purple',
+				'purple',
+				'purple',
+				'purple',
+				'purple',
+				'purple',
+				'purple',
+				'purple',
+				'purple',
+				'none', // Vị trí 10 là frame none (tối màu)
+				'gold',
+				'purple',
+				'purple',
+				'purple',
+				'purple',
+			];
+
+			const grid = document.getElementById('gridWrapper');
+			frames.forEach((frame, index) => {
+				const item = document.createElement('div');
+
+				// Xử lý riêng cho ô số 4 (được chọn sáng rực) và ô số 10 (màu đen)
+				const isSelected = index === 3 ? 'selected' : '';
+				const isDark = index === 9 ? 'tank-img-dark' : '';
+
+				// Gán class viền vuông (frame-purple-sq, frame-gold-sq...)
+				item.className = `tank-item frame-${frame}-sq ${isSelected}`;
+
+				item.innerHTML = `
+                <div class="lvl-tag">LV.5</div>
+                <div class="tank-img-placeholder ${isDark}"></div>
+            `;
+
+				item.addEventListener('click', function () {
+					document.querySelectorAll('.tank-item').forEach((el) => el.classList.remove('selected'));
+					this.classList.add('selected');
+				});
+				grid.appendChild(item);
+			});
+
+			// Nút xuất chiến
+			document.getElementById('deployBtn').onclick = function () {
+				const emptySlot = document.querySelector('.side-panel:first-child .player-slot:not(.deployed)');
+				if (emptySlot) emptySlot.classList.add('deployed');
+			};
+
+			// Logic Chat
+			const input = document.getElementById('chatInput');
+			const history = document.getElementById('chatHistory');
+			function sendMsg() {
+				if (input.value.trim() !== '') {
+					history.innerHTML += `<div><strong>Bạn:</strong> ${input.value}</div>`;
+					input.value = '';
+					history.scrollTop = history.scrollHeight;
+				}
+			}
+			input.addEventListener('keypress', (e) => {
+				if (e.key === 'Enter') sendMsg();
+			});
+		</script>
+	</body>
+</html>

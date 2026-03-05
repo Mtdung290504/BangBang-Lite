@@ -4,7 +4,8 @@ import { Renderable, VisualManifest } from '../../../combat/visual.type-componen
 import { ApplyEffect, ChangePhase } from './apply-effect.type-entities';
 import { CreateImpactor, CreateTargetedImpactor } from './create-attack.type-entities';
 
-export type SkillCastAction = CreateTargetedImpactor | CreateImpactor | ChangePhase;
+export type SkillTargetedCastAction = CreateTargetedImpactor;
+export type SkillCastAction = CreateImpactor | ChangePhase;
 export type PassiveSkillAction = `implement-later:${string}`;
 
 interface RequireDelayBase<Type extends string> extends Renderable {

@@ -1,7 +1,7 @@
 import { RequireCharge, RequireDelay, SkillCastAction } from './actions/.types';
-import { CastingMethod, TargetedCast } from './context/casting-methods.type-components';
+import { CastingMethod } from './context/casting-methods.type-components';
 import { ValueWithUnit } from '../../.types';
-import { ApplyEffect } from './actions/apply-effect.type-entities';
+import { CreateTargetedImpactor } from './actions/create-attack.type-entities';
 
 /** Tiêu hao cả năng lượng và máu */
 type SkillConsumptionBuilder<T extends string[] = []> = Partial<{ [K in T[number]]: ValueWithUnit }>;
@@ -39,5 +39,5 @@ export type ActionBased = {
 	 * Mặc định: không hiển thị indicator
 	 */
 	'casting-method'?: CastingMethod;
-	actions: SkillCastAction[];
+	actions: (CreateTargetedImpactor | SkillCastAction)[];
 } & ActionProps;

@@ -16,6 +16,11 @@ export enum PositionDeclaration {
 	 */
 	PARENT_POS = 'parent-pos',
 
+	/**
+	 * - Vị trí đầu đạn
+	 */
+	PARENT_HEAD = 'parent-head',
+
 	/** Vị trí con trỏ chuột (input trực tiếp từ người chơi) */
 	MOUSE_POS = 'mouse-pos',
 }
