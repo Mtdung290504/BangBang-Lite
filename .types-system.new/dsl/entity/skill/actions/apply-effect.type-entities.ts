@@ -6,6 +6,7 @@ import { DamageType } from '../../tank/.enums';
 import { EffectManifest } from './apply-effect.types';
 import { ValueWithUnit } from '../../../.types';
 import { ImpactHandle, SkillCastAction } from './.types';
+import { SkillSlot, SpSkillSlot } from '../.enums';
 
 // Sửa HP và MP
 type ModifyPoints<ActionTypeName extends string> = ActionType<'apply', ActionTypeName> & StatValue & TextVisual;
@@ -35,6 +36,7 @@ export interface ChangePhase extends ActionType<'do-act', 'change-phase'>, Limit
 
 // Sửa các thứ khác
 export interface ModifyCountdown extends ActionType<'apply', 'modify-countdown'> {
+	slot: (SkillSlot | SpSkillSlot)[] | 'all';
 	value: ValueWithUnit;
 }
 
@@ -49,16 +51,22 @@ export interface ApplyShield extends ActionType<'apply', 'shield'> {
  * - Hất tung để tính sau
  */
 export interface ApplySilent extends ActionType<'apply', 'silent'> {
-	skill?: boolean;
-	'normal-attack'?: boolean;
+	slot: (SkillSlot | SpSkillSlot)[] | 'all';
 }
 
+/**
+ * Note, trong triển khai đảo ngược lại, apply immune thực chất là clear component có thể bị ảnh hưởng\
+ * VD:
+ * - 2 tầng no-immune-slow -> áp slow, no-immune-CC -> áp CC còn all là gỡ hết?
+ * - Không ổn,
+ *
+ */
 export interface ApplyImmune extends ActionType<'apply', 'immune'> {
-	filter: 'slow-only' | 'CC-only' | 'all';
+	filter: 'slow' | 'CC' | 'all';
 }
 
 export interface CleanEffect extends ActionType<'apply', 'clean-effect'> {
-	filter: 'all' | 'all-adverse' | 'all-beneficial' | 'CC-only' | 'immune-only' | 'slow-only' | `id:${string}`;
+	filter: 'buff' | 'debuff' | 'immune' | 'slow' | 'CC' | `id:${string}` | 'all';
 }
 
 export interface ApplyEffect extends ActionType<'apply', 'effect'> {

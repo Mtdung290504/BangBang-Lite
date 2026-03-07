@@ -1,5 +1,4 @@
 import { ImpactAction } from '../entity/skill/actions/.types';
-import { Renderable, VisualManifest } from './visual.type-components';
 
 export interface LimitedDuration {
 	/**

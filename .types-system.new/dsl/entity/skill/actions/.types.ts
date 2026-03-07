@@ -1,6 +1,5 @@
 import { Faction } from '../../../combat/.enums';
 import { LimitedDuration } from '../../../combat/state.type-components';
-import { Renderable, VisualManifest } from '../../../combat/visual.type-components';
 import { ApplyEffect, ChangePhase } from './apply-effect.type-entities';
 import { CreateImpactor, CreateTargetedImpactor } from './create-attack.type-entities';
 
@@ -8,23 +7,10 @@ export type SkillTargetedCastAction = CreateTargetedImpactor;
 export type SkillCastAction = CreateImpactor | ChangePhase;
 export type PassiveSkillAction = `implement-later:${string}`;
 
-interface RequireDelayBase<Type extends string> extends Renderable {
-	type: Type;
-
-	/** Hành động có thể bị phá bởi khống chế hay không, không khai báo thì không thể phá, khai báo thì có */
-	breakable?: true;
-
-	/**
-	 * @override
-	 * Hiệu ứng/aura khi gồng/delay (nếu có)
-	 */
-	visual?: VisualManifest;
-}
-
 /**
  * Cấu hình khựng skill
  */
-export interface RequireDelay extends RequireDelayBase<'delay'>, LimitedDuration {
+export interface RequireDelay extends LimitedDuration {
 	/**
 	 * Thời gian khựng trước khi action thực sự kích hoạt
 	 * @override
@@ -39,9 +25,10 @@ export interface RequireDelay extends RequireDelayBase<'delay'>, LimitedDuration
 }
 
 /**
- * Cấu hình gồng skill *Làm cơ chế nhấn giữ chiêu + thả
+ * Cấu hình gồng skill
+ * - Lưu ý, gồng không có nghĩa là đứng im & câm lặng, chỉ như một bộ đếm thời gian
  */
-export interface RequireCharge extends RequireDelayBase<'charge'> {
+export interface RequireCharge {
 	/**
 	 * Thời gian gồng tối đa
 	 * @override
@@ -62,10 +49,10 @@ export type ImpactHandle<
 	SelfAction extends object = SkillCastAction | ApplyEffect,
 > =
 	| {
-			'target-effect': TargetEffect | TargetEffect[];
-			'self-action'?: SelfAction | SelfAction[];
-	  }
+		'target-effect': TargetEffect | TargetEffect[];
+		'self-action'?: SelfAction | SelfAction[];
+	}
 	| {
-			'target-effect'?: TargetEffect | TargetEffect[];
-			'self-action': SelfAction | SelfAction[];
-	  };
+		'target-effect'?: TargetEffect | TargetEffect[];
+		'self-action': SelfAction | SelfAction[];
+	};
