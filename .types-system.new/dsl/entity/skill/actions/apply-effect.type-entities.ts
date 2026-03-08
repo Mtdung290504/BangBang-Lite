@@ -24,8 +24,9 @@ export interface RecoverHP extends ModifyPoints<'recover-hp'> {}
 export interface ModifyEnergy extends ModifyPoints<'modify-energy'> {}
 
 // Sửa phase
-export interface ChangePhase extends ActionType<'do-act', 'change-phase'>, LimitedDuration {
-	method: 'next' | `to-phase:${number}`;
+export interface ChangePhase<PhaseName extends string = string>
+	extends ActionType<'do-act', 'change-phase'>, LimitedDuration {
+	method: 'next' | `to-phase:${PhaseName}`;
 
 	/**
 	 * @override
@@ -55,6 +56,36 @@ export interface ApplySilent extends ActionType<'apply', 'silent'> {
 }
 
 /**
+ * Khóa chân (Root)
+ * Khác với giảm tốc 100% ở chỗ CC này không bị xóa bởi giải trừ làm chậm chuyên biệt
+ */
+export interface ApplyRoot extends ActionType<'apply', 'root'> {}
+
+/**
+ * Bất bại (Invincible)
+ * Miễn dịch mọi loại sát thương (thường đi kèm với immune CC để tạo thành trạng thái Vô địch hoàn toàn)
+ */
+export interface ApplyInvincible extends ActionType<'apply', 'invincible'> {}
+
+/**
+ * Không thể chọn làm mục tiêu (Untargetable)
+ * Immune với các loại đạn/skill khóa mục tiêu (đạn bay xuyên qua không nổ)
+ */
+export interface ApplyUntargetable extends ActionType<'apply', 'untargetable'> {}
+
+/**
+ * Tàng hình (Invisible)
+ * Mất tầm nhìn, có thể bị lộ nếu nhận sát thương hoặc tấn công (tùy config ở core, DSL chỉ quy định state)
+ */
+export interface ApplyInvisible extends ActionType<'apply', 'invisible'> {}
+
+/**
+ * Lộ tàng hình / Không thể tàng hình (Unstealthable)
+ * Bị soi sáng bởi trụ hoặc skill, vô hiệu hóa trạng thái Tàng hình
+ */
+export interface ApplyUnstealthable extends ActionType<'apply', 'unstealthable'> {}
+
+/**
  * Note, trong triển khai đảo ngược lại, apply immune thực chất là clear component có thể bị ảnh hưởng\
  * VD:
  * - 2 tầng no-immune-slow -> áp slow, no-immune-CC -> áp CC còn all là gỡ hết?
@@ -62,11 +93,14 @@ export interface ApplySilent extends ActionType<'apply', 'silent'> {
  *
  */
 export interface ApplyImmune extends ActionType<'apply', 'immune'> {
-	filter: 'slow' | 'CC' | 'all';
+	/**
+	 * Note: id dành cho các hiệu ứng kiểu: Sau 6s sẽ không bị trúng lại hiệu ứng này nữa
+	 */
+	filter: `tag:${'slow' | 'CC' | 'all'}` | `id:${string}`;
 }
 
 export interface CleanEffect extends ActionType<'apply', 'clean-effect'> {
-	filter: 'buff' | 'debuff' | 'immune' | 'slow' | 'CC' | `id:${string}` | 'all';
+	filter: `tag:${'buff' | 'debuff' | 'immune' | 'slow' | 'CC' | 'all'}` | `id:${string}`;
 }
 
 export interface ApplyEffect extends ActionType<'apply', 'effect'> {
@@ -77,6 +111,11 @@ export interface ApplyEffect extends ActionType<'apply', 'effect'> {
 		| ModifyCountdown
 		| ApplyShield
 		| ApplySilent
+		| ApplyRoot
+		| ApplyInvincible
+		| ApplyUntargetable
+		| ApplyInvisible
+		| ApplyUnstealthable
 		| ApplyImmune
 		| CleanEffect
 		| SkillCastAction

@@ -3,6 +3,9 @@ import { LimitedDuration } from '../../../combat/state.type-components';
 import { Renderable, VisualManifest } from '../../../combat/visual.type-components';
 
 export interface EffectManifest<EffectAction> extends Renderable, LimitedDuration {
+	/** Có thể kháng xóa bởi các skill hóa giải hay không */
+	unremovable?: true;
+
 	/** Name để nhận diện effect dùng cho stack và hiển thị */
 	name?: string;
 
