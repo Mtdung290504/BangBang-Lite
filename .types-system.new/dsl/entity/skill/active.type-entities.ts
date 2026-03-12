@@ -1,14 +1,10 @@
 import type { ActionBased, SkillTiming } from './.type-components';
 import { SkillTypeDef } from './.types';
 
-/**
- * Skill cơ bản, dùng xong hồi chiêu, không có gì đặc biệt
- */
+/** Skill cơ bản, dùng xong hồi chiêu, không có gì đặc biệt */
 export type NormalSkill = SkillTiming & ActionBased & SkillTypeDef<'normal'>;
 
-/**
- * Skill có tích lũy
- */
+/** Skill có tích lũy */
 type StackedSkill = SkillTiming &
 	ActionBased &
 	SkillTypeDef<
@@ -22,9 +18,7 @@ type StackedSkill = SkillTiming &
 		}
 	>;
 
-/**
- * Skill nhiều giai đoạn
- */
+/** Skill nhiều giai đoạn */
 type MultiStageSkill = SkillTiming &
 	SkillTypeDef<
 		'multi-stage',

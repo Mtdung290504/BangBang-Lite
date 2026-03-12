@@ -5,13 +5,13 @@ import { CreateTargetedImpactor } from './actions/create-attack.type-entities';
 
 /** Tiêu hao cả năng lượng và máu */
 type SkillConsumptionBuilder<T extends string[] = []> = Partial<{ [K in T[number]]: ValueWithUnit }>;
-type CONSUMPTION_TYPES = ['limit-HP', 'current-HP', 'energy'];
+type ConsumptionTypes = ['limit-HP', 'current-HP', 'energy'];
 
 /**
  * Khai báo tiêu hao khi dùng skill
  * *Lý do khai báo riêng mà không cho vào action là do vấn đề gồng. Phải là trừ trước khi gồng, không phải gồng xong mới trừ*
  */
-export type SkillConsumption = SkillConsumptionBuilder<CONSUMPTION_TYPES>;
+export type SkillConsumption = SkillConsumptionBuilder<ConsumptionTypes>;
 
 /** Thời gian hồi chiêu dùng chung cho mọi skill */
 export interface SkillTiming {

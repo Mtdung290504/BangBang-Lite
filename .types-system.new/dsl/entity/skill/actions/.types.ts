@@ -4,7 +4,7 @@ import { ApplyEffect, ChangePhase } from './apply-effect.type-entities';
 import { CreateImpactor, CreateTargetedImpactor } from './create-attack.type-entities';
 
 export type SkillTargetedCastAction = CreateTargetedImpactor;
-export type SkillCastAction = CreateImpactor | ChangePhase;
+export type SkillCastAction = CreateTargetedImpactor | CreateImpactor | ChangePhase;
 export type PassiveSkillAction = `implement-later:${string}`;
 
 /**
@@ -49,10 +49,10 @@ export type ImpactHandle<
 	SelfAction extends object = SkillCastAction | ApplyEffect,
 > =
 	| {
-		'target-effect': TargetEffect | TargetEffect[];
-		'self-action'?: SelfAction | SelfAction[];
-	}
+			'target-effect': TargetEffect | TargetEffect[];
+			'self-action'?: SelfAction | SelfAction[];
+	  }
 	| {
-		'target-effect'?: TargetEffect | TargetEffect[];
-		'self-action': SelfAction | SelfAction[];
-	};
+			'target-effect'?: TargetEffect | TargetEffect[];
+			'self-action': SelfAction | SelfAction[];
+	  };

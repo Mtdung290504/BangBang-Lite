@@ -7,8 +7,17 @@ export interface VisualManifest {
 	/**Góc xoay hình (degrees) mặc định là 0 */
 	rotate?: number;
 
-	/**Thời gian tồn tại effect, mặc định: 0 - Tức hiệu ứng sẽ biến mất ngay khi entity biến mất */
-	duration?: number | 'sprite-end';
+	/**
+	 * Cách xử lý Sprite khi Entity cha bị Logic yêu cầu tiêu diệt (ví dụ: đạn trúng đích, hoặc hết limited distance).
+	 * - `vanish`: (Mặc định) Sprite biến mất ngay lập tức cùng Entity. Dùng cho Đạn bay (bị nổ vỡ).
+	 * - `wait-finish`: Entity bị vô hiệu hóa logic (không va chạm, không di chuyển), nhưng vẫn chịu treo trên map cho đến khi Sprite diễn xong 1 vòng lặp hiện tại rồi mới bị xóa. Dùng cho Lazer, chém kiếm...
+	 */
+	'on-parent-death'?: 'vanish' | 'wait-finish';
+
+	/**
+	 * Khi sprite hết thì có lặp không
+	 */
+	loop?: true;
 }
 
 export interface Renderable {
