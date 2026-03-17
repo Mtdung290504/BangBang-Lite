@@ -12,8 +12,15 @@ export interface Collidable {
 	collider?: {
 		shape: ColliderDeclaration;
 
-		/** Khai báo các rule xuyên thấu (nếu cần) */
-		pierce?: PierceableTarget[] | 'all';
+		/** Mặc định: 1. Nếu 'infinity', skill là vùng vô hạn như Lazer/Aura */
+		'impact-capacity'?: number | 'infinity';
+
+		/**
+		 * Danh sách các mục tiêu cho phép đạn đi KHÔNG BỊ CẢN TRỞ (Không kích hoạt cơ chế Nảy hay Vỡ).\
+		 * VD: ['non-tank'] -> Đạn xuyên qua lính, nhưng đụng Tank là vỡ (hoặc nảy).\
+		 * Mặc định (Nếu không có field này): Đụng ai cũng bị CẢN TRỞ.
+		 */
+		'pierce-targets'?: PierceableTarget[] | 'all';
 
 		/**
 		 * - Thời gian đợi đến khi collider thực sự hoạt động

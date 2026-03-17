@@ -13,10 +13,12 @@ export interface SurvivalStats {
 	'limit-HP': number;
 	'physical-armor': number;
 	'energy-shield': number;
+
+	// TODO: Thêm kháng hiệu ứng, miễn thương
 }
 
 export interface AttackPowerStats {
-	'damage-type': TankDamageType;
+	// 'damage-type': TankDamageType;
 	'attack-power': number;
 	penetration: number;
 	'crit-damage': CritDamageEnum;
