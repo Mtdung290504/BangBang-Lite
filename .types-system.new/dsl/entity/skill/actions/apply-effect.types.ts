@@ -1,8 +1,8 @@
-import { StatValue } from '../../../combat/effect.type-components';
-import { LimitedDuration } from '../../../combat/state.type-components';
-import { Renderable, VisualManifest } from '../../../combat/visual.type-components';
+import type { StatModifier, StateEntry, EffectAction } from './apply-effect.type-entities';
+import type { LimitedDuration } from '../../../combat/state.type-components';
+import type { Renderable, VisualManifest } from '../../../combat/visual.type-components';
 
-export interface EffectManifest<EffectAction> extends Renderable, LimitedDuration {
+export interface EffectManifest<Action = EffectAction> extends Renderable, LimitedDuration {
 	/** Có thể kháng xóa bởi các skill hóa giải hay không */
 	unremovable?: true;
 
@@ -28,8 +28,8 @@ export interface EffectManifest<EffectAction> extends Renderable, LimitedDuratio
 
 	/**
 	 * Impact diễn ra nhiều lần theo interval, đơn vị: giây
-	 * - Nếu khai báo, skill impact nhiều lần theo interval đó
-	 * - Nếu không khai báo thì chỉ impact 1 lần
+	 * - Nếu khai báo, on-interval trigger nhiều lần theo interval đó
+	 * - Nếu không khai báo thì không trigger on-interval
 	 */
 	interval?: number;
 
@@ -39,43 +39,51 @@ export interface EffectManifest<EffectAction> extends Renderable, LimitedDuratio
 	 * - Vì effect đã có ngữ cảnh từ impactor nên chỉ cần khai báo effect lên target và action của bản thân trong này
 	 * - Cho phép khai báo đơn lẻ 1 cái khi chỉ có 1 impact, parser sẽ tự bọc trong []
 	 */
-	impacts: EffectImpactManifest<EffectAction> | EffectImpactManifest<EffectAction>[];
+	impacts: EffectImpactManifest<Action> | EffectImpactManifest<Action>[];
 }
 
-interface EffectImpactManifest<EffectAction> extends Renderable {
+/**
+ * 1 stack effect — 3 tầng tách biệt:
+ * ① `modify-stats` — buff/debuff liên tục theo duration
+ * ② `states` — trạng thái on/off theo duration (CC, immune,...)
+ * ③ `on-start/on-interval/on-end` — hành động tức thì
+ */
+interface EffectImpactManifest<Action = EffectAction> extends Renderable {
 	/**
-	 * Khai báo các trạng thái như tăng/giảm tốc/các chỉ số khác... của effect\
-	 * Note: Cho phép khai báo đơn nếu chỉ có 1 action
+	 * ① Continuous stat modifiers — tồn tại suốt effect duration.
+	 * Engine apply khi effect active, remove khi effect hết.
+	 * Cho phép khai báo đơn nếu chỉ có 1 modifier.
 	 */
-	'modify-stats'?: StatValue | StatValue[];
+	'modify-stats'?: StatModifier | StatModifier[];
 
 	/**
-	 * Khi effect bắt đầu thì gây ra gì đó\
-	 * Note:
-	 * - Trong ngữ cảnh này, nếu là skill cast action thì do mình tung ra
-	 * - Cho phép khai báo đơn nếu chỉ có 1 action
+	 * ② States — trạng thái đặc biệt tồn tại suốt effect duration.
+	 * Engine toggle on khi effect active, toggle off khi hết.
+	 * Cho phép khai báo đơn nếu chỉ có 1 state.
 	 */
-	'on-start'?: EffectAction | 'clear' | (EffectAction | 'clear')[];
+	states?: StateEntry | StateEntry[];
 
 	/**
-	 * Khi đến interval thì làm gì đó.\
-	 * Note:
-	 * - Trong ngữ cảnh này, nếu là skill cast action thì do mình tung ra
-	 * - Cho phép khai báo đơn nếu chỉ có 1 action
+	 * ③ Khi effect bắt đầu thì gây ra gì đó.\
+	 * Cho phép khai báo đơn nếu chỉ có 1 action.
 	 */
-	'on-interval'?: EffectAction | EffectAction[];
+	'on-start'?: Action | 'clear' | (Action | 'clear')[];
 
 	/**
-	 * Khi effect kết thúc thì gây ra gì đó\
-	 * Note:
-	 * - Trong ngữ cảnh này, nếu là skill cast action thì do mình tung ra
-	 * - Cho phép khai báo đơn nếu chỉ có 1 action
+	 * ③ Khi đến interval thì làm gì đó.\
+	 * Cho phép khai báo đơn nếu chỉ có 1 action.
 	 */
-	'on-end'?: EffectAction | EffectAction[];
+	'on-interval'?: Action | Action[];
+
+	/**
+	 * ③ Khi effect kết thúc thì gây ra gì đó.\
+	 * Cho phép khai báo đơn nếu chỉ có 1 action.
+	 */
+	'on-end'?: Action | Action[];
 
 	/**
 	 * @override
-	 * Hiệu ứng của effect, ví dụ hiệu ứng đốt hay độc
+	 * Hiệu ứng visual của stack này
 	 */
 	visual?: VisualManifest;
 }

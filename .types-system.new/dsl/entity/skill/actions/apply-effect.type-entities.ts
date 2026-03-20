@@ -1,123 +1,124 @@
 import { ActionType } from './.type-components';
-import { StatValue } from '../../../combat/effect.type-components';
-import { LimitedDuration } from '../../../combat/state.type-components';
-import { TextVisual } from '../../../combat/visual.type-components';
-import { DamageType } from '../../tank/.enums';
-import { EffectManifest } from './apply-effect.types';
-import { ValueWithUnit } from '../../../.types';
-import { ImpactHandle, SkillCastAction } from './.types';
-import { SkillSlot, SpSkillSlot } from '../.enums';
+import type { TankStatValueKey } from '../../tank/.enums';
+import type { SkillSlot, SpSkillSlot } from '../.enums';
+import type { ValueWithUnit } from '../../../.types';
+import type { ValueResolver, ReductionFn, ConditionPredicate } from '../../../runtime.types';
+import type { EffectManifest } from './apply-effect.types';
+import type { ImpactHandle, SkillCastAction } from './.types';
 
-// Sửa HP và MP
-type ModifyPoints<ActionTypeName extends string> = ActionType<'apply', ActionTypeName> & StatValue & TextVisual;
-export interface DealtDamage extends ModifyPoints<'dealt-damage'> {
-	/** Mặc định kế thừa từ tank */
-	'damage-type'?: DamageType;
+// ===== Tầng ①: Continuous Stat Modifier (tồn tại theo effect duration) =====
 
-	/**
-	 * Cờ để chỉ định main damage để trừ damage trong một số trường hợp, ví dụ khi đạn nảy hay xuyên
-	 * @default false
-	 */
-	'not-main-damage'?: true;
+/**
+ * Điều chỉnh stat liên tục, tồn tại theo effect duration.
+ * Vị trí khai báo: `modify-stats` trong `EffectImpactManifest`
+ *
+ * @example
+ * // Buff tốc 20%
+ * { attribute: 'movement-speed', value: '20%' }
+ *
+ * // HP càng thấp chạy càng nhanh — function resolver
+ * { attribute: 'movement-speed',
+ *   value: (ctx) => ctx.self['movement-speed'] * (ctx.self['lost-HP'] / ctx.self['limit-HP']) }
+ *
+ * // Giảm tốc 30%, bị kháng hiệu ứng
+ * { attribute: 'movement-speed', value: '-30%', reductions: [effectResistance] }
+ */
+export interface StatModifier {
+	attribute: TankStatValueKey;
+	value: ValueWithUnit | ValueResolver;
+
+	/** Pipeline giảm trừ (optional). Designer dùng template có sẵn. */
+	reductions?: ReductionFn | ReductionFn[];
 }
-export interface RecoverHP extends ModifyPoints<'recover-hp'> {}
-export interface ModifyEnergy extends ModifyPoints<'modify-energy'> {}
 
-// Sửa phase
-export interface ChangePhase<PhaseName extends string = string>
-	extends ActionType<'do-act', 'change-phase'>, LimitedDuration {
+// ===== Tầng ②: State (tồn tại theo effect duration) =====
+
+/**
+ * Trạng thái on/off, tồn tại theo effect duration.
+ * Vị trí khai báo: `states` trong `EffectImpactManifest`
+ *
+ * Note: Choáng = giảm tốc 100% (modify-stats) + silent all (states)
+ */
+export type StateEntry =
+	| { type: 'silent'; slot: (SkillSlot | SpSkillSlot)[] | 'all' }
+	| { type: 'root' }
+	| { type: 'invincible' }
+	| { type: 'untargetable' }
+	| { type: 'invisible' }
+	| { type: 'unstealthable' }
+	| { type: 'immune'; filter: `tag:${'slow' | 'CC' | 'all'}` | `id:${string}` };
+
+// ===== Tầng ③: Instant Actions (trong on-start/on-interval/on-end) =====
+
+/**
+ * Điều chỉnh stat TỨC THÌ — dùng trong on-start/on-interval/on-end.
+ * Không instant flag — vị trí khai báo đã quyết định bản chất.
+ *
+ * @example
+ * // Gây 150% attack-power damage vật lý
+ * { action: '@apply:modifier', attribute: 'current-HP',
+ *   value: (ctx) => -ctx.self['attack-power'] * 1.5,
+ *   reductions: [physicalArmor] }
+ *
+ * // Hồi 200% attack-power HP (giá trị dương)
+ * { action: '@apply:modifier', attribute: 'current-HP',
+ *   value: (ctx) => ctx.self['attack-power'] * 2 }
+ *
+ * // True damage 50% HP đã mất
+ * { action: '@apply:modifier', attribute: 'current-HP',
+ *   value: (ctx) => -ctx.target['lost-HP'] * 0.5 }
+ */
+export interface ApplyModifier extends ActionType<'apply', 'modifier'> {
+	attribute: TankStatValueKey;
+	value: ValueWithUnit | ValueResolver;
+
+	/** Pipeline giảm trừ (optional). Không có = không giảm (true damage/heal). */
+	reductions?: ReductionFn | ReductionFn[];
+}
+
+// ===== Các action khác giữ nguyên =====
+
+/** Sửa phase */
+export interface ChangePhase<PhaseName extends string = string> extends ActionType<'do-act', 'change-phase'> {
 	method: 'next' | `to-phase:${PhaseName}`;
 
 	/**
 	 * @override
-	 * Mặc định: Infinity
+	 * @default Infinity
 	 */
 	duration?: number;
 }
 
-// Sửa các thứ khác
+/** Sửa countdown skill */
 export interface ModifyCountdown extends ActionType<'apply', 'modify-countdown'> {
 	slot: (SkillSlot | SpSkillSlot)[] | 'all';
 	value: ValueWithUnit;
 }
 
+/** Khiên */
 export interface ApplyShield extends ActionType<'apply', 'shield'> {
-	value: ValueWithUnit;
+	value: ValueWithUnit | ValueResolver;
 	'on-break'?: ImpactHandle;
 }
 
-/**
- * Note:
- * - Choáng = Giảm tốc 100% + Silent
- * - Hất tung để tính sau
- */
-export interface ApplySilent extends ActionType<'apply', 'silent'> {
-	slot: (SkillSlot | SpSkillSlot)[] | 'all';
-}
-
-/**
- * Khóa chân (Root)
- * Khác với giảm tốc 100% ở chỗ CC này không bị xóa bởi giải trừ làm chậm chuyên biệt
- */
-export interface ApplyRoot extends ActionType<'apply', 'root'> {}
-
-/**
- * Bất bại (Invincible)
- * Miễn dịch mọi loại sát thương (thường đi kèm với immune CC để tạo thành trạng thái Vô địch hoàn toàn)
- */
-export interface ApplyInvincible extends ActionType<'apply', 'invincible'> {}
-
-/**
- * Không thể chọn làm mục tiêu (Untargetable)
- * Immune với các loại đạn/skill khóa mục tiêu (đạn bay xuyên qua không nổ)
- */
-export interface ApplyUntargetable extends ActionType<'apply', 'untargetable'> {}
-
-/**
- * Tàng hình (Invisible)
- * Mất tầm nhìn, có thể bị lộ nếu nhận sát thương hoặc tấn công (tùy config ở core, DSL chỉ quy định state)
- */
-export interface ApplyInvisible extends ActionType<'apply', 'invisible'> {}
-
-/**
- * Lộ tàng hình / Không thể tàng hình (Unstealthable)
- * Bị soi sáng bởi trụ hoặc skill, vô hiệu hóa trạng thái Tàng hình
- */
-export interface ApplyUnstealthable extends ActionType<'apply', 'unstealthable'> {}
-
-/**
- * Note, trong triển khai đảo ngược lại, apply immune thực chất là clear component có thể bị ảnh hưởng\
- * VD:
- * - 2 tầng no-immune-slow -> áp slow, no-immune-CC -> áp CC còn all là gỡ hết?
- * - Không ổn,
- *
- */
-export interface ApplyImmune extends ActionType<'apply', 'immune'> {
-	/**
-	 * Note: id dành cho các hiệu ứng kiểu: Sau 6s sẽ không bị trúng lại hiệu ứng này nữa
-	 */
-	filter: `tag:${'slow' | 'CC' | 'all'}` | `id:${string}`;
-}
-
+/** Xóa effect */
 export interface CleanEffect extends ActionType<'apply', 'clean-effect'> {
 	filter: `tag:${'buff' | 'debuff' | 'immune' | 'slow' | 'CC' | 'all'}` | `id:${string}`;
 }
 
+/** Áp effect mới */
 export interface ApplyEffect extends ActionType<'apply', 'effect'> {
-	manifest: EffectManifest<
-		| DealtDamage
-		| RecoverHP
-		| ModifyEnergy
-		| ModifyCountdown
-		| ApplyShield
-		| ApplySilent
-		| ApplyRoot
-		| ApplyInvincible
-		| ApplyUntargetable
-		| ApplyInvisible
-		| ApplyUnstealthable
-		| ApplyImmune
-		| CleanEffect
-		| SkillCastAction
-	>;
+	manifest: EffectManifest<EffectAction>;
 }
+
+/**
+ * Union tất cả action có thể dùng trong on-start/on-interval/on-end
+ */
+export type EffectAction =
+	| ApplyModifier
+	| SkillCastAction
+	| ApplyEffect
+	| CleanEffect
+	| ChangePhase
+	| ModifyCountdown
+	| 'clear';

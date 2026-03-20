@@ -12,14 +12,13 @@ const skill_1: CreateImpactor = {
 
 	collider: {
 		shape: { type: 'circle', size: { radius: 20 } },
-		pierce: ['architecture', 'self', 'ally'],
+		'pierce-targets': ['architecture', 'self', 'ally'],
 	},
 
 	visual: { sprite: { key: 'normal-attack' } },
 
 	impact: {
 		// interval: 0.5,
-		visual: { sprite: { key: 'normal-attack-impact' } },
 		actions: [
 			{
 				// Trúng đồng minh/bản thân giúp tăng 50% tốc chạy trong 2s
@@ -31,7 +30,7 @@ const skill_1: CreateImpactor = {
 							duration: 2,
 							impacts: [
 								{
-									'modify-stats': [{ 'value-from': { attribute: 'movement-speed', value: '50%' } }],
+									'modify-stats': [{ attribute: 'movement-speed', value: '50%' }],
 								},
 							],
 						},
@@ -49,8 +48,9 @@ const skill_1: CreateImpactor = {
 								{
 									'on-start': [
 										{
-											action: '@apply:recover-hp',
-											'value-from': { attribute: 'attack-power', value: '150%', of: 'self' },
+											action: '@apply:modifier',
+											attribute: 'current-HP',
+											value: (ctx) => ctx.self['attack-power'] * 1.5,
 										},
 									],
 								},
@@ -66,15 +66,15 @@ const skill_1: CreateImpactor = {
 								{
 									'on-start': [
 										{
-											action: '@apply:dealt-damage',
-											'value-from': { attribute: 'attack-power', value: '175%', of: 'self' },
-											'not-main-damage': true,
+											action: '@apply:modifier',
+											attribute: 'current-HP',
+											value: (ctx) => -ctx.self['attack-power'] * 1.75,
 										},
 										{
-											action: '@apply:dealt-damage',
-											'value-from': { attribute: 'lost-HP', of: 'target', value: '5%' },
-											'damage-type': 'true',
-											'text-delta-angle': 1,
+											action: '@apply:modifier',
+											attribute: 'current-HP',
+											value: (ctx) => -ctx.target['lost-HP'] * 0.05,
+											// true damage — không có reductions
 										},
 									],
 								},
@@ -107,8 +107,9 @@ const skill_2: CreateTargetedImpactor = {
 								{
 									'on-start': [
 										{
-											action: '@apply:dealt-damage',
-											'value-from': { attribute: 'attack-power', of: 'self', value: '150%' },
+											action: '@apply:modifier',
+											attribute: 'current-HP',
+											value: (ctx) => -ctx.self['attack-power'] * 1.5,
 										},
 									],
 								},

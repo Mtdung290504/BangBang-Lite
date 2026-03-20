@@ -13,10 +13,10 @@ interface CreateImpactorBase
 	extends
 		Impactable,
 		ActionType<'create-entity'>,
-		// Tính toán dựa trên khoảng cách nó đã bay, vậy thì tạo area effect sẽ không bị biến mất
+		// Xét biến mất dựa trên khoảng cách nó đã bay, vậy thì tạo area effect sẽ không bị biến mất
 		LimitedDistance,
 		// Area effect tồn tại có thời hạn,
-		// fly object tồn tại infinity, distance sẽ xóa nó khi bay hết hoặc bị collision
+		// fly object tồn tại infinity, distance sẽ xóa nó khi bay hết hoặc bị collision hết giới hạn
 		LimitedDuration,
 		// TODO: Implement phải triển khai 2 điều kiện trước khi xóa impactor
 		// 1. Collider của nó chết

@@ -18,29 +18,21 @@ export default {
 		actions: [
 			// Đánh trúng đích gây ST, cộng dồn tăng tốc độ, tốc công
 			{
-				'self-action': [
-					{
-						action: '@apply:effect',
-						manifest: {
-							name: 'star-inc-fire-rate',
-							duration: 2,
-							description: 'Tăng tốc độ 5%, tốc công 10% trong 2s, tối đa cộng dồn 4 tầng',
-							visual: { sprite: { key: 'star-inc-fire-rate-icon' } },
-							impacts: [1, 2, 3, 4].map((stack) => ({
-								'modify-stats': {
-									'value-from': { attribute: 'fire-rate', of: 'self', value: `${10 * stack}%` },
-								},
-							})),
-						},
+				'self-action': {
+					action: '@apply:effect',
+					manifest: {
+						name: 'star-inc-fire-rate',
+						duration: 2,
+						description: 'Tăng tốc độ 5%, tốc công 10% trong 2s, tối đa cộng dồn 4 tầng',
+						visual: { sprite: { key: 'star-inc-fire-rate-icon' } },
+						impacts: [1, 2, 3, 4].map((stack) => ({
+							'modify-stats': {
+								attribute: 'fire-rate',
+								value: `${10 * stack}%`,
+							},
+						})),
 					},
-
-					// Hiệu ứng nổ khi bắn trúng
-					{
-						action: '@create-entity',
-						from: 'parent-head',
-						visual: { sprite: { key: 'physic-hit' }, duration: 'sprite-end' },
-					},
-				],
+				},
 
 				'target-effect': {
 					action: '@apply:effect',
@@ -48,8 +40,9 @@ export default {
 						description: 'Gây 80% x tấn công ST',
 						impacts: {
 							'on-start': {
-								action: '@apply:dealt-damage',
-								'value-from': { attribute: 'attack-power', value: '80%' },
+								action: '@apply:modifier',
+								attribute: 'current-HP',
+								value: (ctx) => -ctx.self['attack-power'] * 0.8,
 							},
 						},
 					},
@@ -69,21 +62,13 @@ export default {
 						impacts: [1, 2, 3, 4].map((stack) => ({
 							visual: { sprite: { key: `star-burn-effect-${stack}` } },
 							'modify-stats': {
-								'value-from': {
-									attribute: 'movement-speed',
-									of: 'self',
-									value: `${-15 * stack}%`,
-								},
+								attribute: 'movement-speed',
+								value: `${-15 * stack}%`,
 							},
 							'on-interval': {
-								action: '@apply:dealt-damage',
-								'value-from': {
-									attribute: 'attack-power',
-									of: 'self',
-									value: `${20 * stack}%`,
-								},
-								'not-main-damage': true,
-								'text-delta-angle': 1,
+								action: '@apply:modifier',
+								attribute: 'current-HP',
+								value: `${-20 * stack}%`,
 							},
 						})),
 					},

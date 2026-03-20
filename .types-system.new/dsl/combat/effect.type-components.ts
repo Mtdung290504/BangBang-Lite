@@ -1,12 +1,6 @@
-import { ValueWithUnit } from '../.types';
-import { TankStatValueKey } from '../entity/tank/.enums';
+/**
+ * @deprecated StatValue đã được thay thế bởi StatModifier trong apply-effect.type-entities.ts
+ * File này giữ lại để tham khảo, có thể xóa sau khi migration hoàn tất.
+ */
 
-export interface StatValue<T extends TankStatValueKey = TankStatValueKey> {
-	'value-from': {
-		attribute: T;
-		value: ValueWithUnit;
-
-		/** Mặc định: `target` */
-		of?: 'self' | 'target';
-	};
-}
+// Không còn export gì — mọi thứ đã chuyển sang StatModifier + ValueResolver

@@ -1,7 +1,8 @@
-import { RecordSameValueType, ValueUnit } from '../../.types';
+import { RecordSameValueType } from '../../.types';
 import { MovementSpeedEnum } from '../../physic/movement.enums';
 import { ContextStatKeys } from './.enums';
 import { AdditionalStats, AttackPowerStats, ShootingStats, SurvivalStats } from './.types';
+import type { ValueResolver } from '../../runtime.types';
 
 interface FullStats {
 	shooting: ShootingStats;
@@ -27,13 +28,12 @@ interface TankManifest {
 export type { TankManifest, ShootingStats, SurvivalStats, AttackPowerStats, AdditionalStats };
 
 type ContextStat = RecordSameValueType<ContextStatKeys, number>;
-type CalcStat = (stat: FullStats, contextStat: ContextStat) => number;
 
-// Test
+// ===== Test: Sử dụng ValueResolver từ runtime.types.ts =====
 
-/**Mỗi 1% HP đã mất tăng 1% tốc chạy */
-const bonusSpeedByLostHP: CalcStat = (stat, contextStat) =>
-	stat['movement-speed'] * (contextStat['lost-HP'] / stat.survival['limit-HP']); // *x nếu x% thay vì 1%
+/** Mỗi 1% HP đã mất tăng 1% tốc chạy */
+const bonusSpeedByLostHP: ValueResolver = (ctx) =>
+	ctx.self['movement-speed'] * (ctx.self['lost-HP'] / ctx.self['limit-HP']); // *x nếu x% thay vì 1%
 
-/**Gây damage = 50% HP đã mất */
-const damageByLostHP: CalcStat = (_stat, contextStat) => contextStat['lost-HP'] * 0.5;
+/** Gây damage = 50% HP đã mất */
+const damageByLostHP: ValueResolver = (ctx) => ctx.self['lost-HP'] * 0.5;

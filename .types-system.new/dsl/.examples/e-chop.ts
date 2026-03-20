@@ -16,11 +16,12 @@ export default {
 					duration: 2,
 					impacts: {
 						'on-start': {
-							action: '@apply:recover-hp',
-							'value-from': { attribute: 'attack-power', of: 'self', value: '201%' },
+							action: '@apply:modifier',
+							attribute: 'current-HP',
+							value: (ctx) => ctx.self['attack-power'] * 2.01,
 						},
-						'modify-stats': { 'value-from': { attribute: 'movement-speed', value: '50%' } },
-						visual: { sprite: { key: 'e-chop-effect' }, duration: 'sprite-end' },
+						'modify-stats': { attribute: 'movement-speed', value: '50%' },
+						visual: { sprite: { key: 'e-chop-effect' } },
 					},
 				},
 			},

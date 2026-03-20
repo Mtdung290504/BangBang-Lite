@@ -1,6 +1,6 @@
-import { TankEventActorsMap } from './context/.types';
-import { AttackPowerStats, ShootingStats, SurvivalStats } from '../tank/.types';
-import { ValueWithUnit } from '../../.types';
+import type { TankEventActorsMap } from './context/.types';
+import type { StatModifier } from './actions/apply-effect.type-entities';
+import type { ConditionPredicate } from '../../runtime.types';
 
 import { SkillTiming } from './.type-components';
 import { SkillTypeDef } from './.types';
@@ -23,7 +23,7 @@ type EventTriggeredPassive = SkillTiming &
 			 * Điều kiện để trigger (optional)
 			 * - Ví dụ trigger khi chịu dame, mà chịu xong HP phải dưới 30% mới kích hoạt
 			 */
-			condition?: [];
+			condition?: ConditionPredicate;
 
 			/** Hành động khi trigger */
 			actions: PassiveSkillAction[];
@@ -42,7 +42,7 @@ type PeriodicPassive = SkillTiming &
 			actions: PassiveSkillAction[];
 
 			/** Điều kiện để có thể trigger (optional) */
-			conditions?: [];
+			conditions?: ConditionPredicate;
 
 			// Còn rắc rối khi cần kiểu "Khiên vỡ mới CD", có khi tách thành loại riêng cho lành
 			// => Khiên vỡ thì trigger full CD, quan tâm đếch gì CD gốc? XONG.
@@ -55,18 +55,15 @@ type PeriodicPassive = SkillTiming &
 type PermanentBuffPassive = SkillTypeDef<
 	'permanent-buff',
 	{
-		/** Các stat được buff (Triển khai sau) */
-		'stat-modifiers': {
-			attribute: keyof ShootingStats | keyof SurvivalStats | keyof AttackPowerStats;
-			value: ValueWithUnit;
-		}[];
+		/** Các stat được buff — dùng StatModifier mới (hỗ trợ function resolver) */
+		'stat-modifiers': StatModifier | StatModifier[];
 
 		/**
 		 * Điều kiện để buff có hiệu lực (optional)
 		 * - Ví dụ HP thấp hơn 40% mới tăng tốc
 		 * - Xung quanh không có đồng đội
 		 */
-		conditions?: [];
+		conditions?: ConditionPredicate;
 	}
 >;
 

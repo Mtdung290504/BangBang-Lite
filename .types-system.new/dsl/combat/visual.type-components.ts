@@ -25,6 +25,9 @@ export interface Renderable {
 	visual?: VisualManifest;
 }
 
+/**
+ * @deprecated Không còn cần sử dụng — engine tự quyết hiển thị text dựa trên giá trị +/-
+ */
 export interface TextVisual {
 	/**
 	 * Quyết định hiển thị số bay lên thẳng hay chéo.
