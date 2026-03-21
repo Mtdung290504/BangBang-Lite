@@ -46,7 +46,35 @@ export type StateEntry =
 	| { type: 'untargetable' }
 	| { type: 'invisible' }
 	| { type: 'unstealthable' }
-	| { type: 'immune'; filter: `tag:${'slow' | 'CC' | 'all'}` | `id:${string}` };
+	| { type: 'immune'; filter: `tag:${'slow' | 'CC' | 'all'}` | `id:${string}` }
+	| {
+			/**
+			 * Note: khi muốn vỡ hết khiên thì tăng/giảm stack\
+			 * Giới hạn đến stack nào đó on-start sẽ clean effect theo id (name) là xóa được
+			 */
+			type: 'impact-shield';
+
+			/**
+			 * Số impact có thể hấp thụ.\
+			 * Infinity = theo effect duration
+			 */
+			capacity: number;
+
+			/**
+			 * Xử lý impact:
+			 * - negate: vô hiệu (damage = 0, effect không áp)
+			 * - destroy: xóa sổ flying-object
+			 */
+			mode: 'negate' | 'destroy';
+
+			/**
+			 * Filter loại impact. Mặc định: 'all', VD:
+			 * - skill: GCL
+			 * - normal-attack: SSK
+			 * - flying-object: Zr
+			 */
+			filter?: 'all' | 'skill' | 'normal-attack' | 'flying-object';
+	  };
 
 // ===== Tầng ③: Instant Actions (trong on-start/on-interval/on-end) =====
 
@@ -91,7 +119,7 @@ export interface ChangePhase<PhaseName extends string = string> extends ActionTy
 
 /** Sửa countdown skill */
 export interface ModifyCountdown extends ActionType<'apply', 'modify-countdown'> {
-	slot: (SkillSlot | SpSkillSlot)[] | 'all';
+	slot: (SkillSlot | SpSkillSlot | `passive.${number}`)[];
 	value: ValueWithUnit;
 }
 
@@ -121,4 +149,4 @@ export type EffectAction =
 	| CleanEffect
 	| ChangePhase
 	| ModifyCountdown
-	| 'clear';
+	| { stack: 'up' | 'down' };

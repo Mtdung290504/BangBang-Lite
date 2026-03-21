@@ -1,6 +1,7 @@
 import type { StatModifier, StateEntry, EffectAction } from './apply-effect.type-entities';
 import type { LimitedDuration } from '../../../combat/state.type-components';
 import type { Renderable, VisualManifest } from '../../../combat/visual.type-components';
+import type { TankEvent } from '../context/.types';
 
 export interface EffectManifest<Action = EffectAction> extends Renderable, LimitedDuration {
 	/** Có thể kháng xóa bởi các skill hóa giải hay không */
@@ -43,10 +44,11 @@ export interface EffectManifest<Action = EffectAction> extends Renderable, Limit
 }
 
 /**
- * 1 stack effect — 3 tầng tách biệt:
+ * 1 stack effect — 4 tầng:
  * ① `modify-stats` — buff/debuff liên tục theo duration
  * ② `states` — trạng thái on/off theo duration (CC, immune,...)
  * ③ `on-start/on-interval/on-end` — hành động tức thì
+ * ④ `on-event` — lắng nghe game event (thay thế EventTriggeredPassive)
  */
 interface EffectImpactManifest<Action = EffectAction> extends Renderable {
 	/**
@@ -67,7 +69,7 @@ interface EffectImpactManifest<Action = EffectAction> extends Renderable {
 	 * ③ Khi effect bắt đầu thì gây ra gì đó.\
 	 * Cho phép khai báo đơn nếu chỉ có 1 action.
 	 */
-	'on-start'?: Action | 'clear' | (Action | 'clear')[];
+	'on-start'?: Action | Action[];
 
 	/**
 	 * ③ Khi đến interval thì làm gì đó.\
@@ -80,6 +82,19 @@ interface EffectImpactManifest<Action = EffectAction> extends Renderable {
 	 * Cho phép khai báo đơn nếu chỉ có 1 action.
 	 */
 	'on-end'?: Action | Action[];
+
+	/**
+	 * ④ Game event hooks — effect lắng nghe event từ TankEvent.
+	 * Thay thế toàn bộ khái niệm EventTriggeredPassive.
+	 * Cho phép khai báo đơn nếu chỉ có 1 action cho event đó.
+	 *
+	 * @example
+	 * // Khi trúng đòn → hồi máu
+	 * 'on-event': { 'on-hit-taken': { action: '@apply:modifier', attribute: 'current-HP', value: '10%' } }
+	 * // Khi giết địch → buff tốc
+	 * 'on-event': { 'on-destroy': { action: '@apply:effect', manifest: { duration: 5, ... } } }
+	 */
+	'on-event'?: Partial<Record<TankEvent, Action | Action[]>>;
 
 	/**
 	 * @override

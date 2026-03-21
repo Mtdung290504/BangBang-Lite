@@ -1,47 +1,28 @@
-type TankEventActors = {
-	[K in [
-		// Khi dùng skill thì kích hoạt thêm gì đó
-		'on-activate-skill',
+/**
+ * Game events mà effect có thể lắng nghe qua `on-event`.
+ *
+ * Nguyên tắc tối giản:
+ * - Attacker-side HIT events (trước damage) bỏ → redundant với on-impact trên impactor.
+ * - Attacker-side DEALT-DAMAGE event giữ → on-impact không biết damage có thực sự xảy ra không (shield, invincible,...).
+ * - Filtered events (skill/normal-attack) bỏ → impactor đã có `property` phân biệt,
+ *   receiver không cần biết loại hit, chỉ cần biết bị trúng.
+ * - Chỉ giữ những event không biểu diễn được bằng on-impact hay cơ chế khác.
+ */
+export type TankEvent =
+	/** Receiver: bị trúng đòn, TRƯỚC khi damage được áp */
+	| 'on-hit-taken'
 
-		// Trigger các event ví dụ fatal damage, HP < 30%,...
-		'on-hit-taken',
+	/** Receiver: bị trúng đòn VÀ đã chịu damage */
+	| 'on-hit-taken-damage'
 
-		// Chưa lường trước được nhưng có thể sẽ dùng
-		'on-hit-dealt',
+	/** Attacker: gây damage thành công, SAU khi damage áp xong */
+	| 'on-hit-dealt-damage'
 
-		// Hit only (Trúng skill/đánh thường kích hoạt gì đó hoặc skill/đánh thường trúng đích kích hoạt gì đó)
-		'on-skill-taken',
-		'on-skill-dealt',
-		'on-normal-attack-taken',
-		'on-normal-attack-dealt',
+	/** Receiver: damage SẼ giết mình, TRƯỚC khi chết */
+	| 'on-fatal-damage'
 
-		// Hit and dealt damage (Như trên nhưng phải có chịu damage mới kích hoạt)
-		'on-skill-taken-damage',
-		'on-skill-dealt-damage',
-		'on-normal-attack-taken-damage',
-		'on-normal-attack-dealt-damage',
+	/** Attacker: giết được mục tiêu (on-kill buff, reset CD, ...) */
+	| 'on-destroy'
 
-		// Khi tử vong hoặc khi kill
-		'on-destroy',
-		'on-destroyed',
-	][number]]: ('self' | 'source' | 'target')[];
-};
-
-export interface TankEventActorsMap extends TankEventActors {
-	'on-activate-skill': ['self'];
-	'on-hit-taken': ['source', 'self'];
-	'on-hit-dealt': ['target', 'self'];
-	'on-skill-taken': ['source', 'self'];
-	'on-skill-dealt': ['target', 'self'];
-	'on-normal-attack-taken': ['source', 'self'];
-	'on-normal-attack-dealt': ['target', 'self'];
-	'on-skill-taken-damage': ['source', 'self'];
-	'on-skill-dealt-damage': ['target', 'self'];
-	'on-normal-attack-taken-damage': ['source', 'self'];
-	'on-normal-attack-dealt-damage': ['target', 'self'];
-	'on-destroy': ['target', 'self'];
-	'on-destroyed': ['source', 'self'];
-}
-
-// Usage in future:
-// type T = { [K in SkillEventActorsMap['on-hit'][number]]: any };
+	/** Victim: bị giết (nổ khi chết, drop item, ...) */
+	| 'on-destroyed';

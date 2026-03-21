@@ -13,6 +13,6 @@ export type CritDamageEnum = 150 | 200;
 export type EnergyAmountEnum = 100 | 150 | 200;
 
 export type TankStatValueKey =
-	| keyof (ShootingStats & SurvivalStats & Omit<AttackPowerStats, 'damage-type'> & AdditionalStats)
+	| keyof (ShootingStats & SurvivalStats & AttackPowerStats & AdditionalStats)
 	| ContextStatKeys
 	| 'movement-speed';

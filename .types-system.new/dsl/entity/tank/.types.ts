@@ -1,5 +1,4 @@
-import { ValueWithUnit } from '../../.types';
-import { CritDamageEnum, EnergyAmountEnum, FireRateEnum, TankDamageType } from './.enums';
+import { CritDamageEnum, EnergyAmountEnum, FireRateEnum } from './.enums';
 import { FlightSpeedEnum } from '../../physic/movement.enums';
 import { RangeEnum } from '../../physic/range.enums';
 
@@ -14,25 +13,41 @@ export interface SurvivalStats {
 	'physical-armor': number;
 	'energy-shield': number;
 
-	// TODO: Thêm kháng hiệu ứng, miễn thương
+	/**
+	 * Đơn vị: %
+	 * @default 0
+	 */
+	resistance?: number;
+
+	/**
+	 * Đơn vị: %
+	 * @default 0
+	 */
+	'damage-reduction'?: number;
+
+	/**
+	 * Đơn vị: %
+	 * @default 0
+	 */
+	'life-steal'?: number;
 }
 
 export interface AttackPowerStats {
-	// 'damage-type': TankDamageType;
 	'attack-power': number;
 	penetration: number;
 	'crit-damage': CritDamageEnum;
 
-	/** @default 0 */
+	/**
+	 * Đơn vị: %
+	 * @default 0
+	 */
 	'crit-rate'?: number;
 }
 
 export interface AdditionalStats {
-	'energy-point': {
-		amount: EnergyAmountEnum;
-		recover?: {
-			every: number;
-			value: ValueWithUnit;
-		};
-	};
+	/**
+	 * Note: Có thể dùng skill nội tại,
+	 * không cần cấu hình riêng khả năng hồi phục nên chỉ cần khai báo giá trị
+	 */
+	'energy-point': EnergyAmountEnum;
 }
