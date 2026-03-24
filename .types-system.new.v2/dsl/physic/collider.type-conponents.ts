@@ -23,12 +23,6 @@ export interface Collidable {
 		'pierce-targets'?: PierceableTarget[] | 'all';
 
 		/**
-		 * Danh sách các mục tiêu bị BỎ QUA hoàn toàn (xem như tàng hình, đạn đi xuyên qua và không gây impact).
-		 * VD: Lựu đạn nổ lan không gây sát thương lại cho chính người ném ('parent'), hoặc đạn ký sinh không sát thương vật chủ ('target'/'parent').
-		 */
-		'ignore-targets'?: ('parent' | 'target' | 'self' | string)[];
-
-		/**
 		 * - Thời gian đợi đến khi collider thực sự hoạt động
 		 * - Đơn vị: s
 		 * - Mặc định: 0s

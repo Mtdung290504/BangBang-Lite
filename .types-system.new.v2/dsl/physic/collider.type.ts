@@ -1,4 +1,4 @@
-type ShapeName = 'rectangle' | 'circle';
+type ShapeName = 'rectangle' | 'circle' | 'ring';
 
 interface Shape<Name extends ShapeName> {
 	type: Name;
@@ -27,7 +27,18 @@ export interface Circle extends Shape<'circle'> {
 	};
 }
 
+/** Hình tròn bị khoét rỗng ở giữa (Vòng xuyến) */
+export interface Ring extends Shape<'ring'> {
+	size: {
+		/** Bán kính mép trong (pixels). Mục tiêu đứng bên trong vùng này sẽ KHÔNG bị phát hiện va chạm */
+		'inner-radius': number;
+
+		/** Bán kính mép ngoài (pixels) */
+		'outer-radius': number;
+	};
+}
+
 /**
  * Collider - Hình dạng dùng để phát hiện va chạm
  */
-export type ColliderDeclaration = Rectangle | Circle;
+export type ColliderDeclaration = Rectangle | Circle | Ring;
