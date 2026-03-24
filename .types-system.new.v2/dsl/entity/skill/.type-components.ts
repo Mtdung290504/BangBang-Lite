@@ -1,4 +1,4 @@
-import { RequireCharge, RequireDelay, SkillCastAction } from './actions/.types';
+import { SkillCastAction } from './actions/.types';
 import { CastingMethod } from './context/casting-methods.type-components';
 import { ValueWithUnit } from '../../.types';
 import { CreateTargetedImpactor } from './actions/create-attack.type-entities';
@@ -28,16 +28,13 @@ export interface ActionProps {
 
 	/** Skill tiêu hao gì, nếu không đủ, không dùng được, mặc định không tiêu hao */
 	'resource-consumption'?: SkillConsumption;
-
-	/** Khai báo cần khựng/gồng, mặc định không cần */
-	'activation-require'?: RequireCharge | RequireDelay;
 }
 
-export type ActionBased = {
+export type ActionBased<T extends string = string> = {
 	/**
 	 * Khai báo indicator hiển thị cho người chơi, không ảnh hưởng logic.
 	 * Mặc định: không hiển thị indicator
 	 */
 	'casting-method'?: CastingMethod;
-	actions: CreateTargetedImpactor | SkillCastAction | (CreateTargetedImpactor | SkillCastAction)[];
+	actions: CreateTargetedImpactor<T> | SkillCastAction<T> | (CreateTargetedImpactor<T> | SkillCastAction<T>)[];
 } & ActionProps;

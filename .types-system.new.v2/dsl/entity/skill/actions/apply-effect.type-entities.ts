@@ -1,9 +1,8 @@
 import { ActionType } from './.type-components';
-import type { TankStatValueKey } from '../../tank/.enums';
+import type { CurrentStatKeys, LostStatKeys, TankStatValueKey } from '../../tank/.enums';
 import type { SkillSlot, SpSkillSlot } from '../.enums';
 import type { ValueWithUnit } from '../../../.types';
 import type { ValueResolver, ReductionFn, ConditionPredicate } from '../../../runtime.types';
-import type { EffectManifest } from './apply-effect.types';
 import type { ImpactHandle, SkillCastAction } from './.types';
 
 // ===== Tầng ①: Continuous Stat Modifier (tồn tại theo effect duration) =====
@@ -24,7 +23,7 @@ import type { ImpactHandle, SkillCastAction } from './.types';
  * { attribute: 'movement-speed', value: '-30%', reductions: [effectResistance] }
  */
 export interface StatModifier {
-	attribute: TankStatValueKey;
+	attribute: Omit<TankStatValueKey, CurrentStatKeys | LostStatKeys>;
 	value: ValueWithUnit | ValueResolver;
 
 	/** Pipeline giảm trừ (optional). Designer dùng template có sẵn. */
@@ -97,7 +96,7 @@ export type StateEntry =
  *   value: (ctx) => -ctx.target['lost-HP'] * 0.5 }
  */
 export interface ApplyModifier extends ActionType<'apply', 'modifier'> {
-	attribute: TankStatValueKey;
+	attribute: CurrentStatKeys;
 	value: ValueWithUnit | ValueResolver;
 
 	/** Pipeline giảm trừ (optional). Không có = không giảm (true damage/heal). */
@@ -134,29 +133,49 @@ export interface CleanEffect extends ActionType<'apply', 'clean-effect'> {
 	filter: `tag:${'buff' | 'debuff' | 'immune' | 'slow' | 'CC' | 'all'}` | `id:${string}`;
 }
 
-/** Áp effect mới */
-export interface ApplyEffect extends ActionType<'apply', 'effect'> {
-	manifest: EffectManifest<EffectAction>;
+/** Áp effect mới theo tên đã định nghĩa sẵn trong SkillManifest */
+export interface ApplyEffect<EffectName extends string = string> extends ActionType<'apply', 'effect'> {
+	effect: EffectName;
 }
 
-export interface ModifyStack extends ActionType<'apply', 'modify-stack'> {
-	stack: 'up' | 'down';
+/** Tạm dừng chuỗi action hiện tại */
+export interface WaitAction<T extends string = string> extends ActionType<'do-act', 'wait'> {
+	duration: number;
+	'on-interrupt'?: EffectAction<T> | EffectAction<T>[];
+}
 
-	/**
-	 * Tăng hoặc giảm stack của effect khác\
-	 * Nếu không khai báo là tăng stack của chính effect gọi
-	 */
-	target?: ('self' | (string & {}))[];
+/** Bắt đầu hoặc kết thúc đếm thời gian gồng */
+export interface ModifyChargeAction extends ActionType<'do-act', 'modify-charge'> {
+	method: 'start' | 'end';
+	name: string;
+}
+
+/** Đẩy lui (Vector tính từ nguồn va chạm đập ra) */
+export interface ApplyKnockback extends ActionType<'apply', 'knockback'> {
+	speed: ValueResolver;
 }
 
 /**
- * Union tất cả action có thể dùng trong on-start/on-interval/on-end
+ * Đẩy hướng tâm (Radial Push)
+ * Điểm neo: Tâm của source (đạn/người chơi)
+ * - Tốc độ dương: Hút vào tâm (Engine tự ngắt khi tới điểm neo)
+ * - Tốc độ âm (-): Đẩy văng ra xa
  */
-export type EffectAction =
+export interface ApplyRadialPush extends ActionType<'apply', 'radial-push'> {
+	speed: ValueResolver;
+}
+
+/**
+ * Union tất cả action có thể dùng trong on-start/on-interval/on-end và skill actions
+ */
+export type EffectAction<T extends string = string> =
 	| ApplyModifier
-	| SkillCastAction
-	| ApplyEffect
+	| SkillCastAction<T>
+	| ApplyEffect<T>
 	| CleanEffect
 	| ChangePhase
 	| ModifyCountdown
-	| ModifyStack;
+	| WaitAction<T>
+	| ModifyChargeAction
+	| ApplyKnockback
+	| ApplyRadialPush;
