@@ -1,4 +1,5 @@
 import type { ActionBased, SkillTiming } from './.type-components';
+import { SkillTypeDef } from './.types';
 
 /**
  * Passive skill = SkillEntry thường, khác active ở engine behavior:
@@ -18,4 +19,17 @@ import type { ActionBased, SkillTiming } from './.type-components';
  * - On-kill buff: CD=0, áp effect vĩnh viễn với on-event: { 'on-destroy': [buff 5s] }
  * - Permanent buff: CD=0, áp effect unremovable với modify-stats
  */
-export type PassiveSkillEntry<T extends string = string> = SkillTiming & ActionBased<T> & {};
+export type SinglePassiveSkill<E extends string = string> = SkillTiming & ActionBased<E> & SkillTypeDef<'normal'>;
+
+export type PhasedPassiveSkill<E extends string = string, P extends string = string> = {
+	type: 'phased';
+
+	/**
+	 * Định nghĩa từng phase như 1 passive skill đơn
+	 */
+	'phases-definition': Record<P, SinglePassiveSkill<E>>;
+};
+
+export type PassiveSkillEntry<E extends string = string, P extends string = string> =
+	| SinglePassiveSkill<E>
+	| PhasedPassiveSkill<E, P>;

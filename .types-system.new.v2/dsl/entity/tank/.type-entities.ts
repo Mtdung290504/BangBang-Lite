@@ -1,8 +1,5 @@
-import { RecordSameValueType } from '../../.types';
 import { MovementSpeedEnum } from '../../physic/movement.enums';
-import { ContextStatKeys } from './.enums';
 import { AdditionalStats, AttackPowerStats, ShootingStats, SurvivalStats } from './.types';
-import type { ValueResolver } from '../../runtime.types';
 
 interface FullStats {
 	shooting: ShootingStats;

@@ -34,14 +34,16 @@ export interface SurvivalStats {
 
 export interface AttackPowerStats {
 	'attack-power': number;
-	penetration: number;
-	'crit-damage': CritDamageEnum;
+
+	'penetration-unit': number;
+	'penetration-percent': number;
 
 	/**
 	 * Đơn vị: %
 	 * @default 0
 	 */
 	'crit-rate'?: number;
+	'crit-damage': CritDamageEnum;
 }
 
 export interface AdditionalStats {

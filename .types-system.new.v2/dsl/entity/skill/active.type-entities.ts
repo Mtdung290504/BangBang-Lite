@@ -35,20 +35,19 @@ type MultiStageSkill<T extends string = string> = SkillTiming &
 type SingleSkill<T extends string = string> = NormalSkill<T> | StackedSkill<T> | MultiStageSkill<T>;
 
 /**
- * Skill thay đổi hành vi theo phase (Trạng thái/Hệ)\
- * *Thay đổi thành array, quy ước là index array cho dễ.
+ * Skill thay đổi hành vi theo phase (Trạng thái/Hệ)
  */
-type PhasedSkill<T extends string = string> = {
+type PhasedSkill<E extends string = string, P extends string = string> = {
 	type: 'phased';
 
 	/**
 	 * Định nghĩa từng phase như 1 skill đơn\
-	 * Skill không có phase nào đó thì để trống, hệ thống cần tự fallback về phase 0
+	 * Skill không có phase nào đó thì để trống, hệ thống cần tự fallback về phase đầu tiên hoặc default
 	 */
-	'phases-definition': SingleSkill<T>[];
+	'phases-definition': Record<P, SingleSkill<E>>;
 };
 
 /**
  * Chuyển kiểu theo có phase hay skill
  */
-export type SkillEntry<T extends string = string> = SingleSkill<T> | PhasedSkill<T>;
+export type SkillEntry<E extends string = string, P extends string = string> = SingleSkill<E> | PhasedSkill<E, P>;

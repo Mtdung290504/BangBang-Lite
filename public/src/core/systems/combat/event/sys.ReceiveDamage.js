@@ -39,7 +39,7 @@ const ReceiveDamageSystem = defineSystemFactory([ReceivedDamageComponent])
 
 			// Tối thiểu gây 1 ST
 			const calulatedDamage = Math.round(
-				Math.max(1, (1 + survival.dmgReduction * 0.01) * damage(damageValue, calcDef()))
+				Math.max(1, (1 - survival.dmgReduction * 0.01) * damage(damageValue, calcDef())),
 			);
 
 			// Lượng ST thực sự gây ra, nếu > 0, hiển thị

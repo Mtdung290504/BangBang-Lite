@@ -3,7 +3,8 @@ import type { LimitedDuration } from '../../../combat/state.type-components';
 import type { Renderable, VisualManifest } from '../../../combat/visual.type-components';
 import type { TankEvent } from '../context/.types';
 
-export interface EffectManifest<T extends string = string, Action = EffectAction<T>> extends Renderable, LimitedDuration {
+export interface EffectManifest<T extends string = string, Action = EffectAction<T>>
+	extends Renderable, LimitedDuration {
 	/** Có thể kháng xóa bởi các skill hóa giải hay không */
 	unremovable?: true;
 
@@ -63,7 +64,7 @@ interface EffectImpactManifest<Action = EffectAction<any>> extends Renderable {
 	 * Engine toggle on khi effect active, toggle off khi hết.
 	 * Cho phép khai báo đơn nếu chỉ có 1 state.
 	 */
-	states?: StateEntry | StateEntry[];
+	'modify-states'?: StateEntry | StateEntry[];
 
 	/**
 	 * ③ Khi effect bắt đầu thì gây ra gì đó.\

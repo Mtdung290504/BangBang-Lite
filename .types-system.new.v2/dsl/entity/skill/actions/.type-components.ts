@@ -42,6 +42,7 @@ export interface UseTargetingStrategy extends UseStrategy<'targeting'> {
 		type: 'targeting';
 
 		/**
+		 * - `self`: Lấy chính bản thân
 		 * - `active-lock`: Lấy (các) mục tiêu trong phạm vi bán kính 25px quanh trỏ chuột
 		 * - `nearest`: Lấy (các) mục tiêu gần nhất
 		 * - `random`: Lấy (các) mục tiêu ngẫu nhiên

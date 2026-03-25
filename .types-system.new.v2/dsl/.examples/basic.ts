@@ -80,7 +80,7 @@ export const MySkillManifest: DefineSkill<MyEffects> = {
 		'wait-phase': {
 			duration: 2,
 			impacts: {
-				states: { type: 'silent', slot: 'all' },
+				'modify-states': { type: 'silent', slot: 'all' },
 			},
 		},
 	},

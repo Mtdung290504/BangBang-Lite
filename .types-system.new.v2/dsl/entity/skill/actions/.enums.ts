@@ -19,4 +19,4 @@ export type ActionPrefix = 'create-entity' | 'do-act' | 'apply';
  */
 // export type ActionTargetingRequire = 'none' | 'direction' | 'position' | 'target';
 
-export type LockMethod = 'active-lock' | 'nearest' | 'weakest' | RandomDefinition;
+export type LockMethod = 'active-lock' | 'nearest' | 'weakest' | 'self' | RandomDefinition;

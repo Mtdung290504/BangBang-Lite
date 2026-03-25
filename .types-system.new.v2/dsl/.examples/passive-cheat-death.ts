@@ -25,7 +25,7 @@ export const CheatDeathManifest: DefineSkill<CheatDeathEffects> = {
 		'cheat-death-invincible': {
 			duration: 1.5,
 			impacts: {
-				states: { type: 'invincible' },
+				'modify-states': { type: 'invincible' },
 			},
 		},
 	},

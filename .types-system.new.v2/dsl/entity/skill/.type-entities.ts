@@ -6,13 +6,13 @@ import { SkillSlot } from './.enums';
 /**
  * Định nghĩa tổng cho manifest
  */
-export interface SkillManifest<T extends string = string>
+export interface SkillManifest<E extends string = string, P extends string = string>
 	// Active skills
-	extends RecordSameValueType<SkillSlot, SkillEntry<T>> {
+	extends RecordSameValueType<SkillSlot, SkillEntry<E, P>> {
 	/**
 	 * Passive skills — cùng cấu trúc với active, khác ở engine behavior:
 	 * - Auto-trigger khi CD xong
 	 * - Immune silent
 	 */
-	passives?: PassiveSkillEntry<T>[];
+	passives?: PassiveSkillEntry<E, P>[];
 }

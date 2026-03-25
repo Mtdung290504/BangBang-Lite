@@ -36,5 +36,10 @@ export type ActionBased<T extends string = string> = {
 	 * Mặc định: không hiển thị indicator
 	 */
 	'casting-method'?: CastingMethod;
+
+	/**
+	 * Mô tả tùy chỉnh
+	 */
+	description?: string;
 	actions: CreateTargetedImpactor<T> | SkillCastAction<T> | (CreateTargetedImpactor<T> | SkillCastAction<T>)[];
 } & ActionProps;

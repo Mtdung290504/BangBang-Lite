@@ -7,8 +7,12 @@ import { SkillManifest } from './.type-entities';
  */
 export type DefineSkill<
 	EffectNames extends string = string,
-	Effects extends Record<EffectNames, EffectManifest<EffectNames, EffectAction<EffectNames>>> = Record<EffectNames, EffectManifest<EffectNames, EffectAction<EffectNames>>>
+	PhaseNames extends string = string,
+	Effects extends Record<EffectNames, EffectManifest<EffectNames, EffectAction<EffectNames>>> = Record<
+		EffectNames,
+		EffectManifest<EffectNames, EffectAction<EffectNames>>
+	>,
 > = {
 	effects?: Effects;
-	manifest: SkillManifest<EffectNames>;
+	manifest: SkillManifest<EffectNames, PhaseNames>;
 };

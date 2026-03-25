@@ -29,7 +29,7 @@ export interface ValueResolveContext {
  * const speedByLostHP: ValueResolver = (ctx) =>
  *     ctx.self['movement-speed'] * (ctx.self['lost-HP'] / ctx.self['limit-HP']);
  */
-export type ValueResolver = (ctx: ValueResolveContext) => number;
+export type ValueResolver<ReturnEnum = number> = (ctx: ValueResolveContext) => ReturnEnum | (number & {});
 
 /**
  * Reduction function — 1 bước trong pipeline giảm trừ.

@@ -23,7 +23,7 @@ import type { ImpactHandle, SkillCastAction } from './.types';
  * { attribute: 'movement-speed', value: '-30%', reductions: [effectResistance] }
  */
 export interface StatModifier {
-	attribute: Omit<TankStatValueKey, CurrentStatKeys | LostStatKeys>;
+	attribute: Exclude<TankStatValueKey, CurrentStatKeys | LostStatKeys>;
 	value: ValueWithUnit | ValueResolver;
 
 	/** Pipeline giảm trừ (optional). Designer dùng template có sẵn. */
@@ -52,12 +52,6 @@ export type StateEntry =
 			 * Giới hạn đến stack nào đó on-start sẽ clean effect theo id (name) là xóa được
 			 */
 			type: 'impact-shield';
-
-			/**
-			 * Số impact có thể hấp thụ.\
-			 * Infinity = theo effect duration
-			 */
-			capacity: number;
 
 			/**
 			 * Xử lý impact:
@@ -107,7 +101,7 @@ export interface ApplyModifier extends ActionType<'apply', 'modifier'> {
 
 /** Sửa phase */
 export interface ChangePhase<PhaseName extends string = string> extends ActionType<'do-act', 'change-phase'> {
-	method: 'next' | `to-phase:${PhaseName}`;
+	method: 'next' | `to-phase:${PhaseName}` | `extend-phase:${PhaseName}`;
 
 	/**
 	 * @override
@@ -124,11 +118,14 @@ export interface ModifyCountdown extends ActionType<'apply', 'modify-countdown'>
 
 /** Khiên */
 export interface ApplyShield extends ActionType<'apply', 'shield'> {
-	value: ValueWithUnit | ValueResolver;
+	value: ValueResolver;
 	'on-break'?: ImpactHandle;
 }
 
-/** Xóa effect */
+/**
+ * Xóa effect\
+ * *Lưu ý*: unremovable của effect chỉ chống bị remove by tag, khi hết thời gian hay remove by id vẫn bị xóa
+ */
 export interface CleanEffect extends ActionType<'apply', 'clean-effect'> {
 	filter: `tag:${'buff' | 'debuff' | 'immune' | 'slow' | 'CC' | 'all'}` | `id:${string}`;
 }
