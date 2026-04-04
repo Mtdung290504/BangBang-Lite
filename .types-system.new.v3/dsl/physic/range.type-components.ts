@@ -12,5 +12,3 @@ export interface LimitedDistance {
 	'limit-range'?: ValueResolver<RangeEnum>;
 }
 
-// Phạm vi 1000
-const e1: LimitedDistance = { 'limit-range': () => 336 };

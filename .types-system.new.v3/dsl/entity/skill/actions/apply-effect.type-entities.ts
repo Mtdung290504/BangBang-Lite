@@ -21,7 +21,7 @@ import type { ImpactHandle, SkillCastAction } from './.types';
  */
 export interface StatModifier {
 	attribute: Exclude<TankStatValueKey, CurrentStatKeys | LostStatKeys>;
-	value: ValueResolver;
+	value: ValueWithUnit | ValueResolver;
 
 	/** Pipeline giảm trừ (optional). Designer dùng template có sẵn. */
 	reductions?: ReductionFn | ReductionFn[];
@@ -88,7 +88,7 @@ export type StateEntry =
  */
 export interface ApplyModifier extends ActionType<'apply', 'modifier'> {
 	attribute: CurrentStatKeys;
-	value: ValueResolver;
+	value: ValueWithUnit | ValueResolver;
 
 	/** Pipeline giảm trừ (optional). Không có = không giảm (true damage/heal). */
 	reductions?: ReductionFn | ReductionFn[];

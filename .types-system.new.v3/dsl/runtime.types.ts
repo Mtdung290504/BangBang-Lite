@@ -8,22 +8,48 @@ import type { TankStatValueKey } from './entity/tank/.enums';
 export type RuntimeStats = Record<TankStatValueKey, number>;
 
 /**
- * Context engine cung cấp cho function resolver.
- * Skill module JS nhận đầy đủ stats của cả self lẫn target.
+ * Snapshot của 1 entity tại thời điểm tính toán.
+ * Bao gồm toàn bộ stats + query effect.
  */
-export interface ValueResolveContext {
-	self: Readonly<RuntimeStats>;
-	target: Readonly<RuntimeStats>;
-	getChargeTime(name: string): number;
-
+export type EntitySnapshot = Readonly<RuntimeStats> & {
 	/**
-	 * Kiểm tra xem entity đang mang effect có id tương ứng không.
-	 * Dùng trong `conditions` để phân biệt phase của skill (VD: đang có buff s2 hay không).
+	 * Kiểm tra entity này đang mang effect có id chỉ định không.
 	 *
 	 * @example
-	 * conditions: ctx => ctx.hasEffect('s2-empower')
+	 * // Conditional proc: chỉ heal khi target đang bị mark
+	 * value: ctx => ctx.target.hasEffect('enemy-mark') ? ctx.self['attack-power'] * 0.2 : 0
+	 *
+	 * // Check bản thân đang ở trạng thái cường hóa
+	 * conditions: ctx => ctx.self.hasEffect('s2-empower')
 	 */
 	hasEffect(id: string): boolean;
+};
+
+/**
+ * Context engine cung cấp cho function resolver.
+ *
+ * **Convention quan trọng:**
+ * - `self` — LUÔN là **caster** (tank đã kích hoạt skill), bất kể effect đang áp lên ai.
+ * - `target` — entity đang nhận effect, kế thừa từ `impact` context:
+ *   - Trong `target-effect`: target = entity trúng đòn.
+ *   - Trong `self-action`: target = chính caster (trùng với self).
+ *   - Trong `on-event`: target = entity trigger event (VD: attacker trong `on-hit-taken`).
+ *
+ * @example
+ * // Damage = attack-power của CASTER
+ * value: ctx => -ctx.self['attack-power'] * 1.5
+ *
+ * // Conditional: chỉ heal khi kẻ vừa đánh mình đang bị mark
+ * value: ctx => ctx.target.hasEffect('enemy-mark') ? ctx.self['attack-power'] * 0.15 : 0
+ */
+export interface ValueResolveContext {
+	/** Luôn là caster — tank đã kích hoạt skill */
+	self: EntitySnapshot;
+
+	/** Entity nhận effect / trigger event (phụ thuộc context, xem JSDoc) */
+	target: EntitySnapshot;
+
+	getChargeTime(name: string): number;
 }
 
 /**

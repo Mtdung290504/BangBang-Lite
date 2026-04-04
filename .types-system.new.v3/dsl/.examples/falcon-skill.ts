@@ -20,7 +20,7 @@ export const FalconManifest: DefineSkill = {
 			{
 				// phase 0 — default
 				triggers: ['on-key:normal-attack'],
-				conditions: (ctx) => !ctx.hasEffect('s2-empower') && ctx.self['current-energy-point'] >= 20,
+				conditions: (ctx) => !ctx.self.hasEffect('s2-empower') && ctx.self['current-energy-point'] >= 20,
 				actions: [
 					{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => -20 },
 					{
@@ -42,7 +42,7 @@ export const FalconManifest: DefineSkill = {
 			{
 				// phase 1 — sau khi bật S2 lướt
 				triggers: ['on-key:normal-attack'],
-				conditions: (ctx) => ctx.hasEffect('s2-empower'),
+				conditions: (ctx) => ctx.self.hasEffect('s2-empower'),
 				actions: {
 					action: '@create-entity',
 					from: 'self-pos',
@@ -158,7 +158,7 @@ export const FalconManifest: DefineSkill = {
 					{
 						action: '@apply:modifier',
 						attribute: 'current-energy-point',
-						value: ({ self }) => self['energy-point'],
+						value: '100%',
 					},
 				],
 			},
@@ -252,7 +252,7 @@ export const FalconManifest: DefineSkill = {
 							{
 								action: '@apply:modifier',
 								attribute: 'current-HP',
-								value: (ctx) => -ctx.target['attack-power'] * 1.5,
+								value: (ctx) => -ctx.self['attack-power'] * 1.5,
 								reductions: energyDamageReduction,
 							},
 							{ action: '@apply:effect', effect: 'ult-mark' }, // Tự bồi đắp stack!
@@ -266,7 +266,7 @@ export const FalconManifest: DefineSkill = {
 							{
 								action: '@apply:modifier',
 								attribute: 'current-HP',
-								value: (ctx) => -ctx.target['attack-power'] * 1.75,
+								value: (ctx) => -ctx.self['attack-power'] * 1.75,
 								reductions: energyDamageReduction,
 							},
 							{ action: '@apply:effect', effect: 'ult-mark' },
@@ -280,7 +280,7 @@ export const FalconManifest: DefineSkill = {
 							{
 								action: '@apply:modifier',
 								attribute: 'current-HP',
-								value: (ctx) => -ctx.target['attack-power'] * 2.0,
+								value: (ctx) => -ctx.self['attack-power'] * 2.0,
 								reductions: energyDamageReduction,
 							},
 							{ action: '@apply:effect', effect: 'ult-mark' },
@@ -294,7 +294,7 @@ export const FalconManifest: DefineSkill = {
 							{
 								action: '@apply:modifier',
 								attribute: 'current-HP',
-								value: (ctx) => -ctx.target['attack-power'] * 2.25,
+								value: (ctx) => -ctx.self['attack-power'] * 2.25,
 								reductions: energyDamageReduction,
 							},
 							{ action: '@apply:effect', effect: 'ult-mark' },

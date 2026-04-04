@@ -1,11 +1,5 @@
 import { AdditionalStats, AttackPowerStats, ShootingStats, SurvivalStats } from './.types';
 
-/**Thuộc tính tank - Vật lý hay năng lượng */
-export type TankDamageType = 'physical' | 'energy';
-
-/**Loại sát thương tạo ra - Vật lý, năng lượng hoặc chuẩn */
-export type DamageType = 'true' | TankDamageType;
-
 export type CurrentStatKeys = `${'current'}${'-HP' | '-energy-point'}`;
 export type LostStatKeys = `${'lost'}${'-HP' | '-energy-point'}`;
 export type ContextStatKeys = CurrentStatKeys | LostStatKeys;
