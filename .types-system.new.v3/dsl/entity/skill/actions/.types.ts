@@ -12,12 +12,13 @@ export type ImpactAction = {
 export type ImpactHandle<
 	TargetEffect extends object = ApplyEffect,
 	SelfAction extends object = SkillCastAction | ApplyEffect,
-> =
-	| {
-			'target-effect': TargetEffect | TargetEffect[];
-			'self-action'?: SelfAction | SelfAction[];
-	  }
-	| {
-			'target-effect'?: TargetEffect | TargetEffect[];
-			'self-action': SelfAction | SelfAction[];
-	  };
+> = {
+	/**Effect lên mục tiêu trúng */
+	'target-effect'?: TargetEffect | TargetEffect[];
+
+	/**Effect lên bản thân */
+	'self-effect'?: TargetEffect | TargetEffect[];
+
+	/**Action của bản thân */
+	actions?: SelfAction | SelfAction[];
+};

@@ -21,10 +21,7 @@ import type { ImpactHandle, SkillCastAction } from './.types';
  */
 export interface StatModifier {
 	attribute: Exclude<TankStatValueKey, CurrentStatKeys | LostStatKeys>;
-	value: ValueWithUnit | ValueResolver;
-
-	/** Pipeline giảm trừ (optional). Designer dùng template có sẵn. */
-	reductions?: ReductionFn | ReductionFn[];
+	value: ValueResolver;
 }
 
 // ===== Tầng ②: State (tồn tại theo effect duration) =====
@@ -38,6 +35,7 @@ export interface StatModifier {
 export type StateEntry =
 	| { type: 'silent'; slot: (SkillSlot | SpSkillSlot)[] | 'all' }
 	| { type: 'root' }
+	| { type: 'throw-up' }
 	| { type: 'invincible' }
 	| { type: 'untargetable' }
 	| { type: 'invisible' }
@@ -88,7 +86,7 @@ export type StateEntry =
  */
 export interface ApplyModifier extends ActionType<'apply', 'modifier'> {
 	attribute: CurrentStatKeys;
-	value: ValueWithUnit | ValueResolver;
+	value: ValueResolver;
 
 	/** Pipeline giảm trừ (optional). Không có = không giảm (true damage/heal). */
 	reductions?: ReductionFn | ReductionFn[];
@@ -135,7 +133,7 @@ export interface CleanEffect extends ActionType<'apply', 'clean-effect'> {
 
 /** Áp effect mới theo tên đã định nghĩa sẵn trong SkillManifest */
 export interface ApplyEffect extends ActionType<'apply', 'effect'> {
-	effect: string;
+	effect: string | string[];
 }
 
 /** Tạm dừng chuỗi action hiện tại */

@@ -27,5 +27,5 @@ export interface CreateImpactor extends CreateImpactorBase, RequireInitPositionM
 	/**
 	 * Hướng bay (direction) hoặc Trọng điểm mục tiêu (targeting)
 	 */
-	strategy: UseDirectionStrategy['strategy'] | UseTargetingStrategy['strategy'];
+	strategy?: UseDirectionStrategy['strategy'] | UseTargetingStrategy['strategy'];
 }

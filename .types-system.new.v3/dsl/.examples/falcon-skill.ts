@@ -31,9 +31,9 @@ export const FalconManifest: DefineSkill = {
 						movement: { 'move-type': 'straight', speed: ({ self }) => self['flight-speed'] },
 						collider: { shape: { type: 'rectangle', size: { width: 100, height: 35 } } },
 						impact: {
-							actions: [
+							manifest: [
 								{ 'target-effect': { action: '@apply:effect', effect: 'normal-damage' } },
-								{ 'self-action': { action: '@apply:effect', effect: 'passive-hit-counter' } },
+								{ actions: { action: '@apply:effect', effect: 'passive-hit-counter' } },
 							],
 						},
 					},
@@ -55,9 +55,9 @@ export const FalconManifest: DefineSkill = {
 						'pierce-targets': 'all',
 					},
 					impact: {
-						actions: [
+						manifest: [
 							{ 'target-effect': { action: '@apply:effect', effect: 'normal-damage-lifesteal' } }, // Hút máu & Damage
-							{ 'self-action': { action: '@apply:effect', effect: 's2-attack-tracker' } }, // Tích lùi số lượng đạn
+							{ actions: { action: '@apply:effect', effect: 's2-attack-tracker' } }, // Tích lùi số lượng đạn
 						],
 					},
 				},
@@ -77,7 +77,7 @@ export const FalconManifest: DefineSkill = {
 				collider: { shape: { type: 'circle', size: { radius: 200 } } },
 				impact: {
 					interval: 1,
-					actions: { 'target-effect': { action: '@apply:effect', effect: 'reveal-stealth' } },
+					manifest: { 'target-effect': { action: '@apply:effect', effect: 'reveal-stealth' } },
 				},
 			},
 		},
@@ -99,9 +99,9 @@ export const FalconManifest: DefineSkill = {
 						'drag-targets': true,
 					},
 					impact: {
-						actions: {
+						manifest: {
 							'affected-faction': ['self'],
-							'self-action': [
+							actions: [
 								// Phase normal-attack → 1 (đạn cường hóa), buff S2, nạp 1 viên vào Tracker
 								{
 									action: '@do-act:change-phase',
@@ -129,7 +129,7 @@ export const FalconManifest: DefineSkill = {
 				movement: { 'move-type': 'straight', speed: () => 1200 },
 				collider: { shape: { type: 'circle', size: { radius: 60 } } },
 				impact: {
-					actions: { 'target-effect': { action: '@apply:effect', effect: 'ult-mark' } },
+					manifest: { 'target-effect': { action: '@apply:effect', effect: 'ult-mark' } },
 				},
 			},
 		},
@@ -158,7 +158,7 @@ export const FalconManifest: DefineSkill = {
 					{
 						action: '@apply:modifier',
 						attribute: 'current-energy-point',
-						value: '100%',
+						value: ({ self }) => self['energy-point'],
 					},
 				],
 			},
@@ -167,7 +167,6 @@ export const FalconManifest: DefineSkill = {
 		// --- CƠ CHẾ CƯỜNG HÓA NỘI TẠI (4 HIT) ---
 		'passive-hit-counter': {
 			duration: 4,
-			'stack-timeline-policy': 'reset-duration',
 			description: 'Đánh thường trúng địch 4 lần -> cường hóa xuyên giáp',
 			impacts: [
 				{ visual: { sprite: { key: 'hit-count:1' } } },
@@ -242,7 +241,6 @@ export const FalconManifest: DefineSkill = {
 		// --- ULTIMATE: DẤU ẤN BÙNG NỔ NỘI TẠI ---
 		'ult-mark': {
 			duration: 4,
-			'stack-timeline-policy': 'reset-duration',
 			description: 'Dấu ấn nổ 150% + 25% mỗi stack khi dính đòn',
 			impacts: [
 				{

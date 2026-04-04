@@ -3,8 +3,7 @@ import type { LimitedDuration } from '../../../combat/state.type-components';
 import type { Renderable, VisualManifest } from '../../../combat/visual.type-components';
 import type { TankEvent } from '../context/.types';
 
-export interface EffectManifest<Action = EffectAction>
-	extends Renderable, LimitedDuration {
+export interface EffectManifest<Action = EffectAction> extends Renderable, LimitedDuration {
 	/** Có thể kháng xóa bởi các skill hóa giải hay không */
 	unremovable?: true;
 
@@ -33,7 +32,7 @@ export interface EffectManifest<Action = EffectAction>
 	 * - `keep-duration`: Giữ nguyên thời gian của stack đầu tiên.
 	 * Mặc định: `reset-duration`
 	 */
-	'stack-timeline-policy'?: 'reset-duration' | 'keep-duration';
+	// 'stack-timeline-policy'?: 'reset-duration' | 'keep-duration';
 
 	/**
 	 * Impact diễn ra nhiều lần theo interval, đơn vị: giây
@@ -53,22 +52,22 @@ export interface EffectManifest<Action = EffectAction>
 
 /**
  * 1 stack effect — 4 tầng:
- * ① `modify-stats` — buff/debuff liên tục theo duration
- * ② `states` — trạng thái on/off theo duration (CC, immune,...)
- * ③ `on-start/on-interval/on-end` — hành động tức thì
- * ④ `on-event` — lắng nghe game event (thay thế EventTriggeredPassive)
+ * - `modify-stats` — buff/debuff liên tục theo duration
+ * - `states` — trạng thái on/off theo duration (CC, immune,...)
+ * - `on-start/on-interval/on-end` — hành động tức thì
+ * - `on-event` — lắng nghe game event (thay thế EventTriggeredPassive)
  */
 interface EffectImpactManifest<Action = EffectAction> extends Renderable {
 	/**
-	 * ① Continuous stat modifiers — tồn tại suốt effect duration.
-	 * Engine apply khi effect active, remove khi effect hết.
+	 * ① Continuous stat modifiers — tồn tại suốt effect duration.\
+	 * Engine apply khi effect active, remove khi effect hết.\
 	 * Cho phép khai báo đơn nếu chỉ có 1 modifier.
 	 */
 	'modify-stats'?: StatModifier | StatModifier[];
 
 	/**
-	 * ② States — trạng thái đặc biệt tồn tại suốt effect duration.
-	 * Engine toggle on khi effect active, toggle off khi hết.
+	 * ② States — trạng thái đặc biệt tồn tại suốt effect duration.\
+	 * Engine toggle on khi effect active, toggle off khi hết.\
 	 * Cho phép khai báo đơn nếu chỉ có 1 state.
 	 */
 	'modify-states'?: StateEntry | StateEntry[];
@@ -92,8 +91,8 @@ interface EffectImpactManifest<Action = EffectAction> extends Renderable {
 	'on-end'?: Action | Action[];
 
 	/**
-	 * ④ Game event hooks — effect lắng nghe event từ TankEvent.
-	 * Thay thế toàn bộ khái niệm EventTriggeredPassive.
+	 * ④ Game event hooks — effect lắng nghe event từ TankEvent.\
+	 * Thay thế toàn bộ khái niệm EventTriggeredPassive.\
 	 * Cho phép khai báo đơn nếu chỉ có 1 action cho event đó.
 	 *
 	 * @example
