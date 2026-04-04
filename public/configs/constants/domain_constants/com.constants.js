@@ -1,5 +1,5 @@
 /** Constant used in calculating dx and dy of tank */
-export const SPEED_CALCULATION_CONSTANT = (24 / 1000) * (50 / 67);
+export const SPEED_CALCULATION_CONSTANT = (24 / 1000) * (55 / 67);
 
 /** Constant used in calculating dx and dy of projectile */
 export const PROJECTILE_SPEED_CALCULATION_CONSTANT = 50 / 67;
