@@ -2,7 +2,7 @@ import { ActionType } from './.type-components';
 import type { CurrentStatKeys, LostStatKeys, TankStatValueKey } from '../../tank/.enums';
 import type { SkillSlot, SpSkillSlot } from '../.enums';
 import type { ValueWithUnit } from '../../../.types';
-import type { ValueResolver, ReductionFn, ConditionPredicate } from '../../../runtime.types';
+import type { ValueResolver, ReductionFn } from '../../../runtime.types';
 import type { ImpactHandle, SkillCastAction } from './.types';
 
 // ===== Tầng ①: Continuous Stat Modifier (tồn tại theo effect duration) =====
@@ -18,13 +18,10 @@ import type { ImpactHandle, SkillCastAction } from './.types';
  * // HP càng thấp chạy càng nhanh — function resolver
  * { attribute: 'movement-speed',
  *   value: (ctx) => ctx.self['movement-speed'] * (ctx.self['lost-HP'] / ctx.self['limit-HP']) }
- *
- * // Giảm tốc 30%, bị kháng hiệu ứng
- * { attribute: 'movement-speed', value: '-30%', reductions: [effectResistance] }
  */
 export interface StatModifier {
 	attribute: Exclude<TankStatValueKey, CurrentStatKeys | LostStatKeys>;
-	value: ValueWithUnit | ValueResolver;
+	value: ValueResolver;
 
 	/** Pipeline giảm trừ (optional). Designer dùng template có sẵn. */
 	reductions?: ReductionFn | ReductionFn[];
@@ -91,7 +88,7 @@ export type StateEntry =
  */
 export interface ApplyModifier extends ActionType<'apply', 'modifier'> {
 	attribute: CurrentStatKeys;
-	value: ValueWithUnit | ValueResolver;
+	value: ValueResolver;
 
 	/** Pipeline giảm trừ (optional). Không có = không giảm (true damage/heal). */
 	reductions?: ReductionFn | ReductionFn[];
@@ -99,20 +96,26 @@ export interface ApplyModifier extends ActionType<'apply', 'modifier'> {
 
 // ===== Các action khác giữ nguyên =====
 
-/** Sửa phase */
-export interface ChangePhase<PhaseName extends string = string> extends ActionType<'do-act', 'change-phase'> {
-	method: 'next' | `to-phase:${PhaseName}` | `extend-phase:${PhaseName}`;
+/** Sửa phase của 1 skill slot cụ thể */
+export interface ChangePhase extends ActionType<'do-act', 'change-phase'> {
+	/**
+	 * Slot cần đổi phase. Nhất quán với `StateEntry.silent` và `ModifyCountdown`.
+	 */
+	slot: SkillSlot;
 
 	/**
-	 * @override
-	 * @default Infinity
+	 * Index của phase muốn chuyển tới (0 = default).
+	 * Engine dùng index này để render đúng icon + CD trên HUD.
 	 */
-	duration?: number;
+	phase: number;
 }
 
-/** Sửa countdown skill */
+/** Sửa countdown (hồi chiêu) của 1 hoặc nhiều skill slot */
 export interface ModifyCountdown extends ActionType<'apply', 'modify-countdown'> {
-	slot: (SkillSlot | SpSkillSlot | `passive.${number}`)[];
+	/**
+	 * Slot cần thay đổi CD. Nhất quán với `StateEntry.silent`.
+	 */
+	slot: SkillSlot | SpSkillSlot | (SkillSlot | SpSkillSlot)[];
 	value: ValueWithUnit;
 }
 

@@ -11,7 +11,7 @@ interface BaseMovement<T extends MovementType> {
 	 */
 	speed?: {
 		/**@default '100%' */
-		value: ValueWithUnit<true, FlightSpeedEnum | MovementSpeedEnum | (number & {})>;
+		value: ValueWithUnit<FlightSpeedEnum | MovementSpeedEnum | (number & {})>;
 
 		/**@default 'flight-speed' */
 		of?: 'movement-speed' | 'flight-speed';

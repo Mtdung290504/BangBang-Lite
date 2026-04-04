@@ -1,16 +1,5 @@
 import { CastingMethod } from './context/casting-methods.type-components';
-import { ValueWithUnit } from '../../.types';
 import { EffectAction } from './actions/apply-effect.type-entities';
-
-/** Tiêu hao cả năng lượng và máu */
-type SkillConsumptionBuilder<T extends string[] = []> = Partial<{ [K in T[number]]: ValueWithUnit }>;
-type ConsumptionTypes = ['limit-HP', 'current-HP', 'energy'];
-
-/**
- * Khai báo tiêu hao khi dùng skill
- * *Lý do khai báo riêng mà không cho vào action là do vấn đề gồng. Phải là trừ trước khi gồng, không phải gồng xong mới trừ*
- */
-export type SkillConsumption = SkillConsumptionBuilder<ConsumptionTypes>;
 
 /** Thời gian hồi chiêu dùng chung cho mọi skill */
 export interface SkillTiming {
@@ -19,14 +8,11 @@ export interface SkillTiming {
 }
 
 /**
- * Khai báo tiêu hao và các thuộc tính của skill
+ * Các thuộc tính cấu hình logic cho một cụm Action do Skill gọi ra
  */
 export interface ActionProps {
 	/** Object do skill tạo ra mang tính chất là đánh thường hay skill */
 	property?: 'skill' | 'normal-attack';
-
-	/** Skill tiêu hao gì, nếu không đủ, không dùng được, mặc định không tiêu hao */
-	'resource-consumption'?: SkillConsumption;
 }
 
 export type ActionBased = {

@@ -6,8 +6,6 @@ import { Collidable } from '../../../physic/collider.type-conponents';
 import { Movable } from '../../../physic/movement.type-components';
 import { RequireInitPositionMethod } from '../../../physic/position.type-components';
 import { LimitedDistance } from '../../../physic/range.type-components';
-import { StraightMovement } from '../../../physic/movement.types';
-import { PositionDeclaration } from '../../../physic/position.enums';
 
 interface CreateImpactorBase
 	extends
@@ -25,20 +23,9 @@ interface CreateImpactorBase
 		Collidable,
 		FlyingObjectProps {}
 
-export interface CreateImpactor
-	extends
-		CreateImpactorBase,
-		RequireInitPositionMethod<
-			| PositionDeclaration.MOUSE_POS
-			| PositionDeclaration.SELF_POS
-			| PositionDeclaration.SELF_HEAD
-			| PositionDeclaration.TARGET_POS
-			| PositionDeclaration.PARENT_POS
-			| PositionDeclaration.PARENT_HEAD
-		>,
-		Movable {
+export interface CreateImpactor extends CreateImpactorBase, RequireInitPositionMethod, Movable {
 	/**
 	 * Hướng bay (direction) hoặc Trọng điểm mục tiêu (targeting)
 	 */
-	strategy?: UseDirectionStrategy['strategy'] | UseTargetingStrategy['strategy'];
+	strategy: UseDirectionStrategy['strategy'] | UseTargetingStrategy['strategy'];
 }

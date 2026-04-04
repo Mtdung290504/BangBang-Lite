@@ -15,6 +15,15 @@ export interface ValueResolveContext {
 	self: Readonly<RuntimeStats>;
 	target: Readonly<RuntimeStats>;
 	getChargeTime(name: string): number;
+
+	/**
+	 * Kiểm tra xem entity đang mang effect có id tương ứng không.
+	 * Dùng trong `conditions` để phân biệt phase của skill (VD: đang có buff s2 hay không).
+	 *
+	 * @example
+	 * conditions: ctx => ctx.hasEffect('s2-empower')
+	 */
+	hasEffect(id: string): boolean;
 }
 
 /**

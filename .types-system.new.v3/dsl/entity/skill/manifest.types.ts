@@ -1,5 +1,4 @@
 import { EffectManifest } from './actions/apply-effect.types';
-import { EffectAction } from './actions/apply-effect.type-entities';
 import { SkillManifest } from './.type-entities';
 
 /**

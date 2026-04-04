@@ -16,7 +16,7 @@ export interface ActionType<Action extends ActionPrefix, Type extends string = '
 	 * - `self` (mặc định): Tác động thẳng vào người đang mang Action này.
 	 * - `context-target`: Kẻ đang bị Action này trỏ vào thông qua Event (VD: kẻ vừa đánh mình).
 	 */
-	target?: 'self' | 'context-target';
+	// target?: 'self' | 'context-target';
 }
 
 interface UseStrategy<T extends string> {

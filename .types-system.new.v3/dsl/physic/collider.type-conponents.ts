@@ -12,8 +12,8 @@ export interface Collidable {
 	collider?: {
 		shape: ColliderDeclaration;
 
-		/** Mặc định: 1. Nếu 'infinity', skill là vùng vô hạn như Lazer/Aura */
-		'impact-capacity'?: number | 'infinity';
+		/** Mặc định: 1. Nếu Infinity, skill là vùng vô hạn như Lazer/Aura */
+		'impact-capacity'?: number;
 
 		/**
 		 * Danh sách các mục tiêu cho phép đạn đi KHÔNG BỊ CẢN TRỞ (Không kích hoạt cơ chế Nảy hay Vỡ).\
@@ -29,5 +29,12 @@ export interface Collidable {
 		 * - Ví dụ: Space GCL hiện effect trước rồi mới giật
 		 */
 		'warm-up'?: number;
+
+		/**
+		 * Lôi theo mục tiêu mà nó đánh trúng (khả năng đâm trúng quy định bởi filter / capacity)\
+		 * Không khai báo thì là false
+		 * @default false
+		 */
+		'drag-targets'?: true;
 	};
 }

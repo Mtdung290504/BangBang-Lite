@@ -13,8 +13,5 @@ export type FlyingObjectProps = {
 
 		/**Config quay lại */
 		return?: true;
-
-		/** Lôi theo TẤT CẢ các mục tiêu mà nó đánh trúng (khả năng đâm trúng quy định bởi filter / capacity) */
-		'drag-targets'?: boolean;
 	};
 };

@@ -1,2 +1,2 @@
-export type SkillSlot = 's1' | 's2' | 'ultimate' | 'normal-attack';
+export type SkillSlot = 's1' | 's2' | 'ultimate' | 'normal-attack' | (string & {});
 export type SpSkillSlot = 'sp';

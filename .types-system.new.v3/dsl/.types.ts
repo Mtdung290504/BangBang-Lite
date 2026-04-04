@@ -7,9 +7,7 @@ export type ValueUnit = 'u' | '%';
  *
  * Ví dụ: `100%` hay `25u` (với u viết tắt cho unit)
  */
-export type ValueWithUnit<
-	Amount extends number = number,
-> = `${Amount}${ValueUnit}`;
+export type ValueWithUnit<Amount extends number = number> = `${Amount}${ValueUnit}`;
 
 export type InheritDeclaration<T extends string> = `inherit:${T}`;
 
