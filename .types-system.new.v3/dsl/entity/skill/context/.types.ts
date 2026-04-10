@@ -31,4 +31,10 @@ export type TankEvent =
 	| 'on-energy-empty'
 
 	/** Body vật lý bị đập vào vật cản (khi bị đẩy lùi, gom) */
-	| 'on-wall-collide';
+	| 'on-wall-collide'
+
+	/** Khi thoát combat (không có modify HP âm nào - tức không chịu damage trong 4s) */
+	| 'on-out-combat'
+
+	/** Khi vào combat (có modify HP âm đầu tiên sau thời gian out-combat) */
+	| 'on-join-combat';

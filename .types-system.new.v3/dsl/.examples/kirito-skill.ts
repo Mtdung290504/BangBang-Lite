@@ -162,7 +162,7 @@ export const KiritoManifest: DefineSkill = {
 				'on-start': {
 					action: '@apply:modifier',
 					attribute: 'current-HP',
-					value: (ctx) => -ctx.self['attack-power'] * 1.75,
+					value: (ctx) => -ctx.caster['attack-power'] * 1.75,
 					reductions: physicalDamageReduction,
 				},
 			},
@@ -174,7 +174,7 @@ export const KiritoManifest: DefineSkill = {
 				'on-start': {
 					action: '@apply:modifier',
 					attribute: 'current-HP',
-					value: (ctx) => -ctx.self['attack-power'] * 1.5,
+					value: (ctx) => -ctx.caster['attack-power'] * 1.5,
 					reductions: physicalDamageReduction,
 				},
 			},
@@ -187,7 +187,7 @@ export const KiritoManifest: DefineSkill = {
 						{
 							action: '@apply:modifier',
 							attribute: 'current-HP',
-							value: (ctx) => -ctx.self['attack-power'] * 1.5,
+							value: (ctx) => -ctx.caster['attack-power'] * 1.5,
 							reductions: physicalDamageReduction,
 						},
 						{ action: '@apply:clean-effect', filter: 'id:k-s2-wall-listener' }, // Chỉ 1 lần
@@ -210,7 +210,7 @@ export const KiritoManifest: DefineSkill = {
 					{
 						action: '@apply:modifier',
 						attribute: 'current-HP',
-						value: (ctx) => -ctx.self['attack-power'] * 0.3,
+						value: (ctx) => -ctx.caster['attack-power'] * 0.3,
 						reductions: physicalDamageReduction,
 					},
 					{ action: '@apply:effect', effect: 'k-ult-slow' },
@@ -229,7 +229,7 @@ export const KiritoManifest: DefineSkill = {
 					{
 						action: '@apply:modifier',
 						attribute: 'current-HP',
-						value: (ctx) => -ctx.self['attack-power'] * 1.75,
+						value: (ctx) => -ctx.caster['attack-power'] * 1.75,
 						reductions: physicalDamageReduction,
 					},
 					{

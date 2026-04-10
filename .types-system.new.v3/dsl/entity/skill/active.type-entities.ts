@@ -1,9 +1,9 @@
 import type { ActionBased, SkillTiming } from './.type-components';
 import type { ConditionPredicate } from '../../runtime.types';
-import type { SkillSlot, SpSkillSlot } from './.enums';
+import type { SkillKeySlot, SpSkillSlot } from './.enums';
 import { Renderable } from '../../combat/visual.type-components';
 
-export type TriggerEvent = `on-key:${SkillSlot | SpSkillSlot}` | 'on-ready';
+export type TriggerEvent = `on-key:${SkillKeySlot | SpSkillSlot}` | 'on-ready';
 
 /**
  * Định nghĩa 1 phase của skill.

@@ -13,16 +13,17 @@ export type RuntimeStats = Record<TankStatValueKey, number>;
  */
 export type EntitySnapshot = Readonly<RuntimeStats> & {
 	/**
-	 * Kiểm tra entity này đang mang effect có id chỉ định không.
+	 * Lấy về object chứa stack của effect\
+	 * Lưu ý stack sẽ không bao giờ có giá trị 0.
 	 *
 	 * @example
 	 * // Conditional proc: chỉ heal khi target đang bị mark
-	 * value: ctx => ctx.target.hasEffect('enemy-mark') ? ctx.self['attack-power'] * 0.2 : 0
+	 * value: ctx => ctx.target.effect('enemy-mark')?.stack ? ctx.self['attack-power'] * 0.2 : 0
 	 *
 	 * // Check bản thân đang ở trạng thái cường hóa
-	 * conditions: ctx => ctx.self.hasEffect('s2-empower')
+	 * conditions: ctx => ctx.self.effect('s2-empower')?.stack
 	 */
-	hasEffect(id: string): boolean;
+	effect(id: string): { stack?: number };
 };
 
 /**
@@ -44,10 +45,13 @@ export type EntitySnapshot = Readonly<RuntimeStats> & {
  */
 export interface ValueResolveContext {
 	/** Luôn là caster — tank đã kích hoạt skill */
-	self: EntitySnapshot;
+	caster: EntitySnapshot;
 
 	/** Entity nhận effect / trigger event (phụ thuộc context, xem JSDoc) */
 	target: EntitySnapshot;
+
+	/** Số hit mà skill parent đã đánh trúng */
+	'skill-hit-count': number;
 
 	getChargeTime(name: string): number;
 }

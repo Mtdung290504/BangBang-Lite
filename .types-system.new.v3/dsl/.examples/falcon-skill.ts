@@ -20,7 +20,7 @@ export const FalconManifest: DefineSkill = {
 			{
 				// phase 0 — default
 				triggers: ['on-key:normal-attack'],
-				conditions: (ctx) => !ctx.self.hasEffect('s2-empower') && ctx.self['current-energy-point'] >= 20,
+				conditions: (ctx) => !ctx.caster.effect('s2-empower') && ctx.caster['current-energy-point'] >= 20,
 				actions: [
 					{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => -20 },
 					{
@@ -28,7 +28,7 @@ export const FalconManifest: DefineSkill = {
 						from: 'self-pos',
 						strategy: { type: 'targeting', method: 'active-lock' },
 						visual: { sprite: { key: 'normal-attack' } },
-						movement: { 'move-type': 'straight', speed: ({ self }) => self['flight-speed'] },
+						movement: { 'move-type': 'straight', speed: ({ caster: self }) => self['flight-speed'] },
 						collider: { shape: { type: 'rectangle', size: { width: 100, height: 35 } } },
 						impact: {
 							manifest: [
@@ -42,13 +42,13 @@ export const FalconManifest: DefineSkill = {
 			{
 				// phase 1 — sau khi bật S2 lướt
 				triggers: ['on-key:normal-attack'],
-				conditions: (ctx) => ctx.self.hasEffect('s2-empower'),
+				conditions: ({ caster }) => 'stack' in caster.effect('s2-empower'),
 				actions: {
 					action: '@create-entity',
 					from: 'self-pos',
 					strategy: { type: 'targeting', method: 'active-lock' },
 					visual: { sprite: { key: 'normal-attack-s2' } },
-					movement: { 'move-type': 'straight', speed: ({ self }) => self['flight-speed'] },
+					movement: { 'move-type': 'straight', speed: ({ caster: self }) => self['flight-speed'] },
 					// Xuyên tường (ignore-wall), giả định wall tương đương faction hoặc pierce: 'wall'
 					collider: {
 						shape: { type: 'rectangle', size: { width: 100, height: 35 } },
@@ -158,7 +158,7 @@ export const FalconManifest: DefineSkill = {
 					{
 						action: '@apply:modifier',
 						attribute: 'current-energy-point',
-						value: ({ self }) => self['energy-point'],
+						value: ({ caster: self }) => self['energy-point'],
 					},
 				],
 			},
@@ -198,7 +198,7 @@ export const FalconManifest: DefineSkill = {
 					{
 						action: '@apply:modifier',
 						attribute: 'current-HP',
-						value: (ctx) => -ctx.self['attack-power'],
+						value: (ctx) => -ctx.caster['attack-power'],
 						reductions: energyDamageReduction,
 					},
 				],
@@ -216,7 +216,7 @@ export const FalconManifest: DefineSkill = {
 			duration: Infinity,
 			description: 'Tăng 50% tốc đánh, hút máu, bắn xuyên tường',
 			impacts: {
-				'modify-stats': [{ attribute: 'fire-rate', value: ({ self }) => self['fire-rate'] * 0.5 }],
+				'modify-stats': [{ attribute: 'fire-rate', value: ({ caster: self }) => self['fire-rate'] * 0.5 }],
 			},
 		},
 		's2-attack-tracker': {
@@ -250,7 +250,7 @@ export const FalconManifest: DefineSkill = {
 							{
 								action: '@apply:modifier',
 								attribute: 'current-HP',
-								value: (ctx) => -ctx.self['attack-power'] * 1.5,
+								value: (ctx) => -ctx.caster['attack-power'] * 1.5,
 								reductions: energyDamageReduction,
 							},
 							{ action: '@apply:effect', effect: 'ult-mark' }, // Tự bồi đắp stack!
@@ -264,7 +264,7 @@ export const FalconManifest: DefineSkill = {
 							{
 								action: '@apply:modifier',
 								attribute: 'current-HP',
-								value: (ctx) => -ctx.self['attack-power'] * 1.75,
+								value: (ctx) => -ctx.caster['attack-power'] * 1.75,
 								reductions: energyDamageReduction,
 							},
 							{ action: '@apply:effect', effect: 'ult-mark' },
@@ -278,7 +278,7 @@ export const FalconManifest: DefineSkill = {
 							{
 								action: '@apply:modifier',
 								attribute: 'current-HP',
-								value: (ctx) => -ctx.self['attack-power'] * 2.0,
+								value: (ctx) => -ctx.caster['attack-power'] * 2.0,
 								reductions: energyDamageReduction,
 							},
 							{ action: '@apply:effect', effect: 'ult-mark' },
@@ -292,7 +292,7 @@ export const FalconManifest: DefineSkill = {
 							{
 								action: '@apply:modifier',
 								attribute: 'current-HP',
-								value: (ctx) => -ctx.self['attack-power'] * 2.25,
+								value: (ctx) => -ctx.caster['attack-power'] * 2.25,
 								reductions: energyDamageReduction,
 							},
 							{ action: '@apply:effect', effect: 'ult-mark' },

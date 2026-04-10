@@ -1,11 +1,11 @@
-import { DefineSkill, EffectManifestRecord } from '../entity/skill/manifest.types';
+import { DefineSkill } from '../entity/skill/manifest.types';
 import { energyDamageReduction } from '../../builder/templates/combat/reduction-policies';
 
-export const MagnetoManifest: DefineSkill = {
+export const TsubasaManifest: DefineSkill = {
 	manifest: {
 		// NỘI TẠI: Hit dealt → tăng 50% tốc chạy 2s
 		'innate-skill-speed': {
-			triggers: ['on-ready'],
+			triggers: ['on-key:s1', 'on-key:s2', 'on-key:ultimate'],
 			cooldown: Infinity,
 			actions: { action: '@apply:effect', effect: 'm-listen-hit' },
 		},

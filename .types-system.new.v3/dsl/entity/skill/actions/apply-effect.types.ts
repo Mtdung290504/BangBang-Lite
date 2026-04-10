@@ -2,6 +2,7 @@ import type { StatModifier, StateEntry, EffectAction } from './apply-effect.type
 import type { LimitedDuration } from '../../../combat/state.type-components';
 import type { Renderable, VisualManifest } from '../../../combat/visual.type-components';
 import type { TankEvent } from '../context/.types';
+import { ValueResolver } from '../../../runtime.types';
 
 export interface EffectManifest<Action = EffectAction> extends Renderable, LimitedDuration {
 	/** Có thể kháng xóa bởi các skill hóa giải hay không */
@@ -42,6 +43,11 @@ export interface EffectManifest<Action = EffectAction> extends Renderable, Limit
 	interval?: number;
 
 	/**
+	 * Giá trị khiên chắn bind với effect, nếu effect có khiên và value khiên về 0, effect sẽ bị xóa
+	 */
+	shield?: ValueResolver;
+
+	/**
 	 * Định nghĩa hành vi cho từng stack. Quy định luôn số stack tối đa\
 	 * Note:
 	 * - Vì effect đã có ngữ cảnh từ impactor nên chỉ cần khai báo effect lên target và action của bản thân trong này
@@ -69,6 +75,9 @@ interface EffectImpactManifest<Action = EffectAction> extends Renderable {
 	 * ② States — trạng thái đặc biệt tồn tại suốt effect duration.\
 	 * Engine toggle on khi effect active, toggle off khi hết.\
 	 * Cho phép khai báo đơn nếu chỉ có 1 state.
+	 *
+	 * ***LƯU Ý***: Nếu states có shield, shield mà vỡ thì effect mặc định bị xóa luôn\
+	 * Muốn cách ly thì phải tạo nhiều effect
 	 */
 	'modify-states'?: StateEntry | StateEntry[];
 

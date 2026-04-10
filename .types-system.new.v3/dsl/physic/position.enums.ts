@@ -1,9 +1,9 @@
 export type PositionDeclaration =
 	/** Vị trí hiện tại của bản thân (tọa độ tâm tank) */
-	| 'self-pos'
+	| 'caster-pos'
 
 	/** Vị trí phần đầu tank (tâm tank + bán kính tank theo hướng chuột + 3px) */
-	| 'self-head'
+	| 'caster-head'
 
 	/** Vị trí của mục tiêu (target đang chọn) */
 	| 'target-pos'

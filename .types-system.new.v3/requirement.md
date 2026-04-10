@@ -23,14 +23,14 @@
 
 Là vật thể va chạm (đạn, vùng, aura, sensor...). Mọi thứ trong game về bản chất là một cục va chạm:
 
-| Loại | `duration` | `limit-range` | `impact-capacity` | `interval` | Ghi chú |
-|---|---|---|---|---|---|
-| Đạn thường | *(không khai báo)* = Infinity | `100%` (kế thừa tầm tank) | 1 (default) | *(không có)* | Bị xóa khi: hết `limit-range` HOẶC hết `impact-capacity` |
-| Đạn xuyên | Infinity | có | > 1 hoặc `pierce-targets` | *(không có)* | Bay xuyên N mục tiêu rồi mới vỡ |
-| Area damage | `N` giây | *(không khai báo)* | Infinity | có | Tồn tại N giây, hit interval tick |
-| Laser / Aura | `N` giây | *(không khai báo)* | Infinity | *(liên tục)* | `impact-capacity: Infinity` = không bao giờ "đầy" |
-| Sensor | `frame-time` hoặc ngắn | *(không khai báo)* | Infinity | nhỏ | Không có visual, dùng để query state |
-| Dash | Infinity | *(caster làm giới hạn)* | Infinity (`pierce-targets: all`) | *(không có)* | `drag-targets: true` + `affected-faction: self` |
+| Loại         | `duration`                    | `limit-range`             | `impact-capacity`                | `interval`   | Ghi chú                                                  |
+| ------------ | ----------------------------- | ------------------------- | -------------------------------- | ------------ | -------------------------------------------------------- |
+| Đạn thường   | _(không khai báo)_ = Infinity | `100%` (kế thừa tầm tank) | 1 (default)                      | _(không có)_ | Bị xóa khi: hết `limit-range` HOẶC hết `impact-capacity` |
+| Đạn xuyên    | Infinity                      | có                        | > 1 hoặc `pierce-targets`        | _(không có)_ | Bay xuyên N mục tiêu rồi mới vỡ                          |
+| Area damage  | `N` giây                      | _(không khai báo)_        | Infinity                         | có           | Tồn tại N giây, hit interval tick                        |
+| Laser / Aura | `N` giây                      | _(không khai báo)_        | Infinity                         | _(liên tục)_ | `impact-capacity: Infinity` = không bao giờ "đầy"        |
+| Sensor       | `frame-time` hoặc ngắn        | _(không khai báo)_        | Infinity                         | nhỏ          | Không có visual, dùng để query state                     |
+| Dash         | Infinity                      | _(caster làm giới hạn)_   | Infinity (`pierce-targets: all`) | _(không có)_ | `drag-targets: true` + `affected-faction: self`          |
 
 **Phân biệt đạn thường và area damage:**
 
@@ -39,11 +39,11 @@ Là vật thể va chạm (đạn, vùng, aura, sensor...). Mọi thứ trong ga
 
 > **[Engine Note — Impactor Lifecycle]**
 > Impactor bị xóa phải qua 2 điều kiện theo thứ tự:
+>
 > 1. **Collider chết** (hết capacity hoặc hết duration)
 > 2. **Sprite hoàn thành** (nếu `visual.on-parent-death: 'wait-finish'`, chờ animation xong)
 >
 > Logic (collision, movement) tắt ngay ở bước 1. Visual tiếp tục ở bước 2 nếu được cấu hình.
-
 
 Impactor **không phân biệt** projectile / area-effect / sensor ở tầng type — chỉ khác nhau ở config collider và movement.
 
@@ -113,20 +113,20 @@ EffectManifest {
 
 ### EffectImpactManifest — 4 tầng
 
-| Tầng | Field | Bản chất |
-|---|---|---|
-| ① | `modify-stats` | Buff/debuff stat liên tục suốt duration |
-| ② | `modify-states` | Toggle CC/state on/off (root, silent, invincible, immune...) |
-| ③ | `on-start / on-interval / on-end` | Hành động tức thì tại thời điểm tương ứng |
-| ④ | `on-event` | Lắng nghe TankEvent, fire action khi event xảy ra |
+| Tầng | Field                             | Bản chất                                                     |
+| ---- | --------------------------------- | ------------------------------------------------------------ |
+| ①    | `modify-stats`                    | Buff/debuff stat liên tục suốt duration                      |
+| ②    | `modify-states`                   | Toggle CC/state on/off (root, silent, invincible, immune...) |
+| ③    | `on-start / on-interval / on-end` | Hành động tức thì tại thời điểm tương ứng                    |
+| ④    | `on-event`                        | Lắng nghe TankEvent, fire action khi event xảy ra            |
 
 ### Stack bằng mảng `impacts`
 
 ```ts
 // Stack 1-4 với buff tăng dần
-impacts: [1, 2, 3, 4].map(stack => ({
-    'modify-stats': { attribute: 'fire-rate', value: `${10 * stack}%` }
-}))
+impacts: [1, 2, 3, 4].map((stack) => ({
+	'modify-stats': { attribute: 'fire-rate', value: `${10 * stack}%` },
+}));
 ```
 
 Index mảng = stack level. Engine theo dõi stack hiện tại, apply `impacts[currentStack]`.
@@ -134,6 +134,7 @@ Index mảng = stack level. Engine theo dõi stack hiện tại, apply `impacts[
 ### Passive skill = SkillEntry với `on-ready` trigger
 
 Passive không còn là type riêng. Flow:
+
 ```
 CD xong → auto-trigger → @apply:effect listener → effect.on-event bắt TankEvent → fire actions → có thể reset CD
 ```
@@ -164,25 +165,25 @@ Designer không viết reduction function thô — dùng template từ `builder/
 
 ```ts
 type EntitySnapshot = Readonly<RuntimeStats> & {
-    hasEffect(id: string): boolean;
+	hasEffect(id: string): boolean;
 };
 
 interface ValueResolveContext {
-    self: EntitySnapshot;    // LUÔN là caster — tank kích hoạt skill
-    target: EntitySnapshot;  // Entity nhận effect (phụ thuộc context, xem bên dưới)
-    getChargeTime(name: string): number;
+	self: EntitySnapshot; // LUÔN là caster — tank kích hoạt skill
+	target: EntitySnapshot; // Entity nhận effect (phụ thuộc context, xem bên dưới)
+	getChargeTime(name: string): number;
 }
 ```
 
 ### `target` theo context:
 
-| Context | `ctx.target` là |
-|---|---|
-| `target-effect` (impact) | Entity trúng đòn |
-| `self-action` (impact) | Caster (= self) |
-| `on-hit-taken` (event) | Entity vừa đánh mình (attacker) |
-| `on-hit-dealt-damage` (event) | Entity bị mình đánh |
-| `on-destroy` / `on-destroyed` | Kẻ chết / caster |
+| Context                       | `ctx.target` là                 |
+| ----------------------------- | ------------------------------- |
+| `target-effect` (impact)      | Entity trúng đòn                |
+| `self-action` (impact)        | Caster (= self)                 |
+| `on-hit-taken` (event)        | Entity vừa đánh mình (attacker) |
+| `on-hit-dealt-damage` (event) | Entity bị mình đánh             |
+| `on-destroy` / `on-destroyed` | Kẻ chết / caster                |
 
 `ctx.self.hasEffect('id')` — check caster đang mang effect gì (dùng trong `conditions`).
 `ctx.target.hasEffect('id')` — check entity bên kia (dùng cho conditional proc, zero-return pattern).
@@ -203,14 +204,14 @@ interface ValueResolveContext {
 
 ```ts
 type TankEvent =
-    | 'on-hit-taken'           // Receiver: trước khi damage áp
-    | 'on-hit-taken-damage'    // Receiver: sau khi chịu damage
-    | 'on-hit-dealt-damage'    // Attacker: sau khi damage áp thành công (kể cả bị shield)
-    | 'on-fatal-damage'        // Receiver: damage sẽ giết, trước khi chết
-    | 'on-destroy'             // Attacker: giết được target
-    | 'on-destroyed'           // Victim: bị giết
-    | 'on-energy-empty'        // Tank: energy về 0
-    | 'on-wall-collide'        // Tank: body đập vào tường (khi bị knock)
+	| 'on-hit-taken' // Receiver: trước khi damage áp
+	| 'on-hit-taken-damage' // Receiver: sau khi chịu damage
+	| 'on-hit-dealt-damage' // Attacker: sau khi damage áp thành công (kể cả bị shield)
+	| 'on-fatal-damage' // Receiver: damage sẽ giết, trước khi chết
+	| 'on-destroy' // Attacker: giết được target
+	| 'on-destroyed' // Victim: bị giết
+	| 'on-energy-empty' // Tank: energy về 0
+	| 'on-wall-collide'; // Tank: body đập vào tường (khi bị knock)
 ```
 
 ---
@@ -294,16 +295,17 @@ Effect với `unremovable: false` + `modify-states: { type: 'silent', slot: [...
 
 ## 11. Những thứ KHÔNG có trong DSL (có chủ ý)
 
-| Thứ không có | Lý do |
-|---|---|
-| `DamageType` enum | Thay bằng reduction function name |
-| `ally-nearby`, `enemy-nearby` stat | Dùng sensor entity pattern |
-| Teleport/set-position action | `speed: Infinity` trên impactor đủ |
-| `on-effect-removed` event riêng | `on-end` luôn fire cho cả 2 case (hết duration + dispel) |
-| Condition trong EffectAction | Zero-return trick trong ValueResolver + ctx.target.hasEffect |
-| `context-target` direction trên action | `@create-entity` với `from: target-pos` thay thế |
-| Lifesteal action | Stat `life-steal` được xử lý trong engine, không phải DSL |
-| Summon | Skill đặc thù, để sau |
+| Thứ không có                           | Lý do                                                                                                                                                                                                  |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ApplyShield` action                   | Shield (khiên ảo / chặn skill) được đập bẹp thành 1 loại state trong `modify-states`. Nhờ vậy nó tái sử dụng được `duration` và `visual` của Effect. Khi HP khiên cạn, Engine tự clean Effect chứa nó. |
+| `DamageType` enum                      | Thay bằng reduction function name                                                                                                                                                                      |
+| `ally-nearby`, `enemy-nearby` stat     | Dùng sensor entity pattern                                                                                                                                                                             |
+| Teleport/set-position action           | `speed: Infinity` trên impactor đủ                                                                                                                                                                     |
+| `on-effect-removed` event riêng        | `on-end` luôn fire cho cả 2 case (hết duration + dispel)                                                                                                                                               |
+| Condition trong EffectAction           | Zero-return trick trong ValueResolver + ctx.target.hasEffect                                                                                                                                           |
+| `context-target` direction trên action | `@create-entity` với `from: target-pos` thay thế                                                                                                                                                       |
+| Lifesteal action                       | Stat `life-steal` được xử lý trong engine, không phải DSL                                                                                                                                              |
+| Summon                                 | Skill đặc thù, để sau                                                                                                                                                                                  |
 
 ---
 
@@ -348,9 +350,10 @@ builder/templates/combat/
 Xem `dsl/.examples/falcon-skill.ts` — file duy nhất được coi là canonical example (các file khác trong `.examples/` là cũ).
 
 Falcon thể hiện đầy đủ:
+
 - Normal attack 2 phase với icon riêng
 - Passive `on-ready` với energy mechanic
 - S2 cường hóa via effect + phase change
 - Stack tracking qua `impacts` array
 - Ultimate mark với `on-hit-taken` stack
-- `ctx.self.hasEffect()` trong conditions
+- Check effect `ctx.self.effect()` trong conditions

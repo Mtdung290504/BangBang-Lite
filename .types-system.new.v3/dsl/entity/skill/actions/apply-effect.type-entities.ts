@@ -3,7 +3,8 @@ import type { CurrentStatKeys, LostStatKeys, TankStatValueKey } from '../../tank
 import type { SkillSlot, SpSkillSlot } from '../.enums';
 import type { ValueWithUnit } from '../../../.types';
 import type { ValueResolver, ReductionFn } from '../../../runtime.types';
-import type { ImpactHandle, SkillCastAction } from './.types';
+import type { SkillCastAction } from './.types';
+// Imports removed as they are duplicates
 
 // ===== Tầng ①: Continuous Stat Modifier (tồn tại theo effect duration) =====
 
@@ -42,26 +43,14 @@ export type StateEntry =
 	| { type: 'unstealthable' }
 	| { type: 'immune'; filter: `tag:${'slow' | 'CC' | 'all'}` | `id:${string}` }
 	| {
-			/**
-			 * Note: khi muốn vỡ hết khiên thì tăng/giảm stack\
-			 * Giới hạn đến stack nào đó on-start sẽ clean effect theo id (name) là xóa được
-			 */
-			type: 'impact-shield';
-
-			/**
-			 * Xử lý impact:
-			 * - negate: vô hiệu (damage = 0, effect không áp)
-			 * - destroy: xóa sổ đòn đó luôn
-			 */
-			mode: 'negate' | 'destroy';
+			type: 'impact-immune';
 
 			/**
 			 * Filter loại impact. Mặc định: 'all', VD:
 			 * - skill: GCL
 			 * - normal-attack: SSK
-			 * - flying-object: Zr
 			 */
-			filter?: 'all' | 'skill' | 'normal-attack' | 'flying-object';
+			filter?: 'all' | 'skill' | 'normal-attack';
 	  };
 
 // ===== Tầng ③: Instant Actions (trong on-start/on-interval/on-end) =====
@@ -117,23 +106,12 @@ export interface ModifyCountdown extends ActionType<'apply', 'modify-countdown'>
 	value: ValueWithUnit;
 }
 
-/** Khiên */
-export interface ApplyShield extends ActionType<'apply', 'shield'> {
-	value: ValueResolver;
-	'on-break'?: ImpactHandle;
-}
-
 /**
  * Xóa effect\
  * *Lưu ý*: unremovable của effect chỉ chống bị remove by tag, khi hết thời gian hay remove by id vẫn bị xóa
  */
 export interface CleanEffect extends ActionType<'apply', 'clean-effect'> {
 	filter: `tag:${'buff' | 'debuff' | 'immune' | 'slow' | 'CC' | 'all'}` | `id:${string}`;
-}
-
-/** Áp effect mới theo tên đã định nghĩa sẵn trong SkillManifest */
-export interface ApplyEffect extends ActionType<'apply', 'effect'> {
-	effect: string | string[];
 }
 
 /** Tạm dừng chuỗi action hiện tại */
@@ -168,6 +146,11 @@ export interface ActivateSkillAction extends ActionType<'do-act', 'activate-skil
 	skill: string;
 }
 
+export interface ModifyStack extends ActionType<'apply', 'modify-stack'> {
+	method: 'increase' | 'decrease';
+	value: number;
+}
+
 /**
  * Union tất cả action có thể dùng trong on-start/on-interval/on-end và skill actions
  */
@@ -182,4 +165,10 @@ export type EffectAction =
 	| ModifyChargeAction
 	| ApplyKnockback
 	| ApplyRadialPush
-	| ActivateSkillAction;
+	| ActivateSkillAction
+	| ModifyStack;
+
+/** Áp effect mới theo tên đã định nghĩa sẵn trong SkillManifest */
+export interface ApplyEffect extends ActionType<'apply', 'effect'> {
+	effect: string | string[];
+}

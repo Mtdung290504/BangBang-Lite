@@ -33,7 +33,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 			{
 				// Phase 0: đang ở Gió → chuyển sang Sét
 				icon: 's1-wind',
-				conditions: (ctx) => ctx.self.hasEffect('gcl-phase-wind'),
+				conditions: (ctx) => ctx.caster.effect('gcl-phase-wind'),
 				triggers: ['on-key:s1'],
 				cooldown: 1,
 				actions: [
@@ -47,7 +47,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 			{
 				// Phase 1: đang ở Sét → chuyển sang Mây
 				icon: 's1-thunder',
-				conditions: (ctx) => ctx.self.hasEffect('gcl-phase-thunder'),
+				conditions: (ctx) => ctx.caster.effect('gcl-phase-thunder'),
 				triggers: ['on-key:s1'],
 				cooldown: 1,
 				actions: [
@@ -61,7 +61,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 			{
 				// Phase 2: đang ở Mây → chuyển về Gió
 				icon: 's1-cloud',
-				conditions: (ctx) => ctx.self.hasEffect('gcl-phase-cloud'),
+				conditions: (ctx) => ctx.caster.effect('gcl-phase-cloud'),
 				triggers: ['on-key:s1'],
 				cooldown: 1,
 				actions: [
@@ -81,7 +81,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 				icon: 's2-wind',
 				triggers: ['on-key:s2'],
 				cooldown: 6,
-				conditions: (ctx) => ctx.self['current-energy-point'] >= 25,
+				conditions: (ctx) => ctx.caster['current-energy-point'] >= 25,
 				actions: [
 					{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => -25 },
 					{
@@ -108,7 +108,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 				icon: 's2-thunder',
 				triggers: ['on-key:s2'],
 				cooldown: 2,
-				conditions: (ctx) => ctx.self['current-energy-point'] >= 25,
+				conditions: (ctx) => ctx.caster['current-energy-point'] >= 25,
 				actions: [
 					{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => -25 },
 					{
@@ -143,7 +143,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 				icon: 's2-cloud',
 				triggers: ['on-key:s2'],
 				cooldown: 6,
-				conditions: (ctx) => ctx.self['current-energy-point'] >= 10,
+				conditions: (ctx) => ctx.caster['current-energy-point'] >= 10,
 				actions: [
 					{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => -10 },
 					{ action: '@apply:effect', effect: 'gcl-s2-cloud-shield' },
@@ -158,7 +158,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 				icon: 's3-wind',
 				triggers: ['on-key:s3'],
 				cooldown: 10,
-				conditions: (ctx) => ctx.self['current-energy-point'] >= 50,
+				conditions: (ctx) => ctx.caster['current-energy-point'] >= 50,
 				actions: [
 					{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => -50 },
 					{
@@ -190,7 +190,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 				icon: 's3-thunder',
 				triggers: ['on-key:s3'],
 				cooldown: 6,
-				conditions: (ctx) => ctx.self['current-energy-point'] >= 50,
+				conditions: (ctx) => ctx.caster['current-energy-point'] >= 50,
 				actions: [
 					{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => -50 },
 					{
@@ -215,7 +215,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 				icon: 's3-cloud',
 				triggers: ['on-key:s3'],
 				cooldown: 10,
-				conditions: (ctx) => ctx.self['current-energy-point'] >= 50,
+				conditions: (ctx) => ctx.caster['current-energy-point'] >= 50,
 				actions: [
 					{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => -50 },
 					{
@@ -266,7 +266,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 				'on-start': {
 					action: '@apply:modifier',
 					attribute: 'current-HP',
-					value: (ctx) => -ctx.self['attack-power'] * 1.86,
+					value: (ctx) => -ctx.caster['attack-power'] * 1.86,
 					reductions: energyDamageReduction,
 				},
 			},
@@ -299,7 +299,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 				'on-start': {
 					action: '@apply:modifier',
 					attribute: 'current-HP',
-					value: (ctx) => -ctx.self['attack-power'] * 2.01,
+					value: (ctx) => -ctx.caster['attack-power'] * 2.01,
 					reductions: energyDamageReduction,
 				},
 			},
@@ -325,7 +325,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 						{
 							action: '@apply:modifier',
 							attribute: 'current-HP',
-							value: (ctx) => ctx.self['limit-HP'] * 0.15,
+							value: (ctx) => ctx.caster['limit-HP'] * 0.15,
 						},
 						{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => 40 },
 						// Xóa chính shield sau khi kích hoạt
@@ -358,7 +358,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 				'on-start': {
 					action: '@apply:modifier',
 					attribute: 'current-HP',
-					value: (ctx) => -ctx.self['attack-power'] * 1.3,
+					value: (ctx) => -ctx.caster['attack-power'] * 1.3,
 					reductions: energyDamageReduction,
 				},
 			},
@@ -376,7 +376,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 				'on-start': {
 					action: '@apply:modifier',
 					attribute: 'current-HP',
-					value: (ctx) => -ctx.self['attack-power'] * 1.5,
+					value: (ctx) => -ctx.caster['attack-power'] * 1.5,
 					reductions: energyDamageReduction,
 				},
 				'modify-states': { type: 'root' }, // làm chậm 40% — dùng slow thay root
@@ -392,7 +392,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 					'on-start': {
 						action: '@apply:modifier',
 						attribute: 'current-HP',
-						value: (ctx) => -ctx.self['attack-power'] * 5.75,
+						value: (ctx) => -ctx.caster['attack-power'] * 5.75,
 						reductions: energyDamageReduction,
 					},
 				},
@@ -401,7 +401,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 					'on-start': {
 						action: '@apply:modifier',
 						attribute: 'current-HP',
-						value: (ctx) => -ctx.self['attack-power'] * 0.96,
+						value: (ctx) => -ctx.caster['attack-power'] * 0.96,
 						reductions: energyDamageReduction,
 					},
 				},
