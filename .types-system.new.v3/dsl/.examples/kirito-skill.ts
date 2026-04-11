@@ -12,7 +12,7 @@ export const KiritoManifest: DefineSkill = {
 
 		// S1 CD 8s: Ẩn 0.5s → nhảy đến vị trí chuột → 175% VL + giữ chân 1s + stack tăng tốc
 		s1: {
-			icon: 's1',
+			visual: { sprite: { key: 's1' } },
 			triggers: ['on-key:s1'],
 			cooldown: 8,
 			actions: [
@@ -29,7 +29,7 @@ export const KiritoManifest: DefineSkill = {
 					impact: {
 						manifest: {
 							'affected-faction': ['self'],
-							'self-action': { action: '@apply:radial-push', speed: () => 99999 },
+							actions: { action: '@apply:radial-push', speed: () => 99999 },
 						},
 					},
 				},
@@ -41,9 +41,8 @@ export const KiritoManifest: DefineSkill = {
 					collider: { shape: { type: 'circle', size: { radius: 100 } }, 'impact-capacity': Infinity },
 					impact: {
 						manifest: [
-							{ 'target-effect': { action: '@apply:effect', effect: 'k-s1-damage' } },
-							{ 'target-effect': { action: '@apply:effect', effect: 'k-root' } },
-							{ 'self-action': { action: '@apply:effect', effect: 'k-speed-stack' } },
+							{ 'target-effect': { action: '@apply:effect', effect: ['k-s1-damage', 'k-root'] } },
+							{ actions: { action: '@apply:effect', effect: 'k-speed-stack' } },
 						],
 					},
 				},
@@ -52,12 +51,12 @@ export const KiritoManifest: DefineSkill = {
 
 		// S2 CD 6s: Lướt theo hướng + drag địch → 150% VL; địch trúng tường +150% + same speed stack
 		s2: {
-			icon: 's2',
+			visual: { sprite: { key: 's2' } },
 			triggers: ['on-key:s2'],
 			cooldown: 6,
 			actions: {
 				action: '@create-entity',
-				from: 'self-pos',
+				from: 'caster-pos',
 				strategy: { type: 'direction' },
 				movement: { 'move-type': 'straight', speed: () => 800 },
 				collider: {
@@ -74,7 +73,7 @@ export const KiritoManifest: DefineSkill = {
 								{ action: '@apply:effect', effect: 'k-s2-wall-listener' },
 							],
 						},
-						{ 'self-action': { action: '@apply:effect', effect: 'k-speed-stack' } },
+						{ actions: { action: '@apply:effect', effect: 'k-speed-stack' } },
 					],
 				},
 			},
@@ -82,7 +81,7 @@ export const KiritoManifest: DefineSkill = {
 
 		// ULT CD 25s: Ẩn 1.5s + chém 15 nhát area → xuất hiện → delay → nửa hình tròn 175% + 15% HP mất
 		ultimate: {
-			icon: 'ultimate',
+			visual: { sprite: { key: 'ultimate' } },
 			triggers: ['on-key:ultimate'],
 			cooldown: 25,
 			actions: [
@@ -90,7 +89,7 @@ export const KiritoManifest: DefineSkill = {
 				{ action: '@apply:effect', effect: 'k-ult-invisible' },
 				{
 					action: '@create-entity',
-					from: 'self-pos',
+					from: 'caster-pos',
 					duration: 1.5,
 					movement: { 'move-type': 'straight', speed: () => 0 },
 					collider: { shape: { type: 'circle', size: { radius: 300 } }, 'impact-capacity': Infinity },
@@ -105,7 +104,7 @@ export const KiritoManifest: DefineSkill = {
 				// Chém nửa hình tròn về hướng chuột: 175% VL + 15% HP mất chuẩn
 				{
 					action: '@create-entity',
-					from: 'self-pos',
+					from: 'caster-pos',
 					strategy: { type: 'direction' },
 					movement: { 'move-type': 'straight', speed: () => 0 },
 					collider: {
@@ -219,8 +218,9 @@ export const KiritoManifest: DefineSkill = {
 		},
 		'k-ult-slow': {
 			duration: 1.5,
-			'stack-timeline-policy': 'reset-duration',
-			impacts: { 'modify-stats': { attribute: 'movement-speed', value: '-60%' as any } },
+			impacts: {
+				'modify-stats': { attribute: 'movement-speed', value: ({ target }) => -target['movement-speed'] * 0.6 },
+			},
 		},
 		'k-ult-final-slash': {
 			description: '175% VL + 15% HP đã mất chuẩn',

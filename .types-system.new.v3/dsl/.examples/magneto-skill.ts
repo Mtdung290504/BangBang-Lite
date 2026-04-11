@@ -1,4 +1,4 @@
-import { DefineSkill, EffectManifestRecord } from '../entity/skill/manifest.types';
+import { DefineSkill } from '../entity/skill/manifest.types';
 import { energyDamageReduction } from '../../builder/templates/combat/reduction-policies';
 
 export const MagnetoManifest: DefineSkill = {

@@ -79,9 +79,9 @@ Mỗi skill slot là `SkillPhaseEntry | SkillPhaseEntry[]`:
 ```ts
 'normal-attack': [
     // phase 0 — default
-    { icon: 'normal-attack', conditions: ctx => !ctx.self.hasEffect('s2-empower'), actions: [...] },
+    { icon: 'normal-attack', conditions: ctx => !ctx.caster.effect('s2-empower')?.stack, actions: [...] },
     // phase 1 — cường hóa
-    { icon: 'normal-attack-s2', conditions: ctx => ctx.self.hasEffect('s2-empower'), actions: [...] },
+    { icon: 'normal-attack-s2', conditions: ctx => ctx.caster.effect('s2-empower')?.stack, actions: [...] },
 ]
 ```
 
@@ -90,7 +90,7 @@ Skill 1 phase (phổ biến) = khai báo object đơn, không cần array.
 ### Trigger
 
 ```ts
-triggers?: ('on-key:s1' | 'on-key:s2' | 'on-key:ultimate' | 'on-key:normal-attack' | 'on-ready' | string & {})[]
+triggers?: ('on-key:s1' | 'on-key:s2' | 'on-key:ultimate' | 'on-key:normal-attack' | 'on-ready')[]
 ```
 
 `on-ready` = auto-trigger khi cooldown xong (passive pattern). Các skill nội tại đặt tên tự do (VD: `'innate-recharge'`).
@@ -148,7 +148,7 @@ CD xong → auto-trigger → @apply:effect listener → effect.on-event bắt Ta
 ```ts
 // Damage vật lý — dùng physicalDamageReduction template
 { action: '@apply:modifier', attribute: 'current-HP',
-  value: ctx => -ctx.self['attack-power'], reductions: physicalDamageReduction }
+  value: ctx => -ctx.caster['attack-power'], reductions: physicalDamageReduction }
 
 // True damage — không khai báo reductions
 { action: '@apply:modifier', attribute: 'current-HP',
@@ -169,7 +169,7 @@ type EntitySnapshot = Readonly<RuntimeStats> & {
 };
 
 interface ValueResolveContext {
-	self: EntitySnapshot; // LUÔN là caster — tank kích hoạt skill
+	caster: EntitySnapshot; // LUÔN là caster — tank kích hoạt skill
 	target: EntitySnapshot; // Entity nhận effect (phụ thuộc context, xem bên dưới)
 	getChargeTime(name: string): number;
 }
@@ -180,20 +180,20 @@ interface ValueResolveContext {
 | Context                       | `ctx.target` là                 |
 | ----------------------------- | ------------------------------- |
 | `target-effect` (impact)      | Entity trúng đòn                |
-| `self-action` (impact)        | Caster (= self)                 |
+| `caster-effect` (impact)      | Caster (= caster)               |
 | `on-hit-taken` (event)        | Entity vừa đánh mình (attacker) |
 | `on-hit-dealt-damage` (event) | Entity bị mình đánh             |
 | `on-destroy` / `on-destroyed` | Kẻ chết / caster                |
 
-`ctx.self.hasEffect('id')` — check caster đang mang effect gì (dùng trong `conditions`).
-`ctx.target.hasEffect('id')` — check entity bên kia (dùng cho conditional proc, zero-return pattern).
+`ctx.caster.effect('id')?.stack` — check caster đang mang effect gì (dùng trong `conditions`).
+`ctx.target.effect('id')?.stack` — check entity bên kia (dùng cho conditional proc, zero-return pattern).
 
 ### Zero-return trick (conditional action không cần wrapper type)
 
 ```ts
 'on-hit-dealt-damage': {
     action: '@apply:modifier', attribute: 'current-HP',
-    value: ctx => ctx.target.hasEffect('enemy-mark') ? ctx.self['attack-power'] * 0.2 : 0
+    value: ctx => ctx.target.effect('enemy-mark')?.stack ? ctx.caster['attack-power'] * 0.2 : 0
     // Return 0 = no-op, engine không hiển thị số bay
 }
 ```
@@ -221,8 +221,9 @@ type TankEvent =
 ```ts
 ImpactAction = {
     'affected-faction'?: Faction[]       // Mặc định: ['enemy', 'tower']
-    'target-effect'?: ApplyEffect[]      // Áp effect lên entity trúng đòn
-    'self-action'?: SkillCastAction[]    // Action lên caster (tạo impactor, đổi phase...)
+    'target-effect'?: EffectAction[]     // Áp effect lên entity trúng đòn
+    'caster-effect'?: EffectAction[]     // Action lên caster
+    actions?: SkillCastAction[]          // Action tạo impactor/change phase
 }
 ```
 
@@ -260,10 +261,10 @@ Impactor không có visual, không có movement, `impact.interval` nhỏ → dù
 
 ```ts
 // Đếm số địch trong vùng
-{ action: '@create-entity', from: 'self-pos',
+{ action: '@create-entity', from: 'caster-pos',
   collider: { shape: { type: 'circle', size: { radius: 300 } } },
   impact: { interval: 0.016, actions: { 'affected-faction': ['enemy'],
-    'self-action': { action: '@apply:effect', effect: 'enemy-count-stack' } } } }
+    'caster-effect': { action: '@apply:effect', effect: 'enemy-count-stack' } } } }
 ```
 
 ### Paired Effect (Personal Proc Mechanic)
@@ -273,9 +274,9 @@ Khi muốn "chỉ tôi hưởng lợi từ mark tôi đặt lên địch", dùng
 ```ts
 impact.actions: [
     { 'target-effect': { action: '@apply:effect', effect: 'enemy-mark' } },   // mark trên địch
-    { 'self-action':   { action: '@apply:effect', effect: 'mark-owner-buff' } } // listener trên caster
+    { 'caster-effect': { action: '@apply:effect', effect: 'mark-owner-buff' } } // listener trên caster
 ]
-// mark-owner-buff dùng on-event + ctx.target.hasEffect('enemy-mark') cho conditional
+// mark-owner-buff dùng on-event + ctx.target.effect('enemy-mark')?.stack cho conditional
 ```
 
 ### Interval Action qua Effect
@@ -295,17 +296,17 @@ Effect với `unremovable: false` + `modify-states: { type: 'silent', slot: [...
 
 ## 11. Những thứ KHÔNG có trong DSL (có chủ ý)
 
-| Thứ không có                           | Lý do                                                                                                                                                                                                  |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `ApplyShield` action                   | Shield (khiên ảo / chặn skill) được đập bẹp thành 1 loại state trong `modify-states`. Nhờ vậy nó tái sử dụng được `duration` và `visual` của Effect. Khi HP khiên cạn, Engine tự clean Effect chứa nó. |
-| `DamageType` enum                      | Thay bằng reduction function name                                                                                                                                                                      |
-| `ally-nearby`, `enemy-nearby` stat     | Dùng sensor entity pattern                                                                                                                                                                             |
-| Teleport/set-position action           | `speed: Infinity` trên impactor đủ                                                                                                                                                                     |
-| `on-effect-removed` event riêng        | `on-end` luôn fire cho cả 2 case (hết duration + dispel)                                                                                                                                               |
-| Condition trong EffectAction           | Zero-return trick trong ValueResolver + ctx.target.hasEffect                                                                                                                                           |
-| `context-target` direction trên action | `@create-entity` với `from: target-pos` thay thế                                                                                                                                                       |
-| Lifesteal action                       | Stat `life-steal` được xử lý trong engine, không phải DSL                                                                                                                                              |
-| Summon                                 | Skill đặc thù, để sau                                                                                                                                                                                  |
+| Không có                               | Lý do                                                                                                                                                                                                 |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ApplyShield` action                   | Shield (khiên ảo) được gắn là 1 cấu hình `shield?: ValueResolver` trực tiếp trên EffectManifest. Sinh mệnh của Effect và Khiên liên kết với nhau, khi khiên chịu sát thương về 0 thì Engine tự clear. |
+| `DamageType` enum                      | Thay bằng reduction function name                                                                                                                                                                     |
+| `ally-nearby`, `enemy-nearby` stat     | Dùng sensor entity pattern                                                                                                                                                                            |
+| Teleport/set-position action           | `speed: Infinity` trên impactor đủ                                                                                                                                                                    |
+| `on-effect-removed` event riêng        | `on-end` luôn fire cho cả 2 case (hết duration + dispel)                                                                                                                                              |
+| Condition trong EffectAction           | Zero-return trick trong ValueResolver + ctx.target.hasEffect                                                                                                                                          |
+| `context-target` direction trên action | `@create-entity` với `from: target-pos` thay thế                                                                                                                                                      |
+| Lifesteal action                       | Stat `life-steal` được xử lý trong engine, không phải DSL                                                                                                                                             |
+| Summon                                 | Skill đặc thù, để sau                                                                                                                                                                                 |
 
 ---
 

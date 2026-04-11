@@ -141,12 +141,8 @@ export interface ApplyRadialPush extends ActionType<'apply', 'radial-push'> {
 	speed: ValueResolver;
 }
 
-/** Gọi một skill bất kỳ thông qua tên định nghĩa trong SkillManifest */
-export interface ActivateSkillAction extends ActionType<'do-act', 'activate-skill'> {
-	skill: string;
-}
-
 export interface ModifyStack extends ActionType<'apply', 'modify-stack'> {
+	effect: string;
 	method: 'increase' | 'decrease';
 	value: number;
 }
@@ -165,7 +161,6 @@ export type EffectAction =
 	| ModifyChargeAction
 	| ApplyKnockback
 	| ApplyRadialPush
-	| ActivateSkillAction
 	| ModifyStack;
 
 /** Áp effect mới theo tên đã định nghĩa sẵn trong SkillManifest */

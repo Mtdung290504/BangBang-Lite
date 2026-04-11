@@ -25,7 +25,7 @@ export const FalconManifest: DefineSkill = {
 					{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => -20 },
 					{
 						action: '@create-entity',
-						from: 'self-pos',
+						from: 'caster-pos',
 						strategy: { type: 'targeting', method: 'active-lock' },
 						visual: { sprite: { key: 'normal-attack' } },
 						movement: { 'move-type': 'straight', speed: ({ caster: self }) => self['flight-speed'] },
@@ -45,7 +45,7 @@ export const FalconManifest: DefineSkill = {
 				conditions: ({ caster }) => 'stack' in caster.effect('s2-empower'),
 				actions: {
 					action: '@create-entity',
-					from: 'self-pos',
+					from: 'caster-pos',
 					strategy: { type: 'targeting', method: 'active-lock' },
 					visual: { sprite: { key: 'normal-attack-s2' } },
 					movement: { 'move-type': 'straight', speed: ({ caster: self }) => self['flight-speed'] },
@@ -71,7 +71,7 @@ export const FalconManifest: DefineSkill = {
 			cooldown: 8,
 			actions: {
 				action: '@create-entity',
-				from: 'self-pos',
+				from: 'caster-pos',
 				strategy: { type: 'targeting', method: 'active-lock' },
 				duration: 3,
 				collider: { shape: { type: 'circle', size: { radius: 200 } } },
@@ -90,7 +90,7 @@ export const FalconManifest: DefineSkill = {
 			actions: [
 				{
 					action: '@create-entity',
-					from: 'self-pos',
+					from: 'caster-pos',
 					strategy: { type: 'direction' },
 					movement: { 'move-type': 'straight', speed: () => 800 },
 					collider: {
@@ -124,7 +124,7 @@ export const FalconManifest: DefineSkill = {
 			cooldown: 60,
 			actions: {
 				action: '@create-entity',
-				from: 'self-pos',
+				from: 'caster-pos',
 				strategy: { type: 'direction' },
 				movement: { 'move-type': 'straight', speed: () => 1200 },
 				collider: { shape: { type: 'circle', size: { radius: 60 } } },

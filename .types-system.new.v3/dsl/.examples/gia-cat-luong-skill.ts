@@ -32,8 +32,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 		s1: [
 			{
 				// Phase 0: đang ở Gió → chuyển sang Sét
-				icon: 's1-wind',
-				conditions: (ctx) => ctx.caster.effect('gcl-phase-wind'),
+				visual: { sprite: { key: 's1-wind' } },
 				triggers: ['on-key:s1'],
 				cooldown: 1,
 				actions: [
@@ -46,8 +45,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 			},
 			{
 				// Phase 1: đang ở Sét → chuyển sang Mây
-				icon: 's1-thunder',
-				conditions: (ctx) => ctx.caster.effect('gcl-phase-thunder'),
+				visual: { sprite: { key: 's1-thunder' } },
 				triggers: ['on-key:s1'],
 				cooldown: 1,
 				actions: [
@@ -60,8 +58,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 			},
 			{
 				// Phase 2: đang ở Mây → chuyển về Gió
-				icon: 's1-cloud',
-				conditions: (ctx) => ctx.caster.effect('gcl-phase-cloud'),
+				visual: { sprite: { key: 's1-cloud' } },
 				triggers: ['on-key:s1'],
 				cooldown: 1,
 				actions: [
@@ -78,7 +75,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 		s2: [
 			{
 				// Phase 0 — Gió CD 6s, 25 mana: Cơn gió xuyên thấu, hất tung + slow 40% + tăng ST chịu 15%
-				icon: 's2-wind',
+				visual: { sprite: { key: 's2-wind' } },
 				triggers: ['on-key:s2'],
 				cooldown: 6,
 				conditions: (ctx) => ctx.caster['current-energy-point'] >= 25,
@@ -86,18 +83,21 @@ export const GiaCatLuongManifest: DefineSkill = {
 					{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => -25 },
 					{
 						action: '@create-entity',
-						from: 'self-pos',
+						from: 'caster-pos',
 						strategy: { type: 'direction' },
-						movement: { 'move-type': 'straight', speed: () => 600 },
+						movement: { 'move-type': 'straight', speed: () => 18 },
 						collider: {
 							shape: { type: 'rectangle', size: { width: 80, height: 40 } },
+							'impact-capacity': Infinity,
 							'pierce-targets': 'all',
 						},
 						impact: {
-							manifest: [
-								{ 'target-effect': { action: '@apply:effect', effect: 'gcl-s2-wind-hit' } },
-								{ 'target-effect': { action: '@apply:effect', effect: 'gcl-s2-wind-levitate' } },
-							],
+							manifest: {
+								'target-effect': {
+									action: '@apply:effect',
+									effect: ['gcl-s2-wind-hit', 'gcl-s2-wind-levitate'],
+								},
+							},
 						},
 					},
 				],
@@ -105,7 +105,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 			{
 				// Phase 1 — Sét CD 2s, 25 mana: Area mouse pos, sau 0.5s sét đánh; slow 50% 2s
 				// Địch đã slow không bị slow lại trong 6s
-				icon: 's2-thunder',
+				visual: { sprite: { key: 's2-thunder' } },
 				triggers: ['on-key:s2'],
 				cooldown: 2,
 				conditions: (ctx) => ctx.caster['current-energy-point'] >= 25,
@@ -124,10 +124,8 @@ export const GiaCatLuongManifest: DefineSkill = {
 							manifest: [
 								{ 'target-effect': { action: '@apply:effect', effect: 'gcl-s2-thunder-hit' } },
 								{
-									'target-effect': [
-										// Slow — immune nếu đã có slow này trong 6s trước
-										{ action: '@apply:effect', effect: 'gcl-s2-thunder-slow' },
-									],
+									// Slow — immune nếu đã có slow này trong 6s trước
+									'target-effect': { action: '@apply:effect', effect: 'gcl-s2-thunder-slow' },
 								},
 							],
 						},
@@ -140,7 +138,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 				// Shield impact-shield filter 'skill' block damage, on-hit-taken dùng để counter
 				// Simplification: counter fires khi bị hit bất kỳ trong khi có shield
 				// Ideal cần engine phân biệt hit type trong event context
-				icon: 's2-cloud',
+				visual: { sprite: { key: 's2-cloud' } },
 				triggers: ['on-key:s2'],
 				cooldown: 6,
 				conditions: (ctx) => ctx.caster['current-energy-point'] >= 10,
@@ -155,8 +153,8 @@ export const GiaCatLuongManifest: DefineSkill = {
 		s3: [
 			{
 				// Phase 0 — Gió CD 10s: Area mouse, 2s mỗi s 150% NL slow 40%, kết thúc hút vào tâm
-				icon: 's3-wind',
-				triggers: ['on-key:s3'],
+				visual: { sprite: { key: 'ultimate-wind' } },
+				triggers: ['on-key:ultimate'],
 				cooldown: 10,
 				conditions: (ctx) => ctx.caster['current-energy-point'] >= 50,
 				actions: [
@@ -166,19 +164,25 @@ export const GiaCatLuongManifest: DefineSkill = {
 						from: 'mouse-pos',
 						duration: 2,
 						movement: { 'move-type': 'straight', speed: () => 0 },
-						collider: { shape: { type: 'circle', size: { radius: 300 } }, 'impact-capacity': Infinity },
+						collider: {
+							shape: { type: 'circle', size: { radius: 300 } },
+							'impact-capacity': Infinity,
+						},
 						impact: {
 							interval: 1,
 							manifest: { 'target-effect': { action: '@apply:effect', effect: 'gcl-s3-wind-tick' } },
 						},
 					},
-					{ action: '@do-act:wait', duration: 2 },
 					// Kết thúc: hút tất cả địch trong vùng vào tâm
 					{
 						action: '@create-entity',
 						from: 'mouse-pos',
 						movement: { 'move-type': 'straight', speed: () => 0 },
-						collider: { shape: { type: 'circle', size: { radius: 300 } }, 'impact-capacity': Infinity },
+						collider: {
+							shape: { type: 'circle', size: { radius: 300 } },
+							'impact-capacity': Infinity,
+							'warm-up': 2,
+						},
 						impact: {
 							manifest: { 'target-effect': { action: '@apply:radial-push', speed: () => 600 } },
 						},
@@ -187,8 +191,8 @@ export const GiaCatLuongManifest: DefineSkill = {
 			},
 			{
 				// Phase 1 — Sét CD 6s: Area mouse, sau 1.25s sét 575% NL, vùng dư âm 2s mỗi s 96%
-				icon: 's3-thunder',
-				triggers: ['on-key:s3'],
+				visual: { sprite: { key: 'ultimate-thunder' } },
+				triggers: ['on-key:ultimate'],
 				cooldown: 6,
 				conditions: (ctx) => ctx.caster['current-energy-point'] >= 50,
 				actions: [
@@ -212,15 +216,15 @@ export const GiaCatLuongManifest: DefineSkill = {
 			},
 			{
 				// Phase 2 — Mây CD 10s: Area tại chỗ đứng, sau 1s buff tàng hình + 40% tốc 3s cho ally trong vùng
-				icon: 's3-cloud',
-				triggers: ['on-key:s3'],
+				visual: { sprite: { key: 'ultimate-cloud' } },
+				triggers: ['on-key:ultimate'],
 				cooldown: 10,
 				conditions: (ctx) => ctx.caster['current-energy-point'] >= 50,
 				actions: [
 					{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => -50 },
 					{
 						action: '@create-entity',
-						from: 'self-pos',
+						from: 'caster-pos',
 						movement: { 'move-type': 'straight', speed: () => 0 },
 						collider: {
 							shape: { type: 'circle', size: { radius: 400 } },
@@ -318,7 +322,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 			duration: 2,
 			description: 'Miễn 1 đòn skill; khi bị hit → counter. NOTE: on-hit-taken fires cho all hits',
 			impacts: {
-				'modify-states': { type: 'impact-shield', mode: 'negate', filter: 'skill' },
+				'modify-states': { type: 'impact-immune', filter: 'skill' },
 				'on-event': {
 					'on-hit-taken': [
 						// Tự heal + mana
@@ -371,7 +375,6 @@ export const GiaCatLuongManifest: DefineSkill = {
 		// S3 Wind
 		'gcl-s3-wind-tick': {
 			duration: 2,
-			'stack-timeline-policy': 'reset-duration',
 			impacts: {
 				'on-start': {
 					action: '@apply:modifier',
@@ -385,7 +388,6 @@ export const GiaCatLuongManifest: DefineSkill = {
 
 		// S3 Thunder: tick đầu 575%, sau đó dư âm 96%/s
 		'gcl-s3-thunder-tick': {
-			'stack-timeline-policy': 'keep-duration',
 			impacts: [
 				{
 					// Lần hit đầu (stack 1): 575%
@@ -398,6 +400,14 @@ export const GiaCatLuongManifest: DefineSkill = {
 				},
 				{
 					// Dư âm (stack 2+): 96%/s
+					'on-start': {
+						action: '@apply:modifier',
+						attribute: 'current-HP',
+						value: (ctx) => -ctx.caster['attack-power'] * 0.96,
+						reductions: energyDamageReduction,
+					},
+				},
+				{
 					'on-start': {
 						action: '@apply:modifier',
 						attribute: 'current-HP',
