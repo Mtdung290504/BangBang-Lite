@@ -311,7 +311,10 @@ type StateEntry =
 interface ValueResolveContext {
 	caster: EntitySnapshot; // LUÔN là tank đã kích hoạt skill — bất kể effect đang áp lên ai
 	target: EntitySnapshot; // Entity nhận effect / trigger event (phụ thuộc context — xem bảng)
-	'skill-hit-count': number; // Số hit mà skill parent đã đánh trúng
+	'skill-source'?: {
+		'hit-count': number;
+		'source-type': 'skill' | 'normal-attack';
+	};
 	getChargeTime(name: string): number; // Thời gian đã gồng (nếu có @do-act:modify-charge)
 }
 

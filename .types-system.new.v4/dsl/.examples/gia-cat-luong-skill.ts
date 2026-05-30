@@ -1,5 +1,5 @@
+import { reduceByEnergyShield, reduceBySkillImmune } from '../../builder/templates/combat/reduction-policies';
 import { DefineSkill } from '../entity/skill/manifest.types';
-import { energyDamageReduction, physicalDamageReduction } from '../../builder/templates/combat/reduction-policies';
 
 /**
  * Gia Cát Lượng — 3 hệ xoay vòng (Gió/Sét/Mây) qua S1.
@@ -25,7 +25,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 		'innate-mana-regen': {
 			triggers: ['on-ready'],
 			cooldown: 0.5,
-			actions: { action: '@apply:modifier', attribute: 'current-energy-point', value: () => 5 },
+			actions: { action: '@apply:modifier', attribute: 'current-energy-point', 'delta-value': () => 5 },
 		},
 
 		// S1 CD 1s, 0 mana: Đổi hệ xoay vòng Gió → Sét → Mây → Gió
@@ -80,7 +80,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 				cooldown: 6,
 				conditions: (ctx) => ctx.caster['current-energy-point'] >= 25,
 				actions: [
-					{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => -25 },
+					{ action: '@apply:modifier', attribute: 'current-energy-point', 'delta-value': () => -25 },
 					{
 						action: '@create-entity',
 						from: 'caster-pos',
@@ -110,7 +110,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 				cooldown: 2,
 				conditions: (ctx) => ctx.caster['current-energy-point'] >= 25,
 				actions: [
-					{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => -25 },
+					{ action: '@apply:modifier', attribute: 'current-energy-point', 'delta-value': () => -25 },
 					{
 						action: '@create-entity',
 						from: 'mouse-pos',
@@ -143,7 +143,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 				cooldown: 6,
 				conditions: (ctx) => ctx.caster['current-energy-point'] >= 10,
 				actions: [
-					{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => -10 },
+					{ action: '@apply:modifier', attribute: 'current-energy-point', 'delta-value': () => -10 },
 					{ action: '@apply:effect', effect: 'gcl-s2-cloud-shield' },
 				],
 			},
@@ -158,7 +158,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 				cooldown: 10,
 				conditions: (ctx) => ctx.caster['current-energy-point'] >= 50,
 				actions: [
-					{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => -50 },
+					{ action: '@apply:modifier', attribute: 'current-energy-point', 'delta-value': () => -50 },
 					{
 						action: '@create-entity',
 						from: 'mouse-pos',
@@ -196,7 +196,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 				cooldown: 6,
 				conditions: (ctx) => ctx.caster['current-energy-point'] >= 50,
 				actions: [
-					{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => -50 },
+					{ action: '@apply:modifier', attribute: 'current-energy-point', 'delta-value': () => -50 },
 					{
 						action: '@create-entity',
 						from: 'mouse-pos',
@@ -221,7 +221,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 				cooldown: 10,
 				conditions: (ctx) => ctx.caster['current-energy-point'] >= 50,
 				actions: [
-					{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => -50 },
+					{ action: '@apply:modifier', attribute: 'current-energy-point', 'delta-value': () => -50 },
 					{
 						action: '@create-entity',
 						from: 'caster-pos',
@@ -249,19 +249,37 @@ export const GiaCatLuongManifest: DefineSkill = {
 	effects: {
 		// Phase effects (continuous stat, unremovable để đảm bảo luôn có 1 hệ active)
 		'gcl-phase-wind': {
+			description: 'Tăng 15% tốc độ di chuyển',
 			unremovable: true,
 			duration: Infinity,
-			impacts: { 'modify-stats': { attribute: 'movement-speed', value: '15%' as any } },
+			impacts: {
+				'modify-stats': {
+					attribute: 'movement-speed',
+					'delta-value': ({ caster }) => +(caster['movement-speed'] * 0.15),
+				},
+			},
 		},
 		'gcl-phase-thunder': {
+			description: 'Tăng 15% điểm xuyên giáp',
 			unremovable: true,
 			duration: Infinity,
-			impacts: { 'modify-stats': { attribute: 'penetration-percent', value: '15%' as any } },
+			impacts: {
+				'modify-stats': {
+					attribute: 'penetration-unit',
+					'delta-value': ({ caster }) => +(caster['penetration-unit'] * 0.15),
+				},
+			},
 		},
 		'gcl-phase-cloud': {
+			description: 'Tăng 15% miễn thương công thường',
 			unremovable: true,
 			duration: Infinity,
-			impacts: { 'modify-stats': { attribute: 'damage-reduction', value: '15%' as any } },
+			impacts: {
+				'modify-stats': {
+					attribute: 'na-damage-immunity',
+					'delta-value': () => +15,
+				},
+			},
 		},
 
 		// S2 Wind
@@ -270,8 +288,8 @@ export const GiaCatLuongManifest: DefineSkill = {
 				'on-start': {
 					action: '@apply:modifier',
 					attribute: 'current-HP',
-					value: (ctx) => -ctx.caster['attack-power'] * 1.86,
-					reductions: energyDamageReduction,
+					'delta-value': (ctx) => -ctx.caster['attack-power'] * 1.86,
+					'modify-policies': [reduceByEnergyShield('target'), reduceBySkillImmune('target')],
 				},
 			},
 		},
@@ -288,13 +306,13 @@ export const GiaCatLuongManifest: DefineSkill = {
 		},
 		'gcl-s2-wind-land-slow': {
 			duration: 2,
-			impacts: { 'modify-stats': { attribute: 'movement-speed', value: '-40%' as any } },
+			impacts: { 'modify-stats': { attribute: 'movement-speed', 'delta-value': '-40%' as any } },
 		},
 		'gcl-s2-wind-land-amp': {
 			duration: 2,
 			description: 'Tăng 15% ST phải chịu — dùng incoming-reductions khi có; tạm thời mock bằng debuff giảm giáp',
 			// TODO: Cần incoming-reductions khi implement để giảm damage chính xác theo phía attacker
-			impacts: { 'modify-stats': { attribute: 'energy-shield', value: '-15%' as any } },
+			impacts: { 'modify-stats': { attribute: 'energy-shield', 'delta-value': '-15%' as any } },
 		},
 
 		// S2 Thunder
@@ -303,8 +321,8 @@ export const GiaCatLuongManifest: DefineSkill = {
 				'on-start': {
 					action: '@apply:modifier',
 					attribute: 'current-HP',
-					value: (ctx) => -ctx.caster['attack-power'] * 2.01,
-					reductions: energyDamageReduction,
+					'delta-value': (ctx) => -ctx.caster['attack-power'] * 2.01,
+					'modify-policies': [reduceByEnergyShield('target'), reduceBySkillImmune('target')],
 				},
 			},
 		},
@@ -312,7 +330,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 			duration: 2,
 			description: 'Slow 50%; đã bị slow này → immune 6s',
 			impacts: {
-				'modify-stats': { attribute: 'movement-speed', value: '-50%' as any },
+				'modify-stats': { attribute: 'movement-speed', 'delta-value': '-50%' as any },
 				'modify-states': { type: 'immune', filter: 'id:gcl-s2-thunder-slow' }, // Immune re-apply
 			},
 		},
@@ -329,9 +347,9 @@ export const GiaCatLuongManifest: DefineSkill = {
 						{
 							action: '@apply:modifier',
 							attribute: 'current-HP',
-							value: (ctx) => ctx.caster['limit-HP'] * 0.15,
+							'delta-value': (ctx) => ctx.caster['limit-HP'] * 0.15,
 						},
-						{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => 40 },
+						{ action: '@apply:modifier', attribute: 'current-energy-point', 'delta-value': () => 40 },
 						// Xóa chính shield sau khi kích hoạt
 						{ action: '@apply:clean-effect', filter: 'id:gcl-s2-cloud-shield' },
 						// Counter tại vị trí attacker: xóa immune, gây 130%, câm 1.5s
@@ -362,8 +380,8 @@ export const GiaCatLuongManifest: DefineSkill = {
 				'on-start': {
 					action: '@apply:modifier',
 					attribute: 'current-HP',
-					value: (ctx) => -ctx.caster['attack-power'] * 1.3,
-					reductions: energyDamageReduction,
+					'delta-value': (ctx) => -ctx.caster['attack-power'] * 1.3,
+					'modify-policies': [reduceByEnergyShield('target'), reduceBySkillImmune('target')],
 				},
 			},
 		},
@@ -379,10 +397,13 @@ export const GiaCatLuongManifest: DefineSkill = {
 				'on-start': {
 					action: '@apply:modifier',
 					attribute: 'current-HP',
-					value: (ctx) => -ctx.caster['attack-power'] * 1.5,
-					reductions: energyDamageReduction,
+					'delta-value': (ctx) => -ctx.caster['attack-power'] * 1.5,
+					'modify-policies': [reduceByEnergyShield('target'), reduceBySkillImmune('target')],
 				},
-				'modify-states': { type: 'root' }, // làm chậm 40% — dùng slow thay root
+				'modify-stats': {
+					attribute: 'movement-speed',
+					'delta-value': ({ target }) => -target['movement-speed'] * 0.4,
+				},
 			},
 		},
 
@@ -394,8 +415,8 @@ export const GiaCatLuongManifest: DefineSkill = {
 					'on-start': {
 						action: '@apply:modifier',
 						attribute: 'current-HP',
-						value: (ctx) => -ctx.caster['attack-power'] * 5.75,
-						reductions: energyDamageReduction,
+						'delta-value': (ctx) => -ctx.caster['attack-power'] * 5.75,
+						'modify-policies': [reduceByEnergyShield('target'), reduceBySkillImmune('target')],
 					},
 				},
 				{
@@ -403,16 +424,16 @@ export const GiaCatLuongManifest: DefineSkill = {
 					'on-start': {
 						action: '@apply:modifier',
 						attribute: 'current-HP',
-						value: (ctx) => -ctx.caster['attack-power'] * 0.96,
-						reductions: energyDamageReduction,
+						'delta-value': (ctx) => -ctx.caster['attack-power'] * 0.96,
+						'modify-policies': [reduceByEnergyShield('target'), reduceBySkillImmune('target')],
 					},
 				},
 				{
 					'on-start': {
 						action: '@apply:modifier',
 						attribute: 'current-HP',
-						value: (ctx) => -ctx.caster['attack-power'] * 0.96,
-						reductions: energyDamageReduction,
+						'delta-value': (ctx) => -ctx.caster['attack-power'] * 0.96,
+						'modify-policies': [reduceByEnergyShield('target'), reduceBySkillImmune('target')],
 					},
 				},
 			],
@@ -425,7 +446,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 		},
 		'gcl-s3-cloud-speed': {
 			duration: 3,
-			impacts: { 'modify-stats': { attribute: 'movement-speed', value: '40%' as any } },
+			impacts: { 'modify-stats': { attribute: 'movement-speed', 'delta-value': '40%' as any } },
 		},
 	},
 };

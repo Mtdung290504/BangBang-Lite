@@ -2,9 +2,8 @@ import { ActionType } from './.type-components';
 import type { CurrentStatKeys, LostStatKeys, TankStatValueKey } from '../../tank/.enums';
 import type { SkillSlot, SpSkillSlot } from '../.enums';
 import type { ValueWithUnit } from '../../../.types';
-import type { ValueResolver, ReductionFn } from '../../../runtime.types';
+import type { ValueResolver, ModifyFunc } from '../../../runtime.types';
 import type { SkillCastAction } from './.types';
-// Imports removed as they are duplicates
 
 // ===== Tầng ①: Continuous Stat Modifier (tồn tại theo effect duration) =====
 
@@ -22,7 +21,7 @@ import type { SkillCastAction } from './.types';
  */
 export interface StatModifier {
 	attribute: Exclude<TankStatValueKey, CurrentStatKeys | LostStatKeys>;
-	value: ValueResolver;
+	'delta-value': ValueResolver;
 }
 
 // ===== Tầng ②: State (tồn tại theo effect duration) =====
@@ -75,10 +74,10 @@ export type StateEntry =
  */
 export interface ApplyModifier extends ActionType<'apply', 'modifier'> {
 	attribute: CurrentStatKeys;
-	value: ValueResolver;
+	'delta-value': ValueResolver;
 
 	/** Pipeline giảm trừ (optional). Không có = không giảm (true damage/heal). */
-	reductions?: ReductionFn | ReductionFn[];
+	'modify-policies'?: ModifyFunc | ModifyFunc[];
 }
 
 // ===== Các action khác giữ nguyên =====

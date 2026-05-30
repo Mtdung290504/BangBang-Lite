@@ -1,5 +1,5 @@
+import { reduceByEnergyShield, reduceBySkillImmune } from '../../builder/templates/combat/reduction-policies';
 import { DefineSkill } from '../entity/skill/manifest.types';
-import { energyDamageReduction } from '../../builder/templates/combat/reduction-policies';
 
 export const MagnetoManifest: DefineSkill = {
 	manifest: {
@@ -155,7 +155,7 @@ export const MagnetoManifest: DefineSkill = {
 			impacts: {
 				'modify-stats': {
 					attribute: 'movement-speed',
-					value: (ctx) => ctx.caster['movement-speed'] * 0.5,
+					'delta-value': (ctx) => ctx.caster['movement-speed'] * 0.5,
 				},
 			},
 		},
@@ -169,8 +169,8 @@ export const MagnetoManifest: DefineSkill = {
 				'on-start': {
 					action: '@apply:modifier',
 					attribute: 'current-HP',
-					value: (ctx) => -ctx.caster['attack-power'] * 1.23,
-					reductions: energyDamageReduction,
+					'delta-value': (ctx) => -ctx.caster['attack-power'] * 1.23,
+					'modify-policies': [reduceByEnergyShield('target'), reduceBySkillImmune('target')],
 				},
 			},
 		},
@@ -180,8 +180,8 @@ export const MagnetoManifest: DefineSkill = {
 				'on-start': {
 					action: '@apply:modifier',
 					attribute: 'current-HP',
-					value: (ctx) => -ctx.caster['attack-power'] * 1.75,
-					reductions: energyDamageReduction,
+					'delta-value': (ctx) => -ctx.caster['attack-power'] * 1.75,
+					'modify-policies': [reduceByEnergyShield('target'), reduceBySkillImmune('target')],
 				},
 			},
 		},
@@ -196,7 +196,7 @@ export const MagnetoManifest: DefineSkill = {
 						// Bonus 10% max HP chuẩn (true damage)
 						action: '@apply:modifier',
 						attribute: 'current-HP',
-						value: (ctx) => -ctx.target['limit-HP'] * 0.1,
+						'delta-value': (ctx) => -ctx.target['limit-HP'] * 0.1,
 					},
 				},
 			],
@@ -234,8 +234,8 @@ export const MagnetoManifest: DefineSkill = {
 				'on-start': {
 					action: '@apply:modifier',
 					attribute: 'current-HP',
-					value: (ctx) => -ctx.caster['attack-power'] * 2.01,
-					reductions: energyDamageReduction,
+					'delta-value': (ctx) => -ctx.caster['attack-power'] * 2.01,
+					'modify-policies': [reduceByEnergyShield('target'), reduceBySkillImmune('target')],
 				},
 			},
 		},
@@ -252,8 +252,8 @@ export const MagnetoManifest: DefineSkill = {
 				'on-start': {
 					action: '@apply:modifier',
 					attribute: 'current-HP',
-					value: (ctx) => -ctx.caster['attack-power'] * 0.35,
-					reductions: energyDamageReduction,
+					'delta-value': (ctx) => -ctx.caster['attack-power'] * 0.35,
+					'modify-policies': [reduceByEnergyShield('target'), reduceBySkillImmune('target')],
 				},
 			},
 		},
@@ -262,8 +262,8 @@ export const MagnetoManifest: DefineSkill = {
 				'on-start': {
 					action: '@apply:modifier',
 					attribute: 'current-HP',
-					value: (ctx) => -ctx.caster['attack-power'] * 1.75,
-					reductions: energyDamageReduction,
+					'delta-value': (ctx) => -ctx.caster['attack-power'] * 1.75,
+					'modify-policies': [reduceByEnergyShield('target'), reduceBySkillImmune('target')],
 				},
 			},
 		},

@@ -1,5 +1,9 @@
+import {
+	reduceByEnergyShield,
+	reduceByNaImmune,
+	reduceBySkillImmune,
+} from '../../builder/templates/combat/reduction-policies';
 import { DefineSkill } from '../entity/skill/manifest.types';
-import { energyDamageReduction } from '../../builder/templates/combat/reduction-policies';
 
 export const FalconManifest: DefineSkill = {
 	manifest: {
@@ -22,7 +26,7 @@ export const FalconManifest: DefineSkill = {
 				triggers: ['on-key:normal-attack'],
 				conditions: (ctx) => !ctx.caster.effect('s2-empower') && ctx.caster['current-energy-point'] >= 20,
 				actions: [
-					{ action: '@apply:modifier', attribute: 'current-energy-point', value: () => -20 },
+					{ action: '@apply:modifier', attribute: 'current-energy-point', 'delta-value': () => -20 },
 					{
 						action: '@create-entity',
 						from: 'caster-pos',
@@ -158,7 +162,7 @@ export const FalconManifest: DefineSkill = {
 					{
 						action: '@apply:modifier',
 						attribute: 'current-energy-point',
-						value: ({ caster: self }) => self['energy-point'],
+						'delta-value': ({ caster: self }) => self['energy-point'],
 					},
 				],
 			},
@@ -185,7 +189,7 @@ export const FalconManifest: DefineSkill = {
 			duration: 4,
 			description: 'Tăng chỉ số xuyên giáp theo % 100 điểm',
 			impacts: {
-				'modify-stats': { attribute: 'penetration-percent', value: () => 100 },
+				'modify-stats': { attribute: 'penetration-percent', 'delta-value': () => 100 },
 				'modify-states': { type: 'immune', filter: 'id:passive-hit-counter' }, // Khóa stack khi đang buff
 			},
 		},
@@ -198,8 +202,8 @@ export const FalconManifest: DefineSkill = {
 					{
 						action: '@apply:modifier',
 						attribute: 'current-HP',
-						value: (ctx) => -ctx.caster['attack-power'],
-						reductions: energyDamageReduction,
+						'delta-value': (ctx) => -ctx.caster['attack-power'],
+						'modify-policies': [reduceByEnergyShield('target'), reduceByNaImmune('target')],
 					},
 				],
 			},
@@ -216,7 +220,9 @@ export const FalconManifest: DefineSkill = {
 			duration: Infinity,
 			description: 'Tăng 50% tốc đánh, hút máu, bắn xuyên tường',
 			impacts: {
-				'modify-stats': [{ attribute: 'fire-rate', value: ({ caster: self }) => self['fire-rate'] * 0.5 }],
+				'modify-stats': [
+					{ attribute: 'fire-rate', 'delta-value': ({ caster: self }) => self['fire-rate'] * 0.5 },
+				],
 			},
 		},
 		's2-attack-tracker': {
@@ -250,8 +256,8 @@ export const FalconManifest: DefineSkill = {
 							{
 								action: '@apply:modifier',
 								attribute: 'current-HP',
-								value: (ctx) => -ctx.caster['attack-power'] * 1.5,
-								reductions: energyDamageReduction,
+								'delta-value': (ctx) => -ctx.caster['attack-power'] * 1.5,
+								'modify-policies': [reduceByEnergyShield('target'), reduceBySkillImmune('target')],
 							},
 							{ action: '@apply:effect', effect: 'ult-mark' }, // Tự bồi đắp stack!
 						],
@@ -264,8 +270,8 @@ export const FalconManifest: DefineSkill = {
 							{
 								action: '@apply:modifier',
 								attribute: 'current-HP',
-								value: (ctx) => -ctx.caster['attack-power'] * 1.75,
-								reductions: energyDamageReduction,
+								'delta-value': (ctx) => -ctx.caster['attack-power'] * 1.75,
+								'modify-policies': [reduceByEnergyShield('target'), reduceBySkillImmune('target')],
 							},
 							{ action: '@apply:effect', effect: 'ult-mark' },
 						],
@@ -278,8 +284,8 @@ export const FalconManifest: DefineSkill = {
 							{
 								action: '@apply:modifier',
 								attribute: 'current-HP',
-								value: (ctx) => -ctx.caster['attack-power'] * 2.0,
-								reductions: energyDamageReduction,
+								'delta-value': (ctx) => -ctx.caster['attack-power'] * 2.0,
+								'modify-policies': [reduceByEnergyShield('target'), reduceBySkillImmune('target')],
 							},
 							{ action: '@apply:effect', effect: 'ult-mark' },
 						],
@@ -292,8 +298,8 @@ export const FalconManifest: DefineSkill = {
 							{
 								action: '@apply:modifier',
 								attribute: 'current-HP',
-								value: (ctx) => -ctx.caster['attack-power'] * 2.25,
-								reductions: energyDamageReduction,
+								'delta-value': (ctx) => -ctx.caster['attack-power'] * 2.25,
+								'modify-policies': [reduceByEnergyShield('target'), reduceBySkillImmune('target')],
 							},
 							{ action: '@apply:effect', effect: 'ult-mark' },
 						],

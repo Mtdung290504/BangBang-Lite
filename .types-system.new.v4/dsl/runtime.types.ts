@@ -1,5 +1,7 @@
 import type { TankStatValueKey } from './entity/tank/.enums';
 
+type ContextTarget = 'caster' | 'target';
+
 /**
  * Runtime stats — engine cung cấp khi gọi ValueResolver / ConditionPredicate.
  * Bao gồm mọi key trong TankStatValueKey.
@@ -38,10 +40,10 @@ export type EntitySnapshot = Readonly<RuntimeStats> & {
  *
  * @example
  * // Damage = attack-power của CASTER
- * value: ctx => -ctx.self['attack-power'] * 1.5
+ * value: ctx => -ctx.caster['attack-power'] * 1.5
  *
  * // Conditional: chỉ heal khi kẻ vừa đánh mình đang bị mark
- * value: ctx => ctx.target.hasEffect('enemy-mark') ? ctx.self['attack-power'] * 0.15 : 0
+ * value: ctx => ctx.target.effect('enemy-mark')?.stack ? ctx.caster['attack-power'] * 0.15 : 0
  */
 export interface ValueResolveContext {
 	/** Luôn là caster — tank đã kích hoạt skill */
@@ -50,8 +52,11 @@ export interface ValueResolveContext {
 	/** Entity nhận effect / trigger event (phụ thuộc context, xem JSDoc) */
 	target: EntitySnapshot;
 
-	/** Số hit mà skill parent đã đánh trúng */
-	'skill-hit-count': number;
+	/** Thông tin đòn đánh (undefined nếu context không phải va chạm/gây sát thương) */
+	'skill-source'?: {
+		'hit-count': number;
+		'source-type': 'skill' | 'normal-attack';
+	};
 
 	getChargeTime(name: string): number;
 }
@@ -74,12 +79,16 @@ export type ValueResolver<ReturnEnum = number> = (ctx: ValueResolveContext) => R
  * Reduction function — 1 bước trong pipeline giảm trừ.
  * Engine chạy lần lượt: rawValue → fn1 → fn2 → ... → finalValue
  *
+ * *Cập nhật 18/4/2026: Không call lên data gốc theo từng hàm do phình theo cấp số nhân khi tăng\
+ * ModifyFunc bản mới trả về giá trị delta để CỘNG vào giá trị gốc, tăng cấp số cộng
+ *
  * @example
  * // Giảm theo giáp vật lý
  * const armorReduction: ReductionFn = (value, ctx) =>
  *     value * (1 - ctx.target['physical-armor'] / (ctx.target['physical-armor'] + 600));
  */
-export type ReductionFn = (value: number, ctx: ValueResolveContext) => number;
+export type ModifyFunc = (value: number, ctx: ValueResolveContext) => number;
+export type ModifyFuncBuilder = (target: ContextTarget) => ModifyFunc;
 
 /**
  * Condition predicate — engine gọi khi cần check điều kiện.

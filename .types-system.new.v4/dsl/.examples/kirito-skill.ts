@@ -1,5 +1,5 @@
+import { reduceByPhysicalArmor, reduceBySkillImmune } from '../../builder/templates/combat/reduction-policies';
 import { DefineSkill } from '../entity/skill/manifest.types';
-import { physicalDamageReduction, energyDamageReduction } from '../../builder/templates/combat/reduction-policies';
 
 export const KiritoManifest: DefineSkill = {
 	manifest: {
@@ -150,8 +150,8 @@ export const KiritoManifest: DefineSkill = {
 			duration: 2,
 			description: 'Tăng 50% tốc chạy, tối đa 2 stack',
 			impacts: [
-				{ 'modify-stats': { attribute: 'movement-speed', value: '50%' as any } },
-				{ 'modify-stats': { attribute: 'movement-speed', value: '100%' as any } },
+				{ 'modify-stats': { attribute: 'movement-speed', 'delta-value': '50%' as any } },
+				{ 'modify-stats': { attribute: 'movement-speed', 'delta-value': '100%' as any } },
 			],
 		},
 
@@ -161,8 +161,8 @@ export const KiritoManifest: DefineSkill = {
 				'on-start': {
 					action: '@apply:modifier',
 					attribute: 'current-HP',
-					value: (ctx) => -ctx.caster['attack-power'] * 1.75,
-					reductions: physicalDamageReduction,
+					'delta-value': (ctx) => -ctx.caster['attack-power'] * 1.75,
+					'modify-policies': [reduceByPhysicalArmor('target'), reduceBySkillImmune('target')],
 				},
 			},
 		},
@@ -173,8 +173,8 @@ export const KiritoManifest: DefineSkill = {
 				'on-start': {
 					action: '@apply:modifier',
 					attribute: 'current-HP',
-					value: (ctx) => -ctx.caster['attack-power'] * 1.5,
-					reductions: physicalDamageReduction,
+					'delta-value': (ctx) => -ctx.caster['attack-power'] * 1.5,
+					'modify-policies': [reduceByPhysicalArmor('target'), reduceBySkillImmune('target')],
 				},
 			},
 		},
@@ -186,8 +186,8 @@ export const KiritoManifest: DefineSkill = {
 						{
 							action: '@apply:modifier',
 							attribute: 'current-HP',
-							value: (ctx) => -ctx.caster['attack-power'] * 1.5,
-							reductions: physicalDamageReduction,
+							'delta-value': (ctx) => -ctx.caster['attack-power'] * 1.5,
+							'modify-policies': [reduceByPhysicalArmor('target'), reduceBySkillImmune('target')],
 						},
 						{ action: '@apply:clean-effect', filter: 'id:k-s2-wall-listener' }, // Chỉ 1 lần
 					],
@@ -209,8 +209,8 @@ export const KiritoManifest: DefineSkill = {
 					{
 						action: '@apply:modifier',
 						attribute: 'current-HP',
-						value: (ctx) => -ctx.caster['attack-power'] * 0.3,
-						reductions: physicalDamageReduction,
+						'delta-value': (ctx) => -ctx.caster['attack-power'] * 0.3,
+						'modify-policies': [reduceByPhysicalArmor('target'), reduceBySkillImmune('target')],
 					},
 					{ action: '@apply:effect', effect: 'k-ult-slow' },
 				],
@@ -219,7 +219,10 @@ export const KiritoManifest: DefineSkill = {
 		'k-ult-slow': {
 			duration: 1.5,
 			impacts: {
-				'modify-stats': { attribute: 'movement-speed', value: ({ target }) => -target['movement-speed'] * 0.6 },
+				'modify-stats': {
+					attribute: 'movement-speed',
+					'delta-value': ({ target }) => -target['movement-speed'] * 0.6,
+				},
 			},
 		},
 		'k-ult-final-slash': {
@@ -229,14 +232,14 @@ export const KiritoManifest: DefineSkill = {
 					{
 						action: '@apply:modifier',
 						attribute: 'current-HP',
-						value: (ctx) => -ctx.caster['attack-power'] * 1.75,
-						reductions: physicalDamageReduction,
+						'delta-value': (ctx) => -ctx.caster['attack-power'] * 1.75,
+						'modify-policies': [reduceByPhysicalArmor('target'), reduceBySkillImmune('target')],
 					},
 					{
 						// True damage 15% lost HP
 						action: '@apply:modifier',
 						attribute: 'current-HP',
-						value: (ctx) => -ctx.target['lost-HP'] * 0.15,
+						'delta-value': (ctx) => -ctx.target['lost-HP'] * 0.15,
 					},
 				],
 			},
