@@ -25,24 +25,25 @@
 
 Vật thể va chạm. Mọi thứ trong game là một impactor với config khác nhau:
 
-| Loại         | `duration`                    | `limit-range`           | `impact-capacity`                  | `interval`   | Ghi chú                                             |
-| ------------ | ----------------------------- | ----------------------- | ---------------------------------- | ------------ | --------------------------------------------------- |
-| Đạn thường   | _(không khai báo)_ = Infinity | kế thừa 100% tầm tank   | 1 (default)                        | _(không có)_ | Bị xóa khi hết range OR hết capacity                |
-| Đạn xuyên    | Infinity                      | có                      | > 1 hoặc `'all'`                   | _(không có)_ | Bay xuyên N mục tiêu rồi mới vỡ                     |
-| Area damage  | N giây                        | _(không khai báo)_      | Infinity                           | có           | Tồn tại N giây, hit theo interval                   |
-| Laser / Aura | N giây                        | _(không có)_            | Infinity                           | _(liên tục)_ | `impact-capacity: Infinity` = không bao giờ "đầy"   |
-| Sensor       | `frame-time`                  | _(không có)_            | Infinity                           | nhỏ          | No visual, dùng để query game state qua collision   |
-| Dash         | Infinity                      | _(caster làm giới hạn)_ | Infinity (`pierce-targets: 'all'`) | _(không có)_ | `drag-targets: true` + `affected-faction: ['self']` |
+| Loại         | `duration`                    | `limit-range`           | `impact-capacity`                  | `interval`   | Ghi chú                                                            |
+| ------------ | ----------------------------- | ----------------------- | ---------------------------------- | ------------ | ------------------------------------------------------------------ |
+| Đạn thường   | _(không khai báo)_ = Infinity | kế thừa 100% tầm tank   | 1 (default)                        | _(không có)_ | Bị xóa khi hết range OR hết capacity                               |
+| Đạn xuyên    | Infinity                      | có                      | > 1 hoặc `'all'`                   | _(không có)_ | Bay xuyên N mục tiêu rồi mới vỡ                                    |
+| Area damage  | N giây                        | _(không khai báo)_      | Infinity                           | có           | Tồn tại N giây, hit theo interval                                  |
+| Laser / Aura | N giây                        | _(không có)_            | Infinity                           | _(liên tục)_ | `impact-capacity: Infinity` = không bao giờ "đầy"                  |
+| Sensor       | `frame-time`                  | _(không có)_            | Infinity                           | nhỏ          | No visual, dùng để query game state qua collision                  |
+| Dash         | Infinity                      | _(caster làm giới hạn)_ | Infinity (`pierce-targets: 'all'`) | _(không có)_ | Tạo đạn bay và áp dụng Effect carry-movement drag-along lên caster |
 
 **Lifecycle của Impactor** (thứ tự bắt buộc):
 
 1. **Collider chết** — hết `impact-capacity` hoặc hết `duration`. Logic (collision, movement) tắt ngay.
 2. **Sprite hoàn thành** — nếu `visual.on-parent-death: 'wait-finish'`, animation chạy hết rồi entity mới xóa.
 
-**Dash pattern** được nhận diện tự động bởi engine khi impactor có `drag-targets: true` + `affected-faction: ['self']`:
+**Dash pattern** được triển khai bằng cách tạo một Impactor di chuyển và áp dụng một Effect mang `'carry-movement': { type: 'drag-along' }` lên caster:
 
-- Engine auto-link impactor với caster.
-- Khi caster bị CC ngăn chuyển động (stun/root), impactor loại này bị destroy ngay lập tức.
+- Engine khóa chuyển động của caster trực tiếp theo viên đạn.
+- Khi viên đạn bị hủy (do đập vào tường hoặc hết tầm), Effect trên caster tự động bị hủy theo.
+- Khi caster bị khống chế cứng (stun/root), Engine sẽ hủy viên đạn lướt và xóa Effect.
 
 ### 2.2 Effect (`@apply:effect`)
 
@@ -205,8 +206,6 @@ Tất cả action dùng được trong `actions`, `on-start`, `on-interval`, `on
 | `@apply:modifier`         | [ApplyModifier](file:///c:/BigProject/BB-Lite/.types-system.new.v3/dsl/entity/skill/actions/apply-effect.type-entities.ts#76-83)         | Điều chỉnh stat tức thì (damage, heal, cost) |
 | `@apply:modify-countdown` | [ModifyCountdown](file:///c:/BigProject/BB-Lite/.types-system.new.v3/dsl/entity/skill/actions/apply-effect.type-entities.ts#101-108)     | Sửa CD của skill slot                        |
 | `@apply:clean-effect`     | [CleanEffect](file:///c:/BigProject/BB-Lite/.types-system.new.v3/dsl/entity/skill/actions/apply-effect.type-entities.ts#113-116)         | Xóa effect theo tag hoặc ID                  |
-| `@apply:knockback`        | [ApplyKnockback](file:///c:/BigProject/BB-Lite/.types-system.new.v3/dsl/entity/skill/actions/apply-effect.type-entities.ts#130-133)      | Đẩy lui (vector từ điểm va chạm)             |
-| `@apply:radial-push`      | [ApplyRadialPush](file:///c:/BigProject/BB-Lite/.types-system.new.v3/dsl/entity/skill/actions/apply-effect.type-entities.ts#140-143)     | Đẩy hướng tâm (+ = hút vào, - = đẩy ra)      |
 | `@apply:modify-stack`     | [ModifyStack](file:///c:/BigProject/BB-Lite/.types-system.new.v3/dsl/entity/skill/actions/apply-effect.type-entities.ts#149-153)         | Tăng/giảm stack của 1 effect cụ thể          |
 | `@do-act:change-phase`    | [ChangePhase](file:///c:/BigProject/BB-Lite/.types-system.new.v3/dsl/entity/skill/actions/apply-effect.type-entities.ts#87-99)           | Chuyển phase của skill slot                  |
 | `@do-act:wait`            | [WaitAction](file:///c:/BigProject/BB-Lite/.types-system.new.v3/dsl/entity/skill/actions/apply-effect.type-entities.ts#118-122)          | Dừng chuỗi action (sequential)               |
@@ -264,13 +263,6 @@ interface ModifyCountdown {
 	value: ValueWithUnit; // '-100%' = reset CD (xong ngay), '+5u' = cộng thêm 5 giây
 }
 ```
-
-### `@apply:radial-push`
-
-Điểm neo là source của impactor/event.
-
-- `speed > 0`: hút vào tâm (engine auto-stop khi tới tâm, không vụt qua).
-- `speed < 0`: đẩy văng ra xa.
 
 ### `@do-act:wait`
 
@@ -404,7 +396,6 @@ collider: {
     'impact-capacity'?: number;     // Mặc định: 1. Infinity = laser/aura.
     'pierce-targets'?: PierceableTarget[] | 'all'; // Các faction đạn đi xuyên qua mà không kích hoạt impact
     'warm-up'?: number;             // Giây trước khi collider thực sự hoạt động
-    'drag-targets'?: true;          // Kéo entity trúng đòn theo hướng impactor
 }
 
 type PierceableTarget = 'architecture' | 'self' | 'enemy' | 'ally' | 'non-tank';
@@ -602,26 +593,35 @@ impact: {
 
 ### Blink / Teleport
 
+Triển khai bằng cách tạo một Impactor di chuyển cực nhanh (`speed: Infinity` hoặc `99999`) từ caster đến điểm đích, đồng thời áp dụng một Effect mang cơ chế lôi kéo `'carry-movement': { type: 'drag-along' }` lên caster. Caster sẽ dịch chuyển đến điểm đích tức thời cùng với Impactor.
+
 ```ts
-// Tạo impactor tại mouse-pos, hút caster vào với speed vô hạn
+// Tạo đạn dịch chuyển cực nhanh từ caster-pos đến mouse-pos
 {
     action: '@create-entity',
-    from: 'mouse-pos',
-    duration: 0.032,
-    movement: { 'move-type': 'straight', speed: () => 0 },
-    collider: { shape: { type: 'circle', size: { radius: 99999 } } },
+    from: 'caster-pos',
+    strategy: { type: 'direction' },
+    movement: { 'move-type': 'straight', speed: () => 99999 },
+    collider: { shape: { type: 'circle', size: { radius: 50 } }, 'pierce-targets': 'all' },
     impact: {
         manifest: {
             'affected-faction': ['self'],
-            actions: { action: '@apply:radial-push', speed: () => 99999 },
+            'target-effect': { action: '@apply:effect', effect: 'k-blink-move' }
         },
     },
+}
+
+// Effect định nghĩa
+'k-blink-move': {
+    'carry-movement': { type: 'drag-along' },
+    impacts: {}
 }
 ```
 
 ### Dash + Lôi địch
 
 ```ts
+// Tạo đạn lướt, kéo cả self (caster) và enemy
 {
     action: '@create-entity',
     from: 'caster-pos',
@@ -630,11 +630,31 @@ impact: {
     collider: {
         shape: { type: 'circle', size: { radius: 50 } },
         'pierce-targets': 'all',
-        'drag-targets': true,  // Lôi theo bất cứ ai trúng
     },
     impact: {
-        manifest: { 'affected-faction': ['self'], actions: [/* phase change, buff */] },
+        manifest: [
+            // Enemy trúng đòn bị dính effect kéo đi
+            {
+                'affected-faction': ['enemy'],
+                'target-effect': { action: '@apply:effect', effect: 'drag-enemy-effect' }
+            },
+            // Bản thân caster tự liên kết kéo theo đạn để lướt
+            {
+                'affected-faction': ['self'],
+                'target-effect': { action: '@apply:effect', effect: 'dash-move-effect' }
+            }
+        ],
     },
+}
+
+// Effect định nghĩa
+'drag-enemy-effect': {
+    'carry-movement': { type: 'drag-along' },
+    impacts: { 'modify-states': { type: 'root' } }
+}
+'dash-move-effect': {
+    'carry-movement': { type: 'drag-along' },
+    impacts: {}
 }
 ```
 
@@ -735,7 +755,7 @@ s1: [
 | `ApplyShield` action               | Shield là `EffectManifest.shield`. Khi HP khiên = 0, engine clean effect. |
 | `DamageType` enum                  | Thay bằng tên reduction function                                          |
 | `ally-nearby`, `enemy-nearby` stat | Dùng sensor entity pattern                                                |
-| Teleport / set-position action     | `speed: Infinity` trên impactor + `@apply:radial-push`                    |
+| Teleport / set-position action     | Dùng `radial` displacement với speed vô hạn (`speed: -99999`) trên Effect |
 | `on-effect-removed` riêng          | `on-end` fire cho cả hết duration lẫn dispel                              |
 | Condition trong EffectAction       | Zero-return trick trong ValueResolver                                     |
 | Lifesteal action                   | Stat `life-steal` xử lý trong engine                                      |
@@ -765,9 +785,8 @@ s1: [
 │   │   │       ├── .type-components.ts ← ActionType, UseDirectionStrategy, UseTargetingStrategy
 │   │   │       ├── .types.ts           ← SkillCastAction, ImpactAction, ImpactHandle
 │   │   │       ├── apply-effect.type-entities.ts ← StatModifier, StateEntry, ApplyModifier, ChangePhase,
-│   │   │       │                                   ModifyCountdown, CleanEffect, WaitAction, ModifyChargeAction,
-│   │   │       │                                   ApplyKnockback, ApplyRadialPush, ActivateSkillAction,
-│   │   │       │                                   ModifyStack, EffectAction, ApplyEffect
+│   │   │                                           ModifyCountdown, CleanEffect, WaitAction, ModifyChargeAction,
+│   │   │                                           ActivateSkillAction, ModifyStack, EffectAction, ApplyEffect
 │   │   │       ├── apply-effect.types.ts ← EffectManifest, EffectImpactManifest
 │   │   │       └── create-attack.type-entities.ts ← CreateImpactor
 │   │   └── tank/
@@ -798,7 +817,7 @@ s1: [
 
 dsl/.examples/ (canonical — chỉ đọc 4 file này):
     falcon-skill.ts       ← CANONICAL: passive innate, multi-phase attack, dash, ult stack
-    gia-cat-luong-skill.ts ← 3-element cycle, counter-attack, radial-push
+    gia-cat-luong-skill.ts ← 3-element cycle, counter-attack, radial-pull (carry-movement)
     kirito-skill.ts       ← blink, wall-collide listener, wait-sequence, on-fatal-damage
     magneto-skill.ts      ← combo stack, levitate+land chain, random targeting, global AOE
 ```

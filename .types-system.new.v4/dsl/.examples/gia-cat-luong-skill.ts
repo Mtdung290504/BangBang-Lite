@@ -177,6 +177,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 					{
 						action: '@create-entity',
 						from: 'mouse-pos',
+						duration: 0.5,
 						movement: { 'move-type': 'straight', speed: () => 0 },
 						collider: {
 							shape: { type: 'circle', size: { radius: 300 } },
@@ -184,7 +185,7 @@ export const GiaCatLuongManifest: DefineSkill = {
 							'warm-up': 2,
 						},
 						impact: {
-							manifest: { 'target-effect': { action: '@apply:radial-push', speed: () => 600 } },
+							manifest: { 'target-effect': { action: '@apply:effect', effect: 'gcl-s3-wind-pull' } },
 						},
 					},
 				],
@@ -405,6 +406,11 @@ export const GiaCatLuongManifest: DefineSkill = {
 					'delta-value': ({ target }) => -target['movement-speed'] * 0.4,
 				},
 			},
+		},
+		'gcl-s3-wind-pull': {
+			duration: 0.5,
+			'carry-movement': { type: 'radial', speed: () => -600 },
+			impacts: {},
 		},
 
 		// S3 Thunder: tick đầu 575%, sau đó dư âm 96%/s

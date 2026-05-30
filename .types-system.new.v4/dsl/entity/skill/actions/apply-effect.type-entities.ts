@@ -125,21 +125,6 @@ export interface ModifyChargeAction extends ActionType<'do-act', 'modify-charge'
 	name: string;
 }
 
-/** Đẩy lui (Vector tính từ nguồn va chạm đập ra) */
-export interface ApplyKnockback extends ActionType<'apply', 'knockback'> {
-	speed: ValueResolver;
-}
-
-/**
- * Đẩy hướng tâm (Radial Push)
- * Điểm neo: Tâm của source (đạn/người chơi)
- * - Tốc độ dương: Hút vào tâm (Engine tự ngắt khi tới điểm neo)
- * - Tốc độ âm (-): Đẩy văng ra xa
- */
-export interface ApplyRadialPush extends ActionType<'apply', 'radial-push'> {
-	speed: ValueResolver;
-}
-
 export interface ModifyStack extends ActionType<'apply', 'modify-stack'> {
 	effect: string;
 	method: 'increase' | 'decrease';
@@ -158,11 +143,10 @@ export type EffectAction =
 	| ModifyCountdown
 	| WaitAction
 	| ModifyChargeAction
-	| ApplyKnockback
-	| ApplyRadialPush
 	| ModifyStack;
 
 /** Áp effect mới theo tên đã định nghĩa sẵn trong SkillManifest */
 export interface ApplyEffect extends ActionType<'apply', 'effect'> {
 	effect: string | string[];
 }
+

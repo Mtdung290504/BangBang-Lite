@@ -18,18 +18,17 @@ export const KiritoManifest: DefineSkill = {
 			actions: [
 				{ action: '@apply:effect', effect: 'k-invisible-short' }, // Ẩn 0.5s
 				{ action: '@do-act:wait', duration: 0.5 },
-				// Blink: Anchor impactor tại mouse-pos → radial-push kéo caster đến đó tức thì
-				// NOTE: pattern "blink to position" — anchor tại mouse + radial-push speed infinity
+				// Blink: Đạn kéo từ caster-pos bay với speed cực cao tới mouse-pos (drag-along)
 				{
 					action: '@create-entity',
-					from: 'mouse-pos',
-					duration: 0.032, // 2 frames rồi xóa
-					movement: { 'move-type': 'straight', speed: () => 0 },
-					collider: { shape: { type: 'circle', size: { radius: 99999 } } },
+					from: 'caster-pos',
+					strategy: { type: 'direction' },
+					movement: { 'move-type': 'straight', speed: () => 99999 },
+					collider: { shape: { type: 'circle', size: { radius: 50 } }, 'pierce-targets': 'all' },
 					impact: {
 						manifest: {
 							'affected-faction': ['self'],
-							actions: { action: '@apply:radial-push', speed: () => 99999 },
+							'target-effect': { action: '@apply:effect', effect: 'k-blink-move' },
 						},
 					},
 				},
@@ -62,7 +61,6 @@ export const KiritoManifest: DefineSkill = {
 				collider: {
 					shape: { type: 'circle', size: { radius: 50 } },
 					'pierce-targets': 'all',
-					'drag-targets': true,
 				},
 				impact: {
 					manifest: [
@@ -71,9 +69,17 @@ export const KiritoManifest: DefineSkill = {
 								{ action: '@apply:effect', effect: 'k-s2-damage' },
 								// Effect này lắng nghe on-wall-collide để gây bonus damage
 								{ action: '@apply:effect', effect: 'k-s2-wall-listener' },
+								// Kéo kẻ địch đi theo đạn
+								{ action: '@apply:effect', effect: 'k-s2-drag-enemy' },
 							],
+							// Trúng địch mới tăng tốc
+							actions: { action: '@apply:effect', effect: 'k-speed-stack' },
 						},
-						{ actions: { action: '@apply:effect', effect: 'k-speed-stack' } },
+						{
+							// Để lôi theo mình đi
+							'affected-faction': ['self'],
+							'target-effect': { action: '@apply:effect', effect: 'k-s2-dash-move' },
+						},
 					],
 				},
 			},
@@ -91,7 +97,6 @@ export const KiritoManifest: DefineSkill = {
 					action: '@create-entity',
 					from: 'caster-pos',
 					duration: 1.5,
-					movement: { 'move-type': 'straight', speed: () => 0 },
 					collider: { shape: { type: 'circle', size: { radius: 300 } }, 'impact-capacity': Infinity },
 					impact: {
 						interval: 0.1, // 15 nhát / 1.5s
@@ -120,6 +125,10 @@ export const KiritoManifest: DefineSkill = {
 	},
 
 	effects: {
+		'k-blink-move': {
+			'carry-movement': { type: 'drag-along' },
+			impacts: {},
+		},
 		// Innate
 		'k-listen-fatal': {
 			unremovable: true,
@@ -168,6 +177,14 @@ export const KiritoManifest: DefineSkill = {
 		},
 
 		// S2
+		'k-s2-dash-move': {
+			'carry-movement': { type: 'drag-along' },
+			impacts: {},
+		},
+		'k-s2-drag-enemy': {
+			'carry-movement': { type: 'drag-along' },
+			impacts: { 'modify-states': { type: 'root' } },
+		},
 		'k-s2-damage': {
 			impacts: {
 				'on-start': {

@@ -30,7 +30,7 @@ Là vật thể va chạm (đạn, vùng, aura, sensor...). Mọi thứ trong ga
 | Area damage  | `N` giây                      | _(không khai báo)_        | Infinity                         | có           | Tồn tại N giây, hit interval tick                        |
 | Laser / Aura | `N` giây                      | _(không khai báo)_        | Infinity                         | _(liên tục)_ | `impact-capacity: Infinity` = không bao giờ "đầy"        |
 | Sensor       | `frame-time` hoặc ngắn        | _(không khai báo)_        | Infinity                         | nhỏ          | Không có visual, dùng để query state                     |
-| Dash         | Infinity                      | _(caster làm giới hạn)_   | Infinity (`pierce-targets: all`) | _(không có)_ | `drag-targets: true` + `affected-faction: self`          |
+| Dash         | Infinity                      | _(caster làm giới hạn)_   | Infinity                         | _(không có)_ | Tạo đạn bay và áp dụng Effect drag-along lên caster      |
 
 **Phân biệt đạn thường và area damage:**
 
@@ -47,11 +47,9 @@ Là vật thể va chạm (đạn, vùng, aura, sensor...). Mọi thứ trong ga
 
 Impactor **không phân biệt** projectile / area-effect / sensor ở tầng type — chỉ khác nhau ở config collider và movement.
 
-> **[Engine Note — Implicit Caster-Linked Behavior]**
-> Impactor có `drag-targets: true` + `affected-faction: ['self']` được xem là **dash gắn với caster**.
-> Engine tự nhận diện combo này — không cần khai báo thêm field nào trong DSL.
-> Hành vi: khi caster bị CC làm dừng chuyển động (stun/root), engine tự destroy impactor loại này ngay lập tức.
-> Đây là hành vi hiển nhiên theo vật lý: caster dừng → lực kéo mất → không có lý do để impactor tiếp tục tồn tại độc lập.
+> **[Engine Note — Dash Lifecycle Binding]**
+> Dash được thực hiện bằng cách tạo một Impactor di chuyển và áp dụng một Effect mang `'carry-movement': { type: 'drag-along' }` lên caster.
+> Khi Impactor bị hủy (đập tường, hết tầm), Effect tự động bị hủy theo. Khi caster bị khống chế cứng (stun/root), Engine hủy Impactor lướt và xóa Effect.
 
 ### Effect (`@apply:effect`)
 
@@ -299,9 +297,11 @@ Effect với `unremovable: false` + `modify-states: { type: 'silent', slot: [...
 | Không có                               | Lý do                                                                                                                                                                                                 |
 | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ApplyShield` action                   | Shield (khiên ảo) được gắn là 1 cấu hình `shield?: ValueResolver` trực tiếp trên EffectManifest. Sinh mệnh của Effect và Khiên liên kết với nhau, khi khiên chịu sát thương về 0 thì Engine tự clear. |
+| `ApplyKnockback` / `ApplyRadialPush`   | Thay thế hoàn toàn bằng thuộc tính `carry-movement` tích hợp trực tiếp trong `EffectManifest` (vật lý tự động xử lý).                  |
+| `drag-targets` trên collider           | Dùng Effect mang `'carry-movement': { type: 'drag-along' }` thay thế để kiểm soát vòng đời và trạng thái (root, silence) tập trung.    |
 | `DamageType` enum                      | Thay bằng reduction function name                                                                                                                                                                     |
 | `ally-nearby`, `enemy-nearby` stat     | Dùng sensor entity pattern                                                                                                                                                                            |
-| Teleport/set-position action           | `speed: Infinity` trên impactor đủ                                                                                                                                                                    |
+| Teleport/set-position action           | Dùng `radial` displacement với speed vô hạn (`speed: -99999`) trên Effect.                                                                                                                            |
 | `on-effect-removed` event riêng        | `on-end` luôn fire cho cả 2 case (hết duration + dispel)                                                                                                                                              |
 | Condition trong EffectAction           | Zero-return trick trong ValueResolver + ctx.target.hasEffect                                                                                                                                          |
 | `context-target` direction trên action | `@create-entity` với `from: target-pos` thay thế                                                                                                                                                      |

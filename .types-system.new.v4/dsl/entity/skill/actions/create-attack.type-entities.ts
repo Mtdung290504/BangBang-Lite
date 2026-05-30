@@ -26,6 +26,7 @@ interface CreateImpactorBase
 export interface CreateImpactor extends CreateImpactorBase, RequireInitPositionMethod, Movable {
 	/**
 	 * Hướng bay (direction) hoặc Trọng điểm mục tiêu (targeting)
+	 * TODO: Thêm target mục tiêu theo has-effect:{string}
 	 */
 	strategy?: UseDirectionStrategy['strategy'] | UseTargetingStrategy['strategy'];
 }

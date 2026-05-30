@@ -100,11 +100,11 @@ export const FalconManifest: DefineSkill = {
 					collider: {
 						shape: { type: 'circle', size: { radius: 50 } },
 						'pierce-targets': 'all',
-						'drag-targets': true,
 					},
 					impact: {
 						manifest: {
 							'affected-faction': ['self'],
+							'target-effect': { action: '@apply:effect', effect: 's2-dash-move' },
 							actions: [
 								// Phase normal-attack → 1 (đạn cường hóa), buff S2, nạp 1 viên vào Tracker
 								{
@@ -216,6 +216,10 @@ export const FalconManifest: DefineSkill = {
 		},
 
 		// --- S2: CƯỜNG HÓA 5 ĐẠN ---
+		's2-dash-move': {
+			'carry-movement': { type: 'drag-along' },
+			impacts: {},
+		},
 		's2-empower': {
 			duration: Infinity,
 			description: 'Tăng 50% tốc đánh, hút máu, bắn xuyên tường',

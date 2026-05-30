@@ -48,6 +48,18 @@ export interface EffectManifest<Action = EffectAction> extends Renderable, Limit
 	shield?: ValueResolver;
 
 	/**
+	 * Ghi đè/cưỡng chế chuyển động của thực thể mang Effect.
+	 *
+	 * TODO: Khi thực thể đang chuyển động bị cản trở (ví dụ: tông vào tường, vật cản),
+	 * Engine cần phải lập tức hủy bỏ/xóa Effect này để tránh lệch pha giữa trạng thái
+	 * logic (như untargetable, root) và trạng thái vật lý thực tế.
+	 *
+	 * Lý do triển khai: Bản cũ dùng impactor lôi, vậy lỡ nó đang biến mất thì sao mà lôi? (Ví dụ Space Black Panther)
+	 * Chỉ có cách để cả 2 vào 1, vừa lôi vừa áp biến mất.
+	 */
+	'carry-movement'?: CarryMovementDeclaration;
+
+	/**
 	 * Định nghĩa hành vi cho từng stack. Quy định luôn số stack tối đa\
 	 * Note:
 	 * - Vì effect đã có ngữ cảnh từ impactor nên chỉ cần khai báo effect lên target và action của bản thân trong này
@@ -118,3 +130,39 @@ interface EffectImpactManifest<Action = EffectAction> extends Renderable {
 	 */
 	visual?: VisualManifest;
 }
+
+export type CarryMovementDeclaration =
+	/**
+	 * Case A: Đẩy lui (Knockback)
+	 * Di chuyển thẳng theo hướng ngược lại với nguồn tác động (attacker-pos / impact-pos)
+	 */
+	| {
+			type: 'knockback';
+			speed: ValueResolver;
+			/** Quãng đường đẩy lui tối đa (ví dụ đẩy lui 80px) */
+			'limit-distance'?: ValueResolver;
+	  }
+	/**
+	 * Case B: Lôi theo đạn (Drag-along)
+	 * Khóa chặt chuyển động của mục tiêu đi theo tọa độ của viên đạn (Impactor) sinh ra Effect này.
+	 * Khi viên đạn biến mất, Effect tự động bị xóa theo.
+	 */
+	| {
+			type: 'drag-along';
+	  }
+	/**
+	 * Case C & D: Chuyển động hướng tâm (Radial)
+	 * Điểm neo là vị trí của viên đạn (Impactor) sinh ra Effect.
+	 * - Tốc độ âm (-): Hút vào tâm (Case D - Pull)
+	 * - Tốc độ dương (+): Đẩy ra xa tâm (Case C - Push)
+	 */
+	| {
+			type: 'radial';
+			speed: ValueResolver;
+			/**
+			 * Khoảng cách giới hạn so với tâm đạn:
+			 * - Khi Hút (speed âm): Là khoảng cách tối thiểu cách tâm để dừng hút (Mặc định: 0px - hút sát vào tâm).
+			 * - Khi Đẩy (speed dương): Là khoảng cách tối đa cách tâm để dừng đẩy.
+			 */
+			'limit-distance'?: ValueResolver;
+	  };

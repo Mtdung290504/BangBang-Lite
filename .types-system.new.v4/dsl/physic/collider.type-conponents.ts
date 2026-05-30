@@ -29,12 +29,5 @@ export interface Collidable {
 		 * - Ví dụ: Space GCL hiện effect trước rồi mới giật
 		 */
 		'warm-up'?: number;
-
-		/**
-		 * Lôi theo mục tiêu mà nó đánh trúng (khả năng đâm trúng quy định bởi filter / capacity)\
-		 * Không khai báo thì là false
-		 * @default false
-		 */
-		'drag-targets'?: true;
 	};
 }
